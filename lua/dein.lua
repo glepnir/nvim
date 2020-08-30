@@ -62,10 +62,10 @@ function dein:load_repos()
     end
   end
 
-  vim.api.nvim_command[[filetype plugin indent on]]
+  vim.api.nvim_command('filetype plugin indent on')
 
   if vim.fn.has('vim_starting') == 1 then
-    vim.api.nvim_command[[syntax enable]]
+    vim.api.nvim_command('syntax enable')
   end
 
   vim.fn['dein#call_hook']('source')

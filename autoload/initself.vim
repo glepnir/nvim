@@ -1,5 +1,3 @@
-" Credits: https://github.com/Shougo/shougo-s-github/blob/master/vim/rc/options.rc.vim#L147
-" mkdir
 function! initself#mkdir_as_necessary(dir, force) abort
   if !isdirectory(a:dir) && &l:buftype == '' &&
         \ (a:force || input(printf('"%s" does not exist. Create? [y/N]',
