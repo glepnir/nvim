@@ -66,6 +66,7 @@ function M.load_core()
   map:load_mapping()
 
   vim.fn['theme#theme_init']()
+  vim.fn['initself#lsp_init']()
 end
 
 M.load_core()

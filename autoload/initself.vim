@@ -33,11 +33,9 @@ function! s:lsp_init(langs)
   exec 'autocmd BufWritePre *.'.a:langs. '    call s:silent_organizeImport()'
 endfunction
 
-function! s:lsp_command()
+function! initself#lsp_init()
   command! -nargs=+ -bar LSP          call s:lsp_init(<args>)
 endfunction
-
-call s:lsp_command()
 
 function! s:silent_organizeImport()
   silent! call CocAction('runCommand', 'editor.action.organizeImport')
