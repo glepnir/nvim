@@ -1,0 +1,13 @@
+- repo: tpope/vim-dadbod
+
+- repo: kristijanhusak/vim-dadbod-ui
+  on_cmd:
+    [DBUIToggle, DBUIAddConnection, DBUI, DBUIFindBuffer, DBUIRenameBuffer]
+  on_source: vim-dadbod
+  hook_source: |
+    let g:db_ui_show_help = 0
+    let g:db_ui_win_position = 'left'
+    let g:db_ui_use_nerd_fonts = 1
+    let g:db_ui_winwidth = 35
+    let g:db_ui_save_location = $DATA_PATH . '/db_ui_queries'
+    let g:dbs = initself#load_db_from_env()

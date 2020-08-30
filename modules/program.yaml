@@ -1,0 +1,87 @@
+- repo: editorconfig/editorconfig-vim
+  on_ft: [go,typescript,javascript,vim,rust,markdown]
+
+- repo: Yggdroot/indentLine
+  on_event: BufReadPre
+  hook_source: |
+    let g:indentLine_enabled = 1
+    let g:indentLine_char='┆'
+    let g:indentLine_fileTypeExclude = ['defx', 'denite','startify','dbui','vista_kind','vista','coc-explorer','dashboard','chadtree']
+    let g:indentLine_concealcursor = 'niv'
+    let g:indentLine_showFirstIndentLevel =1
+
+- repo: tyru/caw.vim
+  depends: context_filetype.vim
+  on_map: { nx: <Plug> }
+  hook_add: |
+    function! InitCaw() abort
+      if !&l:modifiable
+        silent! nunmap <buffer> gc
+        silent! xunmap <buffer> gc
+        silent! nunmap <buffer> gcc
+        silent! xunmap <buffer> gcc
+      else
+        nmap <buffer> gc <Plug>(caw:prefix)
+        xmap <buffer> gc <Plug>(caw:prefix)
+        nmap <buffer> gcc <Plug>(caw:hatpos:toggle)
+        xmap <buffer> gcc <Plug>(caw:hatpos:toggle)
+      endif
+    endfunction
+    autocmd FileType * call InitCaw()
+    call InitCaw()
+
+- repo: liuchengxu/vista.vim
+  on_cmd: [Vista, Vista!, Vista!!]
+  hook_source: |
+    let g:vista#renderer#enable_icon = 1
+    let g:vista_disable_statusline = 1
+    let g:vista_default_executive = 'ctags'
+    let g:vista_echo_cursor_strategy = 'floating_win'
+    let g:vista_vimwiki_executive = 'markdown'
+    let g:vista_executive_for = {
+      \ 'vimwiki': 'markdown',
+      \ 'pandoc': 'markdown',
+      \ 'markdown': 'toc',
+      \ 'yaml': 'coc',
+      \ 'typescript': 'coc',
+      \ 'typescriptreact': 'coc',
+      \ }
+
+- repo: thinca/vim-quickrun
+  on_cmd: QuickRun
+  hook_source: |
+    let g:quickrun_config = {
+      \   "_" : {
+        \       "outputter" : "message",
+        \   },
+        \}
+    let g:quickrun_no_default_key_mappings = 1
+
+- repo: ludovicchabant/vim-gutentags
+  if: executable('ctags')
+  on_event: [BufReadPost, BufWritePost]
+  hook_source: |
+    let g:gutentags_cache_dir = getenv("HOME").'/.cache/vim/tags'
+    let g:gutentags_project_root = ['.root', '.git', '.svn', '.hg', '.project','go.mod','/usr/local']
+    let g:gutentags_generate_on_write = 0
+    let g:gutentags_generate_on_missing = 0
+    let g:gutentags_generate_on_new = 0
+    let g:gutentags_exclude_filetypes = [ 'defx', 'denite', 'vista', 'magit' ]
+    let g:gutentags_ctags_extra_args = ['--output-format=e-ctags']
+    let g:gutentags_ctags_exclude = ['*.json', '*.js', '*.ts', '*.jsx', '*.css', '*.less', '*.sass', '*.go', '*.dart', 'node_modules', 'dist', 'vendor']
+
+- repo: mattn/emmet-vim
+  on_event: InsertEnter
+  on_ft: [ html,css,javascript,javascriptreact,vue,typescript,typescriptreact ]
+  hook_source: |
+    let g:user_emmet_complete_tag = 0
+    let g:user_emmet_install_global = 0
+    let g:user_emmet_install_command = 0
+    let g:user_emmet_mode = 'i'
+
+- repo: mattn/vim-sonictemplate
+  on_cmd: Template
+  on_ft: [go,typescript,javascript,vim,rust,markdown]
+  hook_source: |
+    let g:sonictemplate_postfix_key = '<C-j>'
+    let g:sonictemplate_vim_template_dir = $VIM_PATH . '/template'

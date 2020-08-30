@@ -1,0 +1,14 @@
+- repo: HerringtonDarkholme/yats.vim
+  on_ft: [typescript, typescriptreact]
+
+- repo: MaxMEllon/vim-jsx-pretty
+  on_ft: [javascriptreact, typescriptreact]
+
+- repo: rust-lang/rust.vim
+  on_ft: rust
+
+- repo: hardcoreplayers/go-nvim
+  on_ft: [ go, gomod ]
+
+- repo: ekalinin/Dockerfile.vim
+  on_ft: [Dockerfile, docker-compose]
