@@ -66,5 +66,7 @@
   if: has('python3')
   merged: 0
 
-# - repo: neovim/nvim-lsp
+# - repo: neovim/nvim-lspconfig
 #   if: 'has("nvim-0.5")'
+
+# - repo: nvim-lua/completion-nvim
