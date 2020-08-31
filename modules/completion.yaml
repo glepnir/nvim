@@ -2,7 +2,6 @@
   merged: 0
   build: "yarn install --frozen-lockfile"
   hook_add: |
-    let $NVIM_COC_LOG_LEVEL = 'debug'
     let g:coc_disable_transparent_cursor = 1
     let g:coc_snippet_next = '<TAB>'
     let g:coc_snippet_prev = '<S-TAB>'
