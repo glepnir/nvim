@@ -176,13 +176,13 @@ function mapping:load_mapping()
       if type(value) == 'table' then
         rhs = value[1]
         options = vim.tbl_extend("keep",value[2],default_options or {})
-        vim.api.nvim_set_keymap(mode,keymap,rhs,options)
+        vim.fn.nvim_set_keymap(mode,keymap,rhs,options)
       elseif type(value) == 'string' then
         local k,min,max = keymap:match("([^,]+),([^,]+),([^,]+)")
         for i=tonumber(min),tonumber(max) do
           key = (k.."%s"):format(i)
           rhs = value:gsub("+",i)
-          vim.api.nvim_set_keymap(mode,key,rhs,{})
+          vim.fn.nvim_set_keymap(mode,key,rhs,{})
         end
       end
     end
