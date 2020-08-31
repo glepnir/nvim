@@ -63,7 +63,9 @@ function M.load_core()
   autocmds.load_autocmds()
 
   map = mapping:new()
-  map:load_mapping()
+  map:load_vim_define()
+  map:load_plugin_define()
+  nvim_load_mapping(map)
 
   vim.fn['theme#theme_init']()
   vim.fn['initself#lsp_init']()
