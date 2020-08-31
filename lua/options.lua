@@ -96,6 +96,7 @@ function options:define_options()
     self.previewheight  = 12;
 
     self.number         = true;
+    self.relativenumber = true;
     self.showcmd        = false;
     self.cmdheight      = 2;
     self.cmdwinheight   = 5;
