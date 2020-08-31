@@ -142,8 +142,6 @@ function mapping:load_plugin_define()
     ["o|if"]             = map_cmd("<Plug>(textobj-function-i)"):with_silent(),
     ["x|af"]             = map_cmd("<Plug>(textobj-function-a)"):with_silent(),
     ["x|af"]             = map_cmd("<Plug>(textobj-function-i)"):with_silent(),
-    ["x|I"]              = map_cmd("niceblock-I"):with_silent(),
-    ["x|A"]              = map_cmd("niceblock-A"):with_silent(),
     ["x|p"]              = map_cmd("<Plug>(operator-replace)"),
     -- Plugin sandwich
     ["n|sa"]             = map_cmd("<Plug>(operator-sandwich-add)"):with_silent(),
