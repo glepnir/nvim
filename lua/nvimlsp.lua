@@ -39,22 +39,88 @@ local function has_key (tab,idx)
   return false
 end
 
-local function add_config_options(server_setup)
-  local options = { 'callbacks','capabilities', 'settings','init_options',}
-  for key,value in pairs(options) do
-    if not has_key(server_setup,value) then
-      if key == options[1] or key == options[3] or key == options[3] then
-        server_setup[value] = {}
-      else
-        server_setup[value] = vim.lsp.protocol.make_client_capabilities()
-      end
+local function lookup_section(settings, section)
+  for part in vim.gsplit(section, '.', true) do
+    settings = settings[part]
+    if not settings then
+      return
     end
   end
-  print(dump(server_setup))
-  return server_setup
+  return settings
 end
 
-add_config_options(server.gopls_setup)
+local function add_hook_after(func, new_fn)
+  if func then
+    return function(...)
+      -- TODO which result?
+      func(...)
+      return new_fn(...)
+    end
+  else
+    return new_fn
+  end
+end
+
+local function add_options(server_setup)
+  local options = {
+    callbacks = {};
+    capabilities = vim.lsp.protocol.make_client_capabilities();
+    settings = vim.empty_dict();
+    init_options = vim.empty_dict();
+  };
+
+  for option,value in pairs(options) do
+    if not has_key(server_setup,option) then
+      server_setup[option] = value
+    end
+  end
+
+  server_setup.capabilities = vim.tbl_deep_extend('keep', server_setup.capabilities, {
+    workspace = {
+      configuration = true;
+    }
+  })
+
+  -- add workspace/configuration callback function
+  server_setup.callbacks["workspace/configuration"] = function(err, method, params, client_id)
+      if err then error(tostring(err)) end
+      if not params.items then
+        return {}
+      end
+
+      local result = {}
+      for _, item in ipairs(params.items) do
+        if item.section then
+          local value = lookup_section(server_setup.settings, item.section) or vim.NIL
+          -- For empty sections with no explicit '' key, return settings as is
+          if value == vim.NIL and item.section == '' then
+            value = server_setup.settings or vim.NIL
+          end
+          table.insert(result, value)
+        end
+      end
+      return result
+    end
+
+  server_setup.on_init = add_hook_after(server_setup.on_init, function(client, _result)
+        function client.workspace_did_change_configuration(settings)
+          if not settings then return end
+          if vim.tbl_isempty(settings) then
+            settings = {[vim.type_idx]=vim.types.dictionary}
+          end
+          return client.notify('workspace/didChangeConfiguration', {
+            settings = settings;
+          })
+        end
+        if not vim.tbl_isempty(server_setup.settings) then
+          client.workspace_did_change_configuration(new_config.settings)
+        end
+      end)
+
+  server_setup._on_attach = server_setup.on_attach;
+
+  return server_setup
+end
 
 -- Some path manipulation utilities
 local function is_dir(filename)
@@ -107,7 +173,7 @@ function lsp_sign()
 end
 
 -- This needs to be global so that we can call it from the autocmd.
-function start_lsp_server(server_setup)
+function initialize_lsp_server(server_setup)
   local bufnr = vim.api.nvim_get_current_buf()
   -- Filter which files we are considering.
   if not has_value(server_setup.filetypes,vim.api.nvim_buf_get_option(bufnr,'filetype')) then
@@ -146,8 +212,11 @@ function start_lsp_server(server_setup)
   -- Finally, attach to the buffer to track changes. This will do nothing if we
   -- are already attached.
   vim.lsp.buf_attach_client(bufnr, client_id)
+end
+
+function start_lsp_server(server_setup)
+  initialize_lsp_server(add_options(server_setup))
   print(string.format("initialize %s success",server_setup.name))
 end
 
--- start_lsp_server(add_config_options(server.gopls_setup))
 start_lsp_server(server.gopls_setup)

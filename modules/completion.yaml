@@ -69,6 +69,4 @@
 # - repo: neovim/nvim-lspconfig
 
 - repo: nvim-lua/completion-nvim
-  on_event: InsertEnter
-  hook_source: |
-    lua require('nvimlsp')
+  on_ft: go
