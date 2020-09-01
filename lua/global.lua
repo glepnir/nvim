@@ -2,13 +2,13 @@ is_mac     = jit.os == 'OSX'
 is_linux   = jit.os == 'Linux'
 is_windows = jit.os == 'Windows'
 
-os_separator = is_windows and '\\' or '/'
+path_sep = is_windows and '\\' or '/'
 
 home        = os.getenv("HOME")
-vim_path    = home .. os_separator..'.config'..os_separator..'nvim'
-cache_dir   = home .. os_separator..'.cache'..os_separator..'vim'..os_separator
-map_dir     = vim_path .. 'maps'..os_separator
-modules_dir = vim_path .. os_separator..'modules'
+vim_path    = home .. path_sep..'.config'..path_sep..'nvim'
+cache_dir   = home .. path_sep..'.cache'..path_sep..'vim'..path_sep
+map_dir     = vim_path .. 'maps'..path_sep
+modules_dir = vim_path .. path_sep..'modules'
 
 
 --- Check if a file or directory exists in this path

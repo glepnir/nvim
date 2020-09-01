@@ -43,9 +43,9 @@ function autocmds.load_autocmds()
       {"BufNewFile,BufRead", "coc-settings.json" ,"setlocal filetype=jsonc"};
     };
 
-    au_user = {
-      {"CursorHold", "* CocCommand git.refresh 'void'"};
-    };
+    -- au_user = {
+    --   {"CursorHold", "* CocCommand git.refresh 'void'"};
+    -- };
   }
 
   nvim_create_augroups(definitions)
