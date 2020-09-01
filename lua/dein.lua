@@ -34,7 +34,7 @@ function dein:load_repos()
   local cmd = "git clone https://github.com/Shougo/dein.vim " .. dein_dir
 
   if vim.fn.has('vim_starting') then
-    vim.api.nvim_set_var('dein#auto_recache',1)
+    -- vim.api.nvim_set_var('dein#auto_recache',1)
     vim.api.nvim_set_var('dein#install_max_processes',12)
     vim.api.nvim_set_var('dein#install_progress_type',"title")
     vim.api.nvim_set_var('dein#enable_notification',1)

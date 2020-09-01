@@ -944,7 +944,10 @@ function! s:apply_syntax_highlightings()
   exec 'hi DashboardFooter' . s:fg_purple .s:bold
   exec 'hi DashboardHeader' . s:fg_blue .s:bold
   "===============================================================
-
+  exec 'hi LspDiagnosticsError' . s:fg_red
+  exec 'hi LspDiagnosticsWarning'. s:fg_yellow
+  exec 'hi LspDiagnosticsInformation' . s:fg_blue
+  exec 'hi LspDiagnosticsHint' . s:fg_aqua
 endfunction
 
 command! -nargs=0 OceanicMaterial :call g:OceanicMaterial()
