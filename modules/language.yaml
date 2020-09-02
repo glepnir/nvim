@@ -13,3 +13,15 @@
 - repo: ekalinin/Dockerfile.vim
   on_ft: [Dockerfile, docker-compose]
 
+- repo: nvim-treesitter/nvim-treesitter
+  on_ft: typescript
+  hook_source: |
+    lua <<EOF
+    require'nvim-treesitter.configs'.setup {
+        highlight = {
+            enable = true,
+            disable = {},
+        },
+        ensure_installed = 'all'
+    }
+    EOF
