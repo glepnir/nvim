@@ -142,7 +142,8 @@ function! initself#load_db_from_env()
   return l:dbs
 endfunction
 
-" Remap for do codeAction of selected region
-function! initself#coc_action_select(type) abort
-    execute 'CocCommand actions.open ' . a:type
+function! initself#check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
+
