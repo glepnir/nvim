@@ -43,9 +43,6 @@ function autocmds.load_autocmds()
       {"BufNewFile,BufRead", "coc-settings.json" ,"setlocal filetype=jsonc"};
     };
 
-    -- au_user = {
-    --   {"CursorHold", "* CocCommand git.refresh 'void'"};
-    -- };
     yank = {
       {"TextYankPost", [[* silent! lua vim.highlight.on_yank({higroup="IncSearch", timeout=200})]]};
     };

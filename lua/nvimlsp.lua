@@ -19,26 +19,6 @@ server.gopls_setup = {
   };
 }
 
--- check value in table
-local function has_value (tab, val)
-  for index, value in ipairs(tab) do
-    if value == val then
-      return true
-    end
-  end
-  return false
-end
-
--- check index in table
-local function has_key (tab,idx)
-  for index,value in pairs(tab) do
-    if index == idx then
-      return true
-    end
-  end
-  return false
-end
-
 local function lookup_section(settings, section)
   for part in vim.gsplit(section, '.', true) do
     settings = settings[part]
