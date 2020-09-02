@@ -56,6 +56,7 @@ end
 function mapping:load_plugin_define()
   self.plugin = {
     ["n|<LocalLeader>r"] = map_cr("call dein#recache_runtimepath()"):with_noremap():with_silent(),
+    ["n|<LocalLeader>u"] = map_cr("call dein#update()"):with_noremap():with_silent(),
     ["n|<Leader>tf"]     = map_cu('DashboardNewFile'):with_noremap():with_silent(),
     ["n|<Leader>bc"]     = map_cr('Bonly'):with_noremap():with_silent(),
     ["n|<Leader>bx"]     = map_cr('Bw'):with_noremap():with_silent(),

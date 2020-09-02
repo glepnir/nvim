@@ -113,7 +113,7 @@ local function add_options(server_setup)
           })
         end
         if not vim.tbl_isempty(server_setup.settings) then
-          client.workspace_did_change_configuration(new_config.settings)
+          client.workspace_did_change_configuration(server_setup.settings)
         end
       end)
 
