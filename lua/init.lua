@@ -3,6 +3,7 @@ require 'options'
 require 'event'
 require 'dein'
 require 'mapping'
+require 'nvimlsp'
 
 local api = vim.api
 local M = {}
@@ -68,6 +69,8 @@ function M.load_core()
   nvim_load_mapping(map)
 
   vim.fn['theme#theme_init']()
+
+  register_lsp_event()
 end
 
 M.load_core()
