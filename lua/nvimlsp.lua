@@ -1,9 +1,8 @@
 require 'global'
 
-server = {}
 
 -- gopls configuration template
-server.gopls_setup = {
+gopls_setup = {
   name = "gopls";
   on_attach= require'completion'.on_attach;
   -- A table to store our root_dir to client_id lookup. We want one LSP per
@@ -194,9 +193,9 @@ function initialize_lsp_server(server_setup)
   vim.lsp.buf_attach_client(bufnr, client_id)
 end
 
-function start_lsp_server(server_setup)
-  initialize_lsp_server(add_options(server_setup))
-  print(string.format("initialize %s success",server_setup.name))
+function start_lsp_server()
+  initialize_lsp_server(add_options(gopls_setup))
+  print(string.format("initialize %s success",gopls_setup.name))
 end
 
-start_lsp_server(server.gopls_setup)
+-- start_lsp_server()
