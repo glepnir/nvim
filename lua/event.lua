@@ -46,6 +46,9 @@ function autocmds.load_autocmds()
     -- au_user = {
     --   {"CursorHold", "* CocCommand git.refresh 'void'"};
     -- };
+    yank = {
+      {"TextYankPost", [[* silent! lua vim.highlight.on_yank({higroup="IncSearch", timeout=200})]]};
+    };
   }
 
   nvim_create_augroups(definitions)
