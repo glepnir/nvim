@@ -14,7 +14,7 @@
   on_ft: [Dockerfile, docker-compose]
 
 - repo: nvim-treesitter/nvim-treesitter
-  on_ft: typescript
+  on_ft: [typescript,lua]
   hook_source: |
     lua <<EOF
     require'nvim-treesitter.configs'.setup {

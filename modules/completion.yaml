@@ -1,9 +1,8 @@
-# - repo: neovim/nvim-lspconfig
 
 - repo: nvim-lua/completion-nvim
-  on_ft: go
+  on_event: BufEnter
   hook_source: |
-    lua require('nvimlsp')
+    let g:completion_matching_strategy_list = ['exact', 'fuzzy', 'substring']
     let g:completion_enable_snippet = 'vim-vsnip'
     let g:completion_confirm_key = ""
 
@@ -14,7 +13,6 @@
 
 - repo: hrsh7th/vim-vsnip-integ
   on_event: InsertCharPre
-
 
 - repo: mattn/vim-sonictemplate
   on_cmd: Template
