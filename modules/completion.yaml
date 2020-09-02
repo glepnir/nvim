@@ -1,72 +1,28 @@
-# - repo: neoclide/coc.nvim
-#   merged: 0
-#   build: "yarn install --frozen-lockfile"
-#   hook_add: |
-#     let g:coc_disable_transparent_cursor = 1
-#     let g:coc_snippet_next = '<TAB>'
-#     let g:coc_snippet_prev = '<S-TAB>'
-#     let g:coc_global_extensions =[
-#         \ 'coc-html',
-#         \ 'coc-css',
-#         \ 'coc-vimlsp',
-#         \ 'coc-snippets',
-#         \ 'coc-emmet',
-#         \ 'coc-imselect',
-#         \ 'coc-pairs',
-#         \ 'coc-json',
-#         \ 'coc-highlight',
-#         \ 'coc-git',
-#         \ 'coc-emoji',
-#         \ 'coc-lists',
-#         \ 'coc-yaml',
-#         \ 'coc-gitignore',
-#         \ 'coc-yank',
-#         \ 'coc-actions',
-#         \ 'coc-db',
-#         \ 'coc-spell-checker',
-#         \ 'coc-template',
-#         \ 'coc-react-refactor',
-#         \ 'coc-tsserver',
-#         \ 'coc-eslint',
-#         \ 'coc-prettier',
-#         \ 'coc-tslint-plugin',
-#         \ 'coc-docthis',
-#         \ 'coc-style-helper',
-#         \ 'coc-react-refactor',
-#         \ 'coc-rust-analyzer'
-#         \]
-#
-#     augroup coc_event
-#       autocmd!
-#       " Setup formatexpr specified filetype(s).
-#       autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-#       " Update signature help on jump placeholder
-#       autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-#     augroup end
-#
-#     " Highlight symbol under cursor on CursorHold
-#     autocmd CursorHold * silent call CocActionAsync('highlight')
-#
-#     "Use tab for trigger completion with characters ahead and navigate
-#     inoremap <silent><expr> <TAB>
-#           \ pumvisible() ? "\<C-n>" :
-#           \ <SID>check_back_space() ? "\<TAB>" :
-#           \ coc#refresh()
-#
-#     inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-#     inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-#
-#     function! s:check_back_space() abort
-#       let col = col('.') - 1
-#       return !col || getline('.')[col - 1]  =~# '\s'
-#     endfunction
-#
-# - repo: honza/vim-snippets
-#   depends : coc.nvim
-#   if: has('python3')
-#   merged: 0
-
 # - repo: neovim/nvim-lspconfig
 
 - repo: nvim-lua/completion-nvim
   on_ft: go
+  hook_source: |
+    let g:completion_enable_snippet = 'vim-vsnip'
+
+    lua require('nvimlsp')
+
+    function! s:check_back_space() abort
+        let col = col('.') - 1
+        return !col || getline('.')[col - 1]  =~ '\s'
+    endfunction
+
+    inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ completion#trigger_completion()
+    let g:completion_confirm_key = ""
+
+    imap <expr> <cr>  pumvisible() ? complete_info()["selected"] != "-1" ?
+                 \ "\<Plug>(completion_confirm_completion)"  : "\<c-e>\<CR>" :  "\<CR>"
+
+- repo: hrsh7th/vim-vsnip
+  on_event: InsertCharPre
+
+- repo: hrsh7th/vim-vsnip-integ
+  on_event: InsertCharPre
