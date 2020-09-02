@@ -3,26 +3,14 @@
 - repo: nvim-lua/completion-nvim
   on_ft: go
   hook_source: |
-    let g:completion_enable_snippet = 'vim-vsnip'
-
     lua require('nvimlsp')
-
-    function! s:check_back_space() abort
-        let col = col('.') - 1
-        return !col || getline('.')[col - 1]  =~ '\s'
-    endfunction
-
-    inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ completion#trigger_completion()
+    let g:completion_enable_snippet = 'vim-vsnip'
     let g:completion_confirm_key = ""
-
-    imap <expr> <cr>  pumvisible() ? complete_info()["selected"] != "-1" ?
-                 \ "\<Plug>(completion_confirm_completion)"  : "\<c-e>\<CR>" :  "\<CR>"
 
 - repo: hrsh7th/vim-vsnip
   on_event: InsertCharPre
+  hook_source: |
+    let g:vsnip_snippet_dir = getenv("HOME") . "/.config/nvim/snippets"
 
 - repo: hrsh7th/vim-vsnip-integ
   on_event: InsertCharPre

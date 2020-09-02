@@ -1,0 +1,9 @@
+{
+  "Package": {
+    "prefix": "pa",
+    "body": [
+      "// Package $1 provides $2",
+      "package $1"
+    ]
+  }
+}

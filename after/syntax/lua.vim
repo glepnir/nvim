@@ -11,7 +11,7 @@ endfunction
 
 " Clusters
 syntax cluster luaBase contains=luaComment,luaCommentLong,luaConstant,luaNumber,luaString,luaStringLong,luaBuiltIn
-syntax cluster luaExpr contains=@luaBase,luaTable,luaBracket,luaSpecialTable,luaSpecialValue,luaOperator,luaSymbolOperator,luaEllipsis,luaComma,luaFunc,luaFuncCall,luaError
+syntax cluster luaExpr contains=@luaBase,luaTable,luaSpecialTable,luaSpecialValue,luaOperator,luaSymbolOperator,luaEllipsis,luaComma,luaFunc,luaFuncCall
 syntax cluster luaStat
       \ contains=@luaExpr,luaIfThen,luaBlock,luaLoop,luaGoto,luaLabel,luaLocal,luaStatement,luaSemiCol,luaErrHand
 
@@ -20,7 +20,6 @@ syntax match luaNoise /\%(\.\|,\|:\|\;\)/
 " Symbols
 call s:FoldableRegion('table', 'luaTable',
       \ 'transparent matchgroup=luaBraces start="{" end="}" contains=@luaExpr')
-syntax region luaBracket transparent matchgroup=luaBrackets start="\[" end="\]" contains=@luaExpr
 syntax match  luaComma ","
 syntax match  luaSemiCol ";"
 if !exists('g:lua_syntax_nosymboloperator')
@@ -31,12 +30,6 @@ if !exists('g:lua_syntax_nosymboloperator')
   syntax match luaSymbolOperator "[#<>=~^&|*/%+-]\|\.\." contains=luaNotEqOperator
 endi
 syntax match  luaEllipsis "\.\.\."
-
-" Catch errors caused by unbalanced brackets and keywords
-syntax match luaError ")"
-syntax match luaError "}"
-syntax match luaError "\]"
-syntax match luaError "\<\%(end\|else\|elseif\|then\|until\)\>"
 
 " Shebang at the start
 syntax match luaComment "\%^#!.*"
@@ -51,16 +44,8 @@ syntax match   luaDocTag contained "\s@\k\+"
 " Function calls
 syntax match luaFuncCall /\k\+\%(\s*[{('"]\)\@=/
 
-" Functions
-call s:FoldableRegion('function', 'luaFunc',
-      \ 'transparent matchgroup=luaFuncKeyword start="\<function\>" end="\<end\>" contains=@luaStat,luaFuncSig')
-syntax region luaFuncSig contained transparent start="\(\<function\>\)\@<=" end=")" contains=luaFuncId,luaFuncArgs keepend
-syntax match luaFuncId contained "[^(]*(\@=" contains=luaFuncTable,luaFuncName
-syntax match luaFuncTable contained /\k\+\%(\s*[.:]\)\@=/
-syntax match luaFuncName contained "[^(.:]*(\@="
-syntax region luaFuncArgs contained transparent matchgroup=luaFuncParens start=/(/ end=/)/ contains=@luaBase,luaFuncArgName,luaFuncArgComma,luaEllipsis
-syntax match luaFuncArgName contained /\k\+/
-syntax match luaFuncArgComma contained /,/
+" Function Name
+syntax match luaFuncName "\(\<function\>\)\@<=\s\+\S\+\s*(\@="
 
 " if ... then
 syntax region luaIfThen transparent matchgroup=luaCond start="\<if\>" end="\<then\>"me=e-4 contains=@luaExpr nextgroup=luaThenEnd skipwhite skipempty
@@ -199,7 +184,6 @@ if version >= 508 || !exists("did_lua_syn_inits")
   HiLink luaDocTag           Underlined
   HiLink luaEllipsis         Special
   HiLink luaElse             Conditional
-  HiLink luaError            Error
   HiLink luaFloat            Float
   HiLink luaFuncArgName      Noise
   HiLink luaFuncCall         PreProc
@@ -208,7 +192,6 @@ if version >= 508 || !exists("did_lua_syn_inits")
   HiLink luaFuncTable        luaFuncId
   HiLink luaFuncKeyword      luaFunction
   HiLink luaFunction         Structure
-  HiLink luaFuncParens       Noise
   HiLink luaGoto             luaStatement
   HiLink luaGotoLabel        Noise
   HiLink luaIn               Repeat
