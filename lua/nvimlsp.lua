@@ -13,10 +13,10 @@ server.gopls_setup = {
   filetypes = {'go','gomod'};
   root_patterns = {'go.mod','.git'};
   -- https://github.com/golang/tools/blob/master/gopls/doc/settings.md#settings
-  -- init_options = vim.empty_dict();
-  -- settings = vim.empty_dict();
-  -- callbacks = {};
-  -- capabilities = vim.lsp.protocol.make_client_capabilities()
+  init_options = {
+    usePlaceholders=true;
+    completeUnimported=true;
+  };
 }
 
 -- check value in table
