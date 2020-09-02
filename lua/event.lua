@@ -47,9 +47,6 @@ function autocmds.load_autocmds()
       {"TextYankPost", [[* silent! lua vim.highlight.on_yank({higroup="IncSearch", timeout=200})]]};
     };
 
-    lsp = {
-      {"InsertEnter","* lua require('nvimlsp').start_lsp_server()"};
-    }
   }
 
   nvim_create_augroups(definitions)

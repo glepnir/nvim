@@ -196,10 +196,10 @@ function start_lsp_server()
   local timer = vim.loop.new_timer()
   local exit = false
   if not has_key(gopls_setup,'on_attach') then
-    timer:start(1000,100,vim.schedule_wrap(function()
+    timer:start(50,0,vim.schedule_wrap(function()
       local loaded,completion = pcall(require,'completion')
       if loaded then
-        gopls_setup.on_attach= completion.on_attach;
+        gopls_setup.on_attach= require'completion'.on_attach;
         initialize_lsp_server(add_options(gopls_setup))
         exit = true
         timer:stop()
@@ -209,4 +209,6 @@ function start_lsp_server()
   end
 end
 
--- start_lsp_server()
+function register_lsp_event()
+  vim.api.nvim_command [[autocmd InsertEnter * lua start_lsp_server()]]
+end
