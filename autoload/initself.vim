@@ -6,41 +6,6 @@ function! initself#mkdir_as_necessary(dir, force) abort
   endif
 endfunction
 
-function! s:lsp_init(langs)
-  let l:lsp={
-    \'go':{'golang': {
-          \ "command": "gopls",
-          \ "rootPatterns": ["go.mod"],
-          \ "disableWorkspaceFolders": "true",
-          \ "filetypes": ["go"]
-          \ }
-          \ },
-    \'dockerfile':{'dockerfile': {
-          \ "command": "docker-langserver",
-          \ "filetypes": ["dockerfile"],
-          \ "args": ["--stdio"]
-          \ }
-          \ },
-    \'sh':{'bash': {
-          \ "command": "bash-language-server",
-          \ "args": ["start"],
-          \ "filetypes": ["sh"],
-          \ "ignoredRootPaths": ["~"]
-          \ }
-          \ }
-    \}[a:langs]
-  call coc#config('languageserver',l:lsp)
-  exec 'autocmd BufWritePre *.'.a:langs. '    call s:silent_organizeImport()'
-endfunction
-
-function! initself#lsp_init()
-  command! -nargs=+ -bar LSP          call s:lsp_init(<args>)
-endfunction
-
-function! s:silent_organizeImport()
-  silent! call CocAction('runCommand', 'editor.action.organizeImport')
-endfunction
-
 " COC Jump definition in split window
 " when window >=4 jump in other window
 function! initself#definition_other_window() abort
@@ -51,14 +16,6 @@ function! initself#definition_other_window() abort
     exec "normal \<Plug>(coc-definition)"
   endif
 endfunction
-
-" COC select the current word
-function! initself#select_current_word()
-    if !get(g:, 'coc_cursors_activated', 0)
-        return "\<Plug>(coc-cursors-word)"
-    endif
-    return "*\<Plug>(coc-cursors-word):nohlsearch\<CR>"
-endfunc
 
 function! initself#clap_go_source()
   let l:go_root = globpath('/usr/local/Cellar/go', '*') . '/libexec/src/'
