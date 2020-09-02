@@ -152,13 +152,6 @@ end
 
 -- This needs to be global so that we can call it from the autocmd.
 function initialize_lsp_server(server_setup)
-  local bufnr = vim.api.nvim_get_current_buf()
-  -- Filter which files we are considering.
-  if not has_value(server_setup.filetypes,vim.api.nvim_buf_get_option(bufnr,'filetype')) then
-    print(string.format("initialize %s failed filetype doesn't match",server_setup.name))
-    return
-  end
-
   -- Try to find our root directory.
   local root_dir = buffer_find_root_dir(bufnr, function(dir)
     for _,root_file in pairs(server_setup.root_patterns) do
@@ -193,6 +186,12 @@ function initialize_lsp_server(server_setup)
 end
 
 function start_lsp_server()
+  local bufnr = vim.api.nvim_get_current_buf()
+  -- Filter which files we are considering.
+  if not has_value(gopls_setup.filetypes,vim.api.nvim_buf_get_option(bufnr,'filetype')) then
+    return
+  end
+
   local timer = vim.loop.new_timer()
   if not has_key(gopls_setup,'on_attach') then
     timer:start(50,0,vim.schedule_wrap(function()
@@ -204,6 +203,8 @@ function start_lsp_server()
         timer:close()
       end
     end))
+  else
+    initialize_lsp_server(add_options(gopls_setup))
   end
 end
 
