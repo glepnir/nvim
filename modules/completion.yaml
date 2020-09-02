@@ -1,8 +1,15 @@
 
 - repo: nvim-lua/completion-nvim
-  on_event: BufEnter
+  on_event: InsertEnter
   hook_source: |
-    let g:completion_matching_strategy_list = ['exact', 'fuzzy', 'substring']
+    let g:completion_chain_complete_list = {
+            \ 'default': {
+            \   'default': [
+            \      {'complete_items': ['lsp']},
+            \      {'complete_items': ['snippet']},
+            \   ],
+            \ },
+            \ }
     let g:completion_enable_snippet = 'vim-vsnip'
     let g:completion_confirm_key = ""
 

@@ -4,7 +4,6 @@ require 'global'
 -- gopls configuration template
 gopls_setup = {
   name = "gopls";
-  on_attach= require'completion'.on_attach;
   -- A table to store our root_dir to client_id lookup. We want one LSP per
   -- root directory, and this is how we assert that.
   store = {};
@@ -194,8 +193,20 @@ function initialize_lsp_server(server_setup)
 end
 
 function start_lsp_server()
-  initialize_lsp_server(add_options(gopls_setup))
-  print(string.format("initialize %s success",gopls_setup.name))
+  local timer = vim.loop.new_timer()
+  local exit = false
+  if not has_key(gopls_setup,'on_attach') then
+    timer:start(1000,100,vim.schedule_wrap(function()
+      local loaded,completion = pcall(require,'completion')
+      if loaded then
+        gopls_setup.on_attach= completion.on_attach;
+        initialize_lsp_server(add_options(gopls_setup))
+        exit = true
+        timer:stop()
+        timer:close()
+      end
+    end))
+  end
 end
 
 -- start_lsp_server()
