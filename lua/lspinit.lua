@@ -174,6 +174,7 @@ function start_lsp_server()
     return
   end
 
+  -- async load completion
   local timer = vim.loop.new_timer()
   timer:start(50,0,vim.schedule_wrap(function()
     local loaded,completion = pcall(require,'completion')
@@ -193,4 +194,23 @@ end
 
 function register_lsp_event()
   vim.api.nvim_command [[autocmd InsertEnter * lua start_lsp_server()]]
+end
+
+lsp_intall_scripts = [=[
+cd $HOME
+go get golang.org/x/tools/gopls@latest
+
+# clone project
+git clone https://github.com/sumneko/lua-language-server ~/.lua-lang-server
+cd lua-language-server
+git submodule update --init --recursive
+
+cd 3rd/luamake
+ninja -f ninja/macos.ninja
+cd ../..
+./3rd/luamake/luamake rebuild
+]=]
+
+function lsp_install_server()
+  os.execute("sh -c"..lsp_intall_scripts)
 end
