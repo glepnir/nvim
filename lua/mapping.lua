@@ -59,11 +59,11 @@ end
 function mapping:load_plugin_define()
   self.plugin = {
     -- Lsp
-    ["n|K"]              = map_cr("<cmd>lua vim.lsp.buf.hover()"):with_noremap():with_silent(),
-    ["n|gd"]             = map_cr("<cmd>lua vim.lsp.buf.definition()"):with_noremap():with_silent(),
-    ["n|gD"]             = map_cr("<cmd>lua vim.lsp.buf.implementation()"):with_noremap():with_silent(),
-    ["n|gr"]             = map_cr("<cmd>lua vim.lsp.buf.references()"):with_noremap():with_silent(),
-    ["n|<Leader>cw"]     = map_cr("<cmd>lua vim.lsp.buf.workspace_symbol()"):with_noremap():with_silent(),
+    ["n|K"]              = map_cmd("<cmd>lua vim.lsp.buf.hover()<CR>"):with_noremap():with_silent(),
+    ["n|gd"]             = map_cr("call initself#definition_other_window()"):with_noremap():with_silent(),
+    ["n|gD"]             = map_cmd("<cmd>lua vim.lsp.buf.implementation()<CR>"):with_noremap():with_silent(),
+    ["n|gr"]             = map_cmd("<cmd>lua vim.lsp.buf.references()<CR>"):with_noremap():with_silent(),
+    ["n|<Leader>cw"]     = map_cmd("<cmd>lua vim.lsp.buf.workspace_symbol()<CR>"):with_noremap():with_silent(),
     ["n|<LocalLeader>r"] = map_cr("call dein#recache_runtimepath()"):with_noremap():with_silent(),
     ["n|<LocalLeader>u"] = map_cr("call dein#update()"):with_noremap():with_silent(),
     ["n|<Leader>tf"]     = map_cu('DashboardNewFile'):with_noremap():with_silent(),
