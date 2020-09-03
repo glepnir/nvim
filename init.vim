@@ -1,5 +1,5 @@
 " Load Modules:
-lua require("init")
+lua require("core")
 
   "GetColorSynatxGroup
   map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
