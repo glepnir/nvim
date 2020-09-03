@@ -563,6 +563,9 @@ function! s:apply_syntax_highlightings()
   exec 'hi LspDiagnosticsWarning'. s:fg_yellow
   exec 'hi LspDiagnosticsInformation' . s:fg_blue
   exec 'hi LspDiagnosticsHint' . s:fg_aqua
+  "===============================================================
+  exec 'hi CursorWord0' .s:bg_fg3
+  exec 'hi CursorWord1' .s:bg_fg3
 endfunction
 
 command! -nargs=0 OceanicMaterial :call g:OceanicMaterial()
