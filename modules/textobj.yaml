@@ -1,11 +1,5 @@
 - repo: kana/vim-operator-user
 
-- repo: junegunn/vim-easy-align
-  on_cmd: EasyAlign
-  hook_add: |
-    xmap ga <plug>(easyalign)
-    nmap ga <plug>(easyalign)
-
 - repo: kana/vim-operator-replace
   on_map: { vnx: <Plug> }
 
@@ -23,10 +17,6 @@
   hook_add: |
     let g:splitjoin_join_mapping = ''
     let g:splitjoin_split_mapping = ''
-
-- repo: AndrewRadev/dsf.vim
-  on_map: { n: <Plug>Dsf }
-  hook_add: let g:dsf_no_mappings = 1
 
 - repo: kana/vim-niceblock
   on_map: { x: <Plug> }

@@ -112,8 +112,8 @@ function mapping:load_plugin_define()
     -- Plugin Mundo
     ["n|<Leader>m"]      = map_cu('MundoToggle'):with_noremap():with_silent(),
     -- Plugin SplitJoin
-    ["n|sj"]             = map_cmd('SplitjoinJoin'),
-    ["n|sk"]             = map_cmd('SplitjoinSplit'),
+    ["n|sj"]             = map_cr('SplitjoinJoin'),
+    ["n|sk"]             = map_cr('SplitjoinSplit'),
     -- Plugin dsf
     ["n|dsf"]            = map_cmd('<Plug>DsfDelete'),
     ["n|csf"]            = map_cmd('<Plug>DsfChange'),
@@ -123,7 +123,7 @@ function mapping:load_plugin_define()
     ["o|af"]             = map_cmd("<Plug>(textobj-function-a)"):with_silent(),
     ["o|if"]             = map_cmd("<Plug>(textobj-function-i)"):with_silent(),
     ["x|af"]             = map_cmd("<Plug>(textobj-function-a)"):with_silent(),
-    ["x|af"]             = map_cmd("<Plug>(textobj-function-i)"):with_silent(),
+    ["x|if"]             = map_cmd("<Plug>(textobj-function-i)"):with_silent(),
     ["x|p"]              = map_cmd("<Plug>(operator-replace)"),
     -- Plugin sandwich
     ["n|sa"]             = map_cmd("<Plug>(operator-sandwich-add)"):with_silent(),
