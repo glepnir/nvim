@@ -1,6 +1,10 @@
 require 'global'
 require 'lspconf'
 
+-- A table to store our root_dir to client_id lookup. We want one LSP per
+-- root directory, and this is how we assert that.
+local lsp_cache_store = {}
+
 local function lookup_section(settings, section)
   for part in vim.gsplit(section, '.', true) do
     settings = settings[part]
@@ -134,11 +138,22 @@ function lsp_sign()
   vim.fn.sign_define('LspDiagnosticsHintSign', {text='', texthl='LspDiagnosticsHint', linehl='', numhl=''})
 end
 
--- This needs to be global so that we can call it from the autocmd.
-function start_lsp_server(server_setup)
+-- async load completion-nvm then initialize lsp server
+function start_lsp_server()
+  -- load custom sign
+  lsp_sign()
+
+  local client_id = nil
+  local bufnr = vim.api.nvim_get_current_buf()
+  local buf_filetype = vim.api.nvim_buf_get_option(bufnr,'filetype')
+  -- Filter which files we are considering.
+  if not has_key(server,buf_filetype) then
+    return
+  end
+
   -- Try to find our root directory.
   local root_dir = buffer_find_root_dir(bufnr, function(dir)
-    for _,root_file in pairs(server_setup.root_patterns) do
+    for _,root_file in pairs(server[buf_filetype].root_patterns) do
       if vim.fn.filereadable(path_join(dir, root_file)) == 1 then
         return true
       elseif is_dir(path_join(dir, root_file)) then
@@ -149,52 +164,34 @@ function start_lsp_server(server_setup)
 
   -- We couldn't find a root directory, so ignore this file.
   if not root_dir then
-    print(string.format("initialize %s failed doesn't find root_dir",server_setup.name))
+    print(string.format("initialize %s failed doesn't find root_dir",server[buf_filetype].name))
     return
   end
 
-  -- Check if we have a client alredy or start and store it.
-  local client_id = server_setup.store[root_dir]
-  if not client_id then
-    local new_config = vim.tbl_extend("error", server_setup, {
-      root_dir = root_dir;
-    })
-    client_id = vim.lsp.start_client(new_config)
-    server_setup.store[root_dir] = client_id
-  end
-  -- load custom sign
-  lsp_sign()
-  -- Finally, attach to the buffer to track changes. This will do nothing if we
-  -- are already attached.
-  vim.lsp.buf_attach_client(bufnr, client_id)
-end
-
--- async load completion-nvm then initialize lsp server
-function initialize_lsp()
-  local bufnr = vim.api.nvim_get_current_buf()
-  local buf_filetype = vim.api.nvim_buf_get_option(bufnr,'filetype')
-  -- Filter which files we are considering.
-  if not has_key(server,buf_filetype) then
+  if has_key(lsp_cache_store,root_dir) then
+    print("here")
+    client_id = lsp_cache_store[root_dir]
+    vim.lsp.buf_attach_client(bufnr, client_id)
     return
   end
 
   local timer = vim.loop.new_timer()
-  if not has_key(server[buf_filetype],'on_attach') then
-    timer:start(100,0,vim.schedule_wrap(function()
-      local loaded,completion = pcall(require,'completion')
-      if loaded then
-        print(loaded)
-        server[buf_filetype].on_attach= require'completion'.on_attach;
-        start_lsp_server(add_options(server[buf_filetype]))
-        timer:stop()
-        timer:close()
-      end
-    end))
-  else
-    start_lsp_server(add_options(server[buf_filetype]))
-  end
+  timer:start(100,0,vim.schedule_wrap(function()
+    local loaded,completion = pcall(require,'completion')
+    if loaded then
+      server[buf_filetype].on_attach= require'completion'.on_attach;
+      local new_config = vim.tbl_extend("error",add_options(server[buf_filetype]), {
+        root_dir = root_dir;
+      })
+      client_id = vim.lsp.start_client(new_config)
+      lsp_cache_store[root_dir] = client_id
+      vim.lsp.buf_attach_client(bufnr, client_id)
+      timer:stop()
+      timer:close()
+    end
+  end))
 end
 
 function register_lsp_event()
-  vim.api.nvim_command [[autocmd InsertEnter * lua initialize_lsp()]]
+  vim.api.nvim_command [[autocmd InsertEnter * lua start_lsp_server()]]
 end
