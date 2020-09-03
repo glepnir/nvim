@@ -130,7 +130,7 @@ local function buffer_find_root_dir(bufnr, is_root_path)
   end
 end
 
--- custom lsp sign
+-- lsp sign
 function lsp_sign()
   vim.fn.sign_define('LspDiagnosticsErrorSign', {text='', texthl='LspDiagnosticsError',linehl='', numhl=''})
   vim.fn.sign_define('LspDiagnosticsWarningSign', {text='', texthl='LspDiagnosticsWarning', linehl='', numhl=''})
@@ -168,8 +168,7 @@ function start_lsp_server()
     return
   end
 
-  if has_key(lsp_cache_store,root_dir) then
-    print("here")
+  if lsp_cache_store[root_dir] ~= nil then
     client_id = lsp_cache_store[root_dir]
     vim.lsp.buf_attach_client(bufnr, client_id)
     return
@@ -179,7 +178,7 @@ function start_lsp_server()
   timer:start(100,0,vim.schedule_wrap(function()
     local loaded,completion = pcall(require,'completion')
     if loaded then
-      server[buf_filetype].on_attach= require'completion'.on_attach;
+      server[buf_filetype].on_attach= completion.on_attach;
       local new_config = vim.tbl_extend("error",add_options(server[buf_filetype]), {
         root_dir = root_dir;
       })
