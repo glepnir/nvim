@@ -58,6 +58,12 @@ end
 
 function mapping:load_plugin_define()
   self.plugin = {
+    -- Lsp
+    ["n|K"]              = map_cr("<cmd>lua vim.lsp.buf.hover()"):with_noremap():with_silent(),
+    ["n|gd"]             = map_cr("<cmd>lua vim.lsp.buf.definition()"):with_noremap():with_silent(),
+    ["n|gD"]             = map_cr("<cmd>lua vim.lsp.buf.implementation()"):with_noremap():with_silent(),
+    ["n|gr"]             = map_cr("<cmd>lua vim.lsp.buf.references()"):with_noremap():with_silent(),
+    ["n|<Leader>cw"]     = map_cr("<cmd>lua vim.lsp.buf.workspace_symbol()"):with_noremap():with_silent(),
     ["n|<LocalLeader>r"] = map_cr("call dein#recache_runtimepath()"):with_noremap():with_silent(),
     ["n|<LocalLeader>u"] = map_cr("call dein#update()"):with_noremap():with_silent(),
     ["n|<Leader>tf"]     = map_cu('DashboardNewFile'):with_noremap():with_silent(),
@@ -74,13 +80,6 @@ function mapping:load_plugin_define()
     -- Plugin Floaterm
     ["n|<Leader>t"]      = map_cu('FloatermToggle'):with_noremap():with_silent(),
     ["n|<Leader>g"]      = map_cu('FloatermNew height=0.7 width=0.8 lazygit'):with_noremap():with_silent(),
-    -- Plugin Coc-Clap
-    ["n|<Leader>ce"]     = map_cr('Clap coc_diagnostics'):with_noremap():with_silent(),
-    ["n|<Leader>;"]      = map_cr('Clap coc_extensions'):with_noremap():with_silent(),
-    ["n|<Leader>,"]      = map_cr('Clap coc_commands'):with_noremap():with_silent(),
-    ["n|<Leader>cs"]     = map_cr('Clap coc_symbols'):with_noremap():with_silent(),
-    ["n|<Leader>cS"]     = map_cr('Clap coc_services'):with_noremap():with_silent(),
-    ["n|<Leader>ct"]     = map_cr('Clap coc_outline'):with_noremap():with_silent(),
     -- Plugin Clap
     ["n|<Leader>tc"]     = map_cu('Clap colors'):with_noremap():with_silent(),
     ["n|<Leader>bb"]     = map_cu('Clap bufers'):with_noremap():with_silent(),
