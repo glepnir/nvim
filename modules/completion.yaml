@@ -1,6 +1,8 @@
 - repo: nvim-lua/completion-nvim
   on_event: InsertEnter
   hook_add: |
+    let g:completion_auto_change_source = 1
+    let g:completion_matching_strategy_list = ['substring', 'fuzzy', 'exact','all']
     let g:completion_chain_complete_list = {
             \ 'default': {
             \   'default': [
