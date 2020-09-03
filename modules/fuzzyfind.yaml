@@ -24,6 +24,3 @@
     endfunction
 
     autocmd User ClapOnEnter call s:ClapSymbolHL()
-
-- repo: vn-ki/coc-clap
-  on_source: vim-clap
