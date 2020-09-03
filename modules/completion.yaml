@@ -12,8 +12,6 @@
             \ }
     let g:completion_enable_snippet = 'vim-vsnip'
     let g:completion_confirm_key = ""
-  hook_source: |
-    lua require'completion'.on_attach()
 
 - repo: hrsh7th/vim-vsnip
   on_event: InsertCharPre
