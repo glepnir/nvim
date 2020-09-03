@@ -4,9 +4,6 @@ server = {}
 -- gopls configuration template
 server.go = {
   name = "gopls";
-  -- A table to store our root_dir to client_id lookup. We want one LSP per
-  -- root directory, and this is how we assert that.
-  store = {};
   cmd = {"gopls"};
   filetypes = {'go','gomod'};
   root_patterns = {'go.mod','.git'};
