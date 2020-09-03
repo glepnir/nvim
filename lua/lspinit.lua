@@ -1,22 +1,5 @@
 require 'global'
-
-server = {}
-
--- gopls configuration template
-server.go = {
-  name = "gopls";
-  -- A table to store our root_dir to client_id lookup. We want one LSP per
-  -- root directory, and this is how we assert that.
-  store = {};
-  cmd = {"gopls"};
-  filetypes = {'go','gomod'};
-  root_patterns = {'go.mod','.git'};
-  -- https://github.com/golang/tools/blob/master/gopls/doc/settings.md#settings
-  init_options = {
-    usePlaceholders=true;
-    completeUnimported=true;
-  };
-}
+require 'lspconf'
 
 local function lookup_section(settings, section)
   for part in vim.gsplit(section, '.', true) do
@@ -186,6 +169,7 @@ function start_lsp_server(server_setup)
   vim.lsp.buf_attach_client(bufnr, client_id)
 end
 
+-- async load completion-nvm then initialize lsp server
 function initialize_lsp()
   local bufnr = vim.api.nvim_get_current_buf()
   local buf_filetype = vim.api.nvim_buf_get_option(bufnr,'filetype')
@@ -196,9 +180,10 @@ function initialize_lsp()
 
   local timer = vim.loop.new_timer()
   if not has_key(server[buf_filetype],'on_attach') then
-    timer:start(50,0,vim.schedule_wrap(function()
+    timer:start(100,0,vim.schedule_wrap(function()
       local loaded,completion = pcall(require,'completion')
       if loaded then
+        print(loaded)
         server[buf_filetype].on_attach= require'completion'.on_attach;
         start_lsp_server(add_options(server[buf_filetype]))
         timer:stop()
