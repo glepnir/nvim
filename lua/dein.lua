@@ -3,7 +3,7 @@ require 'global'
 dein  = {}
 
 function dein:new()
-  instance = {}
+  local instance = {}
   setmetatable(instance,self)
   self.__index = self
   self.repos = {}
@@ -20,8 +20,8 @@ function dein:parse_config()
   local p = io.popen('find "'..modules_dir..'" -name "*.yaml"')
   for file in p:lines() do
     table.insert(self.config_files,vim.inspect(file))
-    cfg = vim.api.nvim_eval(vim.fn.system(cmd,readAll(file)))
-    for k,v in pairs(cfg) do
+    local cfg = vim.api.nvim_eval(vim.fn.system(cmd,readAll(file)))
+    for _,v in pairs(cfg) do
       table.insert(self.repos,v)
     end
   end
@@ -51,7 +51,7 @@ function dein:load_repos()
   if vim.fn['dein#load_state'](dein_path) == 1 then
     self:parse_config()
     vim.fn['dein#begin'](dein_path,self.config_files)
-    for index,cfg in pairs(self.repos) do
+    for _,cfg in pairs(self.repos) do
       vim.fn['dein#add'](cfg.repo,cfg)
     end
     vim.fn['dein#end']()

@@ -1,5 +1,6 @@
 require 'global'
 require 'lspconf'
+local vim = vim
 
 -- A table to store our root_dir to client_id lookup. We want one LSP per
 -- root directory, and this is how we assert that.
@@ -179,18 +180,25 @@ function start_lsp_server()
   timer:start(50,0,vim.schedule_wrap(function()
     local loaded,completion = pcall(require,'completion')
     if loaded then
-      server[buf_filetype].on_attach= completion.on_attach;
+      local on_attach = function(bufnr,client)
+        completion.on_attach(bufnr,client)
+      end
+      server[buf_filetype].on_attach= on_attach
       local new_config = vim.tbl_extend("error",add_options(server[buf_filetype]), {
         root_dir = root_dir;
       })
       client_id = vim.lsp.start_client(new_config)
       lsp_cache_store[root_dir] = client_id
       vim.lsp.buf_attach_client(bufnr, client_id)
+      require 'completion'.on_InsertEnter()
       timer:stop()
       timer:close()
+      return
     end
   end))
 end
+
+start_lsp_server()
 
 function register_lsp_event()
   vim.api.nvim_command [[autocmd InsertEnter * lua start_lsp_server()]]
