@@ -583,9 +583,10 @@ function! s:apply_syntax_highlightings()
   exec 'hi WhichKeyGroup' . s:fg_yellow
   exec 'hi WhichKeyDesc' . s:fg_blue
   "===============================================================
-  " machakann/vim-sandwich
+  " voldkiss/vim-floaterm
   "===============================================================
-  exec 'hi OperatorSandwichChange' .s:fg_bg4 . s:bg_darkgreen
+  exec 'hi Floaterm' .s:fg_none . s:bg_bg0
+  exec 'hi FloatermBorder' .s:fg_blue . s:bg_none
   "===============================================================
   "kristijanhusak/vim-dadbod-ui
   "===============================================================
