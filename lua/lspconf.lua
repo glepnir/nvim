@@ -14,4 +14,10 @@ server.go = {
   };
 }
 
+server.lua = {
+  name = "lualsp";
+  cmd = {"/Users/stephen/lua-language-server/bin/macOS/lua-language-server", "-E", "/Users/stephen/lua-language-server/main.lua"};
+  filetypes = {'lua'};
+  root_patterns = {'.git'};
+}
 
