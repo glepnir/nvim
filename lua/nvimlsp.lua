@@ -1,8 +1,9 @@
 require 'global'
 
+server = {}
 
 -- gopls configuration template
-gopls_setup = {
+server.go = {
   name = "gopls";
   -- A table to store our root_dir to client_id lookup. We want one LSP per
   -- root directory, and this is how we assert that.
@@ -151,7 +152,7 @@ function lsp_sign()
 end
 
 -- This needs to be global so that we can call it from the autocmd.
-function initialize_lsp_server(server_setup)
+function start_lsp_server(server_setup)
   -- Try to find our root directory.
   local root_dir = buffer_find_root_dir(bufnr, function(dir)
     for _,root_file in pairs(server_setup.root_patterns) do
@@ -185,29 +186,30 @@ function initialize_lsp_server(server_setup)
   vim.lsp.buf_attach_client(bufnr, client_id)
 end
 
-function start_lsp_server()
+function initialize_lsp()
   local bufnr = vim.api.nvim_get_current_buf()
+  local buf_filetype = vim.api.nvim_buf_get_option(bufnr,'filetype')
   -- Filter which files we are considering.
-  if not has_value(gopls_setup.filetypes,vim.api.nvim_buf_get_option(bufnr,'filetype')) then
+  if not has_key(server,buf_filetype) then
     return
   end
 
   local timer = vim.loop.new_timer()
-  if not has_key(gopls_setup,'on_attach') then
+  if not has_key(server[buf_filetype],'on_attach') then
     timer:start(50,0,vim.schedule_wrap(function()
       local loaded,completion = pcall(require,'completion')
       if loaded then
-        gopls_setup.on_attach= require'completion'.on_attach;
-        initialize_lsp_server(add_options(gopls_setup))
+        server[buf_filetype].on_attach= require'completion'.on_attach;
+        start_lsp_server(add_options(server[buf_filetype]))
         timer:stop()
         timer:close()
       end
     end))
   else
-    initialize_lsp_server(add_options(gopls_setup))
+    start_lsp_server(add_options(server[buf_filetype]))
   end
 end
 
 function register_lsp_event()
-  vim.api.nvim_command [[autocmd InsertEnter * lua start_lsp_server()]]
+  vim.api.nvim_command [[autocmd InsertEnter * lua initialize_lsp()]]
 end
