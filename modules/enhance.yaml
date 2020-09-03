@@ -59,9 +59,9 @@
     let g:floaterm_wintype = 'floating'
 
 - repo: itchyny/vim-cursorword
-  on_event: FileType
+  on_ft: [html, css, javascript, javascriptreact,go,lua,rust,vim,less,sass,json,toml]
   hook_source: |
-    let g:g:cursorword_highlight = 0
+    let g:cursorword_highlight = 0
     augroup user_plugin_cursorword
       autocmd!
       autocmd FileType defx,denite,fern,clap,vista let b:cursorword = 0
