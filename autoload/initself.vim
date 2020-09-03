@@ -10,10 +10,10 @@ endfunction
 " when window >=4 jump in other window
 function! initself#definition_other_window() abort
   if winnr('$') >= 4 || (winwidth(0) - (max([len(line('$')), &numberwidth-1]) + 1)) < 110
-    exec "normal \<Plug>(coc-definition)"
+    exec "lua vim.lsp.buf.definition()"
   else
     exec 'vsplit'
-    exec "normal \<Plug>(coc-definition)"
+    exec "lua vim.lsp.buf.definition()"
   endif
 endfunction
 
