@@ -184,11 +184,14 @@ function start_lsp_server()
       local new_config = vim.tbl_extend("error",add_options(server[buf_filetype]), {
         root_dir = root_dir;
       })
+
       client_id = vim.lsp.start_client(new_config)
-      lsp_cache_store[root_dir] = client_id
-      vim.lsp.buf_attach_client(bufnr, client_id)
-      timer:stop()
-      timer:close()
+      if client_id ~= nil and timer:is_closing() == false then
+        lsp_cache_store[root_dir] = client_id
+        vim.lsp.buf_attach_client(bufnr, client_id)
+        timer:stop()
+        timer:close()
+      end
     end
   end))
 end
@@ -199,6 +202,7 @@ function register_lsp_event()
   vim.api.nvim_command("au!")
   vim.api.nvim_command("autocmd InsertEnter * lua start_lsp_server()")
   vim.api.nvim_command("autocmd BufWritePre *.go lua vim.lsp.buf.formatting_sync(nil, 1000)")
+  vim.api.nvim_command("autocmd BufWritePre *.lua lua vim.lsp.buf.formatting_sync(nil, 1000)")
   vim.api.nvim_command("augroup end")
 end
 
