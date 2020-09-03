@@ -21,3 +21,21 @@ server.lua = {
   root_patterns = {'.git'};
 }
 
+local lsp_intall_scripts = [=[
+cd $HOME
+go get golang.org/x/tools/gopls@latest
+
+# clone project
+git clone https://github.com/sumneko/lua-language-server
+cd lua-language-server
+git submodule update --init --recursive
+
+cd 3rd/luamake
+ninja -f ninja/macos.ninja
+cd ../..
+./3rd/luamake/luamake rebuild
+]=]
+
+function lsp_install_server()
+  os.execute("sh -c"..lsp_intall_scripts)
+end
