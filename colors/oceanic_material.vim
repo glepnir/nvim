@@ -492,51 +492,6 @@ function! s:apply_syntax_highlightings()
   exec 'hi gitcommitArrow' . s:fg_grey1
   exec 'hi gitcommitFile' . s:fg_green
   "===============================================================
-  " neoclide/coc.nvim
-  "===============================================================
-  exec 'hi CocHoverRange'. s:fg_none. s:bold . s:underline
-  exec 'hi CocHintHighlight'. s:fg_none. s:undercurl. s:sp_aqua
-  exec 'hi CocErrorFloat'. s:fg_red. s:bg_bg3
-  exec 'hi CocWarningFloat'. s:fg_yellow. s:bg_bg3
-  exec 'hi CocInfoFloat'. s:fg_blue. s:bg_bg3
-  exec 'hi CocHintFloat'. s:fg_aqua. s:bg_bg3
-  exec 'hi CocHighlightText'. s:bg_fg3
-  exec 'hi CocErrorSign' . s:fg_red
-  exec 'hi CocWarningSign' . s:fg_yellow
-  exec 'hi CocInfoSign' . s:fg_blue
-  exec 'hi CocHintSign' . s:fg_aqua
-  exec 'hi CocErrorHighlight' . s:fg_none  . s:undercurl . s:sp_red
-  exec 'hi CocWarningHighlight' . s:fg_none  . s:undercurl . s:sp_yellow
-  exec 'hi CocInfoHighlight' . s:fg_none  . s:undercurl . s:sp_blue
-  exec 'hi CocWarningVirtualText' . s:fg_grey1
-  exec 'hi CocErrorVirtualText' . s:fg_grey1
-  exec 'hi CocInfoVirtualText' . s:fg_grey1
-  exec 'hi CocHintVirtualText' . s:fg_grey1
-  exec 'hi CocCodeLens' . s:fg_grey1
-  exec 'hi HighlightedyankRegion'. s:fg_none. s:reverse
-  exec 'hi CocGitAddedSign' . s:fg_green
-  exec 'hi CocGitChangeRemovedSign' . s:fg_purple
-  exec 'hi CocGitChangedSign' . s:fg_blue
-  exec 'hi CocGitRemovedSign' . s:fg_red
-  exec 'hi CocGitTopRemovedSign' . s:fg_red
-  "coc-explorer
-  exec 'hi CocExplorerBufferRoot' . s:fg_orange
-  exec 'hi CocExplorerBufferExpandIcon'. s:fg_aqua
-  exec 'hi CocExplorerBufferBufnr' . s:fg_purple
-  exec 'hi CocExplorerBufferModified'. s:fg_red
-  exec 'hi CocExplorerBufferBufname'. s:fg_grey0
-  exec 'hi CocExplorerBufferFullpath'. s:fg_grey0
-  exec 'hi CocExplorerFileRoot' . s:fg_orange
-  exec 'hi CocExplorerFileExpandIcon' . s:fg_aqua
-  exec 'hi CocExplorerFileFullpath' . s:fg_grey0
-  exec 'hi CocExplorerFileDirectory' .  s:fg_green
-  exec 'hi CocExplorerFileGitStage' . s:fg_purple
-  exec 'hi CocExplorerFileGitUnstage' . s:fg_yellow
-  exec 'hi CocExplorerFileSize' . s:fg_blue
-  exec 'hi CocExplorerTimeAccessed' . s:fg_aqua
-  exec 'hi CocExplorerTimeCreated' . s:fg_aqua
-  exec 'hi CocExplorerTimeModified' . s:fg_aqua
-  "===============================================================
   " dense-analysis/ale
   "===============================================================
   exec 'hi ALEError'. s:fg_none. s:undercurl. s:sp_red
