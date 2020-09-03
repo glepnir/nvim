@@ -57,3 +57,15 @@
   hook_source: |
     let g:floaterm_position = 'center'
     let g:floaterm_wintype = 'floating'
+
+- repo: itchyny/vim-cursorword
+  on_event: FileType
+  hook_source: |
+    let g:g:cursorword_highlight = 0
+    augroup user_plugin_cursorword
+      autocmd!
+      autocmd FileType defx,denite,fern,clap,vista let b:cursorword = 0
+      autocmd WinEnter * if &diff || &pvw | let b:cursorword = 0 | endif
+      autocmd InsertEnter * let b:cursorword = 0
+      autocmd InsertLeave * let b:cursorword = 1
+    augroup END
