@@ -175,7 +175,7 @@ function start_lsp_server()
   end
 
   local timer = vim.loop.new_timer()
-  timer:start(100,0,vim.schedule_wrap(function()
+  timer:start(50,0,vim.schedule_wrap(function()
     local loaded,completion = pcall(require,'completion')
     if loaded then
       server[buf_filetype].on_attach= completion.on_attach;
