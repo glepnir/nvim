@@ -22,20 +22,10 @@
 
 - repo: mattn/vim-sonictemplate
   on_cmd: Template
-  on_ft: [go,typescript,javascript,vim,rust,markdown]
+  on_ft: [go,typescript,lua,javascript,vim,rust,markdown]
   hook_source: |
     let g:sonictemplate_postfix_key = '<C-j>'
     let g:sonictemplate_vim_template_dir = getenv("HOME") . '/.config/nvim/template'
 
-- repo: Raimondi/delimitMate
-  on_event: FileType
-  hook_source: |
-    let g:delimitMate_expand_cr = 0
-    let g:delimitMate_expand_space = 1
-    let g:delimitMate_smart_quotes = 1
-    let g:delimitMate_expand_inside_quotes = 0
-    augroup user_plugin_delimitMate
-      au!
-      au FileType python let b:delimitMate_nesting_quotes = ['"', "'"]
-      au FileType markdown let b:delimitMate_nesting_quotes = ["`"]
-    augroup END
+- repo: cohama/lexima.vim
+  on_ft: [go,typescript,javascript,vim,rust,markdown]
