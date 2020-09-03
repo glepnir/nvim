@@ -42,6 +42,7 @@ function mapping:load_vim_define()
     ["i|<C-s>"]      = map_cmd('<Esc>:w<CR>'),
     ["i|<C-q>"]      = map_cmd('<Esc>:wq<CR>'),
     ["i|<C-e>"]      = map_cmd([[pumvisible() ? "\<C-e>" : "\<End>"]]):with_noremap():with_expr(),
+    -- TODO Wrap line
     ["i|<TAB>"]      = map_cmd([[pumvisible() ? "\<C-n>" : vsnip#available(1) ?"\<Plug>(vsnip-expand-or-jump)" : initself#check_back_space() ? "\<TAB>" : completion#trigger_completion()]]):with_expr():with_silent(),
     ["i|<cr>"]       = map_cmd([[pumvisible() ? complete_info()["selected"] != "-1" ? "\<Plug>(completion_confirm_completion)"  : "\<c-e>\<CR>" :  "\<CR>"]]):with_expr(),
   -- command line

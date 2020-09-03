@@ -3,7 +3,7 @@ require 'options'
 require 'event'
 require 'dein'
 require 'mapping'
-require 'nvimlsp'
+require 'lspinit'
 
 local api = vim.api
 local M = {}
