@@ -30,4 +30,4 @@
     let g:sonictemplate_vim_template_dir = getenv("HOME") . '/.config/nvim/template'
 
 - repo: cohama/lexima.vim
-  on_ft: [go,typescript,javascript,vim,rust,markdown]
+  on_ft: [go,typescript,javascript,lua,vim,rust,markdown]
