@@ -174,7 +174,6 @@ function start_lsp_server()
   if lsp_cache_store[root_dir] ~= nil then
     client_id = lsp_cache_store[root_dir]
     vim.lsp.buf_attach_client(bufnr, client_id)
-    vim.api.nvim_buf_set_var(0, 'completion_enable', 1)
     local loaded,completion = pcall(require,'completion')
     if loaded then
       vim.api.nvim_buf_set_var(0, 'completion_enable', 1)
@@ -188,13 +187,17 @@ function start_lsp_server()
   timer:start(50,0,vim.schedule_wrap(function()
     local loaded,completion = pcall(require,'completion')
     if loaded then
+      -- When require completion success,We call the on_InsertEnter by ourself.
+      -- Must set the completion_enable to 1
       vim.api.nvim_buf_set_var(0, 'completion_enable', 1)
       completion.on_InsertEnter()
+      -- config the server config on_attach
       server[buf_filetype].on_attach= completion.on_attach
+      -- build a new server config
       local new_config = vim.tbl_extend("error",add_options(server[buf_filetype]), {
         root_dir = root_dir;
       })
-
+      -- start a new lsp server and store the cliend_id
       client_id = vim.lsp.start_client(new_config)
       if client_id ~= nil and timer:is_closing() == false then
         lsp_cache_store[root_dir] = client_id
