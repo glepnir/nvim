@@ -1,0 +1,82 @@
+{
+  "Import React": {
+    "prefix": "imr",
+    "body": ["import React from 'react';"],
+    "description": "Imports React"
+  },
+    "Create useState hook": {
+    "prefix": "useState",
+    "body": [
+      "const [${1:state}, set${1:State}] = useState(${2:defaultState});"
+    ],
+    "description": "Creates React useState hook"
+  },
+  "Create useEffect hook": {
+    "prefix": "useEffect",
+    "body": ["useEffect(() => {", "\t", "}, []);"],
+    "description": "Creates React useEffect hook"
+  },
+  "Create useContext hook": {
+    "prefix": "useContext",
+    "body": ["const ${1:value} = useContext(MyContext);"],
+    "description": "Creates React useContext hook"
+  },
+  "Create useReducer hook": {
+    "prefix": "useReducer",
+    "body": [
+      "const [${1:state}, dispatch] = useReducer(${2:reducer}, initialState);"
+    ],
+    "description": "Creates React useReducer hook"
+  },
+  "Create useCallback hook": {
+    "prefix": "useCallback",
+    "body": [
+      "const ${1:memoizedCallback} = useCallback(() => {",
+      "\t",
+      "}, []);"
+    ],
+    "description": "Creates React useCallback hook"
+  },
+  "Create useMemo hook": {
+    "prefix": "useMemo",
+    "body": ["const ${1:memoizedValue} = useMemo(() => {", "\t", "}, []);"],
+    "description": "Creates React useMemo hook"
+  },
+  "Create useRef hook": {
+    "prefix": "useRef",
+    "body": ["const ${1:refContainer} = useRef(${2:initialValue});"],
+    "description": "Creates React useRef hook"
+  },
+  "Create useImperativeHandle hook": {
+    "prefix": "useImperativeHandle",
+    "body": ["useImperativeHandle(${1:initialValue}, () => {", "\t", "}, []);"],
+    "description": "Creates React useImperativeHandle hook"
+  },
+  "Create useLayoutEffect hook": {
+    "prefix": "useLayoutEffect",
+    "body": ["useLayoutEffect(() => {", "\t", "}, []);"],
+    "description": "Creates React useLayoutEffect hook"
+  },
+  "Create useDebugValue hook": {
+    "prefix": "useDebugValue",
+    "body": ["useDebugValue(${1:value}"],
+    "description": "Creates React useDebugValue hook"
+  },
+  "Create useSelector hook": {
+    "prefix": "useSelector",
+    "body": [
+      "const ${1:selectedData} = useSelector(state => state.${2:YourObject});"
+    ],
+    "description": "Creates Redux useSelector hook"
+  },
+  "Create useDispatch hook": {
+    "prefix": "useDispatch",
+    "body": ["const dispatch = useDispatch();"],
+    "description": "Creates Redux useDispatch hook"
+  },
+  "Create useStore hook": {
+    "prefix": "useStore",
+    "body": ["const store = useStore();"],
+    "description": "Creates Redux useStore hook"
+  }
+}
