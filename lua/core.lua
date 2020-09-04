@@ -4,6 +4,7 @@ require 'event'
 require 'dein'
 require 'mapping'
 require 'lspinit'
+require 'theme'
 
 local api = vim.api
 local M = {}
@@ -68,7 +69,8 @@ function M.load_core()
   map:load_plugin_define()
   nvim_load_mapping(map)
 
-  vim.fn['theme#theme_init']()
+  load_theme()
+  register_theme_event()
 
   register_lsp_event()
 end
