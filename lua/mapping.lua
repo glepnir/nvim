@@ -44,7 +44,7 @@ function mapping:load_vim_define()
     ["i|<C-e>"]      = map_cmd([[pumvisible() ? "\<C-e>" : "\<End>"]]):with_noremap():with_expr(),
     -- TODO Wrap line
     ["i|<TAB>"]      = map_cmd([[pumvisible() ? "\<C-n>" : vsnip#available(1) ?"\<Plug>(vsnip-expand-or-jump)" : initself#check_back_space() ? "\<TAB>" : completion#trigger_completion()]]):with_expr():with_silent(),
-    ["i|<CR>"]       = map_cmd([[pumvisible() ? complete_info()["selected"] != "-1" ?"\<Plug>(completion_confirm_completion)"  : "\<c-e>\<CR>":(delimitMate#WithinEmptyPair() ? "\<C-R>=delimitMate#ExpandReturn()\<CR>" : "\<CR>")]]):with_expr(),
+    ["i|<CR>"]       = map_cmd([[pumvisible() ? complete_info()["selected"] != "-1" ?"\<Plug>(completion_confirm_completion)"  : "\<c-e>\<CR>":(delimitMate#WithinEmptyPair() ? "\<Plug>delimitMateCR" : "\<CR>")]]):with_expr(),
   -- command line
     ["c|<C-b>"]      = map_cmd('<Left>'):with_noremap(),
     ["c|<C-f>"]      = map_cmd('<Right>'):with_noremap(),
