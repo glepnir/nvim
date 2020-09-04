@@ -1,5 +1,5 @@
 require 'global'
-local vim =vim
+local vim = vim
 
 theme_cache = cache_dir..path_sep..'theme.txt'
 
