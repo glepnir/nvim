@@ -1,4 +1,5 @@
 require 'global'
+local vim = vim
 
 options = {}
 

@@ -6,6 +6,7 @@ require 'mapping'
 require 'lspinit'
 require 'theme'
 
+local vim = vim
 local api = vim.api
 local M = {}
 

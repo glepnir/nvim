@@ -169,9 +169,17 @@ function start_lsp_server()
     return
   end
 
+  -- If the current file root dir in cache,we just attach it
+  -- also the completion already in runtimepath just to call it
   if lsp_cache_store[root_dir] ~= nil then
     client_id = lsp_cache_store[root_dir]
     vim.lsp.buf_attach_client(bufnr, client_id)
+    vim.api.nvim_buf_set_var(0, 'completion_enable', 1)
+    local loaded,completion = pcall(require,'completion')
+    if loaded then
+      vim.api.nvim_buf_set_var(0, 'completion_enable', 1)
+      completion.on_InsertEnter()
+    end
     return
   end
 
@@ -180,6 +188,8 @@ function start_lsp_server()
   timer:start(50,0,vim.schedule_wrap(function()
     local loaded,completion = pcall(require,'completion')
     if loaded then
+      vim.api.nvim_buf_set_var(0, 'completion_enable', 1)
+      completion.on_InsertEnter()
       server[buf_filetype].on_attach= completion.on_attach
       local new_config = vim.tbl_extend("error",add_options(server[buf_filetype]), {
         root_dir = root_dir;
