@@ -29,5 +29,14 @@
     let g:sonictemplate_postfix_key = '<C-j>'
     let g:sonictemplate_vim_template_dir = getenv("HOME") . '/.config/nvim/template'
 
-- repo: cohama/lexima.vim
-  on_ft: [go,typescript,javascript,lua,vim,rust,markdown]
+# - repo: cohama/lexima.vim
+#   on_event: InsertCharPre
+
+- repo: Raimondi/delimitMate
+  on_event: InsertCharPre
+  hook_source: |
+    let g:delimitMate_expand_cr = 1
+    let g:delimitMate_expand_space = 1
+    let g:delimitMate_smart_quotes = 1
+    let g:delimitMate_expand_inside_quotes = 0
+

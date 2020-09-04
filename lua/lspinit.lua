@@ -178,6 +178,7 @@ function start_lsp_server()
     if loaded then
       vim.api.nvim_buf_set_var(0, 'completion_enable', 1)
       completion.on_InsertEnter()
+      completion.confirmCompletion()
     end
     return
   end
@@ -191,6 +192,7 @@ function start_lsp_server()
       -- Must set the completion_enable to 1
       vim.api.nvim_buf_set_var(0, 'completion_enable', 1)
       completion.on_InsertEnter()
+      completion.confirmCompletion()
       -- config the server config on_attach
       server[buf_filetype].on_attach= completion.on_attach
       -- build a new server config
@@ -214,7 +216,7 @@ function register_lsp_event()
   vim.api.nvim_command("augroup CommonLsp")
   vim.api.nvim_command("au!")
   vim.api.nvim_command("autocmd InsertEnter * lua start_lsp_server()")
-  vim.api.nvim_command("autocmd BufWritePre *.go lua vim.lsp.buf.formatting_sync(nil, 1000)")
+  -- vim.api.nvim_command("autocmd BufWritePre *.go lua vim.lsp.buf.formatting_sync(nil, 1000)")
   -- vim.api.nvim_command("autocmd BufWritePre *.lua lua vim.lsp.buf.formatting_sync(nil, 1000)")
   vim.api.nvim_command("augroup end")
 end
