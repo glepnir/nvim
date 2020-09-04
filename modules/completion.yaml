@@ -10,7 +10,6 @@
   on_event: InsertCharPre
   hook_source: |
     let g:vsnip_snippet_dir = getenv("HOME") . "/.config/nvim/snippets"
-    let g:vsnip_filetypes.typescriptreact = ['ts-react']
 
 - repo: hrsh7th/vim-vsnip-integ
   on_event: InsertCharPre
@@ -30,6 +29,4 @@
   hook_source: |
     let g:delimitMate_expand_cr = 1
     let g:delimitMate_expand_space = 1
-    let g:delimitMate_smart_quotes = 1
     let g:delimitMate_expand_inside_quotes = 0
-
