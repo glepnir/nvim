@@ -202,7 +202,7 @@ function register_lsp_event()
   vim.api.nvim_command("au!")
   vim.api.nvim_command("autocmd InsertEnter * lua start_lsp_server()")
   vim.api.nvim_command("autocmd BufWritePre *.go lua vim.lsp.buf.formatting_sync(nil, 1000)")
-  vim.api.nvim_command("autocmd BufWritePre *.lua lua vim.lsp.buf.formatting_sync(nil, 1000)")
+  -- vim.api.nvim_command("autocmd BufWritePre *.lua lua vim.lsp.buf.formatting_sync(nil, 1000)")
   vim.api.nvim_command("augroup end")
 end
 
