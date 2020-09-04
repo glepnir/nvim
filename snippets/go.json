@@ -1,9 +1,42 @@
 {
-  "Package": {
-    "prefix": "pa",
-    "body": [
-      "// Package $1 provides $2",
-      "package $1"
-    ]
+  "main": {
+    "prefix": "main",
+    "body": [ "func main() {","\t$0", "}"],
+    "description": "main function"
+  },
+  "struct": {
+    "prefix": "st",
+    "body": ["type ${1} struct {","\t${2}","}"],
+    "description": "struct"
+  },
+  "func":{
+    "prefix": "func",
+    "body": ["func ${1}() ${2} {","\t${3}","}"],
+    "description": "function"
+  },
+  "method declaration": {
+      "prefix": "meth",
+      "body": "func (${1:receiver} ${2:type}) ${3:method}($4) $5 {\n\t$0\n}",
+      "description": "Snippet for method declaration"
+  },
+  "for range statement": {
+      "prefix": "forr",
+      "body": "for ${1:_, }${2:var} := range ${3:var} {\n\t$0\n}",
+      "description": "Snippet for a for range loop"
+  },
+  "map declaration": {
+      "prefix": "map",
+      "body": "map[${1:type}]${2:type}",
+      "description": "Snippet for a map"
+  },
+  "goroutine anonymous function": {
+      "prefix": "go",
+      "body": "go func($1) {\n\t$0\n}($2)",
+      "description": "Snippet for anonymous goroutine declaration"
+  },
+  "goroutine function": {
+      "prefix": "gf",
+      "body": "go ${1:func}($0)",
+      "description": "Snippet for goroutine declaration"
   }
 }
