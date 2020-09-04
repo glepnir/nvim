@@ -132,12 +132,21 @@ local function buffer_find_root_dir(bufnr, is_root_path)
 end
 
 -- lsp sign
-function lsp_sign()
+local function lsp_sign()
   vim.fn.sign_define('LspDiagnosticsErrorSign', {text='', texthl='LspDiagnosticsError',linehl='', numhl=''})
   vim.fn.sign_define('LspDiagnosticsWarningSign', {text='', texthl='LspDiagnosticsWarning', linehl='', numhl=''})
   vim.fn.sign_define('LspDiagnosticsInformationSign', {text='', texthl='LspDiagnosticsInformation', linehl='', numhl=''})
   vim.fn.sign_define('LspDiagnosticsHintSign', {text='', texthl='LspDiagnosticsHint', linehl='', numhl=''})
 end
+
+local function load_completion()
+  local loaded,completion = pcall(require,'completion')
+  if loaded then
+    vim.api.nvim_buf_set_var(0, 'completion_enable', 1)
+    completion.on_attach()
+  end
+end
+
 
 -- async load completion-nvm then initialize lsp server
 function start_lsp_server()
@@ -149,6 +158,8 @@ function start_lsp_server()
   local buf_filetype = vim.api.nvim_buf_get_option(bufnr,'filetype')
   -- Filter which files we are considering.
   if not has_key(server,buf_filetype) then
+    -- load completion in buffer for complete something else
+    load_completion()
     return
   end
 
@@ -165,6 +176,7 @@ function start_lsp_server()
 
   -- We couldn't find a root directory, so ignore this file.
   if not root_dir then
+    load_completion()
     print(string.format("initialize %s failed doesn't find root_dir",server[buf_filetype].name))
     return
   end
@@ -193,8 +205,24 @@ function start_lsp_server()
       vim.api.nvim_buf_set_var(0, 'completion_enable', 1)
       completion.on_InsertEnter()
       completion.confirmCompletion()
+
+      local on_attach = function()
+        -- define an chain complete list
+        local chain_complete_list = {
+          default = {
+            {complete_items = {'lsp'}},
+            {complete_items = {'snippet'}},
+            {complete_items = {'path'}, triggered_only = {'/'}},
+          }
+        }
+        -- passing in a table with on_attach function
+        completion.on_attach({
+            chain_complete_list = chain_complete_list,
+          })
+        end
+
       -- config the server config on_attach
-      server[buf_filetype].on_attach= completion.on_attach
+      server[buf_filetype].on_attach= on_attach
       -- build a new server config
       local new_config = vim.tbl_extend("error",add_options(server[buf_filetype]), {
         root_dir = root_dir;
@@ -216,8 +244,7 @@ function register_lsp_event()
   vim.api.nvim_command("augroup CommonLsp")
   vim.api.nvim_command("au!")
   vim.api.nvim_command("autocmd InsertEnter * lua start_lsp_server()")
-  -- vim.api.nvim_command("autocmd BufWritePre *.go lua vim.lsp.buf.formatting_sync(nil, 1000)")
-  -- vim.api.nvim_command("autocmd BufWritePre *.lua lua vim.lsp.buf.formatting_sync(nil, 1000)")
+  vim.api.nvim_command("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting()")
   vim.api.nvim_command("augroup end")
 end
 
