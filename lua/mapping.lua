@@ -1,4 +1,5 @@
 require 'global'
+local vim = vim
 local mapping = {}
 local rhs_options = {}
 local M = {}
@@ -61,10 +62,13 @@ function mapping:load_plugin_define()
   self.plugin = {
     -- Lsp
     ["n|K"]              = map_cmd("<cmd>lua vim.lsp.buf.hover()<CR>"):with_noremap():with_silent(),
+    ["n|ga"]             = map_cmd("<cmd>lua vim.lsp.buf.code_action()<CR>"):with_noremap():with_silent(),
     ["n|gd"]             = map_cr("call initself#definition_other_window()"):with_noremap():with_silent(),
     ["n|gD"]             = map_cmd("<cmd>lua vim.lsp.buf.implementation()<CR>"):with_noremap():with_silent(),
-    ["n|gk"]             = map_cmd("<cmd>lua vim.lsp.buf.signature_help()<CR>"):with_noremap():with_silent(),
+    ["n|gs"]             = map_cmd("<cmd>lua vim.lsp.buf.signature_help()<CR>"):with_noremap():with_silent(),
     ["n|gr"]             = map_cmd("<cmd>lua vim.lsp.buf.references()<CR>"):with_noremap():with_silent(),
+    ["n|gp"]             = map_cmd("<cmd>lua require'lspmap'.lsp_peek_definition()<CR>"):with_noremap():with_silent(),
+    ["n|gt"]             = map_cmd("<cmd>lua vim.lsp.buf.type_definition()<CR>"):with_noremap():with_silent(),
     ["n|<Leader>cw"]     = map_cmd("<cmd>lua vim.lsp.buf.workspace_symbol()<CR>"):with_noremap():with_silent(),
     -- dein
     ["n|<LocalLeader>r"] = map_cr("call dein#recache_runtimepath()"):with_noremap():with_silent(),
@@ -152,8 +156,8 @@ function nvim_load_mapping(mapping)
     for key,value in pairs(v) do
       local mode,keymap = key:match("([^|]*)|?(.*)")
       if type(value) == 'table' then
-        rhs = value.cmd
-        options = value.options
+        local rhs = value.cmd
+        local options = value.options
         vim.fn.nvim_set_keymap(mode,keymap,rhs,options)
       elseif type(value) == 'string' then
         local k,min,max = keymap:match("([^,]+),([^,]+),([^,]+)")
@@ -168,7 +172,7 @@ function nvim_load_mapping(mapping)
 end
 
 function rhs_options:new()
-  instance = {
+  local instance = {
     cmd = '',
     options = {
       noremap = false,
