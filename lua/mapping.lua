@@ -1,8 +1,8 @@
 require 'global'
+local M = {}
 local vim = vim
 local mapping = {}
 local rhs_options = {}
-local M = {}
 
 function mapping:new()
   local instance = {}
@@ -151,8 +151,8 @@ function mapping:load_plugin_define()
     ["x|as"]             = map_cmd("<Plug>(textobj-sandwich-query-a)"),
   };
 end
-function nvim_load_mapping(mapping)
-  for k,v in pairs(mapping) do
+function M.nvim_load_mapping(mapping)
+  for _,v in pairs(mapping) do
     for key,value in pairs(v) do
       local mode,keymap = key:match("([^|]*)|?(.*)")
       if type(value) == 'table' then
@@ -162,9 +162,9 @@ function nvim_load_mapping(mapping)
       elseif type(value) == 'string' then
         local k,min,max = keymap:match("([^,]+),([^,]+),([^,]+)")
         for i=tonumber(min),tonumber(max) do
-          key = (k.."%s"):format(i)
-          rhs = value:gsub("+",i)
-          vim.fn.nvim_set_keymap(mode,key,rhs,{})
+          local map = (k.."%s"):format(i)
+          local rhs = value:gsub("+",i)
+          vim.fn.nvim_set_keymap(mode,map,rhs,{})
         end
       end
     end
@@ -235,7 +235,7 @@ function M.load_mapping()
   local map = mapping:new()
   map:load_vim_define()
   map:load_plugin_define()
-  nvim_load_mapping(map)
+  M.nvim_load_mapping(map)
 end
 
 return M
