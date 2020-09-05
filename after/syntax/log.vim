@@ -1,8 +1,3 @@
-" Vim syntax file
-" Language:         Generic log file
-" Maintainer:       MTDL9 <https://github.com/MTDL9>
-" Latest Revision:  2019-11-24
-
 " Operators
 "---------------------------------------------------------------------------
 syn match logOperator display '[;,\?\:\.\<=\>\~\/\@\&\!$\%\&\+\-\|\^(){}\*#]'
