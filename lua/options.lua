@@ -1,7 +1,7 @@
 require 'global'
 local vim = vim
 
-options = {}
+local options = {}
 
 function options:new()
   instance = {}
@@ -155,3 +155,4 @@ function options:load_options()
   end
 end
 
+return options

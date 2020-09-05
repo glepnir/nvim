@@ -1,8 +1,8 @@
 local vim = vim
 
-autocmds = {}
+local autocmd = {}
 
-local function nvim_create_augroups(definitions)
+function autocmd.nvim_create_augroups(definitions)
   for group_name, definition in pairs(definitions) do
     vim.api.nvim_command('augroup '..group_name)
     vim.api.nvim_command('autocmd!')
@@ -14,7 +14,7 @@ local function nvim_create_augroups(definitions)
   end
 end
 
-function autocmds.load_autocmds()
+function autocmd.load_autocmds()
   local definitions = {
     bufs = {
       -- Reload vim config automatically
@@ -48,8 +48,9 @@ function autocmds.load_autocmds()
     yank = {
       {"TextYankPost", [[* silent! lua vim.highlight.on_yank({higroup="IncSearch", timeout=400})]]};
     };
-
   }
 
-  nvim_create_augroups(definitions)
+  autocmd.nvim_create_augroups(definitions)
 end
+
+return autocmd

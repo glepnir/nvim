@@ -1,10 +1,11 @@
 require 'global'
 
-mapping = {}
-rhs_options = {}
+local mapping = {}
+local rhs_options = {}
+local M = {}
 
 function mapping:new()
-  instance = {}
+  local instance = {}
   setmetatable(instance, self)
   self.__index = self
   return instance
@@ -146,8 +147,6 @@ function mapping:load_plugin_define()
     ["x|as"]             = map_cmd("<Plug>(textobj-sandwich-query-a)"),
   };
 end
-
-
 function nvim_load_mapping(mapping)
   for k,v in pairs(mapping) do
     for key,value in pairs(v) do
@@ -226,3 +225,13 @@ function map_cu(cmd_string)
   local ro = rhs_options:new()
   return ro:map_cu(cmd_string)
 end
+
+
+function M.load_mapping()
+  local map = mapping:new()
+  map:load_vim_define()
+  map:load_plugin_define()
+  nvim_load_mapping(map)
+end
+
+return M

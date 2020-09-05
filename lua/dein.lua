@@ -1,7 +1,7 @@
 require 'global'
 local vim = vim
 
-dein  = {}
+local dein  = {}
 
 function dein:new()
   local instance = {}
@@ -72,3 +72,5 @@ function dein:load_repos()
   vim.fn['dein#call_hook']('source')
   vim.fn['dein#call_hook']('post_source')
 end
+
+return dein
