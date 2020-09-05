@@ -30,3 +30,12 @@
     let g:delimitMate_expand_cr = 1
     let g:delimitMate_expand_space = 1
     let g:delimitMate_expand_inside_quotes = 0
+
+- repo: mattn/emmet-vim
+  on_event: InsertEnter
+  on_ft: [ html,css,javascript,javascriptreact,vue,typescript,typescriptreact ]
+  hook_source: |
+    let g:user_emmet_complete_tag = 0
+    let g:user_emmet_install_global = 0
+    let g:user_emmet_install_command = 0
+    let g:user_emmet_mode = 'i'
