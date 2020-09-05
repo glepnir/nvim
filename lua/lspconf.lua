@@ -1,4 +1,5 @@
 local server = {}
+local vim = vim
 
 -- gopls configuration template use daemon
 server.go = {
@@ -27,6 +28,13 @@ server.rust = {
   root_patterns = {"Cargo.toml", "rust-project.json"}
 }
 
+server.sh = {
+  name = "bashlsp";
+  cmd = { "bash-language-server", "start" };
+  filetypes = { "sh" };
+  root_patterns = {".git",vim.fn.getcwd()}
+}
+
 server.Dockerfile = {
   name = "Dockerlsp";
   cmd = { "docker-langserver", "--stdio" };
@@ -49,6 +57,7 @@ cd ../..
 ./3rd/luamake/luamake rebuild
 
 npm install -g dockerfile-language-server-nodejs
+npm i -g bash-language-server
 
 RUSTANALYZER=/tmp/rust-analyzer
 
