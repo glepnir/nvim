@@ -281,7 +281,6 @@ function! s:apply_syntax_highlightings()
   exec 'hi markdownIdDeclaration'. s:fg_purple
   exec 'hi markdownBoldDelimiter'. s:fg_grey1
   exec 'hi markdownId'. s:fg_yellow
-
   "===============================================================
   " Html: https://notabug.org/jorgesumle/vim-html-syntax {{{
   "===============================================================
@@ -530,13 +529,6 @@ function! s:apply_syntax_highlightings()
   "===============================================================
   exec 'hi EasyMotionTarget'. s:fg_bg0 . s:bg_green
   exec 'hi EasyMotionShade' . s:fg_grey1
-  "===============================================================
-  " liuchengxu/vim-which-key
-  "===============================================================
-  exec 'hi WhichKey' . s:fg_red
-  exec 'hi WhichKeySeperator' . s:fg_green
-  exec 'hi WhichKeyGroup' . s:fg_yellow
-  exec 'hi WhichKeyDesc' . s:fg_blue
   "===============================================================
   " voldkiss/vim-floaterm
   "===============================================================
