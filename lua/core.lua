@@ -1,10 +1,10 @@
 require 'global'
-require 'options'
-require 'event'
-require 'dein'
-require 'mapping'
-require 'lspinit'
-require 'theme'
+local options = require 'options'
+local autocmd = require 'event'
+local lsp = require 'lspinit'
+local dein = require 'dein'
+local map = require 'mapping'
+local theme = require 'theme'
 
 local vim = vim
 local api = vim.api
@@ -57,23 +57,16 @@ function M.load_core()
   M.disable_distribution_plugins()
   M.leader_map()
 
-  ops = options:new()
+  local ops = options:new()
   ops:load_options()
 
-  dein = dein:new()
-  dein:load_repos()
+  local d = dein:new()
+  d:load_repos()
 
-  autocmds.load_autocmds()
-
-  map = mapping:new()
-  map:load_vim_define()
-  map:load_plugin_define()
-  nvim_load_mapping(map)
-
-  load_theme()
-  register_theme_event()
-
-  register_lsp_event()
+  map.load_mapping()
+  autocmd.load_autocmds()
+  theme.load_theme()
+  lsp.load_lsp_event()
 end
 
 M.load_core()

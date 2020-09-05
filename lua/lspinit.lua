@@ -1,10 +1,13 @@
 require 'global'
 local server = require 'lspconf'
-local vim = vim
+local autocmd = require('event')
+local vim,api = vim,vim.api
+local lsp_event = {}
+
 
 -- A table to store our root_dir to client_id lookup. We want one LSP per
 -- root directory, and this is how we assert that.
-local lsp_cache_store = {}
+local lsp_store = {}
 
 local function lookup_section(settings, section)
   for part in vim.gsplit(section, '.', true) do
@@ -63,7 +66,7 @@ local signature_help_callback = function(_, _method, result)
         end
     end
 
-    local filetype = vim.api.nvim_buf_get_option(0, "filetype")
+    local filetype = api.nvim_buf_get_option(0, "filetype")
     if filetype and type(signature.label) == "string" then
         signature.label = string.format("```%s\n%s\n```", filetype, signature.label)
     end
@@ -77,7 +80,7 @@ local signature_help_callback = function(_, _method, result)
         pad_left = 1, pad_right = 1
     })
     if #highlights > 0 then
-        vim.api.nvim_buf_add_highlight(bufnr, -1, 'Underlined', 0, highlights[1], highlights[2])
+        api.nvim_buf_add_highlight(bufnr, -1, 'Underlined', 0, highlights[1], highlights[2])
     end
     util.close_preview_autocmd({"CursorMoved", "CursorMovedI", "BufHidden", "BufLeave"}, winnr)
 end
@@ -183,7 +186,7 @@ end
 -- Ascend the buffer's path until we find the rootdir.
 -- is_root_path is a function which returns bool
 local function buffer_find_root_dir(bufnr, is_root_path)
-  local bufname = vim.api.nvim_buf_get_name(bufnr)
+  local bufname = api.nvim_buf_get_name(bufnr)
   if vim.fn.filereadable(bufname) == 0 then
     return nil
   end
@@ -213,20 +216,20 @@ end
 local function load_completion()
   local loaded,completion = pcall(require,'completion')
   if loaded then
-    vim.api.nvim_buf_set_var(0, 'completion_enable', 1)
+    api.nvim_buf_set_var(0, 'completion_enable', 1)
     completion.on_attach()
   end
 end
 
 
 -- async load completion-nvm then initialize lsp server
-function start_lsp_server()
+function lsp_store.start_lsp_server()
   -- load custom sign
   lsp_sign()
 
   local client_id = nil
-  local bufnr = vim.api.nvim_get_current_buf()
-  local buf_filetype = vim.api.nvim_buf_get_option(bufnr,'filetype')
+  local bufnr = api.nvim_get_current_buf()
+  local buf_filetype = api.nvim_buf_get_option(bufnr,'filetype')
   -- Filter which files we are considering.
   if not has_key(server,buf_filetype) then
     -- load completion in buffer for complete something else
@@ -254,12 +257,12 @@ function start_lsp_server()
 
   -- If the current file root dir in cache,we just attach it
   -- also the completion already in runtimepath just to call it
-  if lsp_cache_store[root_dir] ~= nil then
-    client_id = lsp_cache_store[root_dir]
+  if lsp_store[root_dir] ~= nil then
+    client_id = lsp_store[root_dir]
     vim.lsp.buf_attach_client(bufnr, client_id)
     local loaded,completion = pcall(require,'completion')
     if loaded then
-      vim.api.nvim_buf_set_var(0, 'completion_enable', 1)
+      api.nvim_buf_set_var(0, 'completion_enable', 1)
       completion.on_InsertEnter()
       completion.confirmCompletion()
     end
@@ -273,11 +276,11 @@ function start_lsp_server()
     if loaded then
       -- When require completion success,We call the on_InsertEnter by ourself.
       -- Must set the completion_enable to 1
-      vim.api.nvim_buf_set_var(0, 'completion_enable', 1)
+      api.nvim_buf_set_var(0, 'completion_enable', 1)
       completion.on_InsertEnter()
       completion.confirmCompletion()
 
-      local on_attach = function()
+      local on_attach = function(client,_)
         -- define an chain complete list
         local chain_complete_list = {
           default = {
@@ -290,7 +293,21 @@ function start_lsp_server()
         completion.on_attach({
             chain_complete_list = chain_complete_list,
           })
+
+        if client.resolved_capabilities.document_highlight then
+          lsp_event.highlights = {
+            {"CursorHold,CursorHoldI","<buffer>", "lua vim.lsp.buf.document_highlight()"};
+            {"CursorMoved","<buffer>","lua vim.lsp.buf.clear_references()"};
+          }
         end
+        if client.server_capabilities.documentFormattingProvider then
+          lsp_event.autoformat = {
+            {"BufWritePre","<buffer>","lua vim.lsp.buf.formatting()"}
+          }
+        end
+        autocmd.nvim_create_augroups(lsp_event)
+        api.nvim_command('setlocal omnifunc=v:lua.vim.lsp.omnifunc')
+      end
 
       -- config the server config on_attach
       server[buf_filetype].on_attach= on_attach
@@ -301,21 +318,20 @@ function start_lsp_server()
       -- start a new lsp server and store the cliend_id
       client_id = vim.lsp.start_client(new_config)
       if client_id ~= nil and timer:is_closing() == false then
-        lsp_cache_store[root_dir] = client_id
+        lsp_store[root_dir] = client_id
         vim.lsp.buf_attach_client(bufnr, client_id)
         timer:stop()
         timer:close()
       end
     end
   end))
-  vim.api.nvim_command('setlocal omnifunc=v:lua.vim.lsp.omnifunc')
 end
 
-function register_lsp_event()
-  vim.api.nvim_command("augroup CommonLsp")
-  vim.api.nvim_command("au!")
-  vim.api.nvim_command("autocmd InsertEnter * lua start_lsp_server()")
-  vim.api.nvim_command("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting()")
-  vim.api.nvim_command("augroup end")
+function lsp_store.load_lsp_event()
+  lsp_event.startlsp = {
+    {"InsertEnter","*","lua require'lspinit'.start_lsp_server()"}
+  }
+  autocmd.nvim_create_augroups(lsp_event)
 end
 
+return lsp_store
