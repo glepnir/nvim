@@ -42,9 +42,8 @@
       \ 'vimwiki': 'markdown',
       \ 'pandoc': 'markdown',
       \ 'markdown': 'toc',
-      \ 'yaml': 'coc',
-      \ 'typescript': 'coc',
-      \ 'typescriptreact': 'coc',
+      \ 'typescript': 'nvim_lsp',
+      \ 'typescriptreact': 'nvim_lsp',
       \ }
 
 - repo: thinca/vim-quickrun
