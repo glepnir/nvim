@@ -4,6 +4,21 @@
     "body": ["import React from 'react';"],
     "description": "Imports React"
   },
+  "componentFunctionalTypescript": {
+    "prefix": "rfc",
+    "body": [
+      "import React from 'react';",
+      "",
+      "// import { Container } from './styles';",
+      "",
+      "const ${1:${TM_DIRECTORY/^.*(\\/|\\\\)([^(\\/|\\\\)]+)$/$2/}}: React.FC = () => {",
+      "  return <div />;",
+      "}",
+      "",
+      "export default ${1:${TM_DIRECTORY/^.*(\\/|\\\\)([^(\\/|\\\\)]+)$/$2/}};"
+    ],
+    "description": "Create ReactJS Functional Component Typescript"
+  },
     "Create useState hook": {
     "prefix": "useState",
     "body": [
