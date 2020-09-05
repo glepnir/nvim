@@ -370,18 +370,17 @@ function! s:apply_syntax_highlightings()
   " Lua:
   "===============================================================
   exec 'hi luaFunc' . s:fg_green  . s:bold
-  exec 'hi luaFunction' . s:fg_aqua
   exec 'hi luaTable' . s:fg_fg0
   exec 'hi luaIn' . s:fg_red  . s:italic
-  " vim-lua: https://github.com/tbastos/vim-lua
-  exec 'hi luaFuncCall' . s:fg_yellow .'gui=bold'
+  " BetterLua.vim
+  exec 'hi luaFunctionCall' . s:fg_yellow .'gui=bold'
+  exec 'hi luaFunction' . s:fg_blue
   exec 'hi luaLocal' . s:fg_orange
   exec 'hi luaSpecialValue' . s:fg_green  . s:bold
   exec 'hi luaBraces' . s:fg_fg0
-  exec 'hi luaBuiltIn' . s:fg_purple
+  exec 'hi luaBuiltIn' . s:fg_aqua
   exec 'hi luaNoise' . s:fg_grey1
   exec 'hi luaLabel' . s:fg_purple
-  exec 'hi luaFuncTable' . s:fg_blue
   exec 'hi luaFuncKeyword' . s:fg_blue
   exec 'hi luaFuncArgName' . s:fg_aqua
   exec 'hi luaEllipsis' . s:fg_orange
