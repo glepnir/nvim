@@ -1,7 +1,6 @@
 require 'global'
 local options = require 'options'
 local autocmd = require 'event'
-local lsp = require 'lspinit'
 local dein = require 'dein'
 local map = require 'mapping'
 local theme = require 'theme'
@@ -66,7 +65,6 @@ function M.load_core()
   map.load_mapping()
   autocmd.load_autocmds()
   theme.load_theme()
-  lsp.load_lsp_event()
 end
 
 M.load_core()

@@ -2,7 +2,6 @@ require 'global'
 local server = require 'lspconf'
 local autocmd = require('event')
 local vim,api = vim,vim.api
-local lsp_event = {}
 
 
 -- A table to store our root_dir to client_id lookup. We want one LSP per
@@ -294,6 +293,7 @@ function lsp_store.start_lsp_server()
             chain_complete_list = chain_complete_list,
           })
 
+        local lsp_event = {}
         if client.resolved_capabilities.document_highlight then
           lsp_event.highlights = {
             {"CursorHold,CursorHoldI","<buffer>", "lua vim.lsp.buf.document_highlight()"};
@@ -325,13 +325,6 @@ function lsp_store.start_lsp_server()
       end
     end
   end))
-end
-
-function lsp_store.load_lsp_event()
-  lsp_event.startlsp = {
-    {"InsertEnter","*","lua require'lspinit'.start_lsp_server()"}
-  }
-  autocmd.nvim_create_augroups(lsp_event)
 end
 
 return lsp_store
