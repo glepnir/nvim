@@ -237,10 +237,10 @@ function start_lsp_server()
       end
     end
   end))
+  vim.api.nvim_command('setlocal omnifunc=v:lua.vim.lsp.omnifunc')
 end
 
 function register_lsp_event()
-  vim.api.nvim_command('setlocal omnifunc=lua.vim.lsp.omnifunc')
   vim.api.nvim_command("augroup CommonLsp")
   vim.api.nvim_command("au!")
   vim.api.nvim_command("autocmd InsertEnter * lua start_lsp_server()")
