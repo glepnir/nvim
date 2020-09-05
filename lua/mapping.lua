@@ -1,5 +1,4 @@
 require 'global'
-
 local mapping = {}
 local rhs_options = {}
 local M = {}
