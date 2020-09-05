@@ -1,11 +1,3 @@
-function! initself#mkdir_as_necessary(dir, force) abort
-  if !isdirectory(a:dir) && &l:buftype == '' &&
-        \ (a:force || input(printf('"%s" does not exist. Create? [y/N]',
-        \              a:dir)) =~? '^y\%[es]$')
-    call mkdir(iconv(a:dir, &encoding, &termencoding), 'p')
-  endif
-endfunction
-
 " when window >=4 jump in other window
 function! initself#definition_other_window() abort
   if winnr('$') >= 4 || (winwidth(0) - (max([len(line('$')), &numberwidth-1]) + 1)) < 110
@@ -102,4 +94,3 @@ function! initself#check_back_space() abort
     let col = col('.') - 1
     return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
-
