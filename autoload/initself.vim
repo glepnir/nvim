@@ -1,13 +1,3 @@
-" when window >=4 jump in other window
-function! initself#definition_other_window() abort
-  if winnr('$') >= 4 || (winwidth(0) - (max([len(line('$')), &numberwidth-1]) + 1)) < 110
-    exec "lua vim.lsp.buf.definition()"
-  else
-    exec 'vsplit'
-    exec "lua vim.lsp.buf.definition()"
-  endif
-endfunction
-
 function! initself#clap_go_source()
   let l:go_root = globpath('/usr/local/Cellar/go', '*') . '/libexec/src/'
   let l:go_dicts = split(globpath(l:go_root, '*'))
