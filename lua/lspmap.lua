@@ -42,4 +42,17 @@ function M.lsp_peek_definition()
     end
 end
 
+function M.lsp_jump_definition()
+  local winr = vim.fn.winnr("$")
+  local winsize = vim.api.nvim_exec([[
+  echo (winwidth(0) - (max([len(line('$')), &numberwidth-1]) + 1)) < 110
+  ]],true)
+  if winr >= 4 or winsize == 1 then
+    vim.lsp.buf.definition()
+  else
+    vim.api.nvim_command("vsplit")
+    vim.lsp.buf.definition()
+  end
+end
+
 return M
