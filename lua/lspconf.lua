@@ -1,10 +1,9 @@
-
-server = {}
+local server = {}
 
 -- gopls configuration template use daemon
 server.go = {
   name = "gopls";
-  cmd = {"/Users/stephen/workspace/bin/gopls","--remote=auto"};
+  cmd = {"gopls","--remote=auto"};
   filetypes = {'go','gomod'};
   root_patterns = {'go.mod','.git'};
   -- https://github.com/golang/tools/blob/master/gopls/doc/settings.md#settings
@@ -21,6 +20,20 @@ server.lua = {
   root_patterns = {'.git'};
 }
 
+server.rust = {
+  name = "rust-analyzer";
+  cmd = { "rust-analyzer" };
+  filetypes = {"rust"};
+  root_patterns = {"Cargo.toml", "rust-project.json"}
+}
+
+server.Dockerfile = {
+  name = "Dockerlsp";
+  cmd = { "docker-langserver", "--stdio" };
+  filetypes = { "Dockerfile", "dockerfile" };
+  root_patterns = {"Dockerfile"};
+}
+
 local lsp_intall_scripts = [=[
 cd $HOME
 go get golang.org/x/tools/gopls@latest
@@ -34,8 +47,12 @@ cd 3rd/luamake
 ninja -f ninja/macos.ninja
 cd ../..
 ./3rd/luamake/luamake rebuild
+
+npm install -g dockerfile-language-server-nodejs
 ]=]
 
 function lsp_install_server()
   os.execute("sh -c"..lsp_intall_scripts)
 end
+
+return server

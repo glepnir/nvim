@@ -1,5 +1,5 @@
 require 'global'
-require 'lspconf'
+local server = require 'lspconf'
 local vim = vim
 
 -- A table to store our root_dir to client_id lookup. We want one LSP per
