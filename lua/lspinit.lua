@@ -88,6 +88,8 @@ local function add_options(server_setup)
     capabilities = vim.lsp.protocol.make_client_capabilities();
     settings = vim.empty_dict();
     init_options = vim.empty_dict();
+    log_level = vim.lsp.protocol.MessageType.Warning;
+    message_level = vim.lsp.protocol.MessageType.Warning;
   };
 
   for option,value in pairs(options) do
@@ -101,6 +103,19 @@ local function add_options(server_setup)
       configuration = true;
     }
   })
+  server_setup.callbacks["window/logMessage"] = function(err, method, params, client_id)
+        if params and params.type <= server_setup.log_level then
+          assert(vim.lsp.callbacks["window/logMessage"], "Callback for window/logMessage notification is not defined")
+          vim.lsp.callbacks["window/logMessage"](err, method, params, client_id)
+        end
+      end
+
+  server_setup.callbacks["window/showMessage"] = function(err, method, params, client_id)
+    if params and params.type <= server_setup.message_level then
+      assert(vim.lsp.callbacks["window/showMessage"], "Callback for window/showMessage notification is not defined")
+      vim.lsp.callbacks["window/showMessage"](err, method, params, client_id)
+    end
+  end
 
   -- add workspace/configuration callback function
   server_setup.callbacks["workspace/configuration"] = function(err, method, params, client_id)
