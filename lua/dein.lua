@@ -1,6 +1,5 @@
 require 'global'
 local vim = vim
-
 local dein  = {}
 
 function dein:new()
