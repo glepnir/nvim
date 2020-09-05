@@ -49,6 +49,14 @@ cd ../..
 ./3rd/luamake/luamake rebuild
 
 npm install -g dockerfile-language-server-nodejs
+
+RUSTANALYZER=/tmp/rust-analyzer
+
+curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-mac -o $RUSTANALYZER
+
+chmod +x $RUSTANALYZER
+
+mv $RUSTANALYZER /usr/local/bin/
 ]=]
 
 function lsp_install_server()
