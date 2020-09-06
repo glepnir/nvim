@@ -29,6 +29,7 @@ local function add_hook_after(func, new_fn)
   end
 end
 
+-- signature help callback function
 local signature_help_callback = function(_, _method, result)
     if not (result and result.signatures and #result.signatures > 0) then
         return { 'No signature available' }
@@ -82,27 +83,9 @@ local signature_help_callback = function(_, _method, result)
     lsp.util.close_preview_autocmd({"CursorMoved", "CursorMovedI", "BufHidden", "BufLeave"}, winnr)
 end
 
-local function add_options(server_setup)
-  local options = {
-    callbacks = {};
-    capabilities = vim.lsp.protocol.make_client_capabilities();
-    settings = vim.empty_dict();
-    init_options = vim.empty_dict();
-    log_level = vim.lsp.protocol.MessageType.Warning;
-    message_level = vim.lsp.protocol.MessageType.Warning;
-  };
+-- Add I custom callbacks function in lsp server config
+local function add_callbacks(server_setup)
 
-  for option,value in pairs(options) do
-    if not has_key(server_setup,option) then
-      server_setup[option] = value
-    end
-  end
-
-  server_setup.capabilities = vim.tbl_deep_extend('keep', server_setup.capabilities, {
-    workspace = {
-      configuration = true;
-    }
-  })
   server_setup.callbacks["window/logMessage"] = function(err, method, params, client_id)
         if params and params.type <= server_setup.log_level then
           assert(vim.lsp.callbacks["window/logMessage"], "Callback for window/logMessage notification is not defined")
@@ -138,6 +121,7 @@ local function add_options(server_setup)
       return result
     end
 
+  -- diagnostic callbacks
   server_setup.callbacks['textDocument/publishDiagnostics'] = function(_, _, result)
     if not result then return end
     local uri = result.uri
@@ -169,6 +153,31 @@ local function add_options(server_setup)
   end
 
   server_setup.callbacks["textDocument/signatureHelp"] = signature_help_callback
+end
+
+local function add_options(server_setup)
+  local options = {
+    callbacks = {};
+    capabilities = vim.lsp.protocol.make_client_capabilities();
+    settings = vim.empty_dict();
+    init_options = vim.empty_dict();
+    log_level = vim.lsp.protocol.MessageType.Warning;
+    message_level = vim.lsp.protocol.MessageType.Warning;
+  };
+
+  for option,value in pairs(options) do
+    if not has_key(server_setup,option) then
+      server_setup[option] = value
+    end
+  end
+
+  server_setup.capabilities = vim.tbl_deep_extend('keep', server_setup.capabilities, {
+    workspace = {
+      configuration = true;
+    }
+  })
+
+  add_callbacks(server_setup)
 
   server_setup.on_init = add_hook_after(server_setup.on_init, function(client, _result)
         function client.workspace_did_change_configuration(settings)
@@ -244,7 +253,8 @@ local function load_completion()
   local loaded,completion = pcall(require,'completion')
   if loaded then
     api.nvim_buf_set_var(0, 'completion_enable', 1)
-    completion.on_attach()
+    completion.on_InsertEnter()
+    completion.confirmCompletion()
   end
 end
 
