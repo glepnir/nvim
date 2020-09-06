@@ -1,7 +1,8 @@
 require 'global'
 local server = require 'lspconf'
-local autocmd = require('event')
-local vim,api = vim,vim.api
+local autocmd = require 'event'
+local vim,api,lsp = vim,vim.api,vim.lsp
+local lsp_diagnostic = require 'lspdiagnostic'
 
 -- A table to store our root_dir to client_id lookup. We want one LSP per
 -- root directory, and this is how we assert that.
@@ -30,7 +31,6 @@ local function add_hook_after(func, new_fn)
 end
 
 local signature_help_callback = function(_, _method, result)
-    local util = vim.lsp.util
     if not (result and result.signatures and #result.signatures > 0) then
         return { 'No signature available' }
     end
@@ -69,18 +69,18 @@ local signature_help_callback = function(_, _method, result)
         signature.label = string.format("```%s\n%s\n```", filetype, signature.label)
     end
 
-    local lines = util.convert_signature_help_to_markdown_lines(result)
-    lines = util.trim_empty_lines(lines)
+    local lines = lsp.util.convert_signature_help_to_markdown_lines(result)
+    lines = lsp.util.trim_empty_lines(lines)
     if vim.tbl_isempty(lines) then
         return { 'No signature available' }
     end
-    local bufnr, winnr = util.fancy_floating_markdown(lines, {
+    local bufnr, winnr = lsp.util.fancy_floating_markdown(lines, {
         pad_left = 1, pad_right = 1
     })
     if #highlights > 0 then
         api.nvim_buf_add_highlight(bufnr, -1, 'Underlined', 0, highlights[1], highlights[2])
     end
-    util.close_preview_autocmd({"CursorMoved", "CursorMovedI", "BufHidden", "BufLeave"}, winnr)
+    lsp.util.close_preview_autocmd({"CursorMoved", "CursorMovedI", "BufHidden", "BufLeave"}, winnr)
 end
 
 local function add_options(server_setup)
@@ -308,7 +308,7 @@ function lsp_store.start_lsp_server()
       completion.on_InsertEnter()
       completion.confirmCompletion()
 
-      local on_attach = function(client,_)
+      local on_attach = function(client,bufnr)
         -- define an chain complete list
         local chain_complete_list = {
           default = {
@@ -340,7 +340,10 @@ function lsp_store.start_lsp_server()
           }
         end
         autocmd.nvim_create_augroups(lsp_event)
-        api.nvim_command('setlocal omnifunc=v:lua.vim.lsp.omnifunc')
+        api.nvim_command("command! -count=1 DiagnosticPrev lua require'lspdiagnostic'.lsp_jump_diagnostic_prev(<count>)")
+        api.nvim_command("command! -count=1 DiagnosticNext lua require'lspdiagnostic'.lsp_jump_diagnostic_next(<count>)")
+        -- Source omnicompletion from LSP.
+        vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
       end
 
       -- config the server config on_attach
