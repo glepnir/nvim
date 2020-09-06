@@ -49,8 +49,8 @@ let s:undercurl = s:oceanic_material_allow_undercurl? ' cterm=undercurl gui=unde
 let s:background = {
       \'medium': ['#282C34', '235'],
       \'ocean' : ['#1b2b34', '235'],
-      \'darker': ['#212121', 'NONE'],
-      \'deep'  : ['#1d1f21', '234'],
+      \'deep': ['#212121', 'NONE'],
+      \'darker': ['#1d1f21', '234'],
       \}
 
 let s:colors = {
@@ -60,12 +60,6 @@ let s:colors = {
       \ 'bg3':              ['#3c3836',   '237'],
       \ 'bg4':              ['#3c3836',   '237'],
       \ 'bg5':              ['#504945',   '239'],
-      \ 'bg_diff_green':    ['#32361a',   '22'],
-      \ 'bg_visual_green':  ['#333e34',   '22'],
-      \ 'bg_diff_red':      ['#3c1f1e',   '52'],
-      \ 'bg_visual_red':    ['#442e2d',   '52'],
-      \ 'bg_diff_blue':     ['#0d3138',   '18'],
-      \ 'bg_visual_blue':   ['#2e3b3b',   '18'],
       \ 'fg0':              ['#d4be98',   '223'],
       \ 'fg1':              ['#ddc7a1',   '223'],
       \ 'fg3':              ['#4f5b66',   '17'],
@@ -73,11 +67,10 @@ let s:colors = {
       \ 'magenta':          ['#d16d9e',   '205'],
       \ 'orange':           ['#e78a4e',   '208'],
       \ 'yellow':           ['#d8a657',   '214'],
-      \ 'green':            ['#a9b665',   '142'],
+      \ 'green':            ['#a7c777',   '111'],
       \ 'aqua':             ['#62b3b2',   '73'],
       \ 'blue':             ['#6699cc',   '68'],
       \ 'purple':           ['#c594c5',   '176'],
-      \ 'darkgreen':        ['#5faf5f',    '71'],
       \ 'black':            ['#000000',    '0'],
       \ 'bg_red':           ['#ea6962',   '167'],
       \ 'grey0':            ['#7c6f64',   '243'],
@@ -171,11 +164,11 @@ function! s:apply_syntax_highlightings()
   exec 'hi CursorColumn'. s:fg_none. s:fg_bg1
   exec 'hi CursorLine'. s:fg_none . s:bg_bg1
   exec 'hi LineNr'. s:fg_grey0
-  exec 'hi CursorLineNr'. s:fg_darkgreen
-  exec 'hi DiffAdd'. s:fg_none . s:bg_bg_diff_green
-  exec 'hi DiffChange'. s:fg_none. s:bg_bg_diff_blue
-  exec 'hi DiffDelete'. s:fg_none. s:bg_bg_diff_red
-  exec 'hi DiffText'. s:fg_bg0 . s:bg_fg0
+  exec 'hi CursorLineNr'. s:fg_fg1
+  exec 'hi DiffAdd'. s:fg_black . s:bg_green
+  exec 'hi DiffChange'. s:fg_black. s:bg_yellow
+  exec 'hi DiffDelete'. s:fg_black. s:bg_red
+  exec 'hi DiffText'. s:fg_black . s:bg_fg0
   exec 'hi Directory'. s:fg_bg5. s:bg_none
   exec 'hi ErrorMsg'. s:fg_red. s:bg_none. s:bold . s:underline
   exec 'hi WarningMsg'. s:fg_yellow. s:bg_none. s:bold
