@@ -299,67 +299,6 @@ function! s:apply_syntax_highlightings()
   exec 'hi htmlScriptTag'. s:fg_purple
   exec 'hi htmlSpecialTagName'. s:fg_red.s:italic
   "===============================================================
-  " LESS: vim-less: https://github.com/groenewege/vim-less
-  "===============================================================
-  exec ' hi lessMixinChar'.s:fg_grey1
-  exec ' hi lessClass'.s:fg_red  .s:italic
-  exec ' hi lessVariable'.s:fg_blue
-  exec ' hi lessAmpersandChar'.s:fg_orange
-  exec ' hi lessFunction'.s:fg_yellow
-  "===============================================================
-  " Dart:
-  " dart-lang: https://github.com/dart-lang/dart-vim-plugin
-  "===============================================================
-  exec 'hi dartCoreClasses' . s:fg_aqua
-  exec 'hi dartTypeName' . s:fg_aqua
-  exec 'hi dartInterpolation' . s:fg_blue
-  exec 'hi dartTypeDef' . s:fg_red  . s:italic
-  exec 'hi dartClassDecl' . s:fg_red  . s:italic
-  exec 'hi dartLibrary' . s:fg_purple  . s:italic
-  exec 'hi dartMetadata' . s:fg_blue
-  "===============================================================
-  " Python:
-  "===============================================================
-  exec 'hi pythonBuiltin' . s:fg_yellow
-  exec 'hi pythonExceptions' . s:fg_purple
-  exec 'hi pythonDecoratorName' . s:fg_blue
-  "===============================================================
-  " python-syntax: https://github.com/vim-python/python-syntax
-  "===============================================================
-  exec 'hi pythonExClass' . s:fg_purple
-  exec 'hi pythonBuiltinType' . s:fg_yellow
-  exec 'hi pythonBuiltinObj' . s:fg_blue
-  exec 'hi pythonDottedName' . s:fg_purple  . s:italic
-  exec 'hi pythonBuiltinFunc' . s:fg_green  . s:bold
-  exec 'hi pythonFunction' . s:fg_aqua  . s:bold
-  exec 'hi pythonDecorator' . s:fg_orange
-  exec 'hi pythonInclude'. s:fg_purple. s:italic
-  exec 'hi pythonImport'. s:fg_purple. s:italic
-  exec 'hi pythonRun' . s:fg_blue
-  exec 'hi pythonCoding' . s:fg_grey1
-  exec 'hi pythonOperator' . s:fg_orange
-  exec 'hi pythonConditional' . s:fg_red  . s:italic
-  exec 'hi pythonRepeat' . s:fg_red  . s:italic
-  exec 'hi pythonException' . s:fg_red  . s:italic
-  exec 'hi pythonNone' . s:fg_aqua
-  exec 'hi pythonDot' . s:fg_grey1
-  "===============================================================
-  " semshi: https://github.com/numirias/semshi
-  "===============================================================
-  exec 'hi semshiUnresolved' . s:fg_yellow. s:undercurl
-  exec 'hi semshiImported' . s:fg_purple
-  exec 'hi semshiParameter' . s:fg_blue
-  exec 'hi semshiParameterUnused' . s:fg_grey1
-  exec 'hi semshiSelf' . s:fg_purple  . s:italic
-  exec 'hi semshiGlobal' . s:fg_yellow
-  exec 'hi semshiBuiltin' . s:fg_yellow
-  exec 'hi semshiAttribute' . s:fg_aqua
-  exec 'hi semshiLocal' . s:fg_red
-  exec 'hi semshiFree' . s:fg_red
-  hi link  semshiSelected CocHighlightText
-  exec 'hi semshiErrorSign' . s:fg_red
-  exec 'hi semshiErrorChar' . s:fg_red
-  "===============================================================
   " Lua:
   "===============================================================
   exec 'hi luaFunc' . s:fg_green  . s:bold
@@ -411,20 +350,6 @@ function! s:apply_syntax_highlightings()
   exec 'hi rustAssert' . s:fg_aqua
   exec 'hi rustPanic' . s:fg_aqua
   exec 'hi rustPubScopeCrate' . s:fg_purple  . s:italic
-  "===============================================================
-  " Ruby:
-  " builtin: https://github.com/vim-ruby/vim-ruby
-  "===============================================================
-  exec 'hi rubyKeywordAsMethod' . s:fg_green  . s:bold
-  exec 'hi rubyInterpolation' . s:fg_yellow
-  exec 'hi rubyInterpolationDelimiter' . s:fg_yellow
-  exec 'hi rubyStringDelimiter' . s:fg_green
-  exec 'hi rubyBlockParameterList' . s:fg_blue
-  exec 'hi rubyDefine' . s:fg_red  . s:italic
-  exec 'hi rubyModuleName' . s:fg_purple
-  exec 'hi rubyAccess' . s:fg_orange
-  exec 'hi rubyAttribute' . s:fg_yellow
-  exec 'hi rubyMacro' . s:fg_red  . s:italic
   "===============================================================
   " VimL:
   "===============================================================
@@ -484,20 +409,6 @@ function! s:apply_syntax_highlightings()
   exec 'hi gitcommitOnBranch' . s:fg_grey1
   exec 'hi gitcommitArrow' . s:fg_grey1
   exec 'hi gitcommitFile' . s:fg_green
-  "===============================================================
-  " dense-analysis/ale
-  "===============================================================
-  exec 'hi ALEError'. s:fg_none. s:undercurl. s:sp_red
-  exec 'hi ALEWarning'. s:fg_none. s:undercurl. s:sp_yellow
-  exec 'hi ALEInfo'. s:fg_none. s:undercurl. s:sp_blue
-  exec 'hi ALEErrorSign' . s:fg_red
-  exec 'hi ALEWarningSign' . s:fg_yellow
-  exec 'hi ALEInfoSign' . s:fg_blue
-  exec 'hi ALEVirtualTextError' . s:fg_grey1
-  exec 'hi ALEVirtualTextWarning' . s:fg_grey1
-  exec 'hi ALEVirtualTextInfo' . s:fg_grey1
-  exec 'hi ALEVirtualTextStyleError' . s:fg_grey1
-  exec 'hi ALEVirtualTextStyleWarning' . s:fg_grey1
   "===============================================================
   " liuchengxu/vista.vim
   "===============================================================
