@@ -3,7 +3,6 @@ local server = require 'lspconf'
 local autocmd = require('event')
 local vim,api = vim,vim.api
 
-
 -- A table to store our root_dir to client_id lookup. We want one LSP per
 -- root directory, and this is how we assert that.
 local lsp_store = {}

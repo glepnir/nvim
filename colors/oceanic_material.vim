@@ -433,6 +433,8 @@ function! s:apply_syntax_highlightings()
   exec 'hi vimVar' . s:fg_aqua
   exec 'hi vimFunction' . s:fg_magenta  . s:bold
   exec 'hi vimIsCommand' . s:fg_fg0
+  exec 'hi vimCommand' . s:fg_blue
+  exec 'hi vimNotFunc' . s:fg_purple  . s:bold
   exec 'hi vimUserFunc' . s:fg_yellow  . s:bold
   exec 'hi vimFuncName' . s:fg_yellow  . s:bold
   "===============================================================
