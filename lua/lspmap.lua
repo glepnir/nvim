@@ -1,7 +1,10 @@
+local lsp_dianostic = require 'lspdiagnostic'
+local vim,api = vim,vim.api
 local M = {}
-local vim = vim
 
-function M.preview_location(location, context, before_context)
+-- lsp peek preview Taken from
+-- https://www.reddit.com/r/neovim/comments/gyb077/nvimlsp_peek_defination_javascript_ttserver
+local function preview_location(location, context, before_context)
     -- location may be LocationLink or Location (more useful for the former)
     context = context or 15
     before_context = before_context or 0
@@ -20,16 +23,16 @@ function M.preview_location(location, context, before_context)
     return vim.lsp.util.open_floating_preview(contents, filetype)
 end
 
-function M.preview_location_callback(_, method, result)
+local function preview_location_callback(_, method, result)
     local context = 15
     if result == nil or vim.tbl_isempty(result) then
         print("No location found: " .. method)
         return nil
     end
     if vim.tbl_islist(result) then
-       M.floating_buf, M.floating_win = M.preview_location(result[1], context)
+       M.floating_buf, M.floating_win = preview_location(result[1], context)
     else
-        M.floating_buf, M.floating_win = M.preview_location(result, context)
+        M.floating_buf, M.floating_win = preview_location(result, context)
     end
 end
 
@@ -38,10 +41,11 @@ function M.lsp_peek_definition()
         vim.api.nvim_set_current_win(M.floating_win)
     else
         local params = vim.lsp.util.make_position_params()
-        return vim.lsp.buf_request(0, "textDocument/definition", params, M.preview_location_callback)
+        return vim.lsp.buf_request(0, "textDocument/definition", params, preview_location_callback)
     end
 end
 
+-- jump to definition in split window
 function M.lsp_jump_definition()
   local winr = vim.fn.winnr("$")
   local winsize = vim.api.nvim_exec([[
