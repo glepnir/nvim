@@ -3,7 +3,6 @@ local api = vim.api
 local lsp = vim.lsp
 local M = {}
 
-
 local function get_line(diagnostic_entry)
     return diagnostic_entry["range"]["start"]["line"]
 end
