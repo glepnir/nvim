@@ -65,11 +65,11 @@ function mapping:load_plugin_define()
     ["n|]e"]             = map_cmd([['<cmd>' . v:count1 . 'DiagnosticPrev<CR>']]):with_noremap():with_expr(),
     ["n|K"]              = map_cmd("<cmd>lua vim.lsp.buf.hover()<CR>"):with_noremap():with_silent(),
     ["n|ga"]             = map_cmd("<cmd>lua vim.lsp.buf.code_action()<CR>"):with_noremap():with_silent(),
-    ["n|gd"]             = map_cmd("<cmd>lua require'lspmap'.lsp_jump_definition()<CR>"):with_noremap():with_silent(),
+    ["n|gd"]             = map_cmd("<cmd>lua require'lsp.lspmap'.lsp_jump_definition()<CR>"):with_noremap():with_silent(),
     ["n|gD"]             = map_cmd("<cmd>lua vim.lsp.buf.implementation()<CR>"):with_noremap():with_silent(),
     ["n|gs"]             = map_cmd("<cmd>lua vim.lsp.buf.signature_help()<CR>"):with_noremap():with_silent(),
     ["n|gr"]             = map_cmd("<cmd>lua vim.lsp.buf.references()<CR>"):with_noremap():with_silent(),
-    ["n|gp"]             = map_cmd("<cmd>lua require'lspmap'.lsp_peek_definition()<CR>"):with_noremap():with_silent(),
+    ["n|gp"]             = map_cmd("<cmd>lua require'lsp.lspmap'.lsp_peek_definition()<CR>"):with_noremap():with_silent(),
     ["n|gt"]             = map_cmd("<cmd>lua vim.lsp.buf.type_definition()<CR>"):with_noremap():with_silent(),
     ["n|<Leader>cw"]     = map_cmd("<cmd>lua vim.lsp.buf.workspace_symbol()<CR>"):with_noremap():with_silent(),
     -- dein

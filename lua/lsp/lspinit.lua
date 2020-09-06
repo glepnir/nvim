@@ -1,5 +1,5 @@
 require 'global'
-local server = require 'lspconf'
+local server = require 'lsp.lspconf'
 local autocmd = require 'event'
 local vim,api,lsp = vim,vim.api,vim.lsp
 
@@ -382,8 +382,8 @@ function lsp_store.start_lsp_server()
         -- register lsp event
         autocmd.nvim_create_augroups(lsp_event)
         -- register lsp diagnostic error jump command
-        api.nvim_command("command! -count=1 DiagnosticPrev lua require'lspdiag'.lsp_jump_diagnostic_prev(<count>)")
-        api.nvim_command("command! -count=1 DiagnosticNext lua require'lspdiag'.lsp_jump_diagnostic_next(<count>)")
+        api.nvim_command("command! -count=1 DiagnosticPrev lua require'lsp.lspdiag'.lsp_jump_diagnostic_prev(<count>)")
+        api.nvim_command("command! -count=1 DiagnosticNext lua require'lsp.lspdiag'.lsp_jump_diagnostic_next(<count>)")
         -- use floatwindow to show diagnostic message
         vim.api.nvim_command('autocmd CursorHold <buffer> lua vim.lsp.util.show_line_diagnostics()')
         -- Source omnicompletion from LSP.
