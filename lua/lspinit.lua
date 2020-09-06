@@ -339,9 +339,13 @@ function lsp_store.start_lsp_server()
             {"BufWritePre","<buffer>","lua vim.lsp.buf.formatting_sync(nil, 1000)"}
           }
         end
+        -- register lsp event
         autocmd.nvim_create_augroups(lsp_event)
+        -- register lsp diagnostic error jump command
         api.nvim_command("command! -count=1 DiagnosticPrev lua require'lspdiagnostic'.lsp_jump_diagnostic_prev(<count>)")
         api.nvim_command("command! -count=1 DiagnosticNext lua require'lspdiagnostic'.lsp_jump_diagnostic_next(<count>)")
+        -- use floatwindow to show diagnostic message
+        vim.api.nvim_command('autocmd CursorHold <buffer> lua vim.lsp.util.show_line_diagnostics()')
         -- Source omnicompletion from LSP.
         vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
       end
