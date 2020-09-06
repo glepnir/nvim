@@ -2,7 +2,6 @@ require 'global'
 local server = require 'lspconf'
 local autocmd = require 'event'
 local vim,api,lsp = vim,vim.api,vim.lsp
-local lsp_diagnostic = require 'lspdiagnostic'
 
 -- A table to store our root_dir to client_id lookup. We want one LSP per
 -- root directory, and this is how we assert that.
@@ -138,6 +137,36 @@ local function add_options(server_setup)
       end
       return result
     end
+
+  server_setup.callbacks['textDocument/publishDiagnostics'] = function(_, _, result)
+    if not result then return end
+    local uri = result.uri
+    local bufnr = vim.uri_to_bufnr(uri)
+    if not bufnr then
+      vim.api.nvim_out_write(string.format("LSP.publishDiagnostics: Couldn't find buffer for %s", uri))
+      return
+    end
+    lsp.util.buf_clear_diagnostics(bufnr)
+
+    -- https://microsoft.github.io/language-server-protocol/specifications/specification-current/#diagnostic
+    -- The diagnostic's severity. Can be omitted. If omitted it is up to the
+    -- client to interpret diagnostics as error, warning, info or hint.
+    -- TODO: Replace this with server-specific heuristics to infer severity.
+    for _, diagnostic in ipairs(result.diagnostics) do
+      if diagnostic.severity == nil then
+        diagnostic.severity = vim.lsp.protocol.DiagnosticSeverity.Error
+      end
+    end
+
+    lsp.util.buf_diagnostics_save_positions(bufnr, result.diagnostics)
+    lsp.util.buf_diagnostics_underline(bufnr, result.diagnostics)
+    if vim.g.lsp_diagnostic_virtual_text == 1 then
+      lsp.util.buf_diagnostics_virtual_text(bufnr, result.diagnostics)
+    end
+    lsp.util.show_line_diagnostics()
+    lsp.util.buf_diagnostics_signs(bufnr, result.diagnostics)
+    vim.api.nvim_command("doautocmd User LspDiagnosticsChanged")
+  end
 
   server_setup.callbacks["textDocument/signatureHelp"] = signature_help_callback
 
@@ -339,11 +368,12 @@ function lsp_store.start_lsp_server()
             {"BufWritePre","<buffer>","lua vim.lsp.buf.formatting_sync(nil, 1000)"}
           }
         end
+
         -- register lsp event
         autocmd.nvim_create_augroups(lsp_event)
         -- register lsp diagnostic error jump command
-        api.nvim_command("command! -count=1 DiagnosticPrev lua require'lspdiagnostic'.lsp_jump_diagnostic_prev(<count>)")
-        api.nvim_command("command! -count=1 DiagnosticNext lua require'lspdiagnostic'.lsp_jump_diagnostic_next(<count>)")
+        api.nvim_command("command! -count=1 DiagnosticPrev lua require'lspdiag'.lsp_jump_diagnostic_prev(<count>)")
+        api.nvim_command("command! -count=1 DiagnosticNext lua require'lspdiag'.lsp_jump_diagnostic_next(<count>)")
         -- use floatwindow to show diagnostic message
         vim.api.nvim_command('autocmd CursorHold <buffer> lua vim.lsp.util.show_line_diagnostics()')
         -- Source omnicompletion from LSP.

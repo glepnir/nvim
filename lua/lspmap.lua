@@ -1,4 +1,3 @@
-local lsp_dianostic = require 'lspdiagnostic'
 local vim,api = vim,vim.api
 local M = {}
 
