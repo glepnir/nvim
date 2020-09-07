@@ -1,4 +1,4 @@
-require 'global'
+local global = require 'global'
 local server = require 'lsp.serverconf'
 local callbacks = require 'lsp.callbacks'
 local autocmd = require 'event'
@@ -31,7 +31,7 @@ local function add_options(server_setup)
   };
 
   for option,value in pairs(options) do
-    if not has_key(server_setup,option) then
+    if not global.has_key(server_setup,option) then
       server_setup[option] = value
     end
   end
@@ -42,7 +42,7 @@ local function add_options(server_setup)
     }
   })
 
-  server_setup.on_init = add_hook_after(server_setup.on_init, function(client, _result)
+  server_setup.on_init = add_hook_after(server_setup.on_init, function(client, _)
         function client.workspace_did_change_configuration(settings)
           if not settings then return end
           if vim.tbl_isempty(settings) then
@@ -73,7 +73,7 @@ end
 -- Asumes filepath is a file.
 local function dirname(filepath)
   local is_changed = false
-  local result = filepath:gsub(path_sep.."([^"..path_sep.."]+)$", function()
+  local result = filepath:gsub(global.path_sep.."([^"..global.path_sep.."]+)$", function()
     is_changed = true
     return ""
   end)
@@ -81,7 +81,7 @@ local function dirname(filepath)
 end
 
 local function path_join(...)
-  return table.concat(vim.tbl_flatten {...}, path_sep)
+  return table.concat(vim.tbl_flatten {...}, global.path_sep)
 end
 
 -- Ascend the buffer's path until we find the rootdir.
@@ -163,7 +163,7 @@ function lsp_store.start_lsp_server()
   local bufnr = api.nvim_get_current_buf()
   local buf_filetype = api.nvim_buf_get_option(bufnr,'filetype')
   -- Filter which files we are considering.
-  if not has_key(server,buf_filetype) then
+  if not global.has_key(server,buf_filetype) then
     -- load completion in buffer for complete something else
     load_completion()
     return
