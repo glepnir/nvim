@@ -1,7 +1,7 @@
-require 'global'
+local global = require 'global'
 local vim,api = vim,vim.api
 local theme = {}
-local theme_cache = cache_dir..path_sep..'theme.txt'
+local theme_cache = global.cache_dir..global.path_sep..'theme.txt'
 
 function theme.load_theme()
   local default_theme = 'oceanic_material'

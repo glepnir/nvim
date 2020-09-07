@@ -1,4 +1,4 @@
-require 'global'
+local global = require 'global'
 local vim = vim
 local dein  = {}
 
@@ -12,15 +12,16 @@ function dein:new()
 end
 
 function dein:parse_config()
-  if is_mac then
+  local cmd = nil
+  if global.is_mac then
     cmd = [[ruby -e 'require "json"; require "yaml"; print JSON.generate YAML.load $stdin.read']]
-  elseif is_linux then
+  elseif global.is_linux then
     cmd = [[python -c 'import sys,yaml,json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))']]
   end
-  local p = io.popen('find "'..modules_dir..'" -name "*.yaml"')
+  local p = io.popen('find "'..global.modules_dir..'" -name "*.yaml"')
   for file in p:lines() do
     table.insert(self.config_files,vim.inspect(file))
-    local cfg = vim.api.nvim_eval(vim.fn.system(cmd,readAll(file)))
+    local cfg = vim.api.nvim_eval(vim.fn.system(cmd,global.readAll(file)))
     for _,v in pairs(cfg) do
       table.insert(self.repos,v)
     end
@@ -29,8 +30,8 @@ function dein:parse_config()
 end
 
 function dein:load_repos()
-  local dein_path = cache_dir .. 'dein'
-  local dein_dir = cache_dir ..'dein/repos/github.com/Shougo/dein.vim'
+  local dein_path = global.cache_dir .. 'dein'
+  local dein_dir = global.cache_dir ..'dein/repos/github.com/Shougo/dein.vim'
   local cmd = "git clone https://github.com/Shougo/dein.vim " .. dein_dir
 
   if vim.fn.has('vim_starting') then
@@ -38,10 +39,10 @@ function dein:load_repos()
     vim.api.nvim_set_var('dein#install_max_processes',12)
     vim.api.nvim_set_var('dein#install_progress_type',"title")
     vim.api.nvim_set_var('dein#enable_notification',1)
-    vim.api.nvim_set_var('dein#install_log_filename',cache_dir ..'dein.log')
+    vim.api.nvim_set_var('dein#install_log_filename',global.cache_dir ..'dein.log')
 
     if not string.match(vim.o.runtimepath,'/dein.vim') then
-      if not isdir(dein_dir) then
+      if not global.isdir(dein_dir) then
         os.execute(cmd)
       end
       vim.o.runtimepath = vim.o.runtimepath ..','..dein_dir

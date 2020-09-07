@@ -1,4 +1,3 @@
-require 'global'
 local M = {}
 local vim = vim
 local mapping = {}
