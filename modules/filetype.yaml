@@ -13,14 +13,11 @@
 - repo: hardcoreplayers/go-nvim
   on_ft: [ go, gomod ]
 
-- repo: euclidianAce/BetterLua.vim
-  on_ft: lua
-
 - repo: ekalinin/Dockerfile.vim
   on_ft: [Dockerfile, docker-compose]
 
 - repo: nvim-treesitter/nvim-treesitter
-  on_ft: [typescript]
+  on_ft: [typescript,lua]
   hook_source: |
     lua <<EOF
     require'nvim-treesitter.configs'.setup {
