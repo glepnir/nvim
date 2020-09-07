@@ -149,8 +149,6 @@ local function add_callbacks(server_setup)
       lsp.util.buf_diagnostics_virtual_text(bufnr, result.diagnostics)
     end
     lsp.util.buf_diagnostics_signs(bufnr, result.diagnostics)
-    -- use floatwindow to show diagnostc message
-    api.nvim_command('autocmd CursorHold <buffer> lua vim.lsp.util.show_line_diagnostics()')
     api.nvim_command("doautocmd User LspDiagnosticsChanged")
   end
 
@@ -386,6 +384,8 @@ function lsp_store.start_lsp_server()
         -- register lsp diagnostic error jump command
         api.nvim_command("command! -count=1 DiagnosticPrev lua require'lsp.lspdiag'.lsp_jump_diagnostic_prev(<count>)")
         api.nvim_command("command! -count=1 DiagnosticNext lua require'lsp.lspdiag'.lsp_jump_diagnostic_next(<count>)")
+        -- use floatwindow to show diagnostc message
+        api.nvim_command('autocmd CursorHold <buffer> lua vim.lsp.util.show_line_diagnostics()')
         -- Source omnicompletion from LSP.
         vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
       end
