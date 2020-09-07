@@ -149,7 +149,9 @@ local function add_callbacks(server_setup)
       lsp.util.buf_diagnostics_virtual_text(bufnr, result.diagnostics)
     end
     lsp.util.buf_diagnostics_signs(bufnr, result.diagnostics)
-    vim.api.nvim_command("doautocmd User LspDiagnosticsChanged")
+    -- use floatwindow to show diagnostc message
+    api.nvim_command('autocmd CursorHold <buffer> lua vim.lsp.util.show_line_diagnostics()')
+    api.nvim_command("doautocmd User LspDiagnosticsChanged")
   end
 
   server_setup.callbacks["textDocument/signatureHelp"] = signature_help_callback
@@ -378,14 +380,12 @@ function lsp_store.start_lsp_server()
             {"BufWritePre","<buffer>","lua vim.lsp.buf.formatting_sync(nil, 1000)"}
           }
         end
-
+        api.nvim_command("autocmd CompleteDone <buffer> lua vim.lsp.buf.signature_help()")
         -- register lsp event
         autocmd.nvim_create_augroups(lsp_event)
         -- register lsp diagnostic error jump command
         api.nvim_command("command! -count=1 DiagnosticPrev lua require'lsp.lspdiag'.lsp_jump_diagnostic_prev(<count>)")
         api.nvim_command("command! -count=1 DiagnosticNext lua require'lsp.lspdiag'.lsp_jump_diagnostic_next(<count>)")
-        -- use floatwindow to show diagnostc message
-        lsp.util.show_line_diagnostics()
         -- Source omnicompletion from LSP.
         vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
       end

@@ -299,6 +299,15 @@ function! s:apply_syntax_highlightings()
   exec 'hi htmlScriptTag'. s:fg_purple
   exec 'hi htmlSpecialTagName'. s:fg_red.s:italic
   "===============================================================
+  exec 'hi typescriptImport' . s:fg_purple
+  exec 'hi typescriptAssign' . s:fg_operator
+  exec 'hi typescriptBraces' . s:fg_operator
+  exec 'hi typescriptParens' . s:fg_operator
+  exec 'hi typescriptExport' . s:fg_red
+  exec 'hi typescriptVariable' . s:fg_orange
+  exec 'hi typescriptDestructureVariable' . s:fg_cyan
+  exec 'hi jsxComponentName' . s:fg_blue
+  "===============================================================
   " Lua:
   "===============================================================
   exec 'hi luaFunc' . s:fg_green  . s:bold
