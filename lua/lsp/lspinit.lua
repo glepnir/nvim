@@ -30,7 +30,7 @@ local function add_hook_after(func, new_fn)
 end
 
 -- signature help callback function
-local signature_help_callback = function(_, _method, result)
+local signature_help_callback = function(_, _, result)
     if not (result and result.signatures and #result.signatures > 0) then
         return { 'No signature available' }
     end
@@ -148,8 +148,6 @@ local function add_callbacks(server_setup)
       -- use virtual text show message diagnostic
       lsp.util.buf_diagnostics_virtual_text(bufnr, result.diagnostics)
     end
-    -- use floatwindow to show diagnostc message
-    lsp.util.show_line_diagnostics()
     lsp.util.buf_diagnostics_signs(bufnr, result.diagnostics)
     vim.api.nvim_command("doautocmd User LspDiagnosticsChanged")
   end
@@ -386,6 +384,8 @@ function lsp_store.start_lsp_server()
         -- register lsp diagnostic error jump command
         api.nvim_command("command! -count=1 DiagnosticPrev lua require'lsp.lspdiag'.lsp_jump_diagnostic_prev(<count>)")
         api.nvim_command("command! -count=1 DiagnosticNext lua require'lsp.lspdiag'.lsp_jump_diagnostic_next(<count>)")
+        -- use floatwindow to show diagnostc message
+        lsp.util.show_line_diagnostics()
         -- Source omnicompletion from LSP.
         vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
       end
