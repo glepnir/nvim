@@ -67,8 +67,8 @@ let s:colors = {
       \ 'magenta':          ['#d16d9e',   '205'],
       \ 'orange':           ['#e78a4e',   '208'],
       \ 'yellow':           ['#d8a657',   '214'],
-      \ 'green':            ['#a7c777',   '111'],
-      \ 'aqua':             ['#62b3b2',   '73'],
+      \ 'green':            ['#5faf5f',   '71'],
+      \ 'cyan':             ['#56b6c2',   '73'],
       \ 'blue':             ['#6699cc',   '68'],
       \ 'purple':           ['#c594c5',   '176'],
       \ 'black':            ['#000000',    '0'],
@@ -76,7 +76,7 @@ let s:colors = {
       \ 'grey0':            ['#7c6f64',   '243'],
       \ 'grey1':            ['#928374',   '245'],
       \ 'grey2':            ['#a89984',   '246'],
-      \ 'operator_base05':  ['#c0c5ce',   '251'],
+      \ 'operator':  ['#c0c5ce',   '251'],
       \ 'none':             ['NONE',      'NONE']
   \ }
 
@@ -96,7 +96,7 @@ function! s:create_color_variables() abort
   endfor
   let s:sp_red = ' guisp='.s:colors.red[0] . ' '
   let s:sp_blue = ' guisp='.s:colors.blue[0] . ' '
-  let s:sp_aqua = ' guisp='.s:colors.aqua[0] . ' '
+  let s:sp_cyan = ' guisp='.s:colors.cyan[0] . ' '
   let s:sp_yellow = ' guisp='.s:colors.yellow[0] . ' '
   let s:sp_purple = ' guisp='.s:colors.purple[0] . ' '
 endfunction
@@ -108,7 +108,7 @@ function! s:set_color_variables() abort
         \ 'red':      s:colors.red,
         \ 'yellow':   s:colors.yellow,
         \ 'green':    s:colors.green,
-        \ 'cyan':     s:colors.aqua,
+        \ 'cyan':     s:colors.cyan,
         \ 'blue':     s:colors.blue,
         \ 'purple':   s:colors.purple,
         \ 'white':    s:colors.fg0,
@@ -181,7 +181,7 @@ function! s:apply_syntax_highlightings()
   exec 'hi Pmenu'. s:fg_fg1. s:bg_bg1
   exec 'hi PmenuSbar'. s:fg_none. s:bg_fg3
   exec 'hi PmenuSel'. s:fg_bg3. s:bg_blue
-  exec 'hi PmenuThumb'. s:fg_none. s:bg_operator_base05
+  exec 'hi PmenuThumb'. s:fg_none. s:bg_operator
   exec 'hi WildMenu'. s:fg_bg3. s:bg_green
   exec 'hi Question'. s:fg_yellow
   exec 'hi NormalFloat' .s:fg_fg1 . s:bg_bg3
@@ -193,11 +193,11 @@ function! s:apply_syntax_highlightings()
   " spell
   exec 'hi SpellBad'. s:fg_red. s:bg_none. s:undercurl. s:sp_red
   exec 'hi SpellCap'. s:fg_blue. s:bg_none. s:undercurl. s:sp_blue
-  exec 'hi SpellLocal'. s:fg_aqua. s:bg_none. s:undercurl. s:sp_aqua
+  exec 'hi SpellLocal'. s:fg_cyan. s:bg_none. s:undercurl. s:sp_cyan
   exec 'hi SpellRare'. s:fg_purple. s:bg_none. s:undercurl. s:sp_purple
 
-  exec 'hi Visual'. s:fg_black . s:bg_operator_base05 .s:reverse
-  exec 'hi VisualNOS'. s:fg_black . s:bg_operator_base05 . s:reverse
+  exec 'hi Visual'. s:fg_black . s:bg_operator .s:reverse
+  exec 'hi VisualNOS'. s:fg_black . s:bg_operator . s:reverse
 
   exec 'hi QuickFixLine'. s:fg_purple. s:bold
   exec 'hi Debug'. s:fg_orange
@@ -224,7 +224,7 @@ function! s:apply_syntax_highlightings()
   exec 'hi Tag'. s:fg_orange
   exec 'hi Label'. s:fg_orange
   exec 'hi Structure'. s:fg_orange
-  exec 'hi Operator'. s:fg_operator_base05
+  exec 'hi Operator'. s:fg_operator
   exec 'hi Title'. s:fg_orange. s:bold
   exec 'hi Special'. s:fg_yellow
   exec 'hi SpecialChar'. s:fg_yellow
@@ -232,8 +232,8 @@ function! s:apply_syntax_highlightings()
   exec 'hi Function'. s:fg_magenta. 'gui=bold'
   exec 'hi String'. s:fg_green
   exec 'hi Character'. s:fg_green
-  exec 'hi Constant'. s:fg_aqua
-  exec 'hi Macro'. s:fg_aqua
+  exec 'hi Constant'. s:fg_cyan
+  exec 'hi Macro'. s:fg_cyan
   exec 'hi Identifier'. s:fg_blue
 
   " Comment
@@ -258,8 +258,8 @@ function! s:apply_syntax_highlightings()
   exec 'hi markdownBold'. s:fg_none. s:bold
   exec 'hi markdownItalicDelimiter'. s:fg_grey1. s:italic
   exec 'hi markdownCode' .s:fg_green
-  exec 'hi markdownCodeBlock' .s:fg_aqua
-  exec 'hi markdownCodeDelimiter' .s:fg_aqua
+  exec 'hi markdownCodeBlock' .s:fg_cyan
+  exec 'hi markdownCodeDelimiter' .s:fg_cyan
   exec 'hi markdownBlockquote'.s:fg_grey1
   exec 'hi markdownListMarker'. s:fg_red
   exec 'hi markdownOrderedListMarker'. s:fg_red
@@ -295,7 +295,7 @@ function! s:apply_syntax_highlightings()
   exec 'hi htmlEndTag'. s:fg_blue
   exec 'hi htmlTagN'. s:fg_orange. s:italic
   exec 'hi htmlTagName'. s:fg_orange. s:italic
-  exec 'hi htmlArg'. s:fg_aqua
+  exec 'hi htmlArg'. s:fg_cyan
   exec 'hi htmlScriptTag'. s:fg_purple
   exec 'hi htmlSpecialTagName'. s:fg_red.s:italic
   "===============================================================
@@ -310,18 +310,18 @@ function! s:apply_syntax_highlightings()
   exec 'hi luaLocal' . s:fg_orange
   exec 'hi luaSpecialValue' . s:fg_green  . s:bold
   exec 'hi luaBraces' . s:fg_fg0
-  exec 'hi luaBuiltIn' . s:fg_aqua
+  exec 'hi luaBuiltIn' . s:fg_cyan
   exec 'hi luaNoise' . s:fg_grey1
   exec 'hi luaLabel' . s:fg_purple
   exec 'hi luaFuncKeyword' . s:fg_blue
-  exec 'hi luaFuncArgName' . s:fg_aqua
+  exec 'hi luaFuncArgName' . s:fg_cyan
   exec 'hi luaEllipsis' . s:fg_orange
   exec 'hi luaDocTag' . s:fg_green
   "===============================================================
   " Go:
   "===============================================================
   exec 'hi goDirective' . s:fg_purple  . s:italic
-  exec 'hi goConstants' . s:fg_aqua
+  exec 'hi goConstants' . s:fg_cyan
   exec 'hi goTypeDecl' . s:fg_purple  . s:italic
   exec 'hi goDeclType' . s:fg_orange  . s:italic
   exec 'hi goFunctionCall' . s:fg_yellow  . s:bold
@@ -330,10 +330,10 @@ function! s:apply_syntax_highlightings()
   exec 'hi goBuiltins' . s:fg_purple
   exec 'hi goPredefinedIdentifiers' . s:fg_orange
   exec 'hi goVar' . s:fg_orange
-  exec 'hi goField' . s:fg_aqua
+  exec 'hi goField' . s:fg_cyan
   exec 'hi goDeclaration' . s:fg_blue
   exec 'hi goConst' . s:fg_orange
-  exec 'hi goParamName' . s:fg_aqua
+  exec 'hi goParamName' . s:fg_cyan
   "===============================================================
   " Rust:
   " builtin: https://github.com/rust-lang/rust.vim
@@ -347,15 +347,15 @@ function! s:apply_syntax_highlightings()
   exec 'hi rustDeriveTrait' . s:fg_purple  . s:italic
   exec 'hi rustEnumVariant' . s:fg_purple
   exec 'hi rustMacroVariable' . s:fg_blue
-  exec 'hi rustAssert' . s:fg_aqua
-  exec 'hi rustPanic' . s:fg_aqua
+  exec 'hi rustAssert' . s:fg_cyan
+  exec 'hi rustPanic' . s:fg_cyan
   exec 'hi rustPubScopeCrate' . s:fg_purple  . s:italic
   "===============================================================
   " VimL:
   "===============================================================
   exec 'hi vimCommentTitle'. s:fg_grey1. s:bold
   exec 'hi vimLet' . s:fg_orange
-  exec 'hi vimVar' . s:fg_aqua
+  exec 'hi vimVar' . s:fg_cyan
   exec 'hi vimFunction' . s:fg_magenta  . s:bold
   exec 'hi vimIsCommand' . s:fg_fg0
   exec 'hi vimCommand' . s:fg_blue
@@ -365,7 +365,7 @@ function! s:apply_syntax_highlightings()
   "===============================================================
   " Makefile:
   "===============================================================
-  exec 'hi makeIdent' . s:fg_aqua
+  exec 'hi makeIdent' . s:fg_cyan
   exec 'hi makeSpecTarget' . s:fg_yellow
   exec 'hi makeTarget' . s:fg_blue
   exec 'hi makeCommands' . s:fg_orange
@@ -385,7 +385,7 @@ function! s:apply_syntax_highlightings()
   "===============================================================
   exec 'hi tomlTable'. s:fg_purple. s:bold
   exec 'hi tomlKey' . s:fg_orange
-  exec 'hi tomlBoolean' . s:fg_aqua
+  exec 'hi tomlBoolean' . s:fg_cyan
   exec 'hi tomlTableArray'. s:fg_purple. s:bold
   "===============================================================
   " Diff:
@@ -395,7 +395,7 @@ function! s:apply_syntax_highlightings()
   exec 'hi diffChanged' . s:fg_blue
   exec 'hi diffOldFile' . s:fg_yellow
   exec 'hi diffNewFile' . s:fg_orange
-  exec 'hi diffFile' . s:fg_aqua
+  exec 'hi diffFile' . s:fg_cyan
   exec 'hi diffLine' . s:fg_grey1
   exec 'hi diffIndexLine' . s:fg_purple
   "===============================================================
@@ -459,7 +459,7 @@ function! s:apply_syntax_highlightings()
   exec 'hi LspDiagnosticsError' . s:fg_red
   exec 'hi LspDiagnosticsWarning'. s:fg_yellow
   exec 'hi LspDiagnosticsInformation' . s:fg_blue
-  exec 'hi LspDiagnosticsHint' . s:fg_aqua
+  exec 'hi LspDiagnosticsHint' . s:fg_cyan
   "===============================================================
   exec 'hi CursorWord0' .s:bg_fg3
   exec 'hi CursorWord1' .s:bg_fg3
