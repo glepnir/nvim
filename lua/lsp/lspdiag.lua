@@ -1,3 +1,4 @@
+-- lsp dianostic
 local vim = vim
 local api = vim.api
 local lsp = vim.lsp

@@ -76,8 +76,7 @@ function mapping:load_plugin_define()
     ["n|<LocalLeader>r"] = map_cr("call dein#recache_runtimepath()"):with_noremap():with_silent(),
     ["n|<LocalLeader>u"] = map_cr("call dein#update()"):with_noremap():with_silent(),
     ["n|<Leader>tf"]     = map_cu('DashboardNewFile'):with_noremap():with_silent(),
-    ["n|<Leader>bc"]     = map_cr('Bonly'):with_noremap():with_silent(),
-    ["n|<Leader>bx"]     = map_cr('Bw'):with_noremap():with_silent(),
+    -- a magic bind for regex [0-9]
     ["n|<Leader>,0,9"]   = "<Plug>BuffetSwitch(+)",
     -- Plugin Defx
     ["n|<Leader>e"]      = map_cu([[Defx -resume -toggle -buffer-name=tab`tabpagenr()`]]):with_noremap():with_silent(),
@@ -106,8 +105,8 @@ function mapping:load_plugin_define()
     ["n|<Leader>oc"]     = map_cu('Clap dotfiles'):with_noremap():with_silent(),
     ["n|<LocalLeader>g"] = map_cu('Clap gosource'):with_noremap():with_silent(),
     -- Plugin acceleratedjk
-    ["n|j"]              = map_cmd('<Plug>(accelerated_jk_gj)'),
-    ["n|k"]              = map_cmd('<Plug>(accelerated_jk_gk)'),
+    ["n|j"]              = map_cmd('<Plug>(accelerated_jk_gj)'):with_silent(),
+    ["n|k"]              = map_cmd('<Plug>(accelerated_jk_gk)'):with_silent(),
     -- Plugin QuickRun
     ["n|<Leader>cr"]     = map_cr('QuickRun'):with_noremap():with_silent(),
     -- Plugin Vista
