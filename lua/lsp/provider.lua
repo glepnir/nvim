@@ -68,20 +68,17 @@ local function references_preview_location_callback(_,method,result)
     local lines = {}
     for index,_ in ipairs(result) do
       local range = result[index].targetRange or result[index].range
-      lines[index] = api.nvim_buf_get_lines(bufnr,range.start.line-0,range["end"].line+1+5,false)
+      lines[index] = api.nvim_buf_get_lines(bufnr,range.start.line-0,range["end"].line+1+15,false)
     end
     local title = 'References:'
     local contents = {title}
     -- TODO:better contents
     for k,_ in ipairs(files) do
       table.insert(contents,files[k])
-      if type(lines[k]) == table then
-        for a,_ in ipairs(lines[k]) do
-          table.insert(contents,lines[a])
-        end
+      for _,v in pairs(lines[k]) do
+        table.insert(contents,v)
       end
     end
-    print(global.dump(lines))
 
     M.floatng_buf,M.floating_win = utils.create_float_window(contents)
   end
