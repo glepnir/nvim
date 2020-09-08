@@ -35,6 +35,9 @@ local function preview_location_callback(_, method, result)
     end
 end
 
+function M.lsp_peek_references(_,method,result)
+end
+
 function M.lsp_peek_definition()
     if vim.tbl_contains(vim.api.nvim_list_wins(), M.floating_win) then
         vim.api.nvim_set_current_win(M.floating_win)
@@ -44,18 +47,21 @@ function M.lsp_peek_definition()
     end
 end
 
+
+
 -- jump to definition in split window
 function M.lsp_jump_definition()
-  local winr = vim.fn.winnr("$")
-  local winsize = vim.api.nvim_exec([[
-  echo (winwidth(0) - (max([len(line('$')), &numberwidth-1]) + 1)) < 110
-  ]],true)
-  if winr >= 4 or winsize == 1 then
-    vim.lsp.buf.definition()
-  else
-    vim.api.nvim_command("vsplit")
-    vim.lsp.buf.definition()
-  end
+    local winr = vim.fn.winnr("$")
+    local winsize = vim.api.nvim_exec([[
+    echo (winwidth(0) - (max([len(line('$')), &numberwidth-1]) + 1)) < 110
+    ]],true)
+    if winr >= 4 or winsize == 1 then
+      vim.lsp.buf.definition()
+    else
+      vim.api.nvim_command("vsplit")
+      vim.lsp.buf.definition()
+    end
 end
+
 
 return M
