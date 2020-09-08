@@ -1,3 +1,4 @@
+local global = require 'global'
 local vim,api,lsp = vim,vim.api,vim.lsp
 local callbacks = {}
 
