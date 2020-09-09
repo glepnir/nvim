@@ -54,7 +54,7 @@ local function references_preview_location_callback(_,method,result)
     return nil
   end
   if vim.tbl_islist(result) then
-    local references_icon = vim.g.lsp_nvim_references_icon or  '  '
+    local references_icon = vim.g.lsp_nvim_references_icon or  '   '
     local params = vim.fn.expand("<cword>")
     local title = references_icon.. params ..':  '.. #result ..' References'
     local contents = {title}
@@ -72,22 +72,23 @@ local function references_preview_location_callback(_,method,result)
       local short_name = vim.fn.substitute(link,root_dir..'/','','')
       local target_line = '['..index..']'..' '..short_name
       local range = result[index].targetRange or result[index].range
-      short_link[short_name] = {link=link,row=range.start.line+1,col=range.start.character+1}
-      table.insert(contents,' ')
+      if index == 1 then
+        table.insert(contents,' ')
+      end
       table.insert(contents,target_line)
       local lines = api.nvim_buf_get_lines(bufnr,range.start.line-0,range["end"].line+1+5,false)
-      for _,v in ipairs(lines) do
-        table.insert(contents,v)
-      end
+      short_link[short_name] = {link=link,preview=lines,row=range.start.line+1,col=range.start.character+1}
+      short_link[short_name].preview_data = {}
+      short_link[short_name].preview_data.status = 0
     end
-    M.floatng_buf,M.floating_win,M.border_win = window.create_float_window(contents)
+    M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents)
   end
 end
 
 function M.open_link()
   local short_name = vim.fn.split(vim.fn.getline('.'),' ')[2]
-  if short_link[short_name] ~=nil then
-    api.nvim_win_close(M.floating_win,true)
+  if short_link[short_name] ~= nil then
+    api.nvim_win_close(M.contents_win,true)
     api.nvim_win_close(M.border_win,true)
     api.nvim_command("edit "..short_link[short_name].link)
     vim.fn.cursor(short_link[short_name].row,short_link[short_name].col)
@@ -95,6 +96,36 @@ function M.open_link()
     return
   end
 end
+
+function M.insert_preview()
+  local short_name = vim.fn.split(vim.fn.getline('.'),' ')[2]
+  local current_line = vim.fn.line('.')
+  if short_link[short_name] ~= nil and short_link[short_name].preview_data.status ~= 1  then
+    short_link[short_name].preview_data.status = 1
+    short_link[short_name].preview_data.stridx = current_line
+    short_link[short_name].preview_data.endidx = current_line + #short_link[short_name].preview
+    vim.fn.append(current_line,short_link[short_name].preview)
+  elseif short_link[short_name] ~= nil and short_link[short_name].preview_data.status == 1 then
+    local stridx = short_link[short_name].preview_data.stridx
+    local endidx = short_link[short_name].preview_data.endidx
+    api.nvim_buf_set_lines(M.contents_buf,stridx,endidx,true,{})
+    short_link[short_name].preview_data.status = 0
+    short_link[short_name].preview_data.stridx = 0
+    short_link[short_name].preview_data.endidx = 0
+  elseif short_link[short_name] == nil then
+    return
+  end
+end
+
+function M.quit_float_window()
+  if M.contents_buf ~= nil and M.contents_win ~= nil and M.border_win ~= nil then
+    api.nvim_win_close(M.contents_win,true)
+    api.nvim_win_close(M.border_win,true)
+  else
+    return
+  end
+end
+
 
 function M.lsp_peek_references()
   local params = vim.lsp.util.make_position_params()
