@@ -51,20 +51,29 @@ function M.create_float_window(contents)
   -- rewrite opts for contents buffer
   opts.row = opts.row + 1
   opts.height = opts.height - 2
-  opts.col = opts.col + 2
+  opts.col = opts.col + 1
   opts.width = opts.width - 4
   -- create contents buffer
   local contents_bufnr = api.nvim_create_buf(false, true)
   -- buffer settings for contents buffer
   -- Clean up input: trim empty lines from the end, pad
-  contents = vim.lsp.util._trim_and_pad(contents, opts)
+  contents = vim.lsp.util._trim_and_pad(contents,{pad_left=0})
   api.nvim_buf_set_lines(contents_bufnr,0,-1,true,contents)
   api.nvim_buf_set_option(contents_bufnr, 'filetype', 'lspnvim')
   api.nvim_buf_set_option(contents_bufnr, 'modifiable', false)
   local contents_winid = api.nvim_open_win(contents_bufnr, true, opts)
   api.nvim_win_set_option(contents_winid,"winhl","Normal:LspNvim")
+  api.nvim_buf_set_keymap(contents_bufnr,'n',"<CR>",":lua require'lsp.provider'.open_link()<CR>",{noremap = true,silent = true})
+  api.nvim_command([[syntax region ReferencesTitile start=/\s[A-z]\+:/ end=/\s/]])
+  api.nvim_command([[syntax region ReferencesIcon start=/\s\S\s\s/ end=/\s/]])
+  api.nvim_command([[syntax region ReferencesCount start=/[0-9]\sReferences/ end=/$/]])
+  api.nvim_command([[syntax region TargetFileName start=/\[[0-9]\]\s\([A-z0-9_]\+\/\)\+\([A-z0-9_]\+\)\.[A-z]\+/ end=/$/]])
+  api.nvim_command("hi ReferencesTitile guifg=#EC5f67")
+  api.nvim_command("hi ReferencesCount guifg=#2e6ce8")
+  api.nvim_command("hi TargetFileName guifg=#a4e34b")
+  api.nvim_command("hi ReferencesIcon guifg=#e3bc10")
 
-  return contents_bufnr,contents_winid
+  return contents_bufnr,contents_winid,border_winid
 end
 
 return M

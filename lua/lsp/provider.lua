@@ -2,6 +2,7 @@ local global = require 'global'
 local window = require 'lsp.window'
 local vim,api = vim,vim.api
 local M = {}
+local short_link = {}
 local root_dir = vim.lsp.buf_get_clients()[1].config.root_dir
 
 -- lsp peek preview Taken from
@@ -53,8 +54,9 @@ local function references_preview_location_callback(_,method,result)
     return nil
   end
   if vim.tbl_islist(result) then
+    local references_icon = vim.g.lsp_nvim_references_icon or  '  '
     local params = vim.fn.expand("<cword>")
-    local title = params ..': '.. #result ..' References'
+    local title = references_icon.. params ..':  '.. #result ..' References'
     local contents = {title}
 
     for index,_ in ipairs(result) do
@@ -68,16 +70,29 @@ local function references_preview_location_callback(_,method,result)
       end
       local link = vim.uri_to_fname(uri)
       local short_name = vim.fn.substitute(link,root_dir..'/','','')
-      table.insert(contents,' ')
-      table.insert(contents,short_name)
-
+      local target_line = '['..index..']'..' '..short_name
       local range = result[index].targetRange or result[index].range
+      short_link[short_name] = {link=link,row=range.start.line+1,col=range.start.character+1}
+      table.insert(contents,' ')
+      table.insert(contents,target_line)
       local lines = api.nvim_buf_get_lines(bufnr,range.start.line-0,range["end"].line+1+5,false)
       for _,v in ipairs(lines) do
         table.insert(contents,v)
       end
     end
-    M.floatng_buf,M.floating_win = window.create_float_window(contents)
+    M.floatng_buf,M.floating_win,M.border_win = window.create_float_window(contents)
+  end
+end
+
+function M.open_link()
+  local short_name = vim.fn.split(vim.fn.getline('.'),' ')[2]
+  if short_link[short_name] ~=nil then
+    api.nvim_win_close(M.floating_win,true)
+    api.nvim_win_close(M.border_win,true)
+    api.nvim_command("edit "..short_link[short_name].link)
+    vim.fn.cursor(short_link[short_name].row,short_link[short_name].col)
+  else
+    return
   end
 end
 
