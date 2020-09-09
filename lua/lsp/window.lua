@@ -24,7 +24,7 @@ function M.create_float_window(contents)
     style = "minimal",
     width = win_width,
     height = win_height,
-    row = vim.fn.line('.'),
+    row = vim.fn.line('.') ,
     col = math.ceil((width - win_width) / 2)
   }
   -- set border
