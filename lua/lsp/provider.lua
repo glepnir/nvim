@@ -1,7 +1,8 @@
 local global = require 'global'
-local utils = require 'lsp.utils'
+local window = require 'lsp.window'
 local vim,api = vim,vim.api
 local M = {}
+local root_dir = vim.lsp.buf_get_clients()[1].config.root_dir
 
 -- lsp peek preview Taken from
 -- https://www.reddit.com/r/neovim/comments/gyb077/nvimlsp_peek_defination_javascript_ttserver
@@ -52,35 +53,31 @@ local function references_preview_location_callback(_,method,result)
     return nil
   end
   if vim.tbl_islist(result) then
-    local uri = result[1].targetUri or result[1].uri
-    if uri == nil then
-        return
-    end
-    local bufnr = vim.uri_to_bufnr(uri)
-    if not vim.api.nvim_buf_is_loaded(bufnr) then
-      vim.fn.bufload(bufnr)
-    end
-
-    local files = {}
-    for index,_ in ipairs(result) do
-      files[index] = vim.uri_to_fname(result[index].uri)
-    end
-    local lines = {}
-    for index,_ in ipairs(result) do
-      local range = result[index].targetRange or result[index].range
-      lines[index] = api.nvim_buf_get_lines(bufnr,range.start.line-0,range["end"].line+1+15,false)
-    end
-    local title = 'References:'
+    local params = vim.fn.expand("<cword>")
+    local title = params ..': '.. #result ..' References'
     local contents = {title}
-    -- TODO:better contents
-    for k,_ in ipairs(files) do
-      table.insert(contents,files[k])
-      for _,v in pairs(lines[k]) do
+
+    for index,_ in ipairs(result) do
+      local uri = result[index].targetUri or result[index].uri
+      if uri == nil then
+          return
+      end
+      local bufnr = vim.uri_to_bufnr(uri)
+      if not api.nvim_buf_is_loaded(bufnr) then
+        vim.fn.bufload(bufnr)
+      end
+      local link = vim.uri_to_fname(uri)
+      local short_name = vim.fn.substitute(link,root_dir..'/','','')
+      table.insert(contents,' ')
+      table.insert(contents,short_name)
+
+      local range = result[index].targetRange or result[index].range
+      local lines = api.nvim_buf_get_lines(bufnr,range.start.line-0,range["end"].line+1+5,false)
+      for _,v in ipairs(lines) do
         table.insert(contents,v)
       end
     end
-
-    M.floatng_buf,M.floating_win = utils.create_float_window(contents)
+    M.floatng_buf,M.floating_win = window.create_float_window(contents)
   end
 end
 
