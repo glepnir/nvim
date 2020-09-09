@@ -1,5 +1,5 @@
 local global = {}
-local home     = os.getenv("HOME")
+local home    = os.getenv("HOME")
 local path_sep = global.is_windows and '\\' or '/'
 
 function global.load_variables()
