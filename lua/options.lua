@@ -66,7 +66,7 @@ function options:load_options()
   self.inccommand     = "nosplit";
 
   self.grepformat     = "%f:%l:%c:%m";
-  self.grepprg        = [[rg\ --hidden\ --vimgrep\ --smart-case\ --]];
+  self.grepprg        = 'rg --hidden --vimgrep --smart-case --';
 
   self.wrap           = false;
   self.linebreak      = true;
@@ -77,7 +77,7 @@ function options:load_options()
   self.splitright     = true;
   self.switchbuf      = "useopen";
   self.backspace      = "indent,eol,start";
-  self.diffopt        = [[filler,iwhite,internal,algorithm:patience]];
+  self.diffopt        = "filler,iwhite,internal,algorithm:patience";
   self.completeopt    = "menu,menuone,noselect,noinsert";
   self.jumpoptions    = "stack";
 
