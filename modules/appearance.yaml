@@ -1,6 +1,6 @@
 - repo: ryanoasis/vim-devicons
 
-- repo: hardcoreplayers/spaceline.vim
+- repo: glepnir/spaceline.vim
   on_event: [BufReadPre,BufNewFile]
   hook_add: |
     let g:spaceline_diagnostic_errorsign = '🔥'
@@ -33,7 +33,7 @@
 #       }
 #     EOF
 
-- repo: hardcoreplayers/dashboard-nvim
+- repo: glepnir/dashboard-nvim
   hook_source: |
     let g:dashboard_default_header = 'commicgirl5'
     let g:dashboard_custom_section = {
