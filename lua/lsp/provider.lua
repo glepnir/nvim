@@ -21,7 +21,8 @@ local function preview_location(location, context, before_context)
   end
   local range = location.targetRange or location.range
   local contents =
-      vim.api.nvim_buf_get_lines(bufnr, range.start.line - before_context, range["end"].line + 1 + context, false)
+      vim.api.nvim_buf_get_lines(bufnr, range.start.line - before_context, range["end"].line + 1 +
+      context, false)
   local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
   return vim.lsp.util.open_floating_preview(contents, filetype)
 end
@@ -48,16 +49,26 @@ function M.lsp_peek_definition()
   end
 end
 
-local function references_preview_location_callback(_,method,result)
+local contents = {}
+local function defintion_reference_callback(_,method,result)
   if result == nil or vim.tbl_isempty(result) then
     print("No Location found:" .. method)
     return nil
   end
   if vim.tbl_islist(result) then
-    local references_icon = vim.g.lsp_nvim_references_icon or  '   '
+    local method_type = method == "textDocument/definition" and 1 or 2
+    local method_option = {
+      {icon = vim.g.lsp_nvim_defintion_icon or '🔷 ',title = ':  '.. #result ..' Definitions'};
+      {icon = vim.g.lsp_nvim_references_icon or '🔶 ',title = ':  '.. #result ..' References',}
+    }
     local params = vim.fn.expand("<cword>")
-    local title = references_icon.. params ..':  '.. #result ..' References'
-    local contents = {title}
+    local title = method_option[method_type].icon.. params ..method_option[method_type].title
+    if method_type == 1 then
+      table.insert(contents,title)
+    else
+      table.insert(contents," ")
+      table.insert(contents,title)
+    end
 
     for index,_ in ipairs(result) do
       local uri = result[index].targetUri or result[index].uri
@@ -72,7 +83,7 @@ local function references_preview_location_callback(_,method,result)
       local short_name = vim.fn.substitute(link,root_dir..'/','','')
       local target_line = '['..index..']'..' '..short_name
       local range = result[index].targetRange or result[index].range
-      if index == 1 then
+      if index == 1  then
         table.insert(contents,' ')
       end
       table.insert(contents,target_line)
@@ -81,16 +92,35 @@ local function references_preview_location_callback(_,method,result)
       short_link[short_name].preview_data = {}
       short_link[short_name].preview_data.status = 0
     end
-    M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents)
+    if method_type == 2 then
+      for _ =1,15,1 do
+        table.insert(contents,' ')
+      end
+      local help = {
+        "📌 Help: ",
+        " ",
+        "[TAB] : Preview Code     [o] : Open File     [s] : Vsplit Open";
+        "[i]   : Split Open       [q] : Exit";
+      }
+      for _,v in ipairs(help) do
+        table.insert(contents,v)
+      end
+      M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents)
+      contents = {}
+    end
   end
 end
 
-function M.open_link()
+-- action 1 mean enter
+-- action 2 mean vsplit
+-- action 3 mean split
+function M.open_link(action_type)
+  local action = {"edit ","vsplit ","split "}
   local short_name = vim.fn.split(vim.fn.getline('.'),' ')[2]
   if short_link[short_name] ~= nil then
     api.nvim_win_close(M.contents_win,true)
     api.nvim_win_close(M.border_win,true)
-    api.nvim_command("edit "..short_link[short_name].link)
+    api.nvim_command(action[action_type]..short_link[short_name].link)
     vim.fn.cursor(short_link[short_name].row,short_link[short_name].col)
   else
     return
@@ -129,7 +159,8 @@ end
 
 function M.lsp_peek_references()
   local params = vim.lsp.util.make_position_params()
-  return vim.lsp.buf_request(0,"textDocument/references",params,references_preview_location_callback)
+  vim.lsp.buf_request(0, "textDocument/definition", params, defintion_reference_callback)
+  return vim.lsp.buf_request(0,"textDocument/references",params,defintion_reference_callback)
 end
 
 -- jump to definition in split window
