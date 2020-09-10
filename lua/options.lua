@@ -39,7 +39,7 @@ function options:load_options()
   self.shada          = "!,'300,<50,@100,s10,h";
   self.backupskip     = "/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*/shm/*,/private/var/*,.vault.vim";
 
-  self.textwidth      = 80;
+  self.textwidth      = 200;
   self.expandtab      = true;
   self.tabstop        = 2;
   self.shiftwidth     = 2;
