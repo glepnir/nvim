@@ -9,13 +9,13 @@ function options:new()
   return instance
 end
 
-function options:define_options()
+function options:load_options()
   self.mouse          = "nv";
   self.report         = 0;
   self.errorbells     = true;
   self.visualbell     = true;
   self.hidden         = true;
-  self.fileformats    = {'unix','mac','dos'};
+  self.fileformats    = "unix,mac,dos";
   self.magic          = true;
   self.virtualedit    = "block";
   self.synmaxcol      = 2500;
@@ -25,7 +25,7 @@ function options:define_options()
   self.sessionoptions = "curdir,help,tabpages,winsize";
   self.clipboard      = "unnamedplus";
   self.wildignorecase = true;
-  self.wildignore     = {'.git','.hg','.svn','*.pyc','*.o','*.out','*.jpg','*.jpeg','*.png','*.gif','*.zip','**/tmp/**','*.DS_Store','**/node_modules/**','**/bower_modules/**'};
+  self.wildignore     = ".git,.hg,.svn,*.pyc,*.o,*.out,*.jpg,*.jpeg,*.png,*.gif,*.zip,**/tmp/**,*.DS_Store,**/node_modules/**,**/bower_modules/**";
   self.backup         = false;
   self.writebackup    = false;
   self.undofile       = true;
@@ -37,7 +37,7 @@ function options:define_options()
   self.spellfile      = global.cache_dir .. "spell/en.uft-8.add";
   self.history        = 2000;
   self.shada          = "!,'300,<50,@100,s10,h";
-  self.backupskip     = {'/tmp/*','$TMPDIR/*','$TMP/*','$TEMP/*','*/shm/*','/private/var/*','.vault.vim'};
+  self.backupskip     = "/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*/shm/*,/private/var/*,.vault.vim";
 
   self.textwidth      = 80;
   self.expandtab      = true;
@@ -77,8 +77,8 @@ function options:define_options()
   self.splitright     = true;
   self.switchbuf      = "useopen";
   self.backspace      = "indent,eol,start";
-  self.diffopt        = {'filler','iwhite','internal','algorithm:patience'};
-  self.completeopt    = {'menu','menuone','noselect','noinsert'};
+  self.diffopt        = [[filler,iwhite,internal,algorithm:patience]];
+  self.completeopt    = "menu,menuone,noselect,noinsert";
   self.jumpoptions    = "stack";
 
   self.showmode       = false;
@@ -111,7 +111,7 @@ function options:define_options()
 
   self.signcolumn     = "yes";
   self.showbreak      = "↳  ";
-  self.listchars      = {"tab:»·","nbsp:+","trail:·","extends:→","precedes:←"};
+  self.listchars      = "tab:»·,nbsp:+,trail:·,extends:→,precedes:←";
   self.conceallevel   = 2;
   self.concealcursor  = "niv";
   self.termguicolors  = true;
@@ -133,24 +133,8 @@ function options:define_options()
     vim.g.python_host_prog = '/usr/bin/python'
     vim.g.python3_host_prog = '/usr/local/bin/python3'
   end
-end
-
-function options:load_options()
-  self:define_options()
-  for k, v in pairs(self) do
-    if type(v) == 'table' then
-      local values = ''
-      for k2, v2 in pairs(v) do
-        if k2 == 1 then
-          values = values .. v2
-        else
-          values = values .. ',' .. v2
-        end
-      end
-      vim.api.nvim_command('set ' .. k .. '=' .. values)
-    else
-      vim.api.nvim_set_option(k,v)
-    end
+  for name, value in pairs(self) do
+    vim.o[name] = value
   end
 end
 
