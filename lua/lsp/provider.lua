@@ -1,5 +1,6 @@
 local global = require 'global'
 local window = require 'lsp.window'
+local syntax = require 'lsp.syntax'
 local vim,api = vim,vim.api
 local M = {}
 local short_link = {}
@@ -50,6 +51,15 @@ function M.lsp_peek_definition()
 end
 
 local contents = {}
+
+local function apply_float_map(contents_bufnr)
+  api.nvim_buf_set_keymap(contents_bufnr,'n',"o",":lua require'lsp.provider'.open_link(1)<CR>",{noremap = true,silent = true})
+  api.nvim_buf_set_keymap(contents_bufnr,'n',"s",":lua require'lsp.provider'.open_link(2)<CR>",{noremap = true,silent = true})
+  api.nvim_buf_set_keymap(contents_bufnr,'n',"i",":lua require'lsp.provider'.open_link(3)<CR>",{noremap = true,silent = true})
+  api.nvim_buf_set_keymap(contents_bufnr,'n',"<TAB>",":lua require'lsp.provider'.insert_preview()<CR>",{noremap = true,silent = true})
+  api.nvim_buf_set_keymap(contents_bufnr,'n',"q",":lua require'lsp.provider'.quit_float_window()<CR>",{noremap = true,silent = true})
+end
+
 local function defintion_reference_callback(_,method,result)
   if result == nil or vim.tbl_isempty(result) then
     print("No Location found:" .. method)
@@ -106,6 +116,8 @@ local function defintion_reference_callback(_,method,result)
         table.insert(contents,v)
       end
       M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents)
+      apply_float_map(M.contents_buf)
+      syntax.apply_syntax()
       contents = {}
     end
   end
@@ -155,7 +167,6 @@ function M.quit_float_window()
     return
   end
 end
-
 
 function M.lsp_peek_references()
   local params = vim.lsp.util.make_position_params()
