@@ -46,7 +46,6 @@ function M.create_float_window(contents)
   local border_winid = api.nvim_open_win(border_bufnr, true, opts)
   api.nvim_win_set_option(border_winid,"winhl","Normal:LspFloatWinBorder")
   api.nvim_win_set_option(border_winid,"cursorcolumn",false)
-  api.nvim_command("hi LspFloatWinBorder guifg=#6699cc")
 
   -- rewrite opts for contents buffer
   opts.row = opts.row + 1

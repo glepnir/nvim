@@ -69,7 +69,7 @@ local function defintion_reference_callback(_,method,result)
     local method_type = method == "textDocument/definition" and 1 or 2
     local method_option = {
       {icon = vim.g.lsp_nvim_defintion_icon or '🔷 ',title = ':  '.. #result ..' Definitions'};
-      {icon = vim.g.lsp_nvim_references_icon or '🔶 ',title = ':  '.. #result ..' References',}
+      {icon = vim.g.lsp_nvim_references_icon or '🔷 ',title = ':  '.. #result ..' References',};
     }
     local params = vim.fn.expand("<cword>")
     local title = method_option[method_type].icon.. params ..method_option[method_type].title
@@ -116,8 +116,11 @@ local function defintion_reference_callback(_,method,result)
         table.insert(contents,v)
       end
       M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents)
+      -- load float window map
       apply_float_map(M.contents_buf)
+      -- load syntax
       syntax.apply_syntax()
+      -- clear contents
       contents = {}
     end
   end
@@ -146,7 +149,8 @@ function M.insert_preview()
     short_link[short_name].preview_data.status = 1
     short_link[short_name].preview_data.stridx = current_line
     short_link[short_name].preview_data.endidx = current_line + #short_link[short_name].preview
-    vim.fn.append(current_line,short_link[short_name].preview)
+    local code_preview = vim.lsp.util._trim_and_pad(short_link[short_name].preview,{pad_left=4})
+    vim.fn.append(current_line,code_preview)
   elseif short_link[short_name] ~= nil and short_link[short_name].preview_data.status == 1 then
     local stridx = short_link[short_name].preview_data.stridx
     local endidx = short_link[short_name].preview_data.endidx
