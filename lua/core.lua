@@ -4,6 +4,7 @@ local autocmd = require 'event'
 local dein = require 'dein'
 local map = require 'mapping'
 local theme = require 'theme'
+local version = require 'version'
 
 local vim,api = vim,vim.api
 local M = {}
@@ -64,6 +65,7 @@ function M.load_core()
   map.load_mapping()
   autocmd.load_autocmds()
   theme.load_theme()
+  api.nvim_command("highlight! link GitLens Comment")
 end
 
 M.load_core()
