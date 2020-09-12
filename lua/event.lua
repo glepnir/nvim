@@ -49,10 +49,10 @@ function autocmd.load_autocmds()
     lsp= {
       {"InsertEnter","*","lua require'lsp.lspinit'.start_lsp_server()"};
     };
-    gitblame = {
-      {"CursorHold","*","lua require'version'.blameVirtualText()"};
-      {"CursorMoved,CursorMovedI","*","lua require'version'.clearBlameVirtualText()"};
-    }
+    -- gitblame = {
+    --   {"CursorHold","*","lua require'version'.blameVirtualText()"};
+    --   {"CursorMoved,CursorMovedI","*","lua require'version'.clearBlameVirtualText()"};
+    -- }
   }
 
   autocmd.nvim_create_augroups(definitions)
