@@ -1,0 +1,74 @@
+{
+    "extern crate": {
+        "prefix": "extern crate",
+        "body": [
+            "extern crate ${1:name};"
+        ],
+        "description": "Insert extern crate"
+    },
+    "for": {
+        "prefix": "for",
+        "body": [
+            "for ${1:elem} in ${2:iter} {",
+            "\t$0",
+            "}"
+        ],
+        "description": "Insert for loop"
+    },
+    "macro_rules": {
+        "prefix": "macro_rules",
+        "body": [
+            "macro_rules! $1 {",
+            "\t($2) => {",
+            "\t\t$0",
+            "\t};",
+            "}"
+        ],
+        "description": "Insert macro_rules!"
+    },
+    "if let": {
+        "prefix": "if let",
+        "body": [
+            "if let ${1:pattern} = ${2:value} {",
+            "\t$3",
+            "}"
+        ],
+        "description": "Insert if to match a specific pattern, useful for enum variants e.g. `Some(inner)`"
+    },
+    "spawn": {
+        "prefix": [
+            "thread_spawn",
+            "spawn"
+        ],
+        "body": [
+            "std::thread::spawn(move || {",
+            "\t$1",
+            "})"
+        ],
+        "description": "Wrap code in thread::spawn"
+    },
+    "derive": {
+        "prefix": "derive",
+        "body": [
+            "#[derive(${1})]"
+        ],
+        "description": "#[derive(…)]"
+    },
+    "cfg": {
+        "prefix": "cfg",
+        "body": [
+            "#[cfg(${1})]"
+        ],
+        "description": "#[cfg(…)]"
+    },
+    "test": {
+        "prefix": "test",
+        "body": [
+            "#[test]",
+            "fn ${1:name}() {",
+            "    ${2:unimplemented!();}",
+            "}"
+        ],
+        "description": "#[test]"
+    }
+}
