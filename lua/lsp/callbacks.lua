@@ -12,9 +12,6 @@ local function lookup_section(settings, section)
   return settings
 end
 
-local function signature_help_callback(_,method,result)
-end
-
 -- Add I custom callbacks function in lsp server config
 function callbacks.add_callbacks(server_setup)
 
