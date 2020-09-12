@@ -36,7 +36,6 @@ local function focusable_float(unique_name, fn)
     return api.nvim_command("wincmd p")
   end
   local bufnr = api.nvim_get_current_buf()
-  print(bufnr)
   do
     local win = find_window_by_var(unique_name, bufnr)
     if win and not vim.fn.pumvisible() then
