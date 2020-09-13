@@ -38,7 +38,7 @@ local function focusable_float(unique_name, fn)
   local bufnr = api.nvim_get_current_buf()
   do
     local win = find_window_by_var(unique_name, bufnr)
-    if win and not vim.fn.pumvisible() then
+    if win and api.nvim_win_is_valid(win) and not vim.fn.pumvisible() then
       api.nvim_set_current_win(win)
       api.nvim_command("stopinsert")
       return
@@ -57,6 +57,9 @@ local function focusable_preview(unique_name, fn)
   end)
 end
 local function signature_help_callback(_,method,result)
+  if not (result and result.signatures and result.signatures[1]) then
+    return
+  end
   focusable_preview(method, function()
     if not (result and result.signatures and result.signatures[1]) then
       return { 'No signature available' }
