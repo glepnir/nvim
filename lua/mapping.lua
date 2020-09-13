@@ -87,7 +87,7 @@ function mapping:load_plugin_define()
     ["n|<Leader>od"]     = map_cr('DBUIToggle'):with_noremap():with_silent(),
     -- Plugin Floaterm
     ["n|<Leader>t"]      = map_cu('FloatermToggle'):with_noremap():with_silent(),
-    ["t|<Leader>t"]      = map_cu([[<C-\><C-n>:FloatermToggle<CR>]]):with_noremap():with_silent(),
+    ["t|<LocalLeader>t"] = map_cu([[<C-\><C-n>:FloatermToggle<CR>]]):with_noremap():with_silent(),
     ["n|<Leader>g"]      = map_cu('FloatermNew height=0.7 width=0.8 lazygit'):with_noremap():with_silent(),
     -- Plugin Clap
     ["n|<Leader>tc"]     = map_cu('Clap colors'):with_noremap():with_silent(),
