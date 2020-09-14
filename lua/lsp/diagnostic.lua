@@ -3,6 +3,7 @@ local vim = vim
 local api = vim.api
 local lsp = vim.lsp
 local M = {}
+local window = require('lsp.window')
 
 local function get_line(diagnostic_entry)
   return diagnostic_entry["range"]["start"]["line"]
@@ -81,18 +82,46 @@ local function get_below_entry()
   return nil
 end
 
+-- Taken from neovim
+local function open_floating_preview(contents, filetype, opts)
+  opts = opts or {}
+
+  -- Clean up input: trim empty lines from the end, pad
+  contents = lsp.util._trim_and_pad(contents, opts)
+
+  -- Compute size of float needed to show (wrapped) lines
+  opts.wrap_at = opts.wrap_at or (vim.wo["wrap"] and api.nvim_win_get_width(0))
+  local width, height = lsp.util._make_floating_popup_size(contents, opts)
+
+  local floating_bufnr = api.nvim_create_buf(false, true)
+  if filetype then
+    api.nvim_buf_set_option(floating_bufnr, 'filetype', filetype)
+  end
+  local float_option = lsp.util.make_floating_popup_options(width, height, opts)
+  local floating_winnr = api.nvim_open_win(floating_bufnr, false, float_option)
+  if filetype == 'markdown' then
+    api.nvim_win_set_option(floating_winnr, 'conceallevel', 2)
+  end
+  api.nvim_buf_set_lines(floating_bufnr, 0, -1, true, contents)
+  api.nvim_buf_set_option(floating_bufnr, 'modifiable', false)
+  return floating_bufnr, floating_winnr
+end
+
 local function jump_to_entry(entry)
   local entry_line = get_line(entry) + 1
   local entry_character = get_character(entry)
   api.nvim_win_set_cursor(0, {entry_line, entry_character})
+  local _,fw=open_floating_preview({entry.message},'plaintext')
+  -- TODO
+  -- lsp.util.close_preview_autocmd({"CursorMoved", "CursorMovedI", "BufHidden", "BufLeave"}, fw)
 end
 
-local function jump_n_times(count, get_entry_function)
-  for _ = count, 1, -1 do
+
+local function jump_one_times(get_entry_function)
+  for _ = 1, 1, -1 do
       local entry = get_entry_function()
 
       if entry == nil then
-          print("No diagnostic entry to jump further!")
           break
       else
           jump_to_entry(entry)
@@ -100,12 +129,12 @@ local function jump_n_times(count, get_entry_function)
   end
 end
 
-function M.lsp_jump_diagnostic_prev(count)
-  jump_n_times(count, get_above_entry)
+function M.lsp_jump_diagnostic_prev()
+  jump_one_times(get_above_entry)
 end
 
-function M.lsp_jump_diagnostic_next(count)
-  jump_n_times(count, get_below_entry)
+function M.lsp_jump_diagnostic_next()
+  jump_one_times(get_below_entry)
 end
 
 return M
