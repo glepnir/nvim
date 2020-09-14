@@ -59,9 +59,10 @@ end
 
 function mapping:load_plugin_define()
   self.plugin = {
+    ["n|[q"]             = map_cmd("<cmd>lua require'lsp.diagnostic'.show_diagnostics()<CR>"):with_noremap():with_silent(),
     -- Lsp mapp work when insertenter and lsp start
-    ["n|[e"]             = map_cmd([['<cmd>' . v:count1 . 'DiagnosticNext<CR>']]):with_noremap():with_expr(),
-    ["n|]e"]             = map_cmd([['<cmd>' . v:count1 . 'DiagnosticPrev<CR>']]):with_noremap():with_expr(),
+    ["n|[e"]             = map_cmd("<cmd>lua require'lsp.diagnostic'.lsp_jump_diagnostic_next()<CR>"):with_noremap():with_silent(),
+    ["n|]e"]             = map_cmd("<cmd>lua require'lsp.diagnostic'.lsp_jump_diagnostic_prev()<CR>"):with_noremap():with_silent(),
     ["n|K"]              = map_cmd("<cmd>lua vim.lsp.buf.hover()<CR>"):with_noremap():with_silent(),
     ["n|ga"]             = map_cmd("<cmd>lua vim.lsp.buf.code_action()<CR>"):with_noremap():with_silent(),
     ["n|gd"]             = map_cmd("<cmd>lua require'lsp.provider'.lsp_jump_definition()<CR>"):with_noremap():with_silent(),
