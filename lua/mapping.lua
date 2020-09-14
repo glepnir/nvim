@@ -76,6 +76,9 @@ function mapping:load_plugin_define()
     ["n|<LocalLeader>r"] = map_cr("call dein#recache_runtimepath()"):with_noremap():with_silent(),
     ["n|<LocalLeader>u"] = map_cr("call dein#update()"):with_noremap():with_silent(),
     ["n|<Leader>tf"]     = map_cu('DashboardNewFile'):with_noremap():with_silent(),
+    -- mhinz/vim-signify
+    ["n|[g"]             = map_cmd("<plug>(signify-next-hunk)"),
+    ["n|]g"]             = map_cmd("<plug>(signify-prev-hunk)"),
     -- a magic bind for regex [0-9]
     ["n|<Leader>,0,9"]   = "<Plug>BuffetSwitch(+)",
     -- Plugin Defx

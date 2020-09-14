@@ -439,6 +439,12 @@ function! s:apply_syntax_highlightings()
   exec 'hi GitGutterDelete' . s:fg_red  . s:bold
   exec 'hi GitGutterChangeDelete' . s:fg_purple  .s:bold
   "===============================================================
+  " mhinz/vim-signify
+  "===============================================================
+  exec 'hi SignifySignAdd ' . s:fg_green  . s:bold
+  exec 'hi SignifySignChange' . s:fg_blue  . s:bold
+  exec 'hi SignifySignDelete' . s:fg_red  . s:bold
+  "===============================================================
   " easymotion/vim-easymotion
   "===============================================================
   exec 'hi EasyMotionTarget'. s:fg_bg0 . s:bg_green

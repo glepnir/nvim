@@ -9,7 +9,7 @@
     let g:spaceline_custom_diff_icon = [' ',' ',' ']
     let g:spaceline_function_icon = '☀️ '
     let g:spaceline_diagnostic_tool = 'nvim_lsp'
-    let g:spaceline_diff_tool = 'git-gutter'
+    let g:spaceline_diff_tool = 'vim-signify'
 
 - repo: hardcoreplayers/vim-buffet
   on_event: [BufReadPre,BufNewFile]
