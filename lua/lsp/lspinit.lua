@@ -218,6 +218,7 @@ function lsp_store.start_lsp_server()
           default = {
             {complete_items = {'lsp'}},
             {complete_items = {'snippet'}},
+            {complete_items = {'buffers'}},
             {complete_items = {'path'}, triggered_only = {'/'}},
           }
         }

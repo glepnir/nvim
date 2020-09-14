@@ -1,10 +1,13 @@
 - repo: nvim-lua/completion-nvim
-  on_event: InsertEnter
+  on_event: [BufReadPre,BufNewFile]
   hook_add: |
     let g:completion_auto_change_source = 1
     let g:completion_matching_ignore_case = 1
     let g:completion_enable_snippet = 'vim-vsnip'
     let g:completion_confirm_key = ""
+
+- repo: steelsojka/completion-buffers
+  on_source: completion-nvim
 
 - repo: hrsh7th/vim-vsnip
   on_event: InsertCharPre
