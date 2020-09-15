@@ -24,3 +24,8 @@
     endfunction
 
     autocmd User ClapOnEnter call s:ClapSymbolHL()
+
+- repo: brooth/far.vim
+  on_cmd: [ Far, Farp, F ]
+  hook_source: |
+    let g:far#source = 'rg'
