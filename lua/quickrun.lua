@@ -4,6 +4,7 @@ local M = {}
 
 do
   M.go = {'go run ','go test '}
+  M.lua = {'lua '}
 end
 
 function M.run_command()
@@ -16,10 +17,12 @@ function M.run_command()
     else
       cmd = M[file_extension][1]
     end
-    local output_list = vim.fn.split(vim.fn.system(cmd..file_name),'\n')
-    for _,v in ipairs(output_list) do
-      print(v)
-    end
+  else
+    cmd = M[file_extension][1]
+  end
+  local output_list = vim.fn.split(vim.fn.system(cmd..file_name),'\n')
+  for _,v in ipairs(output_list) do
+    print(v)
   end
 end
 
