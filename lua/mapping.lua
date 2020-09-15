@@ -113,7 +113,7 @@ function mapping:load_plugin_define()
     ["n|j"]              = map_cmd('<Plug>(accelerated_jk_gj)'):with_silent(),
     ["n|k"]              = map_cmd('<Plug>(accelerated_jk_gk)'):with_silent(),
     -- Plugin QuickRun
-    ["n|<Leader>cr"]     = map_cr('QuickRun'):with_noremap():with_silent(),
+    ["n|<Leader>r"]     = map_cr("<cmd> lua require'quickrun'.run_command()"):with_noremap():with_silent(),
     -- Plugin Vista
     ["n|<Leader>i"]      = map_cu('Vista!!'):with_noremap():with_silent(),
     -- Plugin Easymotion
