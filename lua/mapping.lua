@@ -95,7 +95,7 @@ function mapping:load_plugin_define()
     ["n|<Leader>g"]      = map_cu('FloatermNew height=0.7 width=0.8 lazygit'):with_noremap():with_silent(),
     -- Plugin Clap
     ["n|<Leader>tc"]     = map_cu('Clap colors'):with_noremap():with_silent(),
-    ["n|<Leader>bb"]     = map_cu('Clap bufers'):with_noremap():with_silent(),
+    ["n|<Leader>bb"]     = map_cu('Clap buffers'):with_noremap():with_silent(),
     ["n|<Leader>fa"]     = map_cu('Clap grep'):with_noremap():with_silent(),
     ["n|<Leader>fb"]     = map_cu('Clap marks'):with_noremap():with_silent(),
     ["n|<C-x><C-f>"]     = map_cu('Clap filer'):with_noremap():with_silent(),
