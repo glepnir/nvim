@@ -1,4 +1,3 @@
-local global = require 'global'
 local vim = vim
 local M = {}
 
