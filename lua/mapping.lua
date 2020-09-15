@@ -93,6 +93,9 @@ function mapping:load_plugin_define()
     ["n|<Leader>t"]      = map_cu('FloatermToggle'):with_noremap():with_silent(),
     ["t|<LocalLeader>t"] = map_cu([[<C-\><C-n>:FloatermToggle<CR>]]):with_noremap():with_silent(),
     ["n|<Leader>g"]      = map_cu('FloatermNew height=0.7 width=0.8 lazygit'):with_noremap():with_silent(),
+    -- Far.vim
+    ["n|<Leader>fz"]     = map_cr('Farf'):with_noremap():with_silent();
+    ["v|<Leader>fz"]     = map_cr('Farf'):with_noremap():with_silent();
     -- Plugin Clap
     ["n|<Leader>tc"]     = map_cu('Clap colors'):with_noremap():with_silent(),
     ["n|<Leader>bb"]     = map_cu('Clap buffers'):with_noremap():with_silent(),
