@@ -1,4 +1,3 @@
-local global = require 'global'
 local vim,api,lsp = vim,vim.api,vim.lsp
 local callbacks = {}
 
@@ -38,6 +37,7 @@ local function focusable_float(unique_name, fn)
   local bufnr = api.nvim_get_current_buf()
   do
     local win = find_window_by_var(unique_name, bufnr)
+    print(win)
     if win and api.nvim_win_is_valid(win) and not vim.fn.pumvisible() then
       api.nvim_set_current_win(win)
       api.nvim_command("stopinsert")
@@ -56,22 +56,19 @@ local function focusable_preview(unique_name, fn)
     return vim.lsp.util.open_floating_preview(fn())
   end)
 end
+
 local function signature_help_callback(_,method,result)
   if not (result and result.signatures and result.signatures[1]) then
     return
   end
+  local lines = lsp.util.convert_signature_help_to_markdown_lines(result)
+  lines = lsp.util.trim_empty_lines(lines)
+  if vim.tbl_isempty(lines) then
+    return
+  end
   focusable_preview(method, function()
-    if not (result and result.signatures and result.signatures[1]) then
-      return { 'No signature available' }
-    end
-    -- TODO show popup when signatures is empty?
-    local lines = lsp.util.convert_signature_help_to_markdown_lines(result)
-    lines = lsp.util.trim_empty_lines(lines)
-    if vim.tbl_isempty(lines) then
-      return { 'No signature available' }
-    end
     return lines, lsp.util.try_trim_markdown_code_blocks(lines)
-  end) 
+  end)
 end
 
 -- Add I custom callbacks function in lsp server config
@@ -142,10 +139,7 @@ function callbacks.add_callbacks(server_setup)
     lsp.util.buf_diagnostics_signs(bufnr, result.diagnostics)
     api.nvim_command("doautocmd User LspDiagnosticsChanged")
   end
-
-
   server_setup.callbacks["textDocument/signatureHelp"] = signature_help_callback
-
 end
 
 function callbacks.show_signature_help()
