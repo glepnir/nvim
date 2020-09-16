@@ -102,6 +102,7 @@ local function defintion_reference_callback(_,method,result)
       short_link[short_name].preview_data = {}
       short_link[short_name].preview_data.status = 0
     end
+    print(method_type)
     if method_type == 2 then
       for _ =1,15,1 do
         table.insert(contents,' ')
@@ -175,7 +176,8 @@ end
 function M.lsp_peek_references()
   local params = vim.lsp.util.make_position_params()
   vim.lsp.buf_request(0, "textDocument/definition", params, defintion_reference_callback)
-  return vim.lsp.buf_request(0,"textDocument/references",params,defintion_reference_callback)
+  vim.lsp.buf_request(0,"textDocument/references",params,defintion_reference_callback)
+  return
 end
 
 -- jump to definition in split window

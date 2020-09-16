@@ -5,7 +5,7 @@ local vim = vim
 -- gopls configuration template use daemon
 server.go = {
   name = "gopls";
-  cmd = {"gopls","--remote=auto"};
+  cmd = {"gopls"};
   filetypes = {'go','gomod'};
   root_patterns = {'go.mod','.git'};
   -- https://github.com/golang/tools/blob/master/gopls/doc/settings.md#settings
