@@ -184,7 +184,7 @@ function! s:apply_syntax_highlightings()
   exec 'hi PmenuThumb'. s:fg_none. s:bg_operator
   exec 'hi WildMenu'. s:fg_bg3. s:bg_green
   exec 'hi Question'. s:fg_yellow
-  exec 'hi NormalFloat' .s:fg_fg1 . s:bg_bg3
+  exec 'hi NormalFloat' .s:fg_fg1 . s:bg_bg1
   " Tabline
   exec 'hi TabLineFill' . ' gui=NONE cterm=NONE'
   " Statusline
