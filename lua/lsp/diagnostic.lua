@@ -1,5 +1,5 @@
 -- lsp dianostic
-local global = require 'global'
+local global = require('global')
 local vim = vim
 local api = vim.api
 local lsp = vim.lsp
@@ -129,14 +129,32 @@ local function jump_to_entry(entry)
   local diagnostic_message = {}
   local entry_line = get_line(entry) + 1
   local entry_character = get_character(entry)
-  table.insert(diagnostic_message,"Diagnostics:")
+  -- lsp severity icon
+  -- 1:Error 2:Warning 3:Information 4:Hint
+  local severity_icon = {"   Error","   Warning","   Information:","   Hint"}
+  local hiname ={"DiagnosticError","DiagnosticWarning","DiagnosticInformation","DiagnosticHint"}
+  table.insert(diagnostic_message,severity_icon[entry.severity])
+  local truncate_line = '─'
+  for _=1,#entry.message+1,1 do
+      truncate_line = truncate_line .. '─'
+  end
+  table.insert(diagnostic_message,truncate_line)
   table.insert(diagnostic_message,entry.message)
   api.nvim_win_set_cursor(0, {entry_line, entry_character})
-  local _,fw = open_floating_preview(diagnostic_message,'markdown')
+  local fb,fw = open_floating_preview(diagnostic_message,'markdown',{pad_left=0,pad_right=0})
   api.nvim_buf_set_var(0,"diagnostic_float_window",fw)
   api.nvim_buf_set_var(0,"diagnostic_prev_position",{entry_line,entry_character})
   lsp.util.close_preview_autocmd({"CursorMovedI", "BufHidden", "BufLeave"}, fw)
   api.nvim_command("autocmd CursorMoved <buffer> lua require('lsp.diagnostic').close_preview()")
+
+  --add highlight
+  api.nvim_buf_add_highlight(fb,-1,hiname[entry.severity],0,0,-1)
+  api.nvim_buf_add_highlight(fb,-1,"DiagnosticTruncateLine",1,0,-1)
+  api.nvim_command("hi DiagnosticTruncateLine guifg=black gui=bold")
+  api.nvim_command("hi DiagnosticError guifg=#EC5f67 gui=bold")
+  api.nvim_command("hi DiagnosticWarning guifg=#d8a657 gui=bold")
+  api.nvim_command("hi DiagnosticInformation guifg=#6699cc gui=bold")
+  api.nvim_command("hi DiagnosticHint guifg=#56b6c2 gui=bold")
 end
 
 

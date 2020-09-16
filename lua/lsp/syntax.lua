@@ -20,3 +20,4 @@ function M.apply_syntax()
 end
 
 return M
+
