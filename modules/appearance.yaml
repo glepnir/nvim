@@ -3,11 +3,11 @@
 - repo: glepnir/spaceline.vim
   on_event: [BufReadPre,BufNewFile]
   hook_add: |
-    let g:spaceline_diagnostic_errorsign = '🔥'
-    let g:spaceline_diagnostic_warnsign = '🔆'
+    let g:spaceline_diagnostic_errorsign = ' '
+    let g:spaceline_diagnostic_warnsign = ' '
     let g:spaceline_git_branch_icon = ' '
     let g:spaceline_custom_diff_icon = [' ',' ',' ']
-    let g:spaceline_function_icon = '☀️ '
+    let g:spaceline_function_icon = ' '
     let g:spaceline_diagnostic_tool = 'nvim_lsp'
     let g:spaceline_diff_tool = 'vim-signify'
 

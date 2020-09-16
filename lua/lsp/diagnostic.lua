@@ -82,7 +82,7 @@ local function get_below_entry()
   return nil
 end
 
-function open_floating_preview(contents, filetype, opts)
+local function open_floating_preview(contents, filetype, opts)
   opts = opts or {}
 
   -- Clean up input: trim empty lines from the end, pad
@@ -106,14 +106,37 @@ function open_floating_preview(contents, filetype, opts)
   return floating_bufnr, floating_winnr
 end
 
+function M.close_preview()
+  local has_value,fw = pcall(api.nvim_buf_get_var,0,"diagnostic_float_window")
+  if has_value and fw ~= nil and api.nvim_win_is_valid(fw) then
+    local current_position = vim.fn.getpos('.')
+    local has_lineinfo,lines = pcall(api.nvim_buf_get_var,0,"diagnostic_prev_position")
+    if has_lineinfo then
+      if lines[1] ~= current_position[2] or lines[2] ~= current_position[3]-1 then
+        api.nvim_win_close(fw,true)
+        api.nvim_buf_set_var(0,"diagnostic_float_window",nil)
+        api.nvim_buf_set_var(0,"diagnostic_prev_position",nil)
+      end
+    end
+  end
+end
+
 local function jump_to_entry(entry)
+  local has_value,prev_fw = pcall(api.nvim_buf_get_var,0,"diagnostic_float_window")
+  if has_value and prev_fw ~=nil then
+    api.nvim_win_close(prev_fw,true)
+  end
   local diagnostic_message = {}
   local entry_line = get_line(entry) + 1
   local entry_character = get_character(entry)
-  table.insert(diagnostic_message," Diagnostics:")
+  table.insert(diagnostic_message,"Diagnostics:")
   table.insert(diagnostic_message,entry.message)
   api.nvim_win_set_cursor(0, {entry_line, entry_character})
-  open_floating_preview(diagnostic_message,'markdown')
+  local _,fw = open_floating_preview(diagnostic_message,'markdown')
+  api.nvim_buf_set_var(0,"diagnostic_float_window",fw)
+  api.nvim_buf_set_var(0,"diagnostic_prev_position",{entry_line,entry_character})
+  lsp.util.close_preview_autocmd({"CursorMovedI", "BufHidden", "BufLeave"}, fw)
+  api.nvim_command("autocmd CursorMoved <buffer> lua require('lsp.diagnostic').close_preview()")
 end
 
 
