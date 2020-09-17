@@ -59,7 +59,7 @@
     let g:floaterm_wintype = 'floating'
 
 - repo: itchyny/vim-cursorword
-  on_ft: [html, css, javascript, javascriptreact,go,lua,rust,vim,less,sass,json,toml]
+  on_event: [BufReadPre,BufNewFile]
   hook_source: |
     augroup user_plugin_cursorword
       autocmd!
