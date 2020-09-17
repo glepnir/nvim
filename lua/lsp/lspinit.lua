@@ -201,11 +201,13 @@ function lsp_store.start_lsp_server()
     return
   end
 
+  Completion_loaded = false
   -- async load completion
   local timer = vim.loop.new_timer()
-  timer:start(50,0,vim.schedule_wrap(function()
-    local loaded,completion = pcall(require,'completion')
-    if loaded then
+  timer:start(10,0,vim.schedule_wrap(function()
+    local has_completion,completion = pcall(require,'completion')
+    if has_completion and not Completion_loaded then
+       Completion_loaded = true
       -- When require completion success,We call the on_InsertEnter by ourself.
       -- Must set the completion_enable to 1
       api.nvim_buf_set_var(0, 'completion_enable', 1)
