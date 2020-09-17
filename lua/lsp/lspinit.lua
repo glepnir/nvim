@@ -1,4 +1,5 @@
 local global = require 'global'
+local syntax = require 'lsp.syntax'
 local server = require 'lsp.serverconf'
 local callbacks = require 'lsp.callbacks'
 local autocmd = require 'event'
@@ -156,9 +157,6 @@ end
 
 -- async load completion-nvm then initialize lsp server
 function lsp_store.start_lsp_server()
-  -- load custom sign
-  lsp_sign()
-
   local client_id = nil
   local bufnr = api.nvim_get_current_buf()
   local buf_filetype = api.nvim_buf_get_option(bufnr,'filetype')
@@ -266,6 +264,9 @@ function lsp_store.start_lsp_server()
       if client_id ~= nil and timer:is_closing() == false then
         lsp_store[root_dir] = client_id
         vim.lsp.buf_attach_client(bufnr, client_id)
+        -- load custom sign
+        lsp_sign()
+        syntax.add_highlight()
         timer:stop()
         timer:close()
       end
