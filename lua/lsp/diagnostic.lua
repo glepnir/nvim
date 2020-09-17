@@ -1,5 +1,4 @@
 -- lsp dianostic
-local global = require('global')
 local vim = vim
 local api = vim.api
 local lsp = vim.lsp
