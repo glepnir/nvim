@@ -52,13 +52,13 @@ local function get_above_entry()
   local cursor_character = cursor[2] - 1
 
   for i = #diagnostics, 1, -1 do
-      local entry = diagnostics[i]
-      local entry_line = get_line(entry)
-      local entry_character = get_character(entry)
+    local entry = diagnostics[i]
+    local entry_line = get_line(entry)
+    local entry_character = get_character(entry)
 
-      if not compare_positions(cursor_line - 1, entry_line, cursor_character - 1, entry_character) then
-          return entry
-      end
+    if not compare_positions(cursor_line - 1, entry_line, cursor_character - 1, entry_character) then
+        return entry
+    end
   end
 
   return nil
@@ -140,8 +140,12 @@ local function jump_to_entry(entry)
   end
   table.insert(diagnostic_message,truncate_line)
   table.insert(diagnostic_message,entry.message)
+
+  -- set curosr
   api.nvim_win_set_cursor(0, {entry_line, entry_character})
   local fb,fw = open_floating_preview(diagnostic_message,'markdown',{pad_left=0,pad_right=0})
+
+  -- use a variable to control diagnostic floatwidnow
   api.nvim_buf_set_var(0,"diagnostic_float_window",fw)
   api.nvim_buf_set_var(0,"diagnostic_prev_position",{entry_line,entry_character})
   lsp.util.close_preview_autocmd({"CursorMovedI", "BufHidden", "BufLeave"}, fw)
@@ -155,13 +159,13 @@ end
 
 local function jump_one_times(get_entry_function)
   for _ = 1, 1, -1 do
-      local entry = get_entry_function()
+    local entry = get_entry_function()
 
-      if entry == nil then
-          break
-      else
-          jump_to_entry(entry)
-      end
+    if entry == nil then
+        break
+    else
+        jump_to_entry(entry)
+    end
   end
 end
 
