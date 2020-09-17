@@ -123,7 +123,7 @@ end
 
 local function jump_to_entry(entry)
   local has_value,prev_fw = pcall(api.nvim_buf_get_var,0,"diagnostic_float_window")
-  if has_value and prev_fw ~=nil then
+  if has_value and prev_fw ~=nil and api.nvim_win_is_valid(prev_fw) then
     api.nvim_win_close(prev_fw,true)
   end
   local diagnostic_message = {}
@@ -150,11 +150,6 @@ local function jump_to_entry(entry)
   --add highlight
   api.nvim_buf_add_highlight(fb,-1,hiname[entry.severity],0,0,-1)
   api.nvim_buf_add_highlight(fb,-1,"DiagnosticTruncateLine",1,0,-1)
-  api.nvim_command("hi DiagnosticTruncateLine guifg=black gui=bold")
-  api.nvim_command("hi DiagnosticError guifg=#EC5f67 gui=bold")
-  api.nvim_command("hi DiagnosticWarning guifg=#d8a657 gui=bold")
-  api.nvim_command("hi DiagnosticInformation guifg=#6699cc gui=bold")
-  api.nvim_command("hi DiagnosticHint guifg=#56b6c2 gui=bold")
 end
 
 

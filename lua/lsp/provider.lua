@@ -1,6 +1,4 @@
-local global = require 'global'
 local window = require 'lsp.window'
-local syntax = require 'lsp.syntax'
 local vim,api = vim,vim.api
 local M = {}
 local short_link = {}
@@ -119,8 +117,13 @@ local function defintion_reference_callback(_,method,result)
       M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents)
       -- load float window map
       apply_float_map(M.contents_buf)
-      -- load syntax
-      syntax.apply_syntax()
+      api.nvim_command([[syntax region ReferencesTitile start=/\s[A-z]\+:/ end=/\s/]])
+      api.nvim_command([[syntax region ReferencesIcon start=/\s\S\s\s/ end=/\s/]])
+      api.nvim_command([[syntax region ReferencesCount start=/[0-9]\sReferences/ end=/$/]])
+      api.nvim_command([[syntax region DefinitionCount start=/[0-9]\sDefinitions/ end=/$/]])
+      api.nvim_command([[syntax region TargetFileName start=/\[[0-9]\]\s\([A-z0-9_]\+\/\)\+\([A-z0-9_]\+\)\.[A-z]\+/ end=/$/]])
+      api.nvim_command([[syntax region HelpTitle start=/Help:/ end=/$/]])
+      api.nvim_command([[syntax region HelpItem start=/\[[A-z]\+\(\s\)\+:\s\([A-z]\+\)\s\?[A-z]\+/ end=/$/]])
       -- clear contents
       contents = {}
     end
