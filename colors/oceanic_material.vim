@@ -24,9 +24,9 @@ endif
 
 let s:oceanic_material_transparent_background = get(g:,'oceanic_material_transparent_background',0)
 
-let s:oceanic_material_background = get(g:,'oceanic_material_background','medium')
+let s:oceanic_material_background = get(g:,'oceanic_material_background','deep')
 
-let s:oceanic_material_allow_bold = get(g:,'oceanic_material_allow_bold', 0)
+let s:oceanic_material_allow_bold = get(g:,'oceanic_material_allow_bold', 1)
 
 let s:oceanic_material_allow_italic = get(g:,'oceanic_material_allow_italic',0)
 
@@ -47,8 +47,8 @@ let s:reverse = s:oceanic_material_allow_reverse ? ' cterm=reverse gui=reverse '
 let s:undercurl = s:oceanic_material_allow_undercurl? ' cterm=undercurl gui=undercurl ': ''
 
 let s:background = {
-      \'medium': ['#282C34', '235'],
       \'ocean' : ['#1b2b34', '235'],
+      \'medium': ['#282C34', '235'],
       \'deep': ['#212121', 'NONE'],
       \'darker': ['#1d1f21', '234'],
       \}
@@ -478,6 +478,10 @@ function! s:apply_syntax_highlightings()
   "===============================================================
   exec 'hi CursorWord0' .s:bg_fg3
   exec 'hi CursorWord1' .s:bg_fg3
+  "===============================================================
+  exec 'hi! TSFunction'. s:fg_yellow. s:bold
+  exec 'hi! TSKeywordFunction'. s:fg_blue
+  exec 'hi! TSProperty'. s:fg_cyan
 endfunction
 
 command! -nargs=0 OceanicMaterial :call g:OceanicMaterial()
