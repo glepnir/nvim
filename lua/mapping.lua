@@ -89,8 +89,8 @@ function mapping:load_plugin_define()
     -- Plugin DadbodUI
     ["n|<Leader>od"]     = map_cr('DBUIToggle'):with_noremap():with_silent(),
     -- Plugin Floaterm
-    ["n|<C-;>"]          = map_cu('FloatermToggle'):with_noremap():with_silent(),
-    ["t|<C-;>"]          = map_cu([[<C-\><C-n>:FloatermToggle<CR>]]):with_noremap():with_silent(),
+    ["n|<A-d>"]          = map_cu('FloatermToggle'):with_noremap():with_silent(),
+    ["t|<A-d>"]          = map_cu([[<C-\><C-n>:FloatermToggle<CR>]]):with_noremap():with_silent(),
     ["n|<Leader>g"]      = map_cu('FloatermNew height=0.7 width=0.8 lazygit'):with_noremap():with_silent(),
     -- Far.vim
     ["n|<Leader>fz"]     = map_cr('Farf'):with_noremap():with_silent();
@@ -154,6 +154,7 @@ function mapping:load_plugin_define()
     ["x|as"]             = map_cmd("<Plug>(textobj-sandwich-query-a)"),
   };
 end
+
 function M.nvim_load_mapping(mapping)
   for _,v in pairs(mapping) do
     for key,value in pairs(v) do
