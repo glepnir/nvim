@@ -37,7 +37,6 @@ local function focusable_float(unique_name, fn)
   local bufnr = api.nvim_get_current_buf()
   do
     local win = find_window_by_var(unique_name, bufnr)
-    print(win)
     if win and api.nvim_win_is_valid(win) and not vim.fn.pumvisible() then
       api.nvim_set_current_win(win)
       api.nvim_command("stopinsert")
