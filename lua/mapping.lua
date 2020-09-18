@@ -74,8 +74,7 @@ function mapping:load_plugin_define()
     ["n|gt"]             = map_cmd("<cmd>lua vim.lsp.buf.type_definition()<CR>"):with_noremap():with_silent(),
     ["n|<Leader>cw"]     = map_cmd("<cmd>lua vim.lsp.buf.workspace_symbol()<CR>"):with_noremap():with_silent(),
     -- dein
-    ["n|<LocalLeader>r"] = map_cr("call dein#recache_runtimepath()"):with_noremap():with_silent(),
-    ["n|<LocalLeader>u"] = map_cr("call dein#update()"):with_noremap():with_silent(),
+    ["n|<Leader>tr"]     = map_cr("call dein#recache_runtimepath()"):with_noremap():with_silent(),
     ["n|<Leader>tf"]     = map_cu('DashboardNewFile'):with_noremap():with_silent(),
     -- mhinz/vim-signify
     ["n|[g"]             = map_cmd("<plug>(signify-next-hunk)"),
@@ -90,8 +89,8 @@ function mapping:load_plugin_define()
     -- Plugin DadbodUI
     ["n|<Leader>od"]     = map_cr('DBUIToggle'):with_noremap():with_silent(),
     -- Plugin Floaterm
-    ["n|<Leader>t"]      = map_cu('FloatermToggle'):with_noremap():with_silent(),
-    ["t|<LocalLeader>t"] = map_cu([[<C-\><C-n>:FloatermToggle<CR>]]):with_noremap():with_silent(),
+    ["n|<C-;>"]          = map_cu('FloatermToggle'):with_noremap():with_silent(),
+    ["t|<C-;>"]          = map_cu([[<C-\><C-n>:FloatermToggle<CR>]]):with_noremap():with_silent(),
     ["n|<Leader>g"]      = map_cu('FloatermNew height=0.7 width=0.8 lazygit'):with_noremap():with_silent(),
     -- Far.vim
     ["n|<Leader>fz"]     = map_cr('Farf'):with_noremap():with_silent();
@@ -118,14 +117,9 @@ function mapping:load_plugin_define()
     -- Plugin QuickRun
     ["n|<Leader>r"]     = map_cr("<cmd> lua require'quickrun'.run_command()"):with_noremap():with_silent(),
     -- Plugin Vista
-    ["n|<Leader>i"]      = map_cu('Vista!!'):with_noremap():with_silent(),
-    -- Plugin Easymotion
-    ["n|gsj"]            = map_cmd('<Plug>(easymotion-w)'),
-    ["n|gsk"]            = map_cmd('<Plug>(easymotion-b)'),
-    ["n|gsf"]            = map_cmd('<Plug>(easymotion-overwin-f)'),
-    ["n|gss"]            = map_cmd('<Plug>(easymotion-overwin-f2)'),
+    ["n|<Leader>v"]      = map_cu('Vista!!'):with_noremap():with_silent(),
     -- Plugin Mundo
-    ["n|<Leader>m"]      = map_cu('MundoToggle'):with_noremap():with_silent(),
+    ["n|<Leader>m"]      = map_cu('GundoToggle'):with_noremap():with_silent(),
     -- Plugin SplitJoin
     ["n|sj"]             = map_cr('SplitjoinJoin'),
     ["n|sk"]             = map_cr('SplitjoinSplit'),
