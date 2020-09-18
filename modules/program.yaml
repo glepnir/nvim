@@ -6,7 +6,7 @@
   hook_source: |
     let g:indentLine_enabled = 1
     let g:indentLine_char='┆'
-    let g:indentLine_fileTypeExclude = ['defx', 'denite','startify','dbui','vista_kind','vista','coc-explorer','dashboard','chadtree']
+    let g:indentLine_fileTypeExclude = ['defx','dbui','vista_kind','vista','dashboard']
     let g:indentLine_concealcursor = 'niv'
     let g:indentLine_showFirstIndentLevel =1
 
