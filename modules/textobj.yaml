@@ -3,12 +3,9 @@
 - repo: kana/vim-operator-replace
   on_map: { vnx: <Plug> }
 
-- repo: machakann/vim-sandwich
-  on_map: { vonx: <Plug>(operator-sandwich- }
-  hook_add: |
-    let g:sandwich_no_default_key_mappings = 1
-    let g:operator_sandwich_no_default_key_mappings = 1
-    let g:textobj_sandwich_no_default_key_mappings = 1
+- repo: rhysd/vim-operator-surround
+  depends: vim-operator-user
+  on_map: { n: <Plug> }
 
 - repo: kana/vim-textobj-user
 
@@ -24,9 +21,6 @@
     silent! xmap I  <Plug>(niceblock-I)
     silent! xmap gI <Plug>(niceblock-gI)
     silent! xmap A  <Plug>(niceblock-A)
-
-- repo: kana/vim-textobj-function
-  on_map: { ox: <Plug> }
 
 - repo: kana/vim-smartchr
   on_event: InsertCharPre
