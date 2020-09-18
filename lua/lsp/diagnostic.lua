@@ -1,8 +1,19 @@
 -- lsp dianostic
+local global = require('global')
 local vim = vim
 local api = vim.api
 local lsp = vim.lsp
+local window = require('lsp.window')
 local M = {}
+
+-- lsp severity icon
+-- 1:Error 2:Warning 3:Information 4:Hint
+local severity_icon = {
+  "   Error:",
+  "   Warn :",
+  "   Infor:",
+  "   Hint :"
+}
 
 local function get_line(diagnostic_entry)
   return diagnostic_entry["range"]["start"]["line"]
@@ -128,9 +139,6 @@ local function jump_to_entry(entry)
   local diagnostic_message = {}
   local entry_line = get_line(entry) + 1
   local entry_character = get_character(entry)
-  -- lsp severity icon
-  -- 1:Error 2:Warning 3:Information 4:Hint
-  local severity_icon = {"   Error","   Warning","   Information:","   Hint"}
   local hiname ={"DiagnosticError","DiagnosticWarning","DiagnosticInformation","DiagnosticHint"}
   table.insert(diagnostic_message,severity_icon[entry.severity])
   local truncate_line = '─'
@@ -174,6 +182,19 @@ end
 
 function M.lsp_jump_diagnostic_next()
   jump_one_times(get_below_entry)
+end
+
+function M.show_buf_diagnostics()
+  local diagnostics = get_sorted_diagnostics()
+  local buf_fname = vim.fn.expand("%:t")
+  local contents = {'   Diagnostics In Current Buffer: ',' '}
+  for _,diagnostic in ipairs(diagnostics) do
+    local content = severity_icon[diagnostic.severity] ..' '.. buf_fname .. ' ' ..'['..
+    diagnostic.message..']'..' '..diagnostic.range.start.line..'|'..diagnostic.range.start.character
+    table.insert(contents,content)
+  end
+
+  window.create_float_window(contents,true)
 end
 
 return M

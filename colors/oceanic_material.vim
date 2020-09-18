@@ -24,7 +24,7 @@ endif
 
 let s:oceanic_material_transparent_background = get(g:,'oceanic_material_transparent_background',0)
 
-let s:oceanic_material_background = get(g:,'oceanic_material_background','deep')
+let s:oceanic_material_background = get(g:,'oceanic_material_background','medium')
 
 let s:oceanic_material_allow_bold = get(g:,'oceanic_material_allow_bold', 1)
 
@@ -47,8 +47,8 @@ let s:reverse = s:oceanic_material_allow_reverse ? ' cterm=reverse gui=reverse '
 let s:undercurl = s:oceanic_material_allow_undercurl? ' cterm=undercurl gui=undercurl ': ''
 
 let s:background = {
-      \'ocean' : ['#1b2b34', '235'],
-      \'medium': ['#282C34', '235'],
+      \'oceanic' : ['#1b2b34', '235'],
+      \'medium': ['#282c34', '235'],
       \'deep': ['#212121', 'NONE'],
       \'darker': ['#1d1f21', '234'],
       \}
@@ -67,7 +67,7 @@ let s:colors = {
       \ 'magenta':          ['#d16d9e',   '205'],
       \ 'orange':           ['#e78a4e',   '208'],
       \ 'yellow':           ['#d8a657',   '214'],
-      \ 'green':            ['#5faf5f',   '71'],
+      \ 'green':            ['#a1b56c',   '111'],
       \ 'cyan':             ['#56b6c2',   '73'],
       \ 'blue':             ['#6699cc',   '68'],
       \ 'purple':           ['#c594c5',   '176'],
@@ -76,7 +76,7 @@ let s:colors = {
       \ 'grey0':            ['#7c6f64',   '243'],
       \ 'grey1':            ['#928374',   '245'],
       \ 'grey2':            ['#a89984',   '246'],
-      \ 'operator':  ['#c0c5ce',   '251'],
+      \ 'operator':         ['#c0c5ce',   '251'],
       \ 'none':             ['NONE',      'NONE']
   \ }
 
