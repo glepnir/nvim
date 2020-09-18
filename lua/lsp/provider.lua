@@ -100,7 +100,6 @@ local function defintion_reference_callback(_,method,result)
       short_link[short_name].preview_data = {}
       short_link[short_name].preview_data.status = 0
     end
-    print(method_type)
     if method_type == 2 then
       for _ =1,15,1 do
         table.insert(contents,' ')
@@ -114,7 +113,7 @@ local function defintion_reference_callback(_,method,result)
       for _,v in ipairs(help) do
         table.insert(contents,v)
       end
-      M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents)
+      M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents,3)
       -- load float window map
       apply_float_map(M.contents_buf)
       api.nvim_command([[syntax region ReferencesTitile start=/\s[A-z]\+:/ end=/\s/]])
