@@ -118,8 +118,6 @@ function mapping:load_plugin_define()
     ["n|<Leader>r"]     = map_cr("<cmd> lua require'quickrun'.run_command()"):with_noremap():with_silent(),
     -- Plugin Vista
     ["n|<Leader>v"]      = map_cu('Vista!!'):with_noremap():with_silent(),
-    -- Plugin Mundo
-    ["n|<Leader>m"]      = map_cu('GundoToggle'):with_noremap():with_silent(),
     -- Plugin SplitJoin
     ["n|sj"]             = map_cr('SplitjoinJoin'),
     ["n|sk"]             = map_cr('SplitjoinSplit'),
@@ -135,23 +133,9 @@ function mapping:load_plugin_define()
     ["x|if"]             = map_cmd("<Plug>(textobj-function-i)"):with_silent(),
     ["x|p"]              = map_cmd("<Plug>(operator-replace)"),
     -- Plugin sandwich
-    ["n|sa"]             = map_cmd("<Plug>(operator-sandwich-add)"):with_silent(),
-    ["x|sa"]             = map_cmd("<Plug>(operator-sandwich-add)"):with_silent(),
-    ["o|sa"]             = map_cmd("<Plug>(operator-sandwich-g@)"):with_silent(),
-    ["n|sd"]             = map_cmd("<Plug>(operator-sandwich-delete)<Plug>(operator-sandwich-release-count)<Plug>(textobj-sandwich-query-a)"):with_silent(),
-    ["x|sd"]             = map_cmd("<Plug>(operator-sandwich-delete)"):with_silent(),
-    ["n|sr"]             = map_cmd("<Plug>(operator-sandwich-replace)<Plug>(operator-sandwich-release-count)<Plug>(textobj-sandwich-query-a)"):with_silent(),
-    ["x|sr"]             = map_cmd("<Plug>(operator-sandwich-replace)"):with_silent(),
-    ["n|sdb"]            = map_cmd("<Plug>(operator-sandwich-delete)<Plug>(operator-sandwich-release-count)<Plug>(textobj-sandwich-auto-a)"):with_silent(),
-    ["n|srb"]            = map_cmd("<Plug>(operator-sandwich-replace)<Plug>(operator-sandwich-release-count)<Plug>(textobj-sandwich-auto-a)"):with_silent(),
-    ["o|ib"]             = map_cmd("<Plug>(textobj-sandwich-auto-i)"),
-    ["x|ib"]             = map_cmd("<Plug>(textobj-sandwich-auto-i)"),
-    ["o|ab"]             = map_cmd("<Plug>(textobj-sandwich-auto-a)"),
-    ["x|ab"]             = map_cmd("<Plug>(textobj-sandwich-auto-a)"),
-    ["o|is"]             = map_cmd("<Plug>(textobj-sandwich-query-i)"),
-    ["x|is"]             = map_cmd("<Plug>(textobj-sandwich-query-i)"),
-    ["o|as"]             = map_cmd("<Plug>(textobj-sandwich-query-a)"),
-    ["x|as"]             = map_cmd("<Plug>(textobj-sandwich-query-a)"),
+    ["n|sa"]             = map_cmd("<Plug>(operator-surround-append)a"):with_silent(),
+    ["n|sd"]             = map_cmd("<Plug>(operator-surround-delete)a"):with_silent(),
+    ["n|sr"]             = map_cmd("<Plug>(operator-surround-replace)a"):with_silent(),
   };
 end
 

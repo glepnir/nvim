@@ -20,15 +20,26 @@
   on_ft: [Dockerfile, docker-compose]
 
 - repo: nvim-treesitter/nvim-treesitter
-  on_ft: [typescript,lua]
+  on_ft: [typescript,lua,go]
   hook_source: |
     lua <<EOF
     require'nvim-treesitter.configs'.setup {
         highlight = {
-            enable = true,
-            disable = {},
+          enable = true,
+          disable = {go},
         },
-        ensure_installed = 'all'
+        textobjects = {
+          select = {
+            enable = true,
+            keymaps = {
+              ["af"] = "@function.outer",
+              ["if"] = "@function.inner",
+              ["ac"] = "@class.outer",
+              ["ic"] = "@class.inner",
+            },
+          },
+        },
+      ensure_installed = 'all'
     }
     EOF
 
