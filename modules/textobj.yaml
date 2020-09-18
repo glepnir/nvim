@@ -7,8 +7,6 @@
   depends: vim-operator-user
   on_map: { n: <Plug> }
 
-- repo: kana/vim-textobj-user
-
 - repo: AndrewRadev/splitjoin.vim
   on_map: { n: <Plug>Splitjoin }
   hook_add: |

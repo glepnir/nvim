@@ -133,9 +133,9 @@ function mapping:load_plugin_define()
     ["x|if"]             = map_cmd("<Plug>(textobj-function-i)"):with_silent(),
     ["x|p"]              = map_cmd("<Plug>(operator-replace)"),
     -- Plugin sandwich
-    ["n|sa"]             = map_cmd("<Plug>(operator-surround-append)a"):with_silent(),
-    ["n|sd"]             = map_cmd("<Plug>(operator-surround-delete)a"):with_silent(),
-    ["n|sr"]             = map_cmd("<Plug>(operator-surround-replace)a"):with_silent(),
+    ["n|sa"]             = map_cmd("<Plug>(operator-surround-append)"):with_silent(),
+    ["n|sd"]             = map_cmd("<Plug>(operator-surround-delete)"):with_silent(),
+    ["n|sr"]             = map_cmd("<Plug>(operator-surround-replace)"):with_silent(),
   };
 end
 
