@@ -1,7 +1,13 @@
 local vim,api = vim,vim.api
 local M = {}
 
-function M.create_float_window(contents)
+local border_style = {
+  {top_left = "┌",top_mid = "─",top_right = "┐",mid = "│",bottom_left = "└",bottom_right= "┘" };
+  {top_left = "╭",top_mid = "─",top_right = "╮",mid = "│",bottom_left = "╰",bottom_right= "╯" };
+  {top_left = "┏",top_mid = "━",top_right = "┓",mid = "┃",bottom_left = "┗",bottom_right = "┛"};
+}
+
+function M.create_float_window(contents,border)
   -- get the editor's max width and height
   local width = api.nvim_get_option("columns")
   local height = api.nvim_get_option("lines")
@@ -27,10 +33,17 @@ function M.create_float_window(contents)
     row = vim.fn.line('.') ,
     col = math.ceil((width - win_width) / 2)
   }
+
+  local top_left = border_style[border].top_left
+  local top_mid  = border_style[border].top_mid
+  local top_right = border_style[border].top_right
+  local mid_line = border_style[border].mid
+  local bottom_left= border_style[border].bottom_left
+  local bottom_right = border_style[border].bottom_right
   -- set border
-  local top = "╭" .. vim.fn["repeat"]("─", win_width - 2) .. "╮"
-  local mid = "│" .. vim.fn["repeat"](" ", win_width - 2) .. "│"
-  local bot = "╰" .. vim.fn["repeat"]("─", win_width - 2) .. "╯"
+  local top = top_left .. vim.fn["repeat"](top_mid, win_width - 2) ..top_right
+  local mid = mid_line .. vim.fn["repeat"](" ", win_width - 2) .. mid_line
+  local bot = bottom_left .. vim.fn["repeat"](top_mid, win_width - 2) .. bottom_right
   local lines = {top}
   for _,v in pairs(vim.fn["repeat"]({mid},win_height-2)) do
     table.insert(lines,v)
