@@ -50,11 +50,8 @@ end
 
 function M.leader_map()
   vim.g.mapleader = " "
-  vim.g.maplocalleader = ";"
   vim.fn.nvim_set_keymap('n',' ','',{noremap = true})
   vim.fn.nvim_set_keymap('x',' ','',{noremap = true})
-  vim.fn.nvim_set_keymap('n',';','',{noremap = true})
-  vim.fn.nvim_set_keymap('x',';','',{noremap = true})
 end
 
 function M.load_core()
