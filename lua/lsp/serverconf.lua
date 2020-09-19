@@ -20,6 +20,17 @@ server.lua = {
   cmd = { global.home.."/lua-language-server/bin/macOS/lua-language-server", "-E", global.home.."/lua-language-server/main.lua"};
   filetypes = {'lua'};
   root_patterns = {'.git'};
+  settings = {
+    Lua = {
+      diagnostics = {
+        enable = true,
+        globals = {"vim"}
+      },
+      workspace = {
+        library = vim.list_extend({[vim.fn.expand("$VIMRUNTIME/lua")] = true},{}),
+      },
+    },
+  }
 }
 
 server.rust = {

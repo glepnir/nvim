@@ -4,8 +4,6 @@ local autocmd = require 'event'
 local dein = require 'dein'
 local map = require 'mapping'
 local theme = require 'theme'
-local version = require 'version'
-
 local vim,api = vim,vim.api
 local M = {}
 
