@@ -117,7 +117,13 @@ local function defintion_reference(result,method_type)
         table.insert(contents,v)
       end
 
-      M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents,3)
+      local opts = {
+        relative = "editor",
+        style = "minimal",
+        row = vim.fn.line('.') ,
+        col = vim.fn.getpos('.')[2],
+      }
+      M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents,'lsprovider',3,opts)
 
       api.nvim_buf_add_highlight(M.contents_buf,-1,"DefinitionIcon",0,0,#method_option[method_type].icon)
       api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetWord",0,#method_option[method_type].icon,#params+#method_option[method_type].icon+1)
@@ -136,6 +142,8 @@ local function defintion_reference(result,method_type)
       apply_float_map(M.contents_buf)
       -- clear contents
       contents = {}
+      definition_uri = 0
+      reference_uri = 0
     end
   end
 end
@@ -187,13 +195,16 @@ function M.quit_float_window()
 end
 
 function M.lsp_peek_references(timeout)
+  local method = {"textDocument/definition","textDocument/references"}
   local params = lsp.util.make_position_params()
   local results = {}
-  table.insert(results,lsp.buf_request_sync(0, "textDocument/definition", params, timeout or 1000))
-  table.insert(results,lsp.buf_request_sync(0,"textDocument/references",params,timeout or 1000))
+  table.insert(results,lsp.buf_request_sync(0, method[1], params, timeout or 1000))
+  table.insert(results,lsp.buf_request_sync(0, method[2],params,timeout or 1000))
   for i,v in ipairs(results) do
     if v[1].result == nil or vim.tbl_isempty(v[1].result) then
-      print("No Location found:")
+      print("No Location found:",method[i])
+      -- if no References we doesn't popup window so need clean contents
+      contents = {}
       return
     end
     defintion_reference(v[1].result,i)
