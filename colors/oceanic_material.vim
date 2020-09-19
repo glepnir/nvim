@@ -67,7 +67,7 @@ let s:colors = {
       \ 'magenta':          ['#d16d9e',   '205'],
       \ 'orange':           ['#e78a4e',   '208'],
       \ 'yellow':           ['#d8a657',   '214'],
-      \ 'green':            ['#a1b56c',   '111'],
+      \ 'green':            ['#5faf5f',   '71'],
       \ 'cyan':             ['#56b6c2',   '73'],
       \ 'blue':             ['#6699cc',   '68'],
       \ 'purple':           ['#c594c5',   '176'],
