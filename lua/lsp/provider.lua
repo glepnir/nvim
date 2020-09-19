@@ -86,7 +86,7 @@ local function defintion_reference_callback(_,method,result)
     else
       reference_uri  = #result
     end
-    
+
     for index,_ in ipairs(result) do
       local uri = result[index].targetUri or result[index].uri
       if uri == nil then
@@ -130,7 +130,7 @@ local function defintion_reference_callback(_,method,result)
       api.nvim_buf_add_highlight(M.contents_buf,-1,"DefinitionCount",0,0,-1)
       api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetWord",3+definition_uri,#method_option[method_type].icon,#params+#method_option[method_type].icon+1)
       api.nvim_buf_add_highlight(M.contents_buf,-1,"ReferencesCount",3+definition_uri,0,-1)
-      print(definition_uri)
+
       for i=1,definition_uri,1 do
         api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetFileName",1+i,0,-1)
       end
