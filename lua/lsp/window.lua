@@ -49,8 +49,6 @@ function M.make_floating_popup_options(width, height, opts)
 
     local lines_above = vim.fn.winline() - 1
     local lines_below = vim.fn.winheight(0) - lines_above
-    print(lines_above)
-    print(lines_below)
     new_option.anchor = ''
 
     if lines_above < lines_below then
@@ -135,7 +133,6 @@ function M.create_float_window(contents,filetype,border,opts)
   local contents_winid = api.nvim_open_win(contents_bufnr, true, opts)
   api.nvim_win_set_option(contents_winid,"winhl","Normal:LspNvim")
 
-  print(global.dump(opts))
   return contents_bufnr,contents_winid,border_winid
 end
 
@@ -160,7 +157,7 @@ function M.open_floating_preview(contents, filetype, opts)
   end
   api.nvim_buf_set_lines(floating_bufnr, 0, -1, true, contents)
   api.nvim_buf_set_option(floating_bufnr, 'modifiable', false)
-  print(global.dump(float_option))
+
   return floating_bufnr, floating_winnr
 end
 

@@ -123,7 +123,7 @@ local function defintion_reference(result,method_type)
         row = vim.fn.line('.') ,
         col = vim.fn.getpos('.')[2],
       }
-      M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents,'lsprovider',3,opts)
+      M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents,'markdown',3,opts)
 
       api.nvim_buf_add_highlight(M.contents_buf,-1,"DefinitionIcon",0,0,#method_option[method_type].icon)
       api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetWord",0,#method_option[method_type].icon,#params+#method_option[method_type].icon+1)
@@ -171,7 +171,7 @@ function M.insert_preview()
     short_link[short_name].preview_data.status = 1
     short_link[short_name].preview_data.stridx = current_line
     short_link[short_name].preview_data.endidx = current_line + #short_link[short_name].preview
-    local code_preview = vim.lsp.util._trim_and_pad(short_link[short_name].preview,{pad_left=4})
+    local code_preview = vim.lsp.util._trim_and_pad(short_link[short_name].preview)
     vim.fn.append(current_line,code_preview)
   elseif short_link[short_name] ~= nil and short_link[short_name].preview_data.status == 1 then
     local stridx = short_link[short_name].preview_data.stridx
