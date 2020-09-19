@@ -1,3 +1,4 @@
+local global = require('global')
 local vim,api = vim,vim.api
 local M = {}
 
@@ -10,32 +11,85 @@ local border_style = {
   {top_left = "┏",top_mid = "━",top_right = "┓",mid = "┃",bottom_left = "┗",bottom_right = "┛"};
 }
 
-function M.create_float_window(contents,border)
-  -- get the editor's max width and height
-  local width = api.nvim_get_option("columns")
-  local height = api.nvim_get_option("lines")
+function M.get_max_contents_width(contents)
+  local max_length = 0
+  for i=1,#contents-1,1 do
+    if #contents[i] > #contents[i+1] then
+      max_length = #contents[i]
+    end
+  end
+  return max_length
+end
 
-  local win_height = math.min(math.ceil(height * 3 / 4), 30)
-  local win_width
+function M.make_floating_popup_options(width, height, opts)
+  vim.validate {
+    opts = { opts, 't', true };
+  }
+  opts = opts or {}
+  vim.validate {
+    ["opts.offset_x"] = { opts.offset_x, 'n', true };
+    ["opts.offset_y"] = { opts.offset_y, 'n', true };
+  }
+  local new_option = {}
 
-  -- if the width is small
-  if (width < 150) then
-    -- just subtract 8 from the editor's width
-    win_width = math.ceil(width - 8)
+  new_option.style = 'minimal'
+  new_option.width = width
+  new_option.height = height
+  if opts.relative ~= nil then
+    new_option.relative = opts.relative
   else
-    -- use 90% of the editor's width
-    win_width = math.ceil(width * 0.9)
+    new_option.relative = 'cursor'
   end
 
-  -- settings for the float window
-  local opts = {
-    relative = "editor",
-    style = "minimal",
-    width = win_width,
-    height = win_height,
-    row = vim.fn.line('.') ,
-    col = math.ceil((width - win_width) / 2)
-  }
+  if opts.anchor ~= nil then
+    new_option.anchor = opts.anchor
+  end
+
+  if opts.row == nil and opts.col == nil then
+
+    local lines_above = vim.fn.winline() - 1
+    local lines_below = vim.fn.winheight(0) - lines_above
+    print(lines_above)
+    print(lines_below)
+    new_option.anchor = ''
+
+    if lines_above < lines_below then
+      new_option.anchor = new_option.anchor..'N'
+      height = math.min(lines_below, height)
+      new_option.row = 1
+    else
+      new_option.anchor = new_option.anchor..'S'
+      height = math.min(lines_above, height)
+      new_option.row = 0
+    end
+
+    if vim.fn.wincol() + width <= api.nvim_get_option('columns') then
+      new_option.anchor = new_option.anchor..'W'
+      new_option.col = 0
+    else
+      new_option.anchor = new_option.anchor..'E'
+      new_option.col = 1
+    end
+  else
+    new_option.row = opts.row
+    new_option.col = opts.col
+  end
+
+  return new_option
+end
+
+function M.create_float_window(contents,filetype,border,opts)
+  -- local win_width = M.get_max_contents_width(contents)
+  -- local win_height = #contents + 2
+  opts = opts or {}
+  local win_width,win_height = vim.lsp.util._make_floating_popup_size(contents,opts)
+  if opts == {} then
+    opts.wrap_at = opts.wrap_at or (vim.wo["wrap"] and api.nvim_win_get_width(0))
+    opts = M.make_floating_popup_options(win_width, win_height+2, opts)
+  else
+    opts.width = win_width
+    opts.height = win_height + 2
+  end
 
   local top_left = border_style[border].top_left
   local top_mid  = border_style[border].top_mid
@@ -48,7 +102,7 @@ function M.create_float_window(contents,border)
   local mid = mid_line .. vim.fn["repeat"](" ", win_width - 2) .. mid_line
   local bot = bottom_left .. vim.fn["repeat"](top_mid, win_width - 2) .. bottom_right
   local lines = {top}
-  for _,v in pairs(vim.fn["repeat"]({mid},win_height-2)) do
+  for _,v in pairs(vim.fn["repeat"]({mid},win_height)) do
     table.insert(lines,v)
   end
   table.insert(lines,bot)
@@ -72,12 +126,16 @@ function M.create_float_window(contents,border)
   local contents_bufnr = api.nvim_create_buf(false, true)
   -- buffer settings for contents buffer
   -- Clean up input: trim empty lines from the end, pad
-  local content = vim.lsp.util._trim_and_pad(contents,{pad_left=0})
+  local content = vim.lsp.util._trim_and_pad(contents,{pad_left=0,pad_right=0})
   api.nvim_buf_set_lines(contents_bufnr,0,-1,true,content)
-  api.nvim_buf_set_option(contents_bufnr, 'filetype', 'lspnvim')
+  if filetype then
+    api.nvim_buf_set_option(contents_bufnr, 'filetype', filetype)
+  end
   api.nvim_buf_set_option(contents_bufnr, 'modifiable', true)
   local contents_winid = api.nvim_open_win(contents_bufnr, true, opts)
   api.nvim_win_set_option(contents_winid,"winhl","Normal:LspNvim")
+
+  print(global.dump(opts))
   return contents_bufnr,contents_winid,border_winid
 end
 
@@ -102,6 +160,7 @@ function M.open_floating_preview(contents, filetype, opts)
   end
   api.nvim_buf_set_lines(floating_bufnr, 0, -1, true, contents)
   api.nvim_buf_set_option(floating_bufnr, 'modifiable', false)
+  print(global.dump(float_option))
   return floating_bufnr, floating_winnr
 end
 

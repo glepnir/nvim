@@ -125,7 +125,7 @@ local function jump_to_entry(entry)
 
   -- set curosr
   api.nvim_win_set_cursor(0, {entry_line, entry_character})
-  local fb,fw = window.open_floating_preview(diagnostic_message,'markdown',{pad_left=0,pad_right=0})
+  local fb,fw = window.create_float_window(diagnostic_message,'markdown',1,{pad_left=0,pad_right=0})
 
   -- use a variable to control diagnostic floatwidnow
   api.nvim_buf_set_var(0,"diagnostic_float_window",fw)
