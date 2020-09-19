@@ -1,6 +1,5 @@
-local global = require('global')
 local window = require 'lsp.window'
-local vim,api = vim,vim.api
+local vim,api,lsp = vim,vim.api,vim.lsp
 local M = {}
 local short_link = {}
 local root_dir = vim.lsp.buf_get_clients()[1].config.root_dir
@@ -187,11 +186,11 @@ function M.quit_float_window()
   end
 end
 
-function M.lsp_peek_references(timeout_ms)
-  local params = vim.lsp.util.make_position_params()
+function M.lsp_peek_references(timeout)
+  local params = lsp.util.make_position_params()
   local results = {}
-  table.insert(results,vim.lsp.buf_request_sync(0, "textDocument/definition", params, timeout_ms or 1000))
-  table.insert(results,vim.lsp.buf_request_sync(0,"textDocument/references",params,timeout_ms or 1000))
+  table.insert(results,lsp.buf_request_sync(0, "textDocument/definition", params, timeout or 1000))
+  table.insert(results,lsp.buf_request_sync(0,"textDocument/references",params,timeout or 1000))
   for i,v in ipairs(results) do
     if v[1].result == nil or vim.tbl_isempty(v[1].result) then
       print("No Location found:")
@@ -226,7 +225,7 @@ function M.go_organize_imports_sync(timeout_ms)
 
   -- See the implementation of the textDocument/codeAction callback
   -- (lua/vim/lsp/callbacks.lua) for how to do this properly.
-  local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout_ms)
+  local result = lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout_ms)
   if not result then return end
   local actions = result[1].result
   if not actions then return end
