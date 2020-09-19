@@ -17,7 +17,8 @@ server.go = {
 
 server.lua = {
   name = "lualsp";
-  cmd = { global.home.."/lua-language-server/bin/macOS/lua-language-server", "-E", global.home.."/lua-language-server/main.lua"};
+  cmd = { global.home.."/lua-language-server/bin/macOS/lua-language-server", "-E",
+          global.home.."/lua-language-server/main.lua"};
   filetypes = {'lua'};
   root_patterns = {'.git'};
   settings = {
