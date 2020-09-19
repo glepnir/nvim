@@ -61,13 +61,8 @@ local function apply_float_map(contents_bufnr)
   api.nvim_buf_set_keymap(contents_bufnr,'n',"q",":lua require'lsp.provider'.quit_float_window()<CR>",{noremap = true,silent = true})
 end
 
-local function defintion_reference_callback(_,method,result)
-  if result == nil or vim.tbl_isempty(result) then
-    print("No Location found:" .. method)
-    return nil
-  end
+local function defintion_reference(result,method_type)
   if vim.tbl_islist(result) then
-    local method_type = method == "textDocument/definition" and 1 or 2
     local method_option = {
       {icon = vim.g.lsp_nvim_defintion_icon or '🔷 ',title = ':  '.. #result ..' Definitions'};
       {icon = vim.g.lsp_nvim_references_icon or '🔷 ',title = ':  '.. #result ..' References',};
@@ -192,10 +187,18 @@ function M.quit_float_window()
   end
 end
 
-function M.lsp_peek_references()
+function M.lsp_peek_references(timeout_ms)
   local params = vim.lsp.util.make_position_params()
-  vim.lsp.buf_request(0, "textDocument/definition", params, defintion_reference_callback)
-  vim.lsp.buf_request(0,"textDocument/references",params,defintion_reference_callback)
+  local results = {}
+  table.insert(results,vim.lsp.buf_request_sync(0, "textDocument/definition", params, timeout_ms or 1000))
+  table.insert(results,vim.lsp.buf_request_sync(0,"textDocument/references",params,timeout_ms or 1000))
+  for i,v in ipairs(results) do
+    if v[1].result == nil or vim.tbl_isempty(v[1].result) then
+      print("No Location found:")
+      return
+    end
+    defintion_reference(v[1].result,i)
+  end
   return
 end
 
