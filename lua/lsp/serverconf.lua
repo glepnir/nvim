@@ -41,6 +41,13 @@ server.rust = {
   root_patterns = {"Cargo.toml", "rust-project.json"}
 }
 
+server.zig = {
+  name = "zls";
+  cmd = { "zls" };
+  filetypes = {"zig"};
+  root_patterns = {".git"}
+}
+
 server.sh = {
   name = "bashlsp";
   cmd = { "bash-language-server", "start" };

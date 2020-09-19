@@ -1,3 +1,4 @@
+local global = require('global')
 local window = require 'lsp.window'
 local vim,api = vim,vim.api
 local M = {}
@@ -49,6 +50,8 @@ function M.lsp_peek_definition()
 end
 
 local contents = {}
+local definition_uri = 0
+local reference_uri = 0
 
 local function apply_float_map(contents_bufnr)
   api.nvim_buf_set_keymap(contents_bufnr,'n',"o",":lua require'lsp.provider'.open_link(1)<CR>",{noremap = true,silent = true})
@@ -78,6 +81,12 @@ local function defintion_reference_callback(_,method,result)
       table.insert(contents,title)
     end
 
+    if method_type == 1 then
+      definition_uri = #result
+    else
+      reference_uri  = #result
+    end
+    
     for index,_ in ipairs(result) do
       local uri = result[index].targetUri or result[index].uri
       if uri == nil then
@@ -113,16 +122,24 @@ local function defintion_reference_callback(_,method,result)
       for _,v in ipairs(help) do
         table.insert(contents,v)
       end
+
       M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents,3)
+
+      api.nvim_buf_add_highlight(M.contents_buf,-1,"DefinitionIcon",0,0,#method_option[method_type].icon)
+      api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetWord",0,#method_option[method_type].icon,#params+#method_option[method_type].icon+1)
+      api.nvim_buf_add_highlight(M.contents_buf,-1,"DefinitionCount",0,0,-1)
+      api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetWord",3+definition_uri,#method_option[method_type].icon,#params+#method_option[method_type].icon+1)
+      api.nvim_buf_add_highlight(M.contents_buf,-1,"ReferencesCount",3+definition_uri,0,-1)
+      print(definition_uri)
+      for i=1,definition_uri,1 do
+        api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetFileName",1+i,0,-1)
+      end
+
+      for i=1,reference_uri,1 do
+        api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetFileName",i+definition_uri+4,0,-1)
+      end
       -- load float window map
       apply_float_map(M.contents_buf)
-      api.nvim_command([[syntax region ReferencesTitile start=/\s[A-z]\+:/ end=/\s/]])
-      api.nvim_command([[syntax region ReferencesIcon start=/\s\S\s\s/ end=/\s/]])
-      api.nvim_command([[syntax region ReferencesCount start=/[0-9]\sReferences/ end=/$/]])
-      api.nvim_command([[syntax region DefinitionCount start=/[0-9]\sDefinitions/ end=/$/]])
-      api.nvim_command([[syntax region TargetFileName start=/\[[0-9]\]\s\([A-z0-9_]\+\/\)\+\([A-z0-9_]\+\)\.[A-z]\+/ end=/$/]])
-      api.nvim_command([[syntax region HelpTitle start=/Help:/ end=/$/]])
-      api.nvim_command([[syntax region HelpItem start=/\[[A-z]\+\(\s\)\+:\s\([A-z]\+\)\s\?[A-z]\+/ end=/$/]])
       -- clear contents
       contents = {}
     end
