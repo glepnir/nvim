@@ -20,7 +20,7 @@
   on_ft: [Dockerfile, docker-compose]
 
 - repo: nvim-treesitter/nvim-treesitter
-  on_ft: [typescript,lua,go]
+  on_ft: [typescript,lua,go,markdown]
   hook_source: |
     lua <<EOF
     require'nvim-treesitter.configs'.setup {
@@ -42,32 +42,6 @@
       ensure_installed = 'all'
     }
     EOF
-
-- repo: plasticboy/vim-markdown
-  on_ft: markdown
-  hook_add: |
-    let g:vim_markdown_folding_level = 1
-    let g:vim_markdown_folding_style_pythonic = 1
-    let g:vim_markdown_frontmatter = 1
-    let g:vim_markdown_auto_insert_bullets = 1
-    let g:vim_markdown_new_list_item_indent = 0
-    let g:vim_markdown_conceal_code_blocks = 0
-    let g:vim_markdown_conceal = 0
-    let g:vim_markdown_strikethrough = 1
-    let g:vim_markdown_edit_url_in = 'vsplit'
-    let g:vim_markdown_fenced_languages = [
-      \ 'c++=cpp',
-      \ 'viml=vim',
-      \ 'bash=sh',
-      \ 'ini=dosini',
-      \ 'js=javascript',
-      \ 'json=javascript',
-      \ 'jsx=javascriptreact',
-      \ 'tsx=typescriptreact',
-      \ 'docker=Dockerfile',
-      \ 'makefile=make',
-      \ 'py=python'
-      \ ]
 
 - repo: iamcco/markdown-preview.nvim
   on_ft: [markdown, pandoc.markdown, rmd]
