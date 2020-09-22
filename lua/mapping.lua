@@ -121,18 +121,11 @@ function mapping:load_plugin_define()
     -- Plugin SplitJoin
     ["n|sj"]             = map_cr('SplitjoinJoin'),
     ["n|sk"]             = map_cr('SplitjoinSplit'),
-    -- Plugin dsf
-    ["n|dsf"]            = map_cmd('<Plug>DsfDelete'),
-    ["n|csf"]            = map_cmd('<Plug>DsfChange'),
     -- Plugin go-nvim
     ["n|gcg"]            = map_cr('GoAutoComment'):with_noremap():with_silent(),
-    -- Plugin vim-textobj-function
-    ["o|af"]             = map_cmd("<Plug>(textobj-function-a)"):with_silent(),
-    ["o|if"]             = map_cmd("<Plug>(textobj-function-i)"):with_silent(),
-    ["x|af"]             = map_cmd("<Plug>(textobj-function-a)"):with_silent(),
-    ["x|if"]             = map_cmd("<Plug>(textobj-function-i)"):with_silent(),
+    -- Plugin vim-operator-replace
     ["x|p"]              = map_cmd("<Plug>(operator-replace)"),
-    -- Plugin sandwich
+    -- Plugin vim-operator-surround
     ["n|sa"]             = map_cmd("<Plug>(operator-surround-append)"):with_silent(),
     ["n|sd"]             = map_cmd("<Plug>(operator-surround-delete)"):with_silent(),
     ["n|sr"]             = map_cmd("<Plug>(operator-surround-replace)"):with_silent(),
