@@ -47,7 +47,7 @@ function autocmd.load_autocmds()
       {"TextYankPost", [[* silent! lua vim.highlight.on_yank({higroup="IncSearch", timeout=400})]]};
     };
     lsp= {
-      {"FileType","go,lua,rust,sh,zig,Dockerfile","lua require'lsp.lspinit'.start_lsp_server()"};
+      {"BufReadPost,BufNewFile","*","lua require'lsp.lspinit'.start_lsp_server()"};
     };
     -- gitblame = {
     --   {"CursorHold","*","lua require'version'.blameVirtualText()"};

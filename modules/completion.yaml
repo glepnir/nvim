@@ -5,6 +5,14 @@
     let g:completion_matching_ignore_case = 1
     let g:completion_enable_snippet = 'vim-vsnip'
     let g:completion_confirm_key = ""
+    let g:completion_chain_complete_list = [
+        \  {'complete_items': ['lsp']},
+        \  {'complete_items': ['snippet']},
+        \  {'complete_items': ['buffers']},
+        \  {'complete_items': ['path'],'triggered_only' = ['/']},
+        \  {'mode': '<c-p>'},
+        \  {'mode': '<c-n>'}
+      \]
 
 - repo: steelsojka/completion-buffers
   on_source: completion-nvim

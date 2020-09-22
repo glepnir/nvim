@@ -3,7 +3,7 @@ local syntax = require 'lsp.syntax'
 local server = require 'lsp.serverconf'
 local callbacks = require 'lsp.callbacks'
 local autocmd = require 'event'
-local vim,api,lsp = vim,vim.api,vim.lsp
+local vim,api= vim,vim.api
 
 -- A table to store our root_dir to client_id lookup. We want one LSP per
 -- root directory, and this is how we assert that.
@@ -118,9 +118,7 @@ end
 local function load_completion()
   local loaded,completion = pcall(require,'completion')
   if loaded then
-    api.nvim_buf_set_var(0, 'completion_enable', 1)
-    completion.on_InsertEnter()
-    completion.confirmCompletion()
+    completion.on_attach()
   end
 end
 
@@ -182,19 +180,8 @@ function lsp_store.start_lsp_server()
       completion.confirmCompletion()
 
       local on_attach = function(client,bufnr)
-        -- define an chain complete list
-        local chain_complete_list = {
-          default = {
-            {complete_items = {'lsp'}},
-            {complete_items = {'snippet'}},
-            {complete_items = {'buffers'}},
-            {complete_items = {'path'}, triggered_only = {'/'}},
-          }
-        }
         -- passing in a table with on_attach function
-        completion.on_attach({
-            chain_complete_list = chain_complete_list,
-          })
+        completion.on_attach()
 
         local lsp_event = {}
         if client.resolved_capabilities.document_highlight then
