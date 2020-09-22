@@ -245,59 +245,6 @@ function! s:apply_syntax_highlightings()
   exec 'hi Ignore'. s:fg_grey1
   exec 'hi Underlined'. s:fg_none. s:underline
 
-  " Markdown Filetype:
-  "===============================================================
-  exec 'hi markdownH1'. s:fg_red. s:bold
-  exec 'hi markdownH2'. s:fg_orange. s:bold
-  exec 'hi markdownH3'. s:fg_yellow. s:bold
-  exec 'hi markdownH4'. s:fg_green. s:bold
-  exec 'hi markdownH5'. s:fg_blue. s:bold
-  exec 'hi markdownH6'. s:fg_purple. s:bold
-  exec 'hi markdownUrl'. s:fg_blue. s:underline
-  exec 'hi markdownItalic'. s:fg_none. s:italic
-  exec 'hi markdownBold'. s:fg_none. s:bold
-  exec 'hi markdownItalicDelimiter'. s:fg_grey1. s:italic
-  exec 'hi markdownCode' .s:fg_green
-  exec 'hi markdownCodeBlock' .s:fg_cyan
-  exec 'hi markdownCodeDelimiter' .s:fg_cyan
-  exec 'hi markdownBlockquote'.s:fg_grey1
-  exec 'hi markdownListMarker'. s:fg_red
-  exec 'hi markdownOrderedListMarker'. s:fg_red
-  exec 'hi markdownRule'. s:fg_purple
-  exec 'hi markdownHeadingRule'. s:fg_grey1
-  exec 'hi markdownUrlDelimiter'. s:fg_grey1
-  exec 'hi markdownLinkDelimiter'. s:fg_grey1
-  exec 'hi markdownLinkTextDelimiter'. s:fg_grey1
-  exec 'hi markdownHeadingDelimiter'. s:fg_grey1
-  exec 'hi markdownLinkText'. s:fg_purple
-  exec 'hi markdownUrlTitleDelimiter'. s:fg_green
-  exec 'hi markdownIdDeclaration'. s:fg_purple
-  exec 'hi markdownBoldDelimiter'. s:fg_grey1
-  exec 'hi markdownId'. s:fg_yellow
-  "===============================================================
-  " Html: https://notabug.org/jorgesumle/vim-html-syntax {{{
-  "===============================================================
-  exec 'hi htmlH1'. s:fg_red. s:bold
-  exec 'hi htmlH2'. s:fg_orange. s:bold
-  exec 'hi htmlH3'. s:fg_yellow. s:bold
-  exec 'hi htmlH4'. s:fg_green. s:bold
-  exec 'hi htmlH5'. s:fg_blue. s:bold
-  exec 'hi htmlH6'. s:fg_purple.s:bold
-  exec 'hi htmlLink'. s:fg_none. s:underline
-  exec 'hi htmlBold'. s:fg_none. s:bold
-  exec 'hi htmlBoldUnderline'. s:fg_none. s:bold . s:underline
-  exec 'hi htmlBoldItalic'. s:fg_none. s:bold . s:italic
-  exec 'hi htmlBoldUnderlineItalic'. s:fg_none. s:bold . s:underline . s:italic
-  exec 'hi htmlUnderline'. s:fg_none. s:fg_none. s:underline
-  exec 'hi htmlUnderlineItalic'. s:fg_none. s:underline . s:italic
-  exec 'hi htmlItalic'. s:fg_none. s:italic
-  exec 'hi htmlTag'. s:fg_green
-  exec 'hi htmlEndTag'. s:fg_blue
-  exec 'hi htmlTagN'. s:fg_orange. s:italic
-  exec 'hi htmlTagName'. s:fg_orange. s:italic
-  exec 'hi htmlArg'. s:fg_cyan
-  exec 'hi htmlScriptTag'. s:fg_purple
-  exec 'hi htmlSpecialTagName'. s:fg_red.s:italic
   "===============================================================
   exec 'hi typescriptImport' . s:fg_purple
   exec 'hi typescriptAssign' . s:fg_operator
@@ -307,25 +254,6 @@ function! s:apply_syntax_highlightings()
   exec 'hi typescriptVariable' . s:fg_orange
   exec 'hi typescriptDestructureVariable' . s:fg_cyan
   exec 'hi jsxComponentName' . s:fg_blue
-  "===============================================================
-  " Lua:
-  "===============================================================
-  exec 'hi luaFunc' . s:fg_green  . s:bold
-  exec 'hi luaTable' . s:fg_fg0
-  exec 'hi luaIn' . s:fg_red  . s:italic
-  " BetterLua.vim
-  exec 'hi luaFunctionCall' . s:fg_yellow .'gui=bold'
-  exec 'hi luaFunction' . s:fg_blue
-  exec 'hi luaLocal' . s:fg_orange
-  exec 'hi luaSpecialValue' . s:fg_green  . s:bold
-  exec 'hi luaBraces' . s:fg_fg0
-  exec 'hi luaBuiltIn' . s:fg_cyan
-  exec 'hi luaNoise' . s:fg_grey1
-  exec 'hi luaLabel' . s:fg_purple
-  exec 'hi luaFuncKeyword' . s:fg_blue
-  exec 'hi luaFuncArgName' . s:fg_cyan
-  exec 'hi luaEllipsis' . s:fg_orange
-  exec 'hi luaDocTag' . s:fg_green
   "===============================================================
   " Go:
   "===============================================================
@@ -444,11 +372,6 @@ function! s:apply_syntax_highlightings()
   exec 'hi SignifySignAdd ' . s:fg_green  . s:bold
   exec 'hi SignifySignChange' . s:fg_blue  . s:bold
   exec 'hi SignifySignDelete' . s:fg_red  . s:bold
-  "===============================================================
-  " easymotion/vim-easymotion
-  "===============================================================
-  exec 'hi EasyMotionTarget'. s:fg_bg0 . s:bg_green
-  exec 'hi EasyMotionShade' . s:fg_grey1
   "===============================================================
   " voldkiss/vim-floaterm
   "===============================================================
