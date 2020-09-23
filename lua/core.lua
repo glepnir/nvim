@@ -5,7 +5,6 @@ local dein = require 'dein'
 local map = require 'mapping'
 local theme = require 'theme'
 local vim,api = vim,vim.api
-local version = require 'version'
 local M = {}
 
 function M.createdir()
