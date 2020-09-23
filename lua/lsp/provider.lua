@@ -1,3 +1,4 @@
+local global = require 'global'
 local window = require 'lsp.window'
 local vim,api,lsp = vim,vim.api,vim.lsp
 local M = {}
@@ -104,7 +105,7 @@ local function defintion_reference(result,method_type)
       short_link[short_name].preview_data.status = 0
     end
     if method_type == 2 then
-      for _ =1,15,1 do
+      for _ =1,10,1 do
         table.insert(contents,' ')
       end
       local help = {
@@ -118,12 +119,10 @@ local function defintion_reference(result,method_type)
       end
 
       local opts = {
-        relative = "editor",
+        relative = "cursor",
         style = "minimal",
-        row = vim.fn.line('.') ,
-        col = vim.fn.getpos('.')[2],
       }
-      M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents,'markdown',3,opts)
+      M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents,'plaintext',3,false,opts)
 
       api.nvim_buf_add_highlight(M.contents_buf,-1,"DefinitionIcon",0,0,#method_option[method_type].icon)
       api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetWord",0,#method_option[method_type].icon,#params+#method_option[method_type].icon+1)
@@ -254,6 +253,34 @@ function M.go_organize_imports_sync(timeout_ms)
     end
   else
     vim.lsp.buf.execute_command(action)
+  end
+end
+
+function M.jump_to_definition(timeout_ms)
+  local method = "textDocument/definition"
+  local params = lsp.util.make_position_params()
+  local result = vim.lsp.buf_request_sync(0,method,params,timeout_ms or 1000)
+  if result == nil or vim.tbl_isempty(result) then
+      print("No location found: " .. method)
+      return nil
+  end
+  if vim.tbl_islist(result) then
+    local uri = result[1].result[1].uri
+    local bufnr = vim.uri_to_bufnr(uri)
+    if not vim.api.nvim_buf_is_loaded(bufnr) then
+        vim.fn.bufload(bufnr)
+    end
+    local range = result[1].result[1].targetRange or result[1].result[1].range
+    local content =
+        vim.api.nvim_buf_get_lines(bufnr, range.start.line, range["end"].line + 1 +
+        10, false)
+    local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
+
+    local opts = {
+      relative = "cursor",
+      style = "minimal",
+    }
+    window.create_float_window(content,filetype,1,true,opts)
   end
 end
 

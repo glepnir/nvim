@@ -35,6 +35,7 @@ function M.make_floating_popup_options(width, height, opts)
   new_option.style = 'minimal'
   new_option.width = width
   new_option.height = height
+
   if opts.relative ~= nil then
     new_option.relative = opts.relative
   else
@@ -76,18 +77,10 @@ function M.make_floating_popup_options(width, height, opts)
   return new_option
 end
 
-function M.create_float_window(contents,filetype,border,opts)
-  -- local win_width = M.get_max_contents_width(contents)
-  -- local win_height = #contents + 2
+local function create_float_boder(contents,border,opts)
   opts = opts or {}
   local win_width,win_height = vim.lsp.util._make_floating_popup_size(contents,opts)
-  if opts == {} then
-    opts.wrap_at = opts.wrap_at or (vim.wo["wrap"] and api.nvim_win_get_width(0))
-    opts = M.make_floating_popup_options(win_width, win_height+2, opts)
-  else
-    opts.width = win_width
-    opts.height = win_height + 2
-  end
+  local border_option = M.make_floating_popup_options(win_width, win_height+2, opts)
 
   local top_left = border_style[border].top_left
   local top_mid  = border_style[border].top_mid
@@ -111,15 +104,13 @@ function M.create_float_window(contents,filetype,border,opts)
   api.nvim_buf_set_option(border_bufnr, 'filetype', 'lspwinborder')
   api.nvim_buf_set_option(border_bufnr, 'modifiable', false)
   -- create border
-  local border_winid = api.nvim_open_win(border_bufnr, true, opts)
+  local border_winid = api.nvim_open_win(border_bufnr, false, border_option)
   api.nvim_win_set_option(border_winid,"winhl","Normal:LspFloatWinBorder")
   api.nvim_win_set_option(border_winid,"cursorcolumn",false)
+  return border_bufnr,border_winid,border_option
+end
 
-  -- rewrite opts for contents buffer
-  opts.row = opts.row + 1
-  opts.height = opts.height - 2
-  opts.col = opts.col + 1
-  opts.width = opts.width - 4
+local function create_float_contents(contents, filetype,enter,opts)
   -- create contents buffer
   local contents_bufnr = api.nvim_create_buf(false, true)
   -- buffer settings for contents buffer
@@ -129,10 +120,24 @@ function M.create_float_window(contents,filetype,border,opts)
   if filetype then
     api.nvim_buf_set_option(contents_bufnr, 'filetype', filetype)
   end
-  api.nvim_buf_set_option(contents_bufnr, 'modifiable', true)
-  local contents_winid = api.nvim_open_win(contents_bufnr, true, opts)
+  api.nvim_buf_set_option(contents_bufnr, 'modifiable', false)
+  print(enter)
+  local contents_winid = api.nvim_open_win(contents_bufnr, enter, opts)
   api.nvim_win_set_option(contents_winid,"winhl","Normal:LspNvim")
+  return contents_bufnr, contents_winid
+end
 
+function M.create_float_window(contents,filetype,border,enter,opts)
+  local _,border_winid,border_option = create_float_boder(contents,border,opts)
+  border_option.width = border_option.width - 2
+  border_option.height = border_option.height - 2
+  if border_option.row ~= 0 then
+    border_option.row = border_option.row + 1
+  else
+    border_option.row = border_option.row - 1
+  end
+  border_option.col = border_option.col + 1
+  local contents_bufnr,contents_winid = create_float_contents(contents,filetype,enter,border_option)
   return contents_bufnr,contents_winid,border_winid
 end
 
