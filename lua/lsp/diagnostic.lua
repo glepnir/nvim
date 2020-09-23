@@ -1,4 +1,5 @@
 -- lsp dianostic
+local global = require('global')
 local vim = vim
 local api = vim.api
 local lsp = vim.lsp
@@ -8,10 +9,10 @@ local M = {}
 -- lsp severity icon
 -- 1:Error 2:Warning 3:Information 4:Hint
 local severity_icon = {
-  "   Error:",
-  "   Warn :",
-  "   Infor:",
-  "   Hint :"
+  "   Error",
+  "   Warn",
+  "   Infor",
+  "   Hint"
 }
 
 local function get_line(diagnostic_entry)
@@ -92,13 +93,15 @@ local function get_below_entry()
 end
 
 function M.close_preview()
-  local has_value,fw = pcall(api.nvim_buf_get_var,0,"diagnostic_float_window")
-  if has_value and fw ~= nil and api.nvim_win_is_valid(fw) then
+  local has_value,prev_win = pcall(api.nvim_buf_get_var,0,"diagnostic_float_window")
+  if prev_win == nil then return end
+  if has_value and prev_win[1] ~= nil and api.nvim_win_is_valid(prev_win[1]) then
     local current_position = vim.fn.getpos('.')
     local has_lineinfo,lines = pcall(api.nvim_buf_get_var,0,"diagnostic_prev_position")
     if has_lineinfo then
       if lines[1] ~= current_position[2] or lines[2] ~= current_position[3]-1 then
-        api.nvim_win_close(fw,true)
+        api.nvim_win_close(prev_win[1],true)
+        api.nvim_win_close(prev_win[2],true)
         api.nvim_buf_set_var(0,"diagnostic_float_window",nil)
         api.nvim_buf_set_var(0,"diagnostic_prev_position",nil)
       end
@@ -108,8 +111,9 @@ end
 
 local function jump_to_entry(entry)
   local has_value,prev_fw = pcall(api.nvim_buf_get_var,0,"diagnostic_float_window")
-  if has_value and prev_fw ~=nil and api.nvim_win_is_valid(prev_fw) then
-    api.nvim_win_close(prev_fw,true)
+  if has_value and prev_fw ~=nil and api.nvim_win_is_valid(prev_fw[1]) then
+    api.nvim_win_close(prev_fw[1],true)
+    api.nvim_win_close(prev_fw[2],true)
   end
   local diagnostic_message = {}
   local entry_line = get_line(entry) + 1
@@ -125,12 +129,13 @@ local function jump_to_entry(entry)
 
   -- set curosr
   api.nvim_win_set_cursor(0, {entry_line, entry_character})
-  local fb,fw = window.create_float_window(diagnostic_message,'markdown',1,false)
+  local fb,fw,bw = window.create_float_window(diagnostic_message,'markdown',1,false)
 
   -- use a variable to control diagnostic floatwidnow
-  api.nvim_buf_set_var(0,"diagnostic_float_window",fw)
+  api.nvim_buf_set_var(0,"diagnostic_float_window",{fw,bw})
   api.nvim_buf_set_var(0,"diagnostic_prev_position",{entry_line,entry_character})
   lsp.util.close_preview_autocmd({"CursorMovedI", "BufHidden", "BufLeave"}, fw)
+  lsp.util.close_preview_autocmd({"CursorMovedI", "BufHidden", "BufLeave"}, bw)
   api.nvim_command("autocmd CursorMoved <buffer> lua require('lsp.diagnostic').close_preview()")
 
   --add highlight
