@@ -116,7 +116,7 @@ local function create_float_boder(contents,border,opts)
   return border_bufnr,border_winid
 end
 
-local function create_float_contents(contents, filetype,enter,opts)
+local function create_float_contents(contents, filetype,enter,modifiable,opts)
   -- create contents buffer
   local contents_bufnr = api.nvim_create_buf(false, true)
   -- buffer settings for contents buffer
@@ -126,13 +126,13 @@ local function create_float_contents(contents, filetype,enter,opts)
   if filetype then
     api.nvim_buf_set_option(contents_bufnr, 'filetype', filetype)
   end
-  api.nvim_buf_set_option(contents_bufnr, 'modifiable', false)
+  api.nvim_buf_set_option(contents_bufnr, 'modifiable', modifiable)
   local contents_winid = api.nvim_open_win(contents_bufnr, enter, opts)
   api.nvim_win_set_option(contents_winid,"winhl","Normal:LspNvim")
   return contents_bufnr, contents_winid
 end
 
-function M.create_float_window(contents,filetype,border,enter,opts)
+function M.create_float_window(contents,filetype,border,enter,modifiable,opts)
   local _,_,border_option = make_border_option(contents,opts)
   border_option.width = border_option.width - 2
   border_option.height = border_option.height - 2
@@ -144,38 +144,13 @@ function M.create_float_window(contents,filetype,border,enter,opts)
   border_option.col = border_option.col + 1
   if enter then
     local _,border_winid = create_float_boder(contents,border,opts)
-    local contents_bufnr,contents_winid = create_float_contents(contents,filetype,enter,border_option)
+    local contents_bufnr,contents_winid = create_float_contents(contents,filetype,enter,modifiable,border_option)
     return contents_bufnr,contents_winid,border_winid
   else
-    local contents_bufnr,contents_winid = create_float_contents(contents,filetype,enter,border_option)
+    local contents_bufnr,contents_winid = create_float_contents(contents,filetype,enter,modifiable,border_option)
     local _,border_winid = create_float_boder(contents,border,opts)
     return contents_bufnr,contents_winid,border_winid
   end
-end
-
-function M.open_floating_preview(contents, filetype, opts)
-  opts = opts or {}
-
-  -- Clean up input: trim empty lines from the end, pad
-  contents = vim.lsp.util._trim_and_pad(contents, opts)
-
-  -- Compute size of float needed to show (wrapped) lines
-  opts.wrap_at = opts.wrap_at or (vim.wo["wrap"] and api.nvim_win_get_width(0))
-  local width, height = vim.lsp.util._make_floating_popup_size(contents, opts)
-
-  local floating_bufnr = api.nvim_create_buf(false, true)
-  if filetype then
-    api.nvim_buf_set_option(floating_bufnr, 'filetype', filetype)
-  end
-  local float_option = vim.lsp.util.make_floating_popup_options(width, height, opts)
-  local floating_winnr = api.nvim_open_win(floating_bufnr, false, float_option)
-  if filetype == 'markdown' then
-    api.nvim_win_set_option(floating_winnr, 'conceallevel', 2)
-  end
-  api.nvim_buf_set_lines(floating_bufnr, 0, -1, true, contents)
-  api.nvim_buf_set_option(floating_bufnr, 'modifiable', false)
-
-  return floating_bufnr, floating_winnr
 end
 
 return M
