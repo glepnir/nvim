@@ -225,8 +225,9 @@ function M.preview_definiton(timeout_ms)
       print("No location found: " .. method)
       return nil
   end
-  if vim.tbl_islist(result) then
-    local uri = result[1].result[1].uri
+  if vim.tbl_islist(result) and not vim.tbl_isempty(result[1]) then
+    local uri = result[1].result[1].uri or {}
+    if #uri == 0 then return end
     local bufnr = vim.uri_to_bufnr(uri)
     if not vim.api.nvim_buf_is_loaded(bufnr) then
         vim.fn.bufload(bufnr)
