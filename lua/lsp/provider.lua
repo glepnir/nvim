@@ -20,8 +20,8 @@ end
 local function defintion_reference(result,method_type)
   if vim.tbl_islist(result) then
     local method_option = {
-      {icon = vim.g.lsp_nvim_defintion_icon or '🔷 ',title = ':  '.. #result ..' Definitions'};
-      {icon = vim.g.lsp_nvim_references_icon or '🔷 ',title = ':  '.. #result ..' References',};
+      {icon = vim.g.lsp_nvim_defintion_icon or '   ',title = ':  '.. #result ..' Definitions'};
+      {icon = vim.g.lsp_nvim_references_icon or '   ',title = ':  '.. #result ..' References',};
     }
     local params = vim.fn.expand("<cword>")
     local title = method_option[method_type].icon.. params ..method_option[method_type].title
@@ -65,10 +65,10 @@ local function defintion_reference(result,method_type)
         table.insert(contents,' ')
       end
       local help = {
-        "📌 Help: ",
+        "  Help: ",
         " ",
-        "[TAB] : Preview Code     [o] : Open File     [s] : Vsplit Open";
-        "[i]   : Split Open       [q] : Exit";
+        "[TAB] : Preview     [o] : Open File     [s] : Vsplit";
+        "[i]   : Split       [q] : Exit";
       }
       for _,v in ipairs(help) do
         table.insert(contents,v)
@@ -81,11 +81,15 @@ local function defintion_reference(result,method_type)
       M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents,'plaintext',3,true,true,opts)
       api.nvim_win_set_cursor(M.contens_buf,{3,1})
 
-      api.nvim_buf_add_highlight(M.contents_buf,-1,"DefinitionIcon",0,0,#method_option[method_type].icon)
+      api.nvim_buf_add_highlight(M.contents_buf,-1,"DefinitionIcon",0,1,#method_option[method_type].icon-1)
       api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetWord",0,#method_option[method_type].icon,#params+#method_option[method_type].icon+1)
       api.nvim_buf_add_highlight(M.contents_buf,-1,"DefinitionCount",0,0,-1)
       api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetWord",3+definition_uri,#method_option[method_type].icon,#params+#method_option[method_type].icon+1)
+      api.nvim_buf_add_highlight(M.contents_buf,-1,"ReferencesIcon",3+definition_uri,1,#method_option[method_type].icon+4)
       api.nvim_buf_add_highlight(M.contents_buf,-1,"ReferencesCount",3+definition_uri,0,-1)
+      api.nvim_buf_add_highlight(M.contents_buf,-1,"HelpTitle",definition_uri+reference_uri+15,0,-1)
+      api.nvim_buf_add_highlight(M.contents_buf,-1,"HelpItem",definition_uri+reference_uri+17,0,-1)
+      api.nvim_buf_add_highlight(M.contents_buf,-1,"HelpItem",definition_uri+reference_uri+18,0,-1)
 
       for i=1,definition_uri,1 do
         api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetFileName",1+i,0,-1)
@@ -231,17 +235,19 @@ function M.preview_definiton(timeout_ms)
     local content =
         vim.api.nvim_buf_get_lines(bufnr, range.start.line, range["end"].line + 1 +
         10, false)
+    content = vim.list_extend({"什 Definition Preview 什",""},content)
     local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
 
     local opts = {
       relative = "cursor",
       style = "minimal",
     }
-    local _,contents_winid,border_winid = window.create_float_window(content,filetype,1,false,false,opts)
+    local contents_buf,contents_winid,border_winid = window.create_float_window(content,filetype,1,false,false,opts)
     vim.lsp.util.close_preview_autocmd({"CursorMoved", "CursorMovedI", "BufHidden", "BufLeave"},
                                         border_winid)
     vim.lsp.util.close_preview_autocmd({"CursorMoved", "CursorMovedI", "BufHidden", "BufLeave"},
                                         contents_winid)
+    vim.api.nvim_buf_add_highlight(contents_buf,-1,"DefinitionPreviewTitle",0,0,-1)
   end
 end
 

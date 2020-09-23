@@ -80,8 +80,8 @@ end
 local function make_border_option(contents,opts)
   opts = opts or {}
   local win_width,win_height = vim.lsp.util._make_floating_popup_size(contents,opts)
-  local border_option = M.make_floating_popup_options(win_width, win_height+2, opts)
-  return win_width,win_height,border_option
+  local border_option = M.make_floating_popup_options(win_width+2, win_height+2, opts)
+  return win_width+2,win_height,border_option
 end
 
 
@@ -95,9 +95,9 @@ local function create_float_boder(contents,border,opts)
   local bottom_left= border_style[border].bottom_left
   local bottom_right = border_style[border].bottom_right
   -- set border
-  local top = top_left .. vim.fn["repeat"](top_mid, win_width - 2) ..top_right
-  local mid = mid_line .. vim.fn["repeat"](" ", win_width - 2) .. mid_line
-  local bot = bottom_left .. vim.fn["repeat"](top_mid, win_width - 2) .. bottom_right
+  local top = top_left .. vim.fn["repeat"](top_mid, win_width-2) ..top_right
+  local mid = mid_line .. vim.fn["repeat"](" ", win_width-2) .. mid_line
+  local bot = bottom_left .. vim.fn["repeat"](top_mid, win_width-2) .. bottom_right
   local lines = {top}
   for _,v in pairs(vim.fn["repeat"]({mid},win_height)) do
     table.insert(lines,v)
