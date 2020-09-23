@@ -163,6 +163,7 @@ function M.lsp_jump_diagnostic_next()
   jump_one_times(get_below_entry)
 end
 
+-- TODO: complete this.
 function M.show_buf_diagnostics()
   local diagnostics = get_sorted_diagnostics()
   local buf_fname = vim.fn.expand("%:t")
