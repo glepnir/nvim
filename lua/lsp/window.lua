@@ -77,10 +77,16 @@ function M.make_floating_popup_options(width, height, opts)
   return new_option
 end
 
-local function create_float_boder(contents,border,opts)
+local function make_border_option(contents,opts)
   opts = opts or {}
   local win_width,win_height = vim.lsp.util._make_floating_popup_size(contents,opts)
   local border_option = M.make_floating_popup_options(win_width, win_height+2, opts)
+  return win_width,win_height,border_option
+end
+
+
+local function create_float_boder(contents,border,opts)
+  local win_width,win_height,border_option = make_border_option(contents,opts)
 
   local top_left = border_style[border].top_left
   local top_mid  = border_style[border].top_mid
@@ -107,7 +113,7 @@ local function create_float_boder(contents,border,opts)
   local border_winid = api.nvim_open_win(border_bufnr, false, border_option)
   api.nvim_win_set_option(border_winid,"winhl","Normal:LspFloatWinBorder")
   api.nvim_win_set_option(border_winid,"cursorcolumn",false)
-  return border_bufnr,border_winid,border_option
+  return border_bufnr,border_winid
 end
 
 local function create_float_contents(contents, filetype,enter,opts)
@@ -121,14 +127,13 @@ local function create_float_contents(contents, filetype,enter,opts)
     api.nvim_buf_set_option(contents_bufnr, 'filetype', filetype)
   end
   api.nvim_buf_set_option(contents_bufnr, 'modifiable', false)
-  print(enter)
   local contents_winid = api.nvim_open_win(contents_bufnr, enter, opts)
   api.nvim_win_set_option(contents_winid,"winhl","Normal:LspNvim")
   return contents_bufnr, contents_winid
 end
 
 function M.create_float_window(contents,filetype,border,enter,opts)
-  local _,border_winid,border_option = create_float_boder(contents,border,opts)
+  local _,_,border_option = make_border_option(contents,opts)
   border_option.width = border_option.width - 2
   border_option.height = border_option.height - 2
   if border_option.row ~= 0 then
@@ -137,8 +142,15 @@ function M.create_float_window(contents,filetype,border,enter,opts)
     border_option.row = border_option.row - 1
   end
   border_option.col = border_option.col + 1
-  local contents_bufnr,contents_winid = create_float_contents(contents,filetype,enter,border_option)
-  return contents_bufnr,contents_winid,border_winid
+  if enter then
+    local _,border_winid = create_float_boder(contents,border,opts)
+    local contents_bufnr,contents_winid = create_float_contents(contents,filetype,enter,border_option)
+    return contents_bufnr,contents_winid,border_winid
+  else
+    local contents_bufnr,contents_winid = create_float_contents(contents,filetype,enter,border_option)
+    local _,border_winid = create_float_boder(contents,border,opts)
+    return contents_bufnr,contents_winid,border_winid
+  end
 end
 
 function M.open_floating_preview(contents, filetype, opts)
