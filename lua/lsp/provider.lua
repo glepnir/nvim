@@ -5,50 +5,6 @@ local M = {}
 local short_link = {}
 local root_dir = vim.lsp.buf_get_clients()[1].config.root_dir
 
--- lsp peek preview Taken from
--- https://www.reddit.com/r/neovim/comments/gyb077/nvimlsp_peek_defination_javascript_ttserver
-local function preview_location(location, context, before_context)
-  -- location may be LocationLink or Location (more useful for the former)
-  context = context or 15
-  before_context = before_context or 0
-  local uri = location.targetUri or location.uri
-  if uri == nil then
-      return
-  end
-  local bufnr = vim.uri_to_bufnr(uri)
-  if not vim.api.nvim_buf_is_loaded(bufnr) then
-      vim.fn.bufload(bufnr)
-  end
-  local range = location.targetRange or location.range
-  local contents =
-      vim.api.nvim_buf_get_lines(bufnr, range.start.line - before_context, range["end"].line + 1 +
-      context, false)
-  local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
-  return vim.lsp.util.open_floating_preview(contents, filetype)
-end
-
-local function preview_location_callback(_, method, result)
-  local context = 15
-  if result == nil or vim.tbl_isempty(result) then
-      print("No location found: " .. method)
-      return nil
-  end
-  if vim.tbl_islist(result) then
-     M.floating_buf, M.floating_win = preview_location(result[1], context)
-  else
-      M.floating_buf, M.floating_win = preview_location(result, context)
-  end
-end
-
-function M.lsp_peek_definition()
-  if vim.tbl_contains(vim.api.nvim_list_wins(), M.floating_win) then
-      vim.api.nvim_set_current_win(M.floating_win)
-  else
-      local params = vim.lsp.util.make_position_params()
-      return vim.lsp.buf_request(0, "textDocument/definition", params, preview_location_callback)
-  end
-end
-
 local contents = {}
 local definition_uri = 0
 local reference_uri = 0
@@ -122,7 +78,8 @@ local function defintion_reference(result,method_type)
         relative = "cursor",
         style = "minimal",
       }
-      M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents,'plaintext',3,true,opts)
+      M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents,'plaintext',3,true,true,opts)
+      api.nvim_win_set_cursor(M.contens_buf,{3,1})
 
       api.nvim_buf_add_highlight(M.contents_buf,-1,"DefinitionIcon",0,0,#method_option[method_type].icon)
       api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetWord",0,#method_option[method_type].icon,#params+#method_option[method_type].icon+1)
@@ -256,7 +213,7 @@ function M.go_organize_imports_sync(timeout_ms)
   end
 end
 
-function M.jump_to_definition(timeout_ms)
+function M.preview_definiton(timeout_ms)
   local method = "textDocument/definition"
   local params = lsp.util.make_position_params()
   local result = vim.lsp.buf_request_sync(0,method,params,timeout_ms or 1000)
@@ -280,7 +237,7 @@ function M.jump_to_definition(timeout_ms)
       relative = "cursor",
       style = "minimal",
     }
-    local _,contents_winid,border_winid = window.create_float_window(content,filetype,1,false,opts)
+    local _,contents_winid,border_winid = window.create_float_window(content,filetype,1,false,false,opts)
     vim.lsp.util.close_preview_autocmd({"CursorMoved", "CursorMovedI", "BufHidden", "BufLeave"},
                                         border_winid)
     vim.lsp.util.close_preview_autocmd({"CursorMoved", "CursorMovedI", "BufHidden", "BufLeave"},
