@@ -7,12 +7,6 @@
   depends: vim-operator-user
   on_map: { n: <Plug> }
 
-- repo: AndrewRadev/splitjoin.vim
-  on_map: { n: <Plug>Splitjoin }
-  hook_add: |
-    let g:splitjoin_join_mapping = ''
-    let g:splitjoin_split_mapping = ''
-
 - repo: kana/vim-niceblock
   on_map: { x: <Plug> }
   hook_add: |
