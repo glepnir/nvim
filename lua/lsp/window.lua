@@ -1,4 +1,3 @@
-local global = require('global')
 local vim,api = vim,vim.api
 local M = {}
 
@@ -122,12 +121,16 @@ local function create_float_contents(contents, filetype,enter,modifiable,opts)
   -- buffer settings for contents buffer
   -- Clean up input: trim empty lines from the end, pad
   local content = vim.lsp.util._trim_and_pad(contents,{pad_left=0,pad_right=0})
-  api.nvim_buf_set_lines(contents_bufnr,0,-1,true,content)
+
   if filetype then
     api.nvim_buf_set_option(contents_bufnr, 'filetype', filetype)
   end
+  api.nvim_buf_set_lines(contents_bufnr,0,-1,true,content)
   api.nvim_buf_set_option(contents_bufnr, 'modifiable', modifiable)
   local contents_winid = api.nvim_open_win(contents_bufnr, enter, opts)
+  if filetype == 'markdown' then
+    api.nvim_win_set_option(contents_winid, 'conceallevel', 2)
+  end
   api.nvim_win_set_option(contents_winid,"winhl","Normal:LspNvim")
   return contents_bufnr, contents_winid
 end
