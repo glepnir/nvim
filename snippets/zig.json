@@ -1,0 +1,689 @@
+{
+    "var": {
+        "prefix": "var",
+        "body": [
+            "var ${1:name}: ${2:type} = ${3:value};$0"
+        ],
+        "description": "var decl"
+    },
+    "const": {
+        "prefix": "const",
+        "body": [
+            "const ${1:name}: ${2:type} = ${3:value};$0"
+        ],
+        "description": "const decl"
+    },
+    "arr_init": {
+        "prefix": "arr_init",
+        "body": [
+            "[_:${1:sentinel}]${1:type}{${2:val1}, ${3:val2}, ${4:val3}};$0"
+        ],
+        "description": "array/sentinel init"
+    },
+    "list": {
+        "prefix": "list",
+        "body": [
+            ".{${1:val1}, ${2:val2}, ${3:val3}};$0"
+        ],
+        "description": "anonymous list"
+    },
+    "fn": {
+        "prefix": "fn",
+        "body": [
+            "fn ${1:name}() ${2:return_type} {",
+            "    $0",
+            "}"
+        ],
+        "description": "fn decl"
+    },
+    "generic_fn": {
+        "prefix": "fn_T",
+        "body": [
+            "fn ${1:name}(comptime T: type) ${2:return_type} {",
+            "    $0",
+            "}"
+        ],
+        "description": "generic fn decl"
+    },
+    "pub_fn": {
+        "prefix": "pub_fn",
+        "body": [
+            "pub fn ${1:main}() ${2:void} {",
+            "    $0",
+            "}"
+        ],
+        "description": "pub fn decl"
+    },
+    "extern_fn": {
+        "prefix": "ext_fn",
+        "body": [
+            "extern \"${1:sourceName}\" stdcallcc fn ${2:name}() ${3:return_type};$0"
+        ],
+        "description": "extern fn"
+    },
+    "exp_fn": {
+        "prefix": "exp_fn",
+        "body": [
+            "export fn ${1:name}() ${2:return_type} {",
+            "    $0",
+            "}"
+        ],
+        "description": "export fn"
+    },
+    "inl_fn": {
+        "prefix": "inline",
+        "body": [
+            "inline fn ${1:name}() ${2:return_type} {",
+            "    $0",
+            "}"
+        ],
+        "description": "inline fn"
+    },
+    "nakedcc_fn": {
+        "prefix": "naked",
+        "body": [
+            "nakedcc fn _${1:name}() ${2:return_type} {",
+            "    $0",
+            "}"
+        ],
+        "description": "nakedcc fn"
+    },
+    "block": {
+        "prefix": "block",
+        "body": [
+            "${1:label}: {",
+            "    const ${2:name} = ${3:value}",
+            "    break :${1:label} ${:return_value}$0",
+            "};"
+        ],
+        "description": "block expr"
+    },
+    "struct_val": {
+        "prefix": "stru_val",
+        "body": [
+            "struct {",
+            "    .${1:field}: ${2:type},",
+            "    .${3:field}: ${4:type},$0",
+            "};"
+        ],
+        "description": "struct val"
+    },
+    "struct_decl": {
+        "prefix": "stru_decl",
+        "body": [
+            "const ${1:StructName} = struct {",
+            "    ${2:field}: ${3:type},",
+            "    ${4:field}: ${5:type},$0",
+            "};"
+        ],
+        "description": "struct decl"
+    },
+    "enum": {
+        "prefix": "enum",
+        "body": [
+            "const ${1:EnumName} = enum(${2:type}) {",
+            "    ${3:variant} = ${4:count},",
+            "    ${5:variant} = ${6:count},$0",
+            "};"
+        ],
+        "description": "enum decl"
+    },
+    "union": {
+        "prefix": "union",
+        "body": [
+            "const ${1:UnionName} = union(${2:enum}) {",
+            "    ${3:variant} : ${4:type},",
+            "    ${5:variant} : ${6:type},$0",
+            "};"
+        ],
+        "description": "tagged union decl"
+    },
+    "for_val": {
+        "prefix": "for_v",
+        "body": [
+            "for (${1:items}) |${2:value}| {",
+            "    $0",
+            "}"
+        ],
+        "description": "for value loop"
+    },
+    "for_val_index": {
+        "prefix": "for_v_i",
+        "body": [
+            "for (${1:items}) |${2:value},${3:index}| {",
+            "    $0",
+            "}"
+        ],
+        "description": "for value,index loop"
+    },
+    "for_inline": {
+        "prefix": "for_inline",
+        "body": [
+            "inline for (${1:items}) |${2:value}| {",
+            "    $0",
+            "}"
+        ],
+        "description": "inline for loop"
+    },
+    "for_label": {
+        "prefix": "for_l",
+        "body": [
+            "${1:label}: for (${2:items}) |_| {",
+            "    for (${3:items2}) |_| {",
+            "        ${4|break,continue|} :${1:label};$0",
+            "    }",
+            "}"
+        ],
+        "description": "labeled for loop"
+    },
+    "for_else": {
+        "prefix": "for_e",
+        "body": [
+            "for (${1:items}) |${2:value}| {",
+            "    break true;$0",
+            "} else false;"
+        ],
+        "description": "for else loop expr"
+    },
+    "while": {
+        "prefix": "while",
+        "body": [
+            "while (${1:cond}) : (${2:continue_expr}) {",
+            "    $0",
+            "}"
+        ],
+        "description": "while loop"
+    },
+    "while_else": {
+        "prefix": "while_e",
+        "body": [
+            "while (${1:cond}) : (${2:continue_expr}) {",
+            "    break true;$0",
+            "} else false;"
+        ],
+        "description": "while else loop expression"
+    },
+    "while_opt": {
+        "prefix": "while?",
+        "body": [
+            "while (${1:nullable}) |${2:value}| {",
+            "    $0",
+            "} else |err| {",
+            "    ",
+            "}"
+        ],
+        "description": "while optional loop"
+    },
+    "while_label": {
+        "prefix": "while_l",
+        "body": [
+            "${1:label}: while (${2:cond}) : (${3:continue_expr}) {",
+            "    while (${4:cond}) : (${5:continue_expr}) {",
+            "        ${6|break,continue|} :${1:label};$0",
+            "    }",
+            "}"
+        ],
+        "description": "labeled while loop"
+    },
+    "while_inline": {
+        "prefix": "while_inline",
+        "body": [
+            "inline while (${1:cond}) (${2:continue_expr}) {",
+            "    $0",
+            "}"
+        ],
+        "description": "inline while loop"
+    },
+    "if": {
+        "prefix": "if",
+        "body": [
+            "if (${1:cond}) {",
+            "    $0",
+            "}"
+        ],
+        "description": "if expr"
+    },
+    "if_else": {
+        "prefix": "if_e",
+        "body": [
+            "if (${1:cond}) {",
+            "    $0",
+            "} else {",
+            "    unreachable;",
+            "}"
+        ],
+        "description": "if else expr"
+    },
+    "if_opt": {
+        "prefix": "if?",
+        "body": [
+            "if (${1:nullable}) |value| {",
+            "    $0",
+            "}"
+        ],
+        "description": "if optional"
+    },
+    "if_else_opt": {
+        "prefix": "if_e?",
+        "body": [
+            "if (${1:nullable}) |value| {",
+            "    $0",
+            "} else |err| switch(err) {",
+            "    ${2:err_variants} => ${3:value},",
+            "    ${4:err_variants} => ${5:value},",
+            "    else => ${6:value},",
+            "}"
+        ],
+        "description": "if else optional"
+    },
+    "switch": {
+        "prefix": "switch",
+        "body": [
+            "switch (${1:value}) {",
+            "    ${2:values/range} => ${3:value},",
+            "    ${4:values/range} => ${5:value},",
+            "    else => ${6:value},",
+            "};$0"
+        ],
+        "description": "switch expr"
+    },
+    "test": {
+        "prefix": "test",
+        "body": [
+            "test ${1:name} {",
+            "    const x = true",
+            "    assert(x)$0",
+            "}"
+        ],
+        "description": "test"
+    },
+    "orelse": {
+        "prefix": "orelse",
+        "body": [
+            "orelse return unreachable$0"
+        ],
+        "description": "orelse expr"
+    },
+    "defer": {
+        "prefix": "def",
+        "body": [
+            "defer {",
+            "    $0",
+            "}"
+        ],
+        "description": "defer block"
+    },
+    "errdefer": {
+        "prefix": "errd",
+        "body": [
+            "errdefer {",
+            "    $0",
+            "}"
+        ],
+        "description": "errdefer block"
+    },
+    "error": {
+        "prefix": "error",
+        "body": [
+            "error {",
+            "    ${1:variant},",
+            "    ${2:variant},$0",
+            "};"
+        ],
+        "description": "error decl"
+    },
+    "catch": {
+        "prefix": "catch",
+        "body": [
+            " catch |${1:err}| {",
+            "    $0",
+            "};"
+        ],
+        "description": "catch error block"
+    },
+    "comptime": {
+        "prefix": "comp",
+        "body": [
+            "comptime {",
+            "    $0",
+            "}"
+        ],
+        "description": "comptime block"
+    },
+    "asm": {
+        "prefix": "asm",
+        "body": [
+            "asm ${1:volatile} (",
+            "    $0",
+            ");"
+        ],
+        "description": "asm block"
+    },
+    "async_call": {
+        "prefix": "async",
+        "body": [
+            "async ${1:fn_name}(${2:params})$0"
+        ],
+        "description": "async fn call"
+    },
+    "await": {
+        "prefix": "await",
+        "body": [
+            "await ${1:anyframe->T}$0"
+        ],
+        "description": "await frame"
+    },
+    "suspend_block": {
+        "prefix": "suspend",
+        "body": [
+            "suspend {",
+            "    $0",
+            "}"
+        ],
+        "description": "suspend block"
+    },
+    "resume": {
+        "prefix": "resume",
+        "body": [
+            "resume ${1:anyframe};$0"
+        ],
+        "description": "resume frame"
+    },
+    "free": {
+        "prefix": "free",
+        "body": [
+            "${1:allocator}.free();$0"
+        ],
+        "description": "allocator free"
+    },
+    "@alignOf": {
+        "prefix": "alignOf",
+        "body": [
+            "@alignOf(${1:type})$0"
+        ],
+        "description": "align on specific type"
+    },
+    "@as": {
+        "prefix": "as",
+        "body": [
+            "@as(${1:cast_type}, ${2:value})$0"
+        ],
+        "description": "cast value"
+    },
+    "@frame": {
+        "prefix": "frame",
+        "body": [
+            "@frame()$0"
+        ],
+        "description": "switching frame"
+    },
+    "@import": {
+        "prefix": "imp",
+        "body": [
+            "@import(\"${1:dep_name}\");$0"
+        ],
+        "description": "import dependency"
+    },
+    "@import(std)": {
+        "prefix": "imp_std",
+        "body": [
+            "@import(\"std\").${1|ascii,atomic,base64,build,builtin,c,coff,crypto,cstr,debug,dwarf,elf,event,fifo,fmt,fs,hash,hash_map,heap,http,io,json,macho,math,mem,meta,net,os,packed_int_array,pdb,process,rand,rb,sort,start,testing,time,unicode,valgrind,zigg|};$0"
+        ],
+        "description": "import std namespace"
+    },
+    "@typeOf": {
+        "prefix": "typeOf",
+        "body": [
+            "@typeOf(${1:value})$0"
+        ],
+        "description": "type of value"
+    },
+    "@typeName": {
+        "prefix": "typeName",
+        "body": [
+            "@typeName(@typeOf(value), value)$0"
+        ],
+        "description": "type name of value"
+    },
+    "@panic": {
+        "prefix": "panic",
+        "body": [
+            "@panic(\"${1:message}\");$0"
+        ],
+        "description": "panic"
+    },
+    "@setCold": {
+        "prefix": "setC",
+        "body": [
+            "@setCold(true);$0"
+        ],
+        "description": "set rarely call info to optimizer"
+    },
+    "@sizeOf": {
+        "prefix": "sizeOf",
+        "body": [
+            "@sizeOf(${1:type})$0"
+        ],
+        "description": "size of type"
+    },
+    "@compileError": {
+        "prefix": "compileErr",
+        "body": [
+            "@compileError(\"${1:message}\");$0"
+        ],
+        "description": "compile error"
+    },
+    "@compileLog": {
+        "prefix": [
+            "compileLog",
+            "log"
+        ],
+        "body": [
+            "@compileError(\"${1:message}\");$0"
+        ],
+        "description": "compile log"
+    },
+    "@math.fn": {
+        "prefix": "math",
+        "body": [
+            "@${1|sqrt,sin,cos,exp,exp2,log,log2,log10,fabs,floor,ceil,trunc,round|}(\"${2:value}\");$0"
+        ],
+        "description": "math functions"
+    },
+    "fnCast": {
+        "prefix": "cast",
+        "body": [
+            "@${1|alignCast,bitCast,errSetCast,floatCast,intCast,ptrCast,truncate|}(${2:value}, ${3:value})$0"
+        ],
+        "description": "fnCast function"
+    },
+    "@opWithOverflow": {
+        "prefix": [
+            "addWith",
+            "subWith",
+            "mulWith",
+            "overflow"
+        ],
+        "body": [
+            "@${1|add,sub,mul,shl|}WithOverflow(${2:type}, ${3:op_1}, ${4:op_2}, ${5:result_pointer})$0"
+        ],
+        "description": "Algebraic/Shift operation with overflow check"
+    },
+    "@bitCast": {
+        "prefix": "bitCast",
+        "body": [
+            "@byteOffsetOf(${1:packed_type}, ${2:value})$0"
+        ],
+        "description": "value to bit cast"
+    },
+    "@bitOffsetOf": {
+        "prefix": "bitOff",
+        "body": [
+            "@bitOffsetOf(${1:packed_type}, ${2:value})$0"
+        ],
+        "description": "bit offset"
+    },
+    "@byteOffsetOf": {
+        "prefix": "byteOff",
+        "body": [
+            "@byteOffsetOf(${1:packed_type}, ${2:value})$0"
+        ],
+        "description": "byte offset"
+    },
+    "@bytesToSlice": {
+        "prefix": "bytesToSlice",
+        "body": [
+            "@bytesToSlice(${1:packed_type}, ${2:slice})$0"
+        ],
+        "description": "bytes to slice"
+    },
+    "@memberCount": {
+        "prefix": "memberC",
+        "body": [
+            "@memberCount(${1:enum_name})$0"
+        ],
+        "description": "enum member count"
+    },
+    "@memberName": {
+        "prefix": "member_name",
+        "body": [
+            "@memberName(${1:enum_name}, ${2:variant_count})$0"
+        ],
+        "description": "enum member name"
+    },
+    "@tagName": {
+        "prefix": "tagName",
+        "body": [
+            "@tagName(${1:variant}, ${2:variant_string})$0"
+        ],
+        "description": "enum tag name"
+    },
+    "@tagType": {
+        "prefix": "tagType",
+        "body": [
+            "@tagType(${1:enum_name})$0"
+        ],
+        "description": "enum tag's count type"
+    },
+    "reflection.type_prop": {
+        "prefix": "reflect.type_prop",
+        "body": [
+            "@typeOf(${1:value}).${2|Payload,ErrorSet,Child|}$0"
+        ],
+        "description": "type property (Property,ErrorSet,...)"
+    },
+    "@atomicLoad": {
+        "prefix": "atomicLoad",
+        "body": [
+            "@atomicLoad(${1:type}, ${2:const_ptr}, .${3|AcqRel,Acquire,Monotonic,Release,SecCst,Unordered|})$0"
+        ],
+        "description": "atomics: load ptr dereferenced value"
+    },
+    "@atomicRmw": {
+        "prefix": "atomicRmw",
+        "body": [
+            "@atomicRmw(${1:type}, ${2:ptr}, .${3|Add,And,Max,Min,Nand,Or,Sub,Xchg,Xor|}, ${4:operand_type}, ${5:builtin.AtomicOrder})$0"
+        ],
+        "description": "atomics: modify memory and return prev value"
+    },
+    "std.debug.warn": {
+        "prefix": "warn",
+        "body": [
+            "${1:std.debug.}warn(\"${2:message} {}\\n\", .{${3:err}});$0"
+        ],
+        "description": "std.debug.warn"
+    },
+    "std.mem.eql": {
+        "prefix": "mem.eql",
+        "body": [
+            "mem.eql(${1:type}, ${2:value}, ${3:value})$0"
+        ],
+        "description": "std.mem.eql"
+    },
+    "std.in/out": {
+        "prefix": [
+            "stdin",
+            "stdout",
+            "stderr"
+        ],
+        "body": [
+            "std.io.${1|getStdOut().outStream(),getStdIn().inStream(),getStdErr()|}$0"
+        ],
+        "description": "std.io in/out/err"
+    },
+    "std.debug.assert": {
+        "prefix": "assert",
+        "body": [
+            "${1:std.debug.}assert(${2:cond});$0"
+        ],
+        "description": "std.debug.assert"
+    },
+    "std.testing.expect": {
+        "prefix": "expect",
+        "body": [
+            "${1:std.testing.}expect(${2:cond});$0"
+        ],
+        "description": "std.testing.expect"
+    },
+    "std.heap.ArenaAllocator": {
+        "prefix": [
+            "arena",
+            "alloc",
+            "heap"
+        ],
+        "body": [
+            "var ${1:arena_all_name} = std.heap.ArenaAllocator.init(std.heap.direct_allocator);",
+            "defer ${1:arena_all_name}.deinit();",
+            "const allocator = &${1:arena_all_name}.allocator;",
+            "const ptr = try allocator.create(${1:type});$0"
+        ],
+        "description": "std.heap.ArenaAllocator"
+    },
+    "main_template": {
+        "prefix": [
+            "main",
+            "hello"
+        ],
+        "body": [
+            "const std = @import(\"std\");",
+            "",
+            "pub fn main() !void {",
+            "    const stdout = &std.io.getStdOut().outStream();",
+            "    try stdout.print(\"Hello {}!\\n\", .{\"world\"});$0",
+            "}"
+        ],
+        "description": "main/hello world"
+    },
+    "builder_template": {
+        "prefix": "builder_template",
+        "body": [
+            "const Builder = @import(\"std\").build.Builder;",
+            "",
+            "pub fn build(b: *Builder) void {",
+            "    const exe = b.addExecutable(${example}, ${2:example}.zig);",
+            "    exe.setBuildMode(b.standardReleaseOptions());",
+            "    b.default_step.dependeOn(&exe.step);$0",
+            "}"
+        ],
+        "description": "Default build.zig builder"
+    },
+    "adt_template": {
+        "prefix": "adt_template",
+        "body": [
+            "const std = @import(\"std\");\n",
+            "const ExprTag = enum {\n    Num,\n    Plus,\n};\n",
+            "const Expr = union(ExprTag) {\n    Num: i32,\n    Plus: struct{ e1: *Expr, e2: *Expr},\n};",
+            "fn eval(e: *const Expr) i32 {",
+            "    return switch (e.*) {",
+            "        .Num => |n| n,",
+            "        .Plus => |*plus_elem| eval(plus_elem.e1) + eval(plus_elem.e2),",
+            "        else => unreachable,\n    };\n}",
+            "pub fn main() !void {",
+            "    const stdout = &std.io.getStdOut().outStream();",
+            "    const e = &Expr{ .Plus = .{ .e1 = &Expr{ .Num = 6}, .e2 = &Expr{ .Num = 5}}};",
+            "    try stdout.print(\"Hello {}!\\n\", .{\"world\"});$0",
+            "}"
+        ],
+        "description": "Algebraic Data Type"
+    }
+}
