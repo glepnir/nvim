@@ -8,10 +8,10 @@ local M = {}
 -- lsp severity icon
 -- 1:Error 2:Warning 3:Information 4:Hint
 local severity_icon = {
-  "   Error",
-  "   Warn",
-  "   Infor",
-  "   Hint"
+  "  Error",
+  "  Warn",
+  "  Infor",
+  "  Hint"
 }
 
 local function get_line(diagnostic_entry)
@@ -140,6 +140,8 @@ local function jump_to_entry(entry)
   --add highlight
   api.nvim_buf_add_highlight(fb,-1,hiname[entry.severity],0,0,-1)
   api.nvim_buf_add_highlight(fb,-1,"DiagnosticTruncateLine",1,0,-1)
+  api.nvim_command("hi! link LspFloatWinBorder ".. hiname[entry.severity])
+  api.nvim_command("hi! link DiagnosticTruncateLine "..hiname[entry.severity])
 end
 
 
@@ -194,13 +196,16 @@ end
 function M.show_buf_diagnostics()
   local diagnostics = get_sorted_diagnostics()
   local buf_fname = vim.fn.expand("%:t")
-  local contents = {'   Diagnostics In Current Buffer: ',' '}
-  for _,diagnostic in ipairs(diagnostics) do
+  local contents = {' Diagnostics In Current Buffer: ',' '}
+  local hi_name = {'DiagnosticFloatError','DiagnosticFloatWarn','DiagnositcFLoatInfo','DiagnosticFloatHint'}
+  local syntax_line_map = {}
+  for idx,diagnostic in ipairs(diagnostics) do
     local diagnostic_line = diagnostic.range.start.line + 1
     local diagnostic_character = diagnostic.range.start.character
     local content = severity_icon[diagnostic.severity] ..' '.. buf_fname .. ' ' ..'['..
     diagnostic.message..']'..' '..diagnostic_line..'|'..diagnostic_character
     table.insert(contents,content)
+    syntax_line_map[1+idx] = hi_name[diagnostic.severity]
   end
   -- get dimensions
   local width = api.nvim_get_option("columns")
@@ -223,9 +228,14 @@ function M.show_buf_diagnostics()
   }
 
   M.contents_bufnr,M.contents_winid,M.border_winid = window.create_float_window(contents,'plaintext',1,true,false,opts)
+  api.nvim_win_set_cursor(0,{3,5})
   apply_diagnostic_float_map()
-
+  -- add highlight
   api.nvim_buf_add_highlight(M.contents_bufnr,-1,"DiagnosticBufferTitle",0,0,-1)
+  for line,hi in pairs(syntax_line_map) do
+    print(line,hi)
+    api.nvim_buf_add_highlight(M.contents_bufnr,-1,hi,line,0,-1)
+  end
 end
 
 return M
