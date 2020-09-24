@@ -1,3 +1,4 @@
+local global = require('global')
 local window = require 'lsp.window'
 local vim,api,lsp = vim,vim.api,vim.lsp
 local short_link = {}
@@ -248,6 +249,18 @@ function M.preview_definiton(timeout_ms)
     vim.lsp.util.close_preview_autocmd({"CursorMoved", "CursorMovedI", "BufHidden", "BufLeave"},
                                         contents_winid)
     vim.api.nvim_buf_add_highlight(contents_buf,-1,"DefinitionPreviewTitle",0,0,-1)
+  end
+end
+
+
+-- TODO: codeAction
+function M.code_action(timeout_ms)
+  local method = "textDocument/codeAction"
+  local params = lsp.util.make_position_params()
+  local response = vim.lsp.buf_request_sync(0,method,params,timeout_ms or 1000)
+  if vim.tbl_isempty(response) then
+    print("No code actions available")
+    return
   end
 end
 
