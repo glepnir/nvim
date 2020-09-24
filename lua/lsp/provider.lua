@@ -262,6 +262,13 @@ function M.code_action(timeout_ms)
     print("No code actions available")
     return
   end
+  local data = {'Code Action:'}
+  for _,action in ipairs(response[1].result) do
+    local title = action.title:gsub('\r\n', '\\r\\n')
+    title = title:gsub('\n','\\n')
+    table.insert(data,title)
+  end
+  window.create_float_window(data,'plaintext',1,true,false)
 end
 
 return M
