@@ -1,9 +1,9 @@
-local global = require 'global'
 local window = require 'lsp.window'
 local vim,api,lsp = vim,vim.api,vim.lsp
-local M = {}
 local short_link = {}
 local root_dir = vim.lsp.buf_get_clients()[1].config.root_dir
+local version = require 'version'
+local M = {}
 
 local contents = {}
 local definition_uri = 0

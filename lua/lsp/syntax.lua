@@ -19,6 +19,8 @@ function M.add_highlight()
   api.nvim_command("hi DiagnosticHint guifg=#56b6c2 gui=bold")
 
   api.nvim_command("hi DefinitionPreviewTitle guifg=#56b6c2 gui=bold")
+
+  api.nvim_command("hi DiagnosticBufferTitle guifg=#EC5f67 gui=bold")
 end
 
 return M

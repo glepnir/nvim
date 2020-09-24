@@ -163,18 +163,69 @@ function M.lsp_jump_diagnostic_next()
   jump_one_times(get_below_entry)
 end
 
--- TODO: complete this.
+function M.quit_diagnostic_float_win()
+  if M.contents_winid ~=nil and M.border_winid ~= nil and api.nvim_win_is_valid(M.border_winid) and api.nvim_win_is_valid(M.contents_winid) then
+    api.nvim_win_close(M.contents_winid,true)
+    api.nvim_win_close(M.border_winid,true)
+  end
+end
+
+function M.jump_diagnostic_in_float(action_type)
+  local action = {"vsplit","split"}
+  local file_path = vim.fn.expand("%:p")
+  local pos_info = vim.fn.split(vim.fn.getline(".")," ")
+  local row,col = pos_info[#pos_info]:match("([^|]*)|?(.*)")
+  M.quit_diagnostic_float_win()
+  if action_type == 0 then
+    api.nvim_win_set_cursor(0,{tonumber(row),tonumber(col)})
+  else
+    api.nvim_command(action[action_type]..file_path)
+    api.nvim_win_set_cursor(0,{tonumber(row),tonumber(col)})
+  end
+end
+
+local function apply_diagnostic_float_map()
+  api.nvim_buf_set_keymap(M.contents_bufnr,"n","q","<Cmd>lua require'lsp.diagnostic'.quit_diagnostic_float_win()<CR>",{noremap = true,silent = true})
+  api.nvim_buf_set_keymap(M.contents_bufnr,"n","<CR>","<cmd>lua require'lsp.diagnostic'.jump_diagnostic_in_float(0)<CR>",{noremap = true,silent= true})
+  api.nvim_buf_set_keymap(M.contents_bufnr,"n","v","<cmd>lua require'lsp.diagnostic'.jump_diagnostic_in_float(1)<CR>",{noremap = true,silent= true})
+  api.nvim_buf_set_keymap(M.contents_bufnr,"n","s","<cmd>lua require'lsp.diagnostic'.jump_diagnostic_in_float(2)<CR>",{noremap = true,silent= true})
+end
+
 function M.show_buf_diagnostics()
   local diagnostics = get_sorted_diagnostics()
   local buf_fname = vim.fn.expand("%:t")
   local contents = {'   Diagnostics In Current Buffer: ',' '}
   for _,diagnostic in ipairs(diagnostics) do
+    local diagnostic_line = diagnostic.range.start.line + 1
+    local diagnostic_character = diagnostic.range.start.character
     local content = severity_icon[diagnostic.severity] ..' '.. buf_fname .. ' ' ..'['..
-    diagnostic.message..']'..' '..diagnostic.range.start.line..'|'..diagnostic.range.start.character
+    diagnostic.message..']'..' '..diagnostic_line..'|'..diagnostic_character
     table.insert(contents,content)
   end
+  -- get dimensions
+  local width = api.nvim_get_option("columns")
+  local height = api.nvim_get_option("lines")
 
-  window.create_float_window(contents,true)
+  -- calculate our floating window size
+  local win_height = math.ceil(height * 0.8 - 4)
+  local win_width = math.ceil(width * 0.8)
+
+  -- and its starting position
+  local row = math.ceil((height - win_height))
+  local col = math.ceil((width - win_width)-1)
+
+  -- set some options
+  local opts = {
+    style = "minimal",
+    relative = "editor",
+    row = row,
+    col = col,
+  }
+
+  M.contents_bufnr,M.contents_winid,M.border_winid = window.create_float_window(contents,'plaintext',1,true,false,opts)
+  apply_diagnostic_float_map()
+
+  api.nvim_buf_add_highlight(M.contents_bufnr,-1,"DiagnosticBufferTitle",0,0,-1)
 end
 
 return M
