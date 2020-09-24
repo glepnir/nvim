@@ -20,7 +20,11 @@ function M.add_highlight()
 
   api.nvim_command("hi DefinitionPreviewTitle guifg=#56b6c2 gui=bold")
 
-  api.nvim_command("hi DiagnosticBufferTitle guifg=#EC5f67 gui=bold")
+  api.nvim_command("hi DiagnosticBufferTitle guifg=#c594c5 gui=bold")
+  api.nvim_command("hi DiagnosticFloatError guifg=#EC5f67")
+  api.nvim_command("hi DiagnosticFloatWarn guifg=#d8a657")
+  api.nvim_command("hi DiagnosticFloatInfo guifg=#6699cc")
+  api.nvim_command("hi DiagnosticFloatHint guifg=#56b6c2")
 end
 
 return M
