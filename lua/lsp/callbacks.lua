@@ -84,7 +84,6 @@ function callbacks.add_callbacks(server_setup)
   server_setup.callbacks['textDocument/hover'] = function(_, method, result)
     vim.lsp.util.focusable_float(method, function()
         if not (result and result.contents) then return end
-
         local markdown_lines = lsp.util.convert_input_to_markdown_lines(result.contents)
         markdown_lines = lsp.util.trim_empty_lines(markdown_lines)
         if vim.tbl_isempty(markdown_lines) then return end

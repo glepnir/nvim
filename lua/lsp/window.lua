@@ -1,3 +1,4 @@
+local global =require 'global'
 local vim,api = vim,vim.api
 local M = {}
 

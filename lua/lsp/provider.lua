@@ -1,3 +1,4 @@
+local global = require'global'
 local window = require 'lsp.window'
 local vim,api,lsp = vim,vim.api,vim.lsp
 local short_link = {}
@@ -157,8 +158,14 @@ function M.lsp_peek_references(timeout)
   local method = {"textDocument/definition","textDocument/references"}
   local params = lsp.util.make_position_params()
   local results = {}
-  table.insert(results,lsp.buf_request_sync(0, method[1], params, timeout or 1000))
-  table.insert(results,lsp.buf_request_sync(0, method[2],params,timeout or 1000))
+  local response_a = lsp.buf_request_sync(0, method[1], params, timeout or 1000)
+  local response_b = lsp.buf_request_sync(0, method[2], params, timeout or 1000)
+  if not vim.tbl_isempty(response_a) then
+    table.insert(results,response_a)
+  end
+  if not vim.tbl_isempty(response_b) then
+    table.insert(results,response_b)
+  end
   for i,v in ipairs(results) do
     if v[1].result == nil or vim.tbl_isempty(v[1].result) then
       print("No Location found:",method[i])
