@@ -16,6 +16,8 @@
 
 - repo: steelsojka/completion-buffers
   on_source: completion-nvim
+  hook_source: |
+    let g:completion_word_ignored_ft = ['defx','vista']
 
 - repo: hrsh7th/vim-vsnip
   on_event: InsertCharPre
