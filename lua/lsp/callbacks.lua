@@ -83,16 +83,12 @@ function callbacks.add_callbacks(server_setup)
 
   server_setup.callbacks['textDocument/hover'] = function(_, method, result)
     vim.lsp.util.focusable_float(method, function()
-        if not (result and result.contents) then
-        -- return { 'No information available' }
-        return
-        end
+        if not (result and result.contents) then return end
+
         local markdown_lines = lsp.util.convert_input_to_markdown_lines(result.contents)
         markdown_lines = lsp.util.trim_empty_lines(markdown_lines)
-        if vim.tbl_isempty(markdown_lines) then
-        -- return { 'No information available' }
-        return
-        end
+        if vim.tbl_isempty(markdown_lines) then return end
+
         local bufnr,contents_winid,border_winid = window.fancy_floating_markdown(markdown_lines)
         lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, contents_winid)
         lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, border_winid)
