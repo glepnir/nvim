@@ -103,6 +103,9 @@ function M.close_preview()
         api.nvim_win_close(prev_win[2],true)
         api.nvim_buf_set_var(0,"diagnostic_float_window",nil)
         api.nvim_buf_set_var(0,"diagnostic_prev_position",nil)
+        -- restore the hilight
+        api.nvim_command("hi! link LspFloatWinBorder LspFloatWinBorder")
+        api.nvim_command("hi! DiagnosticTruncateLine DiagnosticTruncateLine")
       end
     end
   end
@@ -140,6 +143,7 @@ local function jump_to_entry(entry)
   --add highlight
   api.nvim_buf_add_highlight(fb,-1,hiname[entry.severity],0,0,-1)
   api.nvim_buf_add_highlight(fb,-1,"DiagnosticTruncateLine",1,0,-1)
+  -- match current diagnostic syntax
   api.nvim_command("hi! link LspFloatWinBorder ".. hiname[entry.severity])
   api.nvim_command("hi! link DiagnosticTruncateLine "..hiname[entry.severity])
 end
