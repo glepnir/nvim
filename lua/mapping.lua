@@ -72,7 +72,7 @@ function mapping:load_plugin_define()
     ["n|gh"]             = map_cmd("<cmd>lua require'lsp.provider'.lsp_peek_references()<CR>"):with_noremap():with_silent(),
     ["n|gt"]             = map_cmd("<cmd>lua vim.lsp.buf.type_definition()<CR>"):with_noremap():with_silent(),
     ["n|<Leader>cw"]     = map_cmd("<cmd>lua vim.lsp.buf.workspace_symbol()<CR>"):with_noremap():with_silent(),
-    ["n|<Leader>ce"]     = map_cmd("<cmd>lua require'lsp.diagnositc'.show_buf_diagnostics()<CR>"):with_noremap():with_silent(),
+    ["n|<Leader>ce"]     = map_cmd("<cmd>lua require'lsp.diagnostic'.show_buf_diagnostics()<CR>"):with_noremap():with_silent(),
     -- dein
     ["n|<Leader>tr"]     = map_cr("call dein#recache_runtimepath()"):with_noremap():with_silent(),
     ["n|<Leader>tf"]     = map_cu('DashboardNewFile'):with_noremap():with_silent(),
