@@ -12,6 +12,14 @@ local function lookup_section(settings, section)
   return settings
 end
 
+-- lsp sign
+local function lsp_diagnostic_sign()
+  vim.fn.sign_define('LspDiagnosticsErrorSign', {text='', texthl='LspDiagnosticsError',linehl='', numhl=''})
+  vim.fn.sign_define('LspDiagnosticsWarningSign', {text='', texthl='LspDiagnosticsWarning', linehl='', numhl=''})
+  vim.fn.sign_define('LspDiagnosticsInformationSign', {text='', texthl='LspDiagnosticsInformation', linehl='', numhl=''})
+  vim.fn.sign_define('LspDiagnosticsHintSign', {text='', texthl='LspDiagnosticsHint', linehl='', numhl=''})
+end
+
 -- Add I custom callbacks function in lsp server config
 function callbacks.add_callbacks(server_setup)
 
@@ -61,6 +69,8 @@ function callbacks.add_callbacks(server_setup)
     end
     lsp.util.buf_clear_diagnostics(bufnr)
 
+    lsp_diagnostic_sign()
+
     -- https://microsoft.github.io/language-server-protocol/specifications/specification-current/#diagnostic
     -- The diagnostic's severity. Can be omitted. If omitted it is up to the
     -- client to interpret diagnostics as error, warning, info or hint.
@@ -73,7 +83,7 @@ function callbacks.add_callbacks(server_setup)
 
     lsp.util.buf_diagnostics_save_positions(bufnr, result.diagnostics)
     lsp.util.buf_diagnostics_underline(bufnr, result.diagnostics)
-    if vim.g.lsp_diagnostic_virtual_text == 1 then
+    if vim.g.diagnostic_enable_virtual_text == 1 then
       -- use virtual text show message diagnostic
       lsp.util.buf_diagnostics_virtual_text(bufnr, result.diagnostics)
     end
