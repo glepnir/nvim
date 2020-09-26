@@ -62,6 +62,19 @@ server.Dockerfile = {
   root_patterns = {"Dockerfile"};
 }
 
+function server.load_filetype_server()
+  local filetype_server_map = {}
+  if vim.tbl_isempty(server) then return end
+  for idx,value in pairs(server) do
+    if type(value) == 'table' then
+      for _,filetype in pairs(value.filetypes) do
+        filetype_server_map[filetype] = idx
+      end
+    end
+  end
+  return filetype_server_map
+end
+
 local lsp_intall_scripts = [=[
 # Install gopls
 cd $HOME

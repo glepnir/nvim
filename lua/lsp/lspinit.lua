@@ -119,16 +119,19 @@ function lsp_store.start_lsp_server()
   local client_id = nil
   local bufnr = api.nvim_get_current_buf()
   local buf_filetype = api.nvim_buf_get_option(bufnr,'filetype')
+  local filetype_server_map = server.load_filetype_server()
   -- Filter which files we are considering.
-  if not global.has_key(server,buf_filetype) then
+  if not global.has_key(filetype_server_map,buf_filetype) then
     -- load completion in buffer for complete something else
     load_completion()
     return
   end
 
+  local server_setup = server[filetype_server_map[buf_filetype]]
+
   -- Try to find our root directory.
   local root_dir = buffer_find_root_dir(bufnr, function(dir)
-    for _,root_file in pairs(server[buf_filetype].root_patterns) do
+    for _,root_file in pairs(server_setup.root_patterns) do
       if vim.fn.filereadable(path_join(dir, root_file)) == 1 then
         return true
       elseif is_dir(path_join(dir, root_file)) then
@@ -140,7 +143,7 @@ function lsp_store.start_lsp_server()
   -- We couldn't find a root directory, so ignore this file.
   if not root_dir then
     load_completion()
-    print(string.format("initialize %s failed doesn't find root_dir",server[buf_filetype].name))
+    print(string.format("initialize %s failed doesn't find root_dir",server_setup.name))
     return
   end
 
@@ -200,9 +203,9 @@ function lsp_store.start_lsp_server()
       end
 
       -- config the server config on_attach
-      server[buf_filetype].on_attach= on_attach
+      server_setup.on_attach= on_attach
       -- build a new server config
-      local new_config = vim.tbl_extend("error",add_options(server[buf_filetype]), {
+      local new_config = vim.tbl_extend("error",add_options(server_setup), {
         root_dir = root_dir;
       })
       -- start a new lsp server and store the cliend_id

@@ -23,6 +23,7 @@ function M.blameVirtualText()
   if text:find("fatal") then return end
 
   api.nvim_buf_set_virtual_text(0, ns_id, line[1]-1, {{ text, "GitLens" }}, {})
+  api.nvim_command("highlight! link GitLens Comment")
 end
 
 function M.clearBlameVirtualText()
