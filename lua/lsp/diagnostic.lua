@@ -3,7 +3,8 @@ local global = require('global')
 local vim = vim
 local api = vim.api
 local lsp = vim.lsp
-local window = require('lsp.window')
+local window = require 'lsp.window'
+local wrap = require 'lsp.wrap'
 local M = {}
 
 -- lsp severity icon
@@ -123,12 +124,16 @@ local function jump_to_entry(entry)
   local entry_character = get_character(entry)
   local hiname ={"DiagnosticError","DiagnosticWarning","DiagnosticInformation","DiagnosticHint"}
   table.insert(diagnostic_message,severity_icon[entry.severity])
-  local truncate_line = '─'
-  for _=1,#entry.message+1,1 do
-      truncate_line = truncate_line .. '─'
-  end
+
+  local current_win_width = vim.fn.winwidth(0)
+  local wrap_message = wrap.wrap_line(entry.message,(current_win_width - 30))
+  local truncate_line = wrap.add_truncate_line(wrap_message)
+
   table.insert(diagnostic_message,truncate_line)
-  table.insert(diagnostic_message,entry.message)
+
+  for _,v in pairs(wrap_message) do
+    table.insert(diagnostic_message,v)
+  end
 
   -- set curosr
   api.nvim_win_set_cursor(0, {entry_line, entry_character})
