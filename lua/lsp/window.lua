@@ -109,6 +109,7 @@ local function create_float_boder(contents,border,opts)
   api.nvim_buf_set_option(border_bufnr, 'buftype', 'nofile')
   api.nvim_buf_set_option(border_bufnr, 'filetype', 'lspwinborder')
   api.nvim_buf_set_option(border_bufnr, 'modifiable', false)
+
   -- create border
   local border_winid = api.nvim_open_win(border_bufnr, false, border_option)
   api.nvim_win_set_option(border_winid,"winhl","Normal:LspFloatWinBorder")
@@ -132,26 +133,28 @@ local function create_float_contents(contents, filetype,enter,modifiable,opts)
   if filetype == 'markdown' then
     api.nvim_win_set_option(contents_winid, 'conceallevel', 2)
   end
-  api.nvim_win_set_option(contents_winid,"winhl","Normal:LspNvim")
+  api.nvim_win_set_option(contents_winid,"winhl","Normal:LspFloatNormal")
   return contents_bufnr, contents_winid
 end
 
 function M.create_float_window(contents,filetype,border,enter,modifiable,opts)
   local _,_,border_option = make_border_option(contents,opts)
-  border_option.width = border_option.width - 2
-  border_option.height = border_option.height - 2
+  local contents_option= border_option
+  contents_option.width = border_option.width - 2
+  contents_option.height = border_option.height - 2
   if border_option.row ~= 0 then
-    border_option.row = border_option.row + 1
+    contents_option.row = border_option.row + 1
   else
-    border_option.row = border_option.row - 1
+    contents_option.row = border_option.row - 1
   end
-  border_option.col = border_option.col + 1
+  contents_option.col = border_option.col + 1
+
   if enter then
     local _,border_winid = create_float_boder(contents,border,opts)
     local contents_bufnr,contents_winid = create_float_contents(contents,filetype,enter,modifiable,border_option)
     return contents_bufnr,contents_winid,border_winid
   else
-    local contents_bufnr,contents_winid = create_float_contents(contents,filetype,enter,modifiable,border_option)
+    local contents_bufnr,contents_winid = create_float_contents(contents,filetype,enter,modifiable,contents_option)
     local _,border_winid = create_float_boder(contents,border,opts)
     return contents_bufnr,contents_winid,border_winid
   end
