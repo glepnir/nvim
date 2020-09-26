@@ -1,3 +1,4 @@
+local global = require('global')
 -- lsp dianostic
 local vim = vim
 local api = vim.api
@@ -200,14 +201,19 @@ end
 function M.show_buf_diagnostics()
   local diagnostics = get_sorted_diagnostics()
   local buf_fname = vim.fn.expand("%:t")
-  local contents = {' Diagnostics In Current Buffer: ',' '}
+  local contents = {' ﴫ Diagnostics In Current Buffer'..' FileName:'..buf_fname,' '}
   local hi_name = {'DiagnosticFloatError','DiagnosticFloatWarn','DiagnositcFLoatInfo','DiagnosticFloatHint'}
   local syntax_line_map = {}
   for idx,diagnostic in ipairs(diagnostics) do
     local diagnostic_line = diagnostic.range.start.line + 1
     local diagnostic_character = diagnostic.range.start.character
-    local content = severity_icon[diagnostic.severity] ..' '.. buf_fname .. ' ' ..'['..
-    diagnostic.message..']'..' '..diagnostic_line..'|'..diagnostic_character
+    local split_message = vim.fn.split(diagnostic.message," ")
+    local short_message = nil
+    if #split_message > 4 then
+      short_message = table.concat(split_message," ",1,4)
+    end
+    local content = severity_icon[diagnostic.severity] ..' '..diagnostic_line..'|'..diagnostic_character..' '..
+    '['..short_message..']'
     table.insert(contents,content)
     syntax_line_map[1+idx] = hi_name[diagnostic.severity]
   end
@@ -232,7 +238,9 @@ function M.show_buf_diagnostics()
   }
 
   M.contents_bufnr,M.contents_winid,M.border_winid = window.create_float_window(contents,'plaintext',1,true,false,opts)
-  api.nvim_win_set_cursor(0,{3,5})
+  if #contents > 2 then
+    api.nvim_win_set_cursor(0,{3,5})
+  end
   apply_diagnostic_float_map()
   -- add highlight
   api.nvim_buf_add_highlight(M.contents_bufnr,-1,"DiagnosticBufferTitle",0,0,-1)
