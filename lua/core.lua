@@ -66,7 +66,7 @@ function M.load_core()
   map.load_mapping()
   autocmd.load_autocmds()
   theme.load_theme()
-  api.nvim_command("highlight! link GitLens Comment")
+
 end
 
 M.load_core()
