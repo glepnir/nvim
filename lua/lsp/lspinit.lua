@@ -107,14 +107,6 @@ local function buffer_find_root_dir(bufnr, is_root_path)
   end
 end
 
--- lsp sign
-local function lsp_sign()
-  vim.fn.sign_define('LspDiagnosticsErrorSign', {text='', texthl='LspDiagnosticsError',linehl='', numhl=''})
-  vim.fn.sign_define('LspDiagnosticsWarningSign', {text='', texthl='LspDiagnosticsWarning', linehl='', numhl=''})
-  vim.fn.sign_define('LspDiagnosticsInformationSign', {text='', texthl='LspDiagnosticsInformation', linehl='', numhl=''})
-  vim.fn.sign_define('LspDiagnosticsHintSign', {text='', texthl='LspDiagnosticsHint', linehl='', numhl=''})
-end
-
 local function load_completion()
   local loaded,completion = pcall(require,'completion')
   if loaded then
@@ -202,8 +194,6 @@ function lsp_store.start_lsp_server()
         end
         -- register lsp event
         autocmd.nvim_create_augroups(lsp_event)
-        -- use floatwindow to show diagnostc message
-        -- api.nvim_command('autocmd CursorHold <buffer> lua vim.lsp.util.show_line_diagnostics()')
         -- api.nvim_command("autocmd CompleteDone <buffer> lua require'lsp.callbacks'.show_signature_help()")
         -- Source omnicompletion from LSP.
         vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
@@ -220,8 +210,7 @@ function lsp_store.start_lsp_server()
       if client_id ~= nil and timer:is_closing() == false then
         lsp_store[root_dir] = client_id
         vim.lsp.buf_attach_client(bufnr, client_id)
-        -- load custom sign
-        lsp_sign()
+
         syntax.add_highlight()
         timer:stop()
         timer:close()
