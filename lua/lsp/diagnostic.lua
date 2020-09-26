@@ -105,7 +105,7 @@ function M.close_preview()
         api.nvim_buf_set_var(0,"diagnostic_prev_position",nil)
         -- restore the hilight
         api.nvim_command("hi! link LspFloatWinBorder LspFloatWinBorder")
-        api.nvim_command("hi! DiagnosticTruncateLine DiagnosticTruncateLine")
+        api.nvim_command("hi! link DiagnosticTruncateLine DiagnosticTruncateLine")
       end
     end
   end
