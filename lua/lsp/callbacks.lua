@@ -69,8 +69,16 @@ function callbacks.add_callbacks(server_setup)
     end
     lsp.util.buf_clear_diagnostics(bufnr)
 
+    local sign_ns = 'vim_lsp_signs'
+    local protocol = require 'vim.lsp.protocol'
     lsp_diagnostic_sign()
 
+    local diagnostic_severity_map = {
+      [protocol.DiagnosticSeverity.Error] = "LspDiagnosticsErrorSign";
+      [protocol.DiagnosticSeverity.Warning] = "LspDiagnosticsWarningSign";
+      [protocol.DiagnosticSeverity.Information] = "LspDiagnosticsInformationSign";
+      [protocol.DiagnosticSeverity.Hint] = "LspDiagnosticsHintSign";
+    }
     -- https://microsoft.github.io/language-server-protocol/specifications/specification-current/#diagnostic
     -- The diagnostic's severity. Can be omitted. If omitted it is up to the
     -- client to interpret diagnostics as error, warning, info or hint.
@@ -79,6 +87,7 @@ function callbacks.add_callbacks(server_setup)
       if diagnostic.severity == nil then
         diagnostic.severity = vim.lsp.protocol.DiagnosticSeverity.Error
       end
+      vim.fn.sign_place(0, sign_ns, diagnostic_severity_map[diagnostic.severity], bufnr, {lnum=(diagnostic.range.start.line+1),priority=90})
     end
 
     lsp.util.buf_diagnostics_save_positions(bufnr, result.diagnostics)
@@ -87,7 +96,7 @@ function callbacks.add_callbacks(server_setup)
       -- use virtual text show message diagnostic
       lsp.util.buf_diagnostics_virtual_text(bufnr, result.diagnostics)
     end
-    lsp.util.buf_diagnostics_signs(bufnr, result.diagnostics)
+    -- lsp.util.buf_diagnostics_signs(bufnr, result.diagnostics)
     api.nvim_command("doautocmd User LspDiagnosticsChanged")
   end
 
