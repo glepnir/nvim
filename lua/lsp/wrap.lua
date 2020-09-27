@@ -1,27 +1,35 @@
+local global = require 'global'
 local M = {}
 
 function M.wrap_line(text,width)
   local line = ''
   local ret = {}
+  -- if text width < width just return it
+  if #text < width then
+    table.insert(ret,text)
+    return ret
+  end
+
   local content = vim.fn.split(text)
   for idx,word in pairs(content) do
-
     if #line + #word + 1 > width then
-      if #word > 3 then
-        local pos = width-#line-3
-        line = line .. word:sub(1,pos)
-        table.insert(ret,line)
-        line = word:sub(pos+1,#word)
-        if idx == #content then
-          table.insert(ret,line)
-        end
-      else
-        table.insert(ret,line)
-        line = ''
-      end
+      local pos = width - #line -1
+      line = line .. word:sub(1,pos)
+      table.insert(ret,line)
+      line = word:sub(pos+1,#word)..' '
+    else
+      line = line ..word .. ' '
     end
 
-    line = line ..word .. ' '
+    if #line + #word + 1 == width then
+      table.insert(ret,line)
+      line = ''
+    end
+
+    if idx == #content then
+      table.insert(ret,line)
+    end
+
   end
 
   return ret

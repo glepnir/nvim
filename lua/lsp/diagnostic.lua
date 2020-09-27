@@ -127,19 +127,11 @@ local function jump_to_entry(entry)
   local hiname ={"DiagnosticError","DiagnosticWarning","DiagnosticInformation","DiagnosticHint"}
   table.insert(diagnostic_message,severity_icon[entry.severity])
 
-  local current_win_width = vim.fn.winwidth(0)
-  local truncate_line = nil
-  if #entry.message < 60 then
-    truncate_line = wrap.add_truncate_line({entry.message})
-    table.insert(diagnostic_message,truncate_line)
-    table.insert(diagnostic_message,entry.message)
-  else
-    local wrap_message = wrap.wrap_line(entry.message,(current_win_width - 30))
-    truncate_line = wrap.add_truncate_line(wrap_message)
-    table.insert(diagnostic_message,truncate_line)
-    for _,v in pairs(wrap_message) do
-      table.insert(diagnostic_message,v)
-    end
+  local wrap_message = wrap.wrap_line(entry.message,50)
+  local truncate_line = wrap.add_truncate_line(wrap_message)
+  table.insert(diagnostic_message,truncate_line)
+  for _,v in pairs(wrap_message) do
+    table.insert(diagnostic_message,v)
   end
 
   -- set curosr
