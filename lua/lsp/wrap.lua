@@ -1,6 +1,7 @@
-local global = require 'global'
 local M = {}
 
+-- If the content too long.
+-- auto wrap according width
 function M.wrap_line(text,width)
   local line = ''
   local ret = {}
