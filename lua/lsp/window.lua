@@ -1,5 +1,4 @@
 local vim,api = vim,vim.api
-local global = require 'global'
 local M = {}
 
 -- 1 thin
