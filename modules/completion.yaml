@@ -40,9 +40,11 @@
 - repo: Raimondi/delimitMate
   on_event: InsertCharPre
   hook_source: |
-    let g:delimitMate_expand_cr = 1
+    let g:delimitMate_expand_cr = 0
     let g:delimitMate_expand_space = 1
+    let g:delimitMate_smart_quotes = 1
     let g:delimitMate_expand_inside_quotes = 0
+    au FileType markdown let b:delimitMate_nesting_quotes = ["`"]
 
 - repo: mattn/emmet-vim
   on_event: InsertEnter
