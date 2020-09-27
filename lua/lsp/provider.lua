@@ -78,7 +78,7 @@ local function defintion_reference(result,method_type)
         relative = "cursor",
         style = "minimal",
       }
-      M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents,'plaintext',3,true,true,opts)
+      M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents,'plaintext',2,true,true,opts)
       api.nvim_win_set_cursor(M.contens_buf,{3,1})
 
       api.nvim_buf_add_highlight(M.contents_buf,-1,"DefinitionIcon",0,1,#method_option[method_type].icon-1)
