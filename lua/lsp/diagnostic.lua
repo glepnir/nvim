@@ -1,4 +1,3 @@
-local global = require('global')
 -- lsp dianostic
 local vim = vim
 local api = vim.api
@@ -249,7 +248,6 @@ function M.show_buf_diagnostics()
   -- add highlight
   api.nvim_buf_add_highlight(M.contents_bufnr,-1,"DiagnosticBufferTitle",0,0,-1)
   for line,hi in pairs(syntax_line_map) do
-    print(line,hi)
     api.nvim_buf_add_highlight(M.contents_bufnr,-1,hi,line,0,-1)
   end
 end
