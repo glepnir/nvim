@@ -10,9 +10,6 @@
 - repo: rust-lang/rust.vim
   on_ft: rust
 
-- repo: hardcoreplayers/go-nvim
-  on_ft: [ go, gomod ]
-
 - repo: ziglang/zig.vim
   on_ft: [zig,zir]
 
@@ -26,7 +23,6 @@
     require'nvim-treesitter.configs'.setup {
         highlight = {
           enable = true,
-          disable = {"go,rust"},
         },
         textobjects = {
           select = {
