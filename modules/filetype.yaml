@@ -7,9 +7,6 @@
 - repo: MaxMEllon/vim-jsx-pretty
   on_ft: [javascriptreact, typescriptreact]
 
-- repo: rust-lang/rust.vim
-  on_ft: rust
-
 - repo: ziglang/zig.vim
   on_ft: [zig,zir]
 
