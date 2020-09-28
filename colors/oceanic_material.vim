@@ -76,7 +76,7 @@ let s:colors = {
       \ 'grey0':            ['#7c6f64',   '243'],
       \ 'grey1':            ['#928374',   '245'],
       \ 'grey2':            ['#a89984',   '246'],
-      \ 'operator':         ['#c0c5ce',   '251'],
+      \ 'operator':         ['#b3deef',   '153'],
       \ 'none':             ['NONE',      'NONE']
   \ }
 
@@ -407,6 +407,7 @@ function! s:apply_syntax_highlightings()
   exec 'hi! TSKeywordFunction'. s:fg_blue
   exec 'hi! TSProperty'. s:fg_cyan
   exec 'hi! TSType' . s:fg_magenta
+  exec 'hi! TSPunctBracket guifg=#93a1a1'
 endfunction
 
 command! -nargs=0 OceanicMaterial :call g:OceanicMaterial()
