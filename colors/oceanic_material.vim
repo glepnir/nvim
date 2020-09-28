@@ -403,8 +403,10 @@ function! s:apply_syntax_highlightings()
   exec 'hi CursorWord1' .s:bg_fg3
   "===============================================================
   exec 'hi! TSFunction'. s:fg_yellow. s:bold
+  exec 'hi! TSMethod' . s:fg_yellow . s:bold
   exec 'hi! TSKeywordFunction'. s:fg_blue
   exec 'hi! TSProperty'. s:fg_cyan
+  exec 'hi! TSType' . s:fg_magenta
 endfunction
 
 command! -nargs=0 OceanicMaterial :call g:OceanicMaterial()
