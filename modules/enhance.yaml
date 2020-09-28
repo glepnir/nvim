@@ -34,10 +34,6 @@
       }
     EOF
 
-- repo: luochen1990/rainbow
-  on_ft: [html, css, javascript, javascriptreact,go,rust,vim,less,sass,json,toml]
-  hook_source: let g:rainbow_active = 1
-
 - repo: voldikss/vim-floaterm
   on_cmd: [FloatermNew, FloatermToggle, FloatermPrev, FloatermNext, FloatermSend]
   hook_source: |
