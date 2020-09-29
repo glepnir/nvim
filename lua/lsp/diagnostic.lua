@@ -1,4 +1,5 @@
 -- lsp dianostic
+local global = require 'global'
 local vim = vim
 local api = vim.api
 local lsp = vim.lsp
@@ -204,10 +205,13 @@ end
 function M.show_buf_diagnostics()
   local diagnostics = get_sorted_diagnostics()
   local buf_fname = vim.fn.expand("%:t")
-  local contents = {' ﴫ Diagnostics In Current Buffer'..' FileName:'..buf_fname,' '}
+  -- 1:Error 2:Warning 3:Information 4:Hint
+  local buf_diagnostic_count = {0,0,0,0}
+  local contents = {}
   local hi_name = {'DiagnosticFloatError','DiagnosticFloatWarn','DiagnositcFLoatInfo','DiagnosticFloatHint'}
   local syntax_line_map = {}
   for idx,diagnostic in ipairs(diagnostics) do
+    buf_diagnostic_count[diagnostic.severity] = buf_diagnostic_count[diagnostic.severity] + 1
     local diagnostic_line = diagnostic.range.start.line + 1
     local diagnostic_character = diagnostic.range.start.character
     local split_message = vim.fn.split(diagnostic.message," ")
@@ -220,6 +224,19 @@ function M.show_buf_diagnostics()
     table.insert(contents,content)
     syntax_line_map[1+idx] = hi_name[diagnostic.severity]
   end
+  local title = '🐞 File: '..buf_fname
+  local diagnostic_map = {"Error:","Warn:","Info:","Hint:"}
+  for idx,v in ipairs(buf_diagnostic_count) do
+    if v ~= 0 then
+      title = title..' '..diagnostic_map[idx]..v
+    end
+  end
+  local truncate_line = wrap.add_truncate_line(contents)
+  local buf_diagnostic_contents = {title,truncate_line}
+  for _,content in pairs(contents) do
+    table.insert(buf_diagnostic_contents,content)
+  end
+
   -- get dimensions
   local width = api.nvim_get_option("columns")
   local height = api.nvim_get_option("lines")
@@ -240,8 +257,8 @@ function M.show_buf_diagnostics()
     col = col,
   }
 
-  M.contents_bufnr,M.contents_winid,M.border_winid = window.create_float_window(contents,'plaintext',1,true,false,opts)
-  if #contents > 2 then
+  M.contents_bufnr,M.contents_winid,M.border_winid = window.create_float_window(buf_diagnostic_contents,'plaintext',1,true,false,opts)
+  if #buf_diagnostic_contents > 2 then
     api.nvim_win_set_cursor(0,{3,5})
   end
   apply_diagnostic_float_map()
