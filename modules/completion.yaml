@@ -1,6 +1,7 @@
 - repo: nvim-lua/completion-nvim
   on_event: [BufReadPre,BufNewFile]
   hook_add: |
+    let g:completion_enable_auto_hover = 0
     let g:completion_auto_change_source = 1
     let g:completion_matching_ignore_case = 1
     let g:completion_enable_snippet = 'vim-vsnip'
