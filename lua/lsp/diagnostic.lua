@@ -1,5 +1,4 @@
 -- lsp dianostic
-local global = require 'global'
 local vim = vim
 local api = vim.api
 local lsp = vim.lsp
@@ -267,6 +266,7 @@ function M.show_buf_diagnostics()
   for line,hi in pairs(syntax_line_map) do
     api.nvim_buf_add_highlight(M.contents_bufnr,-1,hi,line,0,-1)
   end
+  api.nvim_buf_add_highlight(M.contents_bufnr,-1,"DiagnosticTruncateLine",1,0,-1)
 end
 
 return M
