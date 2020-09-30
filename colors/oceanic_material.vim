@@ -58,7 +58,6 @@ let s:colors = {
       \ 'bg1':              ['#343d46',   '237'],
       \ 'bg2':              ['#282828',   '235'],
       \ 'bg3':              ['#3c3836',   '237'],
-      \ 'bg4':              ['#3c3836',   '237'],
       \ 'bg5':              ['#504945',   '239'],
       \ 'fg0':              ['#d4be98',   '223'],
       \ 'fg1':              ['#ddc7a1',   '223'],
@@ -69,7 +68,7 @@ let s:colors = {
       \ 'yellow':           ['#d8a657',   '214'],
       \ 'green':            ['#5faf5f',   '71'],
       \ 'cyan':             ['#56b6c2',   '73'],
-      \ 'blue':             ['#6699cc',   '68'],
+      \ 'blue':             ['#4989c9',   '68'],
       \ 'purple':           ['#c594c5',   '176'],
       \ 'black':            ['#000000',    '0'],
       \ 'bg_red':           ['#ea6962',   '167'],
@@ -174,7 +173,7 @@ function! s:apply_syntax_highlightings()
   exec 'hi WarningMsg'. s:fg_yellow. s:bg_none. s:bold
   exec 'hi ModeMsg'. s:fg_fg0. s:bg_none. s:bold
   exec 'hi MoreMsg'. s:fg_yellow. s:bg_none. s:bold
-  exec 'hi MatchParen'. s:fg_none. s:bg_bg4
+  exec 'hi MatchParen'. s:fg_none. s:bg_bg3
   exec 'hi NonText'. s:fg_bg5
   exec 'hi Whitespace'. s:fg_bg5
   exec 'hi SpecialKey'. s:fg_bg5
