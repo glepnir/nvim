@@ -87,8 +87,7 @@ function callbacks.add_callbacks(server_setup)
       if diagnostic.severity == nil then
         diagnostic.severity = vim.lsp.protocol.DiagnosticSeverity.Error
       end
-      local diagnostic_sign_priority = vim.g.lsp_diagnositc_sin_priority or 9999999
-      vim.fn.sign_place(0, sign_ns, diagnostic_severity_map[diagnostic.severity], bufnr, {lnum=(diagnostic.range.start.line+1),priority=diagnostic_sign_priority})
+      vim.fn.sign_place(0, sign_ns, diagnostic_severity_map[diagnostic.severity], bufnr, {lnum=(diagnostic.range.start.line+1),priority=90})
     end
 
     lsp.util.buf_diagnostics_save_positions(bufnr, result.diagnostics)
