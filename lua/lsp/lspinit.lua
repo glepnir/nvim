@@ -152,12 +152,6 @@ function lsp_store.start_lsp_server()
   if lsp_store[root_dir] ~= nil then
     client_id = lsp_store[root_dir]
     vim.lsp.buf_attach_client(bufnr, client_id)
-    local loaded,completion = pcall(require,'completion')
-    if loaded then
-      api.nvim_buf_set_var(0, 'completion_enable', 1)
-      completion.on_InsertEnter()
-      completion.confirmCompletion()
-    end
     return
   end
 
@@ -168,11 +162,6 @@ function lsp_store.start_lsp_server()
     local has_completion,completion = pcall(require,'completion')
     if has_completion and not Completion_loaded then
        Completion_loaded = true
-      -- When require completion success,We call the on_InsertEnter by ourself.
-      -- Must set the completion_enable to 1
-      api.nvim_buf_set_var(0, 'completion_enable', 1)
-      completion.on_InsertEnter()
-      completion.confirmCompletion()
 
       local on_attach = function(client,bufnr)
         -- passing in a table with on_attach function
