@@ -3,7 +3,7 @@ local options = require 'options'
 local autocmd = require 'event'
 local dein = require 'dein'
 local map = require 'mapping'
-local platonic = require 'platonic'
+local zephyr = require 'zephyr'
 local vim = vim
 local M = {}
 
@@ -65,7 +65,7 @@ function M.load_core()
 
   map.load_mapping()
   autocmd.load_autocmds()
-  platonic.colorscheme()
+  zephyr.colorscheme()
 end
 
 M.load_core()
