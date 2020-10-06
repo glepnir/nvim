@@ -29,8 +29,8 @@ function autocmd.load_autocmds()
 
     wins = {
       -- Highlight current line only on focused window
-      {"WinEnter,InsertLeave", "*", [[if &ft !~# '^\(denite\|clap_\)' | set cursorline | endif]]};
-      {"WinEnter,InsertLeave", "*", [[if &ft !~# '^\(denite\|clap_\)' | set nocursorline | endif]]};
+      {"WinEnter,BufEnter,InsertLeave", "*", [[if ! &cursorline && &filetype !~# '^\(denite\|clap_\)' && ! &pvw | setlocal cursorline | endif]]};
+      {"WinLeave,BufLeave,InsertEnter", "*", [[if &cursorline && &filetype !~# '^\(denite\|clap_\)' && ! &pvw | setlocal nocursorline | endif]]};
       -- Equalize window dimensions when resizing vim window
       {"VimResized", "*", [[tabdo wincmd =]]};
       -- Force write shada on leaving nvim
