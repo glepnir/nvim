@@ -4,7 +4,6 @@ local autocmd = require 'event'
 local dein = require 'dein'
 local map = require 'mapping'
 local platonic = require 'platonic'
--- local theme = require 'theme'
 local vim = vim
 local M = {}
 
@@ -67,8 +66,6 @@ function M.load_core()
   map.load_mapping()
   autocmd.load_autocmds()
   platonic.colorscheme()
-  -- theme.load_theme()
-
 end
 
 M.load_core()
