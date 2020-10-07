@@ -34,11 +34,11 @@
       }
     EOF
 
-- repo: voldikss/vim-floaterm
-  on_cmd: [FloatermNew, FloatermToggle, FloatermPrev, FloatermNext, FloatermSend]
-  hook_source: |
-    let g:floaterm_position = 'center'
-    let g:floaterm_wintype = 'floating'
+# - repo: voldikss/vim-floaterm
+#   on_cmd: [FloatermNew, FloatermToggle, FloatermPrev, FloatermNext, FloatermSend]
+#   hook_source: |
+#     let g:floaterm_position = 'center'
+#     let g:floaterm_wintype = 'floating'
 
 - repo: itchyny/vim-cursorword
   on_event: [BufReadPre,BufNewFile]
