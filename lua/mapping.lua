@@ -88,9 +88,9 @@ function mapping:load_plugin_define()
     -- Plugin DadbodUI
     ["n|<Leader>od"]     = map_cr('DBUIToggle'):with_noremap():with_silent(),
     -- Plugin Floaterm
-    ["n|<A-d>"]          = map_cu('FloatermToggle'):with_noremap():with_silent(),
-    ["t|<A-d>"]          = map_cu([[<C-\><C-n>:FloatermToggle<CR>]]):with_noremap():with_silent(),
-    ["n|<Leader>g"]      = map_cu('FloatermNew height=0.7 width=0.8 lazygit'):with_noremap():with_silent(),
+    ["n|<A-d>"]          = map_cu("lua require('selfunc').float_terminal()"):with_noremap():with_silent(),
+    ["t|<A-d>"]          = map_cu([[<C-\><C-n>:lua require('selfunc').close_float_terminal()<CR>]]):with_noremap():with_silent(),
+    ["n|<Leader>g"]      = map_cu("lua require('selfunc').float_terminal('lazygit')"):with_noremap():with_silent(),
     -- Far.vim
     ["n|<Leader>fz"]     = map_cr('Farf'):with_noremap():with_silent();
     ["v|<Leader>fz"]     = map_cr('Farf'):with_noremap():with_silent();
@@ -114,7 +114,7 @@ function mapping:load_plugin_define()
     ["n|j"]              = map_cmd('<Plug>(accelerated_jk_gj)'):with_silent(),
     ["n|k"]              = map_cmd('<Plug>(accelerated_jk_gk)'):with_silent(),
     -- Plugin QuickRun
-    ["n|<Leader>r"]     = map_cr("<cmd> lua require'quickrun'.run_command()"):with_noremap():with_silent(),
+    ["n|<Leader>r"]     = map_cr("<cmd> lua require'selfunc'.run_command()"):with_noremap():with_silent(),
     -- Plugin Vista
     ["n|<Leader>v"]      = map_cu('Vista!!'):with_noremap():with_silent(),
     -- Plugin SplitJoin
