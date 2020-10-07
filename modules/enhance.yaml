@@ -50,3 +50,7 @@
       autocmd InsertEnter * let b:cursorword = 0
       autocmd InsertLeave * let b:cursorword = 1
     augroup END
+
+- repo: hrsh7th/vim-eft
+  on_map: { nox: <Plug> }
+  hook_source: let g:eft_ignorecase = v:true

@@ -120,14 +120,21 @@ function mapping:load_plugin_define()
     -- Plugin SplitJoin
     ["n|sj"]             = map_cr('SplitjoinJoin'),
     ["n|sk"]             = map_cr('SplitjoinSplit'),
-    -- Plugin go-nvim
-    ["n|gcg"]            = map_cr('GoAutoComment'):with_noremap():with_silent(),
     -- Plugin vim-operator-replace
     ["x|p"]              = map_cmd("<Plug>(operator-replace)"),
     -- Plugin vim-operator-surround
     ["n|sa"]             = map_cmd("<Plug>(operator-surround-append)"):with_silent(),
     ["n|sd"]             = map_cmd("<Plug>(operator-surround-delete)"):with_silent(),
     ["n|sr"]             = map_cmd("<Plug>(operator-surround-replace)"):with_silent(),
+    -- Plugin hrsh7th/vim-eft
+    ["n|;"]              = map_cmd("<Plug>(eft-repeat)"),
+    ["x|;"]              = map_cmd("<Plug>(eft-fepeat)"),
+    ["n|f"]              = map_cmd("<Plug>(eft-f)"),
+    ["x|f"]              = map_cmd("<Plug>(eft-f)"),
+    ["o|f"]              = map_cmd("<Plug>(eft-f)"),
+    ["n|F"]              = map_cmd("<Plug>(eft-F)"),
+    ["x|F"]              = map_cmd("<Plug>(eft-F)"),
+    ["o|F"]              = map_cmd("<Plug>(eft-F)"),
   };
 end
 
