@@ -218,11 +218,13 @@ function zephyr.load_syntax()
 end
 
 function zephyr.colorscheme()
+  vim.api.nvim_command('hi clear')
+  if vim.fn.exists('syntax_on') then
+    vim.api.nvim_command('syntax reset')
+  end
   vim.g.colors_name = 'zephyr'
   vim.o.background = 'dark'
-  if vim.o.termguicolors ~= true then
-    vim.o.termguicolors = true
-  end
+  vim.o.termguicolors = true
   zephyr.terminal_color()
   for group,colors in pairs(zephyr.load_syntax()) do
     zephyr.highlight(group,colors)

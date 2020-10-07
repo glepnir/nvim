@@ -15,21 +15,18 @@
   on_event: [BufReadPre,BufNewFile]
 
 # - repo: Akin909/nvim-bufferline.lua
-#   on_event: [BufReadPre,BufNewFile]
-#   hook_add: |
+#   hook_source: |
 #     lua << EOF
-#       require'bufferline'.setup{
+#     require'bufferline'.setup{
 #         options = {
 #           view = "multiwindow",
-#           numbers =  "ordinal",
-#           number_style = "",
 #           mappings = true ,
 #           max_name_length = 15,
 #           tab_size = 15,
 #           show_buffer_close_icons = false,
 #           separator_style = "thick",
 #           enforce_regular_tabs = false,
-#         }
+#         };
 #       }
 #     EOF
 
