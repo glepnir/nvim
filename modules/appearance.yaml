@@ -78,6 +78,8 @@
 
 - repo: Shougo/defx.nvim
   on_cmd: Defx
+  hook_add: |
+    autocmd FileType defx setlocal nonumber | setlocal norelativenumber
   hook_source: |
     call defx#custom#option('_', {
       \ 'resume': 1,
