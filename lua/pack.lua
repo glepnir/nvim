@@ -1,6 +1,6 @@
 local pack = {}
 local global = require('global')
-local cache_file = global.cache_dir..'cache_size.txt'
+local plugins_cache = global.cache_dir..'plugins_cache.txt'
 
 function pack:new()
   local instance = {}
@@ -25,41 +25,60 @@ function pack:parse_config()
 end
 
 function pack:load_repos()
-  local plugin_dir = os.getenv("HOME")..'/.cache/vim/plugins'
-  local packer_dir = plugin_dir .. '/pack/packer/start/packer.nvim'
+  local packer_dir = string.format(
+    '%s/site/pack/packer/opt/packer.nvim',
+    vim.fn.stdpath('data')
+  )
   local cmd = "git clone https://github.com/wbthomason/packer.nvim " ..packer_dir
+
   if vim.fn.has('vim_starting') then
     if not global.isdir(packer_dir) then
       os.execute(cmd)
     end
-    vim.o.packpath = vim.o.packpath .. ',' .. plugin_dir
-    package.path = package.path .. ';' .. plugin_dir .. '/pack/packer/start/packer.nvim/lua/?.lua'
+    package.path = package.path .. ';' .. packer_dir .. '/lua/?.lua'
   end
 
   local newProdutor
 
-  local produtor = function ()
+  local produtor = function (repos)
     local status = 0
-    if vim.fn.filereadable(cache_file) == 0 then
+    if vim.fn.filereadable(plugins_cache) == 0 then
       status = 1
       coroutine.yield(status)
       return
     end
-    -- TODO:compare repo file size to watch plugins is added or deleted?
+    local f = io.open(plugins_cache,'r')
+    local output = {}
+    local count = 0
+    for each in f:lines() do
+      count = count + 1
+      output[each] = count
+    end
+    for _,repo in pairs(repos) do
+      local name = repo[1]
+      if output[name] == nil then
+        status = 1
+        coroutine.yield(status)
+        return
+      end
+    end
   end
 
   local consumer = function(pack)
-    local _,status = coroutine.resume(newProdutor)
-    if status ~= 0 then
+    pack:parse_config()
+    local _,status = coroutine.resume(newProdutor,pack.repos)
+    if status ~= 0 and status ~= nil then
       local packer = require('packer')
       local use = packer.use
-      packer.init({package_root = plugin_dir..'/pack'})
+      packer.init()
       packer.reset()
-      pack:parse_config()
+      local file = io.open(plugins_cache,'w+')
       for _,repo in pairs(pack.repos) do
+        file:write(repo[1]..'\n')
         use(repo)
       end
-      packer.install()
+      packer.sync()
+      file:close()
     end
   end
 
