@@ -1,4 +1,5 @@
 local ui = {
+  {'wbthomason/packer.nvim',opt = true};
   {'ryanoasis/vim-devicons'};
   {'glepnir/spaceline.vim',
     event = {'BufReadPre *','BufNewFile *'},
@@ -14,6 +15,11 @@ local ui = {
   };
   {'hardcoreplayers/vim-buffet',
     event = {'BufReadPre *','BufNewFile *'},
+  };
+  {'glepnir/dashboard-nvim',
+    setup = function ()
+      vim.g.dashboard_default_header = 'commicgirl5'
+    end
   };
 }
 
