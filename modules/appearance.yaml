@@ -42,7 +42,11 @@
       \ 'find_word'           :['  Find  word                              SPC f w'],
       \ 'book_marks'          :['  Jump to book marks                      SPC f b'],
       \ 'open_dotfiles'       :['  Open Personal dotfiles                  SPC o c'],
+      \ 'go_source'           :['  Find Go Source Code                     SPC o s'],
       \}
+      function! GO_SOURCE ()
+        Clap gosource
+      endfunction
 
       function! OPEN_DOTFILES()
         Clap dotfiles
