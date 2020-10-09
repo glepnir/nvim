@@ -1,8 +1,8 @@
 local global = require 'global'
 local options = require 'options'
 local autocmd = require 'event'
--- local dein = require 'dein'
-local pack =require 'pack'
+local dein = require 'dein'
+-- local pack =require 'pack'
 local map = require 'mapping'
 local zephyr = require 'zephyr'
 local vim = vim
@@ -61,10 +61,10 @@ function M.load_core()
   local ops = options:new()
   ops:load_options()
 
-  -- local d = dein:new()
-  -- d:load_repos()
-  local p = pack:new()
-  p:load_repos()
+  local d = dein:new()
+  d:load_repos()
+  -- local p = pack:new()
+  -- p:load_repos()
 
   map.load_mapping()
   autocmd.load_autocmds()
