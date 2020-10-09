@@ -13,7 +13,7 @@ local enhance = {
        vim.g.dbs = vim.fn['initself#load_db_from_env']()
    end
    };
-   {'rhysd/accelerated-jk', keys = 'j'};
+   {'rhysd/accelerated-jk', keys = {{'n','k'},{'n','j'}}};
    {'itchyny/vim-cursorword',
     event = {'BufReadPost','BufNewFile'},
     config = function()

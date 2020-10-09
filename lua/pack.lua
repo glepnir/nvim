@@ -1,6 +1,8 @@
 local pack = {}
 local global = require('global')
-local plugins_cache = global.cache_dir..'plugins_cache.txt'
+local data_dir = string.format('%s/site/',vim.fn.stdpath('data'))
+local plugins_cache = data_dir .. 'plugin/plugins_cache.txt'
+local packer_compiled = data_dir..'plugin/packer_compiled.vim'
 local newConsumer
 
 function pack:new()
@@ -29,7 +31,11 @@ local produtor = function (pack)
   pack:parse_config()
   local repos = pack.repos
   if vim.fn.filereadable(plugins_cache) == 0 then
-    coroutine.resume(newConsumer,repos)
+    coroutine.resume(newConsumer,repos,1)
+    return
+  end
+  if vim.fn.filereadable(packer_compiled) == 0 then
+    coroutine.resume(newConsumer,repos,2)
     return
   end
   local f = io.open(plugins_cache,'r')
@@ -48,30 +54,32 @@ local produtor = function (pack)
   end
 end
 
-local consumer = function(repos)
+local consumer = function(repos,type)
   local packer = require('packer')
+  local installer = {packer.sync,packer.compile}
   local use = packer.use
-  packer.init()
+  local cfg = {
+    compile_path = packer_compiled
+  }
+  packer.init(cfg)
   packer.reset()
   local file = io.open(plugins_cache,'w+')
   for _,repo in pairs(repos) do
     file:write(repo[1]..'\n')
     use(repo)
   end
-  packer.sync()
+  installer[type]()
   file:close()
 end
 
 function pack:load_repos()
-  local packer_dir = string.format(
-    '%s/site/pack/packer/opt/packer.nvim',
-    vim.fn.stdpath('data')
-  )
+  local packer_dir = data_dir..'/pack/packer/opt/packer.nvim'
   local cmd = "git clone https://github.com/wbthomason/packer.nvim " ..packer_dir
 
   if vim.fn.has('vim_starting') then
     if not global.isdir(packer_dir) then
       os.execute(cmd)
+      os.execute('mkdir -p '..data_dir..'plugin')
     end
     package.path = package.path .. ';' .. packer_dir .. '/lua/?.lua'
   end
