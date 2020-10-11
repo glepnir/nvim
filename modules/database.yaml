@@ -10,4 +10,4 @@
     let g:db_ui_use_nerd_fonts = 1
     let g:db_ui_winwidth = 35
     let g:db_ui_save_location = getenv("HOME") . '/.cache/vim/db_ui_queries'
-    let g:dbs = initself#load_db_from_env()
+    let g:dbs = luaeval('require("selfunc").load_dbs')()

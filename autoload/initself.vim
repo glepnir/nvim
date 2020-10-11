@@ -48,43 +48,6 @@ function! initself#clap_my_dotfiles()
   return l:source_dotfiles
 endfunction
 
-" Load Env file and return env content
-function! initself#load_env()
-  let l:env_file = getenv("HOME")."/.env"
-  let l:env_dict={}
-  if filereadable(l:env_file)
-    let l:env_content = readfile(l:env_file)
-    for item in l:env_content
-      let l:line_content = split(item,"=")
-      let l:env_dict[l:line_content[0]] = l:line_content[1]
-    endfor
-    return l:env_dict
-  else
-    echo "env file doesn't exist"
-  endif
-endfunction
-
-" Load database connection from env file
-function! initself#load_db_from_env()
-  let l:env = initself#load_env()
-  let l:dbs={}
-  for key in keys(l:env)
-    if stridx(key,"DB_CONNECTION_") >= 0
-      let l:db_name = tolower(split(key,"_")[2])
-      let l:dbs[l:db_name] = l:env[key]
-    endif
-  endfor
-  if empty(l:dbs)
-    echo "Env Database config error"
-  endif
-  return l:dbs
-endfunction
-
-function! initself#check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-endfunction
-
 map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
       \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
       \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
