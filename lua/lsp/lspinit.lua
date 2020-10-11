@@ -181,7 +181,7 @@ function lsp_store.start_lsp_server()
             }
           end
           lsp_event.autoformat = {
-            {"BufWritePre","lua vim.lsp.buf.formatting()"}
+            {"BufWritePre","*" ,"lua vim.lsp.buf.formatting_sync(nil, 1000)"}
           }
         end
         -- register lsp event
