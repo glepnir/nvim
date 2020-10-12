@@ -25,7 +25,7 @@
     "description": "struct"
   },
   "func":{
-    "prefix": "func",
+    "prefix": "fn",
     "body": ["func ${1}() ${2} {","\t${3}","}"],
     "description": "function"
   },
