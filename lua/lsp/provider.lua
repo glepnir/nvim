@@ -6,6 +6,7 @@ local root_dir = vim.lsp.buf_get_clients()[1].config.root_dir
 local M = {}
 
 local contents = {}
+local target_line_count = 0
 local definition_uri = 0
 local reference_uri = 0
 
@@ -27,7 +28,9 @@ local function defintion_reference(result,method_type)
     local title = method_option[method_type].icon.. params ..method_option[method_type].title
     if method_type == 1 then
       table.insert(contents,title)
+      target_line_count = 2
     else
+      target_line_count = target_line_count + 3
       table.insert(contents," ")
       table.insert(contents,title)
     end
@@ -55,10 +58,11 @@ local function defintion_reference(result,method_type)
         table.insert(contents,' ')
       end
       table.insert(contents,target_line)
+      target_line_count = target_line_count + index
       local lines = api.nvim_buf_get_lines(bufnr,range.start.line-0,range["end"].line+1+5,false)
-      short_link[short_name] = {link=link,preview=lines,row=range.start.line+1,col=range.start.character+1}
-      short_link[short_name].preview_data = {}
-      short_link[short_name].preview_data.status = 0
+      short_link[target_line_count] = {link=link,preview=lines,row=range.start.line+1,col=range.start.character+1}
+      short_link[target_line_count].preview_data = {}
+      short_link[target_line_count].preview_data.status = 0
     end
     if method_type == 2 then
       for _ =1,10,1 do
@@ -102,6 +106,7 @@ local function defintion_reference(result,method_type)
       apply_float_map(M.contents_buf)
       -- clear contents
       contents = {}
+      target_line_count = 0
       definition_uri = 0
       reference_uri = 0
     end
@@ -113,34 +118,34 @@ end
 -- action 3 mean split
 function M.open_link(action_type)
   local action = {"edit ","vsplit ","split "}
-  local short_name = vim.fn.split(vim.fn.getline('.'),' ')[2]
-  if short_link[short_name] ~= nil then
+  local current_line = vim.fn.line('.')
+  print(current_line)
+  if short_link[current_line] ~= nil then
     api.nvim_win_close(M.contents_win,true)
     api.nvim_win_close(M.border_win,true)
-    api.nvim_command(action[action_type]..short_link[short_name].link)
-    vim.fn.cursor(short_link[short_name].row,short_link[short_name].col)
+    api.nvim_command(action[action_type]..short_link[current_line].link)
+    vim.fn.cursor(short_link[current_line].row,short_link[current_line].col)
   else
     return
   end
 end
 
 function M.insert_preview()
-  local short_name = vim.fn.split(vim.fn.getline('.'),' ')[2]
   local current_line = vim.fn.line('.')
-  if short_link[short_name] ~= nil and short_link[short_name].preview_data.status ~= 1  then
-    short_link[short_name].preview_data.status = 1
-    short_link[short_name].preview_data.stridx = current_line
-    short_link[short_name].preview_data.endidx = current_line + #short_link[short_name].preview
-    local code_preview = vim.lsp.util._trim_and_pad(short_link[short_name].preview)
+  if short_link[current_line] ~= nil and short_link[current_line].preview_data.status ~= 1  then
+    short_link[current_line].preview_data.status = 1
+    short_link[current_line].preview_data.stridx = current_line
+    short_link[current_line].preview_data.endidx = current_line + #short_link[current_line].preview
+    local code_preview = vim.lsp.util._trim_and_pad(short_link[current_line].preview)
     vim.fn.append(current_line,code_preview)
-  elseif short_link[short_name] ~= nil and short_link[short_name].preview_data.status == 1 then
-    local stridx = short_link[short_name].preview_data.stridx
-    local endidx = short_link[short_name].preview_data.endidx
+  elseif short_link[current_line] ~= nil and short_link[current_line].preview_data.status == 1 then
+    local stridx = short_link[current_line].preview_data.stridx
+    local endidx = short_link[current_line].preview_data.endidx
     api.nvim_buf_set_lines(M.contents_buf,stridx,endidx,true,{})
-    short_link[short_name].preview_data.status = 0
-    short_link[short_name].preview_data.stridx = 0
-    short_link[short_name].preview_data.endidx = 0
-  elseif short_link[short_name] == nil then
+    short_link[current_line].preview_data.status = 0
+    short_link[current_line].preview_data.stridx = 0
+    short_link[current_line].preview_data.endidx = 0
+  elseif short_link[current_line] == nil then
     return
   end
 end
