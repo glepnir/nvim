@@ -1,5 +1,10 @@
+local bg_color = {
+  dark = '#212127',
+  medium = '#282c34'
+}
+
 local zephyr = {
-  bg0 = '#282c34';
+  bg0 = bg_color["medium"];
   bg1 = '#343d46';
   bg2 = '#282828';
   bg3 = '#3c3836';
@@ -243,6 +248,11 @@ function zephyr.colorscheme()
   -- vim.g.colors_name = 'zephyr'
   vim.o.background = 'dark'
   vim.o.termguicolors = true
+
+  if vim.g.zephyr_background == 'dark' then
+    zephyr.bg0 = bg_color["dark"]
+  end
+
   zephyr.terminal_color()
   for group,colors in pairs(zephyr.load_syntax()) do
     zephyr.highlight(group,colors)
