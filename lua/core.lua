@@ -4,7 +4,6 @@ local autocmd = require 'event'
 local dein = require 'dein'
 -- local pack =require 'pack'
 local map = require 'mapping'
-local zephyr = require 'zephyr'
 local vim = vim
 local M = {}
 
@@ -60,6 +59,7 @@ function M.load_core()
 
   local ops = options:new()
   ops:load_options()
+  pcall(require, 'zephyr')
 
   local d = dein:new()
   d:load_repos()
@@ -68,7 +68,6 @@ function M.load_core()
 
   map.load_mapping()
   autocmd.load_autocmds()
-  zephyr.colorscheme()
 end
 
 M.load_core()
