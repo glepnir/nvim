@@ -33,52 +33,33 @@
 - repo: glepnir/dashboard-nvim
   hook_source: |
     let g:dashboard_default_header = 'commicgirl5'
+    let g:dashboard_default_executive ='clap'
     let g:dashboard_custom_section = {
-      \ 'last_session'        :['  Recently laset session                  SPC s l'],
-      \ 'find_history'        :['  Recently opened files                   SPC f h'],
-      \ 'find_file'           :['  Find  File                              SPC f f'],
-      \ 'new_file'            :['  New   File                              SPC t f'],
-      \ 'change_colorscheme'  :['  Change Colorscheme                      SPC t c'],
-      \ 'find_word'           :['  Find  word                              SPC f w'],
-      \ 'book_marks'          :['  Jump to book marks                      SPC f b'],
-      \ 'open_dotfiles'       :['  Open Personal dotfiles                  SPC o c'],
-      \ 'go_source'           :['  Find Go Source Code                     SPC o s'],
+      \ 'last_session'        :{
+          \ 'description': ['  Recently laset session                  SPC s l'],
+          \ 'command': 'SessionLoad'},
+      \ 'find_history'        :{
+          \ 'description': ['  Recently opened files                   SPC f h'],
+          \ 'command': 'DashboardFindHistory'},
+      \ 'find_file'           :{
+          \ 'description': ['  Find  File                              SPC f f'],
+          \ 'command': 'DashboardFindFile'},
+      \ 'new_file'            :{
+          \ 'description': ['  New   File                              SPC t f'],
+          \ 'command': 'DashboardNewFile'},
+      \ 'change_colorscheme'  :{
+          \ 'description': ['  Change Colorscheme                      SPC t c'],
+          \ 'command': 'DashboardChangeColorscheme'},
+      \ 'find_word'           :{
+          \ 'description': ['  Find  word                              SPC f w'],
+          \ 'command': 'DashboardFindWord'},
+      \ 'find_dotfiles'       :{
+          \ 'description': ['  Open Personal dotfiles                  SPC f d'],
+          \ 'command': 'Clap dotfiles'},
+      \ 'go_source'           :{
+          \ 'description': ['  Find Go Source Code                     SPC f s'],
+          \ 'command': 'Clap gosource'},
       \}
-      function! GO_SOURCE ()
-        Clap gosource
-      endfunction
-
-      function! OPEN_DOTFILES()
-        Clap dotfiles
-      endfunction
-
-      function! FIND_FILE() abort
-        Clap files ++finder=rg --ignore --hidden --files
-      endfunction
-
-      function! FIND_HISTORY() abort
-        Clap history
-      endfunction
-
-      function! CHANGE_COLORSCHEME() abort
-        Clap colors
-      endfunction
-
-      function! FIND_WORD() abort
-        Clap grep2
-      endfunction
-
-      function! BOOK_MARKS() abort
-        Clap marks
-      endfunction
-
-      function! LAST_SESSION()
-        SessionLoad
-      endfunction
-
-      function! NEW_FILE()
-        DashboardNewFile
-      endfunction
 
 - repo: Shougo/defx.nvim
   on_cmd: Defx

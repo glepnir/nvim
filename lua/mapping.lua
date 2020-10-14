@@ -117,8 +117,8 @@ function mapping:load_plugin_define()
     ["n|<Leader>fl"]     = map_cu('Clap loclist'):with_noremap():with_silent(),
     ["n|<Leader>fu"]     = map_cu('Clap git_diff_files'):with_noremap():with_silent(),
     ["n|<Leader>fv"]     = map_cu('Clap grep ++query=@visual'):with_noremap():with_silent(),
-    ["n|<Leader>oc"]     = map_cu('Clap dotfiles'):with_noremap():with_silent(),
-    ["n|<Leader>os"]      = map_cu('Clap gosource'):with_noremap():with_silent(),
+    ["n|<Leader>fd"]     = map_cu('Clap dotfiles'):with_noremap():with_silent(),
+    ["n|<Leader>fs"]      = map_cu('Clap gosource'):with_noremap():with_silent(),
     -- Plugin acceleratedjk
     ["n|j"]              = map_cmd('<Plug>(accelerated_jk_gj)'):with_silent(),
     ["n|k"]              = map_cmd('<Plug>(accelerated_jk_gk)'):with_silent(),
