@@ -87,8 +87,6 @@ function mapping:load_plugin_define()
     -- mhinz/vim-signify
     ["n|[g"]             = map_cmd("<plug>(signify-next-hunk)"),
     ["n|]g"]             = map_cmd("<plug>(signify-prev-hunk)"),
-    -- a magic bind for regex [0-9]
-    ["n|<Leader>,0,9"]   = "<Plug>BuffetSwitch(+)",
     -- Plugin Defx
     ["n|<Leader>e"]      = map_cu([[Defx -resume -toggle -buffer-name=tab`tabpagenr()`]]):with_noremap():with_silent(),
     ["n|<Leader>F"]      = map_cu([[Defx -resume -buffer-name=tab`tabpagenr()` -search=`expand('%:p')`]]):with_noremap():with_silent(),
@@ -155,13 +153,6 @@ function M.nvim_load_mapping(mapping)
         local rhs = value.cmd
         local options = value.options
         vim.fn.nvim_set_keymap(mode,keymap,rhs,options)
-      elseif type(value) == 'string' then
-        local k,min,max = keymap:match("([^,]+),([^,]+),([^,]+)")
-        for i=tonumber(min),tonumber(max) do
-          local map = (k.."%s"):format(i)
-          local rhs = value:gsub("+",i)
-          vim.fn.nvim_set_keymap(mode,map,rhs,{})
-        end
       end
     end
   end
