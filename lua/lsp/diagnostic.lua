@@ -135,7 +135,7 @@ local function jump_to_entry(entry)
 
   -- set curosr
   api.nvim_win_set_cursor(0, {entry_line, entry_character})
-  local fb,fw,bw = window.create_float_window(diagnostic_message,'markdown',1,false,false)
+  local fb,fw,_,bw = window.create_float_window(diagnostic_message,'markdown',1,false,false)
 
   -- use a variable to control diagnostic floatwidnow
   api.nvim_buf_set_var(0,"diagnostic_float_window",{fw,bw})
@@ -256,7 +256,7 @@ function M.show_buf_diagnostics()
     col = col,
   }
 
-  M.contents_bufnr,M.contents_winid,M.border_winid = window.create_float_window(buf_diagnostic_contents,'plaintext',1,true,false,opts)
+  M.contents_bufnr,M.contents_winid,M.border_bufnr,M.border_winid = window.create_float_window(buf_diagnostic_contents,'plaintext',1,true,false,opts)
   if #buf_diagnostic_contents > 2 then
     api.nvim_win_set_cursor(0,{3,5})
   end
