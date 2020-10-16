@@ -82,7 +82,7 @@ local function defintion_reference(result,method_type)
         relative = "cursor",
         style = "minimal",
       }
-      M.contents_buf,M.contents_win,M.border_win = window.create_float_window(contents,'plaintext',2,true,true,opts)
+      M.contents_buf,M.contents_win,M.border_bufnr,M.border_win = window.create_float_window(contents,'plaintext',2,true,true,opts)
       api.nvim_win_set_cursor(M.contens_buf,{3,1})
 
       api.nvim_buf_add_highlight(M.contents_buf,-1,"DefinitionIcon",0,1,#method_option[method_type].icon-1)
@@ -254,7 +254,7 @@ function M.preview_definiton(timeout_ms)
       relative = "cursor",
       style = "minimal",
     }
-    local contents_buf,contents_winid,border_winid = window.create_float_window(content,filetype,1,false,false,opts)
+    local contents_buf,contents_winid,_,border_winid = window.create_float_window(content,filetype,1,false,false,opts)
     vim.lsp.util.close_preview_autocmd({"CursorMoved", "CursorMovedI", "BufHidden", "BufLeave"},
                                         border_winid)
     vim.lsp.util.close_preview_autocmd({"CursorMoved", "CursorMovedI", "BufHidden", "BufLeave"},
