@@ -19,7 +19,7 @@
     vim.g.bufferline_modified_icon = '✥'
     require'bufferline'.setup{
         options = {
-          show_buffer_close_icons = false,
+          buffer_close_icon = '',
           mappings = true,
           always_show_bufferline = false,
         };
