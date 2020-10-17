@@ -223,7 +223,7 @@ function M.fancy_floating_markdown(contents, opts)
   end
 
   -- Make the floating window.
-  local contents_bufnr,contents_winid,border_winid = M.create_float_window(stripped,'',1,false,false,opts)
+  local contents_bufnr,contents_winid,border_bufnr,border_winid = M.create_float_window(stripped,'',1,false,false,opts)
 
   -- Switch to the floating window to apply the syntax highlighting.
   -- This is because the syntax command doesn't accept a target.
@@ -255,7 +255,7 @@ function M.fancy_floating_markdown(contents, opts)
   end
 
   vim.api.nvim_set_current_win(cwin)
-  return contents_bufnr, contents_winid,border_winid
+  return contents_bufnr, contents_winid,border_bufnr,border_winid
 end
 
 return M
