@@ -107,7 +107,7 @@ function callbacks.add_callbacks(server_setup)
         markdown_lines = lsp.util.trim_empty_lines(markdown_lines)
         if vim.tbl_isempty(markdown_lines) then return end
 
-        local bufnr,contents_winid,border_winid = window.fancy_floating_markdown(markdown_lines)
+        local bufnr,contents_winid,_,border_winid = window.fancy_floating_markdown(markdown_lines)
         lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, contents_winid)
         lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, border_winid)
         return bufnr,contents_winid
