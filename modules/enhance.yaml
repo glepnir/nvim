@@ -22,7 +22,7 @@
         scss = { rgb_fn = true; };
         sass = { rgb_fn = true; };
         stylus = { rgb_fn = true; };
-        vim = { names = false; };
+        vim = { names = true; };
         tmux = { names = false; };
         'javascript';
         'javascriptreact';
@@ -48,3 +48,26 @@
 - repo: hrsh7th/vim-eft
   on_map: { nox: <Plug> }
   hook_source: let g:eft_ignorecase = v:true
+
+- repo: rhysd/committia.vim
+  on_path: [COMMIT_EDITMSG, MERGE_MSG]
+  hook_source: let g:committia_min_window_width = 7
+  hook_add: |
+    let g:committia_hooks = {}
+    function! g:committia_hooks.edit_open(info)
+      imap <buffer><C-d> <Plug>(committia-scroll-diff-down-half)
+      imap <buffer><C-u> <Plug>(committia-scroll-diff-up-half)
+      setlocal winminheight=1 winheight=1
+      resize 10
+      startinsert
+    endfunction
+
+
+- repo: mhinz/vim-signify
+  on_event: [BufReadPre,BufNewFile]
+  hook_source: |-
+    let g:signify_sign_add = '▋'
+    let g:signify_sign_change = '▋'
+    let g:signify_sign_delete = '▋'
+    let g:signify_sign_delete_first_line = '▘'
+    let g:signify_sign_show_count = 0
