@@ -16,9 +16,9 @@
   depends: nvim-web-devicons
   hook_add: |
     lua << EOF
-    vim.g.bufferline_modified_icon = '✥'
     require'bufferline'.setup{
         options = {
+          modified_icon = '✥',
           buffer_close_icon = '',
           mappings = true,
           always_show_bufferline = false,
