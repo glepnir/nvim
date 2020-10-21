@@ -76,7 +76,7 @@
 
 - repo: kyazdani42/nvim-tree.lua
   on_cmd: [LuaTreeToggle,LuaTreeOpen]
-  hook_source: |
+  hook_add: |
     let g:lua_tree_hide_dotfiles = 1
     let g:lua_tree_indent_markers = 1
     let g:lua_tree_bindings = {
