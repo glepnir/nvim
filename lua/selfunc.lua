@@ -6,6 +6,12 @@ local M = {
   lua = {'lua '}
 }
 
+function M.load_nvim_tree()
+  vim.o.runtimepath = vim.o.runtimepath ..','.. global.cache_dir ..'dein/repos/github.com/kyazdani42/nvim-tree.lua'
+  require'tree'.on_enter()
+  pcall(vim.cmd,'LuaTreeToggle')
+end
+
 function M.run_command()
   local cmd = nil
   local file_type = vim.fn.expand("%:e")

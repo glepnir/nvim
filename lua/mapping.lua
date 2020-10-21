@@ -87,9 +87,9 @@ function mapping:load_plugin_define()
     -- mhinz/vim-signify
     ["n|[g"]             = map_cmd("<plug>(signify-next-hunk)"),
     ["n|]g"]             = map_cmd("<plug>(signify-prev-hunk)"),
-    -- Plugin Defx
-    ["n|<Leader>e"]      = map_cu([[Defx -resume -toggle -buffer-name=tab`tabpagenr()`]]):with_noremap():with_silent(),
-    ["n|<Leader>F"]      = map_cu([[Defx -resume -buffer-name=tab`tabpagenr()` -search=`expand('%:p')`]]):with_noremap():with_silent(),
+    -- Plugin nvim-tree
+    ["n|<Leader>e"]      = map_cr('LuaTreeToggle'):with_noremap():with_silent(),
+    ["n|<Leader>F"]      = map_cr('LuaTreeFindFile'):with_noremap():with_silent(),
     -- Plugin MarkdownPreview
     ["n|<Leader>om"]     = map_cu('MarkdownPreview'):with_noremap():with_silent(),
     -- Plugin DadbodUI
