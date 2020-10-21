@@ -6,10 +6,15 @@ local M = {
   lua = {'lua '}
 }
 
-function M.load_nvim_tree()
-  vim.o.runtimepath = vim.o.runtimepath ..','.. global.cache_dir ..'dein/repos/github.com/kyazdani42/nvim-tree.lua'
-  require'tree'.on_enter()
-  pcall(vim.cmd,'LuaTreeToggle')
+function M.load_nvim_tree(command)
+  if not vim.o.runtimepath:find("nvim-tree.lua") then
+    vim.o.runtimepath = vim.o.runtimepath ..','.. global.cache_dir ..'dein/repos/github.com/kyazdani42/nvim-tree.lua'
+  end
+  local has_tree,tree = pcall(require,'tree')
+  if has_tree then
+    tree.on_enter()
+  end
+  pcall(vim.cmd,command)
 end
 
 function M.run_command()
