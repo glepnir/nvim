@@ -6,13 +6,16 @@ local M = {
   lua = {'lua '}
 }
 
+-- TODO: need rewrite upsteam
+local loaded_nvim_tree = false
 function M.load_nvim_tree(command)
   if not vim.o.runtimepath:find("nvim-tree.lua") then
     vim.o.runtimepath = vim.o.runtimepath ..','.. global.cache_dir ..'dein/repos/github.com/kyazdani42/nvim-tree.lua'
   end
   local has_tree,tree = pcall(require,'tree')
-  if has_tree then
+  if has_tree and loaded_nvim_tree == false then
     tree.on_enter()
+    loaded_nvim_tree = true
   end
   pcall(vim.cmd,command)
 end
