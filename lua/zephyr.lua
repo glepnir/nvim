@@ -14,6 +14,7 @@ local zephyr = {
   bg1 = '#504945';
   bg_popup = '#3E4556';
   bg_highlight  = '#2E323C';
+  bg_visual = '#b3deef';
 
   fg = '#bbc2cf';
   fg_alt  = '#5B6268';
@@ -26,11 +27,11 @@ local zephyr = {
   cyan = '#56b6c2';
   blue = '#51afef';
   purple = '#ba8baf';
+  teal = '#1abc9c';
   grey = '#928374';
   brown = '#666660';
   black = '#000000';
 
-  operator = '#b3deef';
   bracket = '#93a1a1';
   currsor_bg = '#4f5b66';
   none = 'NONE';
@@ -113,8 +114,8 @@ function zephyr.load_syntax()
     SpellCap = {fg=zephyr.blue,bg=zephyr.none,style='undercurl'};
     SpellLocal = {fg=zephyr.cyan,bg=zephyr.none,style='undercurl'};
     SpellRare = {fg=zephyr.purple,bg=zephyr.none,style = 'undercurl'};
-    Visual = {fg=zephyr.black,bg=zephyr.operator};
-    VisualNOS = {fg=zephyr.black,bg=zephyr.operator};
+    Visual = {fg=zephyr.black,bg=zephyr.bg_visual};
+    VisualNOS = {fg=zephyr.black,bg=zephyr.bg_visual};
     QuickFixLine = {fg=zephyr.purple,style='bold'};
     Debug = {fg=zephyr.orange};
     debugBreakpoint = {fg=zephyr.bg,bg=zephyr.red};
@@ -137,7 +138,7 @@ function zephyr.load_syntax()
     Tag = {fg=zephyr.orange};
     Label = {fg=zephyr.orange};
     Structure = {fg=zephyr.orange};
-    Operator = {fg=zephyr.operator};
+    Operator = {fg=zephyr.teal};
     Title = {fg=zephyr.orange,style='bold'};
     Special = {fg=zephyr.yellow};
     SpecialChar = {fg=zephyr.yellow};
@@ -164,7 +165,7 @@ function zephyr.load_syntax()
     TSPunctBracket = {fg=zephyr.bracket};
 
     typescriptImport = {fg=zephyr.purple};
-    typescriptAssign = {fg=zephyr.operator};
+    typescriptAssign = {fg=zephyr.teal};
     typescriptBraces = {fg=zephyr.bracket};
     typescriptParens = {fg=zephyr.bracket};
     typescriptExport = {fg=zephyr.red};

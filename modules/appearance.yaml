@@ -1,5 +1,4 @@
 - repo: kyazdani42/nvim-web-devicons
-  on_source: nvim-tree.lua
 
 # - repo: glepnir/spaceline.vim
 #   on_event: [BufReadPre,BufNewFile]
@@ -85,7 +84,7 @@
       \ 'edit_split':      'i',
       \}
     let g:lua_tree_icons = {
-      \ 'default': '',
+      \ 'default': '',
       \ 'symlink': '',
       \ 'git': {
       \   'unstaged': "✚",

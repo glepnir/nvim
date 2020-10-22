@@ -63,8 +63,6 @@ function M.load_core()
 
   local d = dein:new()
   d:load_repos()
-  -- local p = pack:new()
-  -- p:load_repos()
 
   map.load_mapping()
   autocmd.load_autocmds()
