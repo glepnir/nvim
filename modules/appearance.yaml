@@ -11,7 +11,7 @@
 #     let g:spaceline_function_icon = ' '
 #     let g:spaceline_diagnostic_tool = 'nvim_lsp'
 #     let g:spaceline_diff_tool = 'vim-signify'
- 
+
 - repo: Akin909/nvim-bufferline.lua
   depends: nvim-web-devicons
   hook_add: |
