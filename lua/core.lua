@@ -2,7 +2,6 @@ local global = require 'global'
 local options = require 'options'
 local autocmd = require 'event'
 local dein = require 'dein'
--- local pack =require 'pack'
 local map = require 'mapping'
 local vim = vim
 local M = {}
@@ -66,6 +65,7 @@ function M.load_core()
 
   map.load_mapping()
   autocmd.load_autocmds()
+  require 'spaceline'
 end
 
 M.load_core()
