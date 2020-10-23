@@ -32,7 +32,7 @@ gls.left[1] = {
 gls.left[2] = {
   ViMode = {
     provider = function()
-      local alias = {n = 'NORMAL',i = 'INSERT',c= 'COMMAND',V= 'VISUAL'}
+      local alias = {n = 'NORMAL',i = 'INSERT',c= 'COMMAND',V= 'VISUAL', [''] = 'VISUAL'}
       return alias[vim.fn.mode()]
     end,
     separator = '',
@@ -48,12 +48,7 @@ gls.left[2] = {
 gls.left[3] ={
   FileIcon = {
     provider = 'FileIcon',
-    condition = function()
-      if vim.fn.empty(vim.fn.expand('%:t')) ~= 1 then
-        return true
-      end
-      return false
-    end,
+    condition = empty_buffer,
     highlight = {require('galaxyline.provider_fileinfo').get_file_icon_color,colors.darkblue},
   },
 }
