@@ -1,17 +1,5 @@
 - repo: kyazdani42/nvim-web-devicons
 
-# - repo: glepnir/spaceline.vim
-#   on_event: [BufReadPre,BufNewFile]
-#   depends: nvim-web-devicons
-#   hook_add: |
-#     let g:spaceline_diagnostic_errorsign = ' '
-#     let g:spaceline_diagnostic_warnsign = ' '
-#     let g:spaceline_git_branch_icon = ' '
-#     let g:spaceline_custom_diff_icon = [' ',' ',' ']
-#     let g:spaceline_function_icon = ' '
-#     let g:spaceline_diagnostic_tool = 'nvim_lsp'
-#     let g:spaceline_diff_tool = 'vim-signify'
-
 - repo: Akin909/nvim-bufferline.lua
   depends: nvim-web-devicons
   hook_add: |
@@ -24,18 +12,7 @@
           always_show_bufferline = false,
         };
         highlights = {
-          bufferline_tab_selected_separator = {
-            guifg = "#4989c9",
-            guibg = normal_bg,
-          };
-          bufferline_separator = {
-            guibg = background_color,
-          };
-          bufferline_selected_indicator = {
-            guifg = "#4989c9",
-          };
           bufferline_selected = {
-            guifg = normal_fg,
             gui = "bold",
           };
         };
@@ -97,3 +74,15 @@
       \   'untracked': "★"
       \   },
     \ }
+
+# - repo: glepnir/spaceline.vim
+#   on_event: [BufReadPre,BufNewFile]
+#   depends: nvim-web-devicons
+#   hook_add: |
+#     let g:spaceline_diagnostic_errorsign = ' '
+#     let g:spaceline_diagnostic_warnsign = ' '
+#     let g:spaceline_git_branch_icon = ' '
+#     let g:spaceline_custom_diff_icon = [' ',' ',' ']
+#     let g:spaceline_function_icon = ' '
+#     let g:spaceline_diagnostic_tool = 'nvim_lsp'
+#     let g:spaceline_diff_tool = 'vim-signify'

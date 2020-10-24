@@ -2,4 +2,4 @@
 
 "func" @parameter
 
-(nil) @structure
+(nil) @boolean
