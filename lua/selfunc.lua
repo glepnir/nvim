@@ -1,24 +1,9 @@
-local global = require('global')
 local vim,api = vim,vim.api
 local window = require('lsp.window')
 local M = {
   go = {'go run ','go test '};
   lua = {'lua '}
 }
-
--- TODO: need rewrite upsteam
-local loaded_nvim_tree = false
-function M.load_nvim_tree(command)
-  if not vim.o.runtimepath:find("nvim-tree.lua") then
-    vim.o.runtimepath = vim.o.runtimepath ..','.. global.cache_dir ..'dein/repos/github.com/kyazdani42/nvim-tree.lua'
-  end
-  local has_tree,tree = pcall(require,'tree')
-  if has_tree and loaded_nvim_tree == false then
-    tree.on_enter()
-    loaded_nvim_tree = true
-  end
-  pcall(vim.cmd,command)
-end
 
 function M.run_command()
   local cmd = nil
