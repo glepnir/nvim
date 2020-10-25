@@ -6,117 +6,118 @@ function options:new()
   local instance = {}
   setmetatable(instance,self)
   self.__index = self
+  self.buffer_local = {}
+  self.global_local = {}
+  self.window_local = {}
   return instance
 end
 
 function options:load_options()
-  self.mouse          = "nv";
-  self.report         = 0;
-  self.errorbells     = true;
-  self.visualbell     = true;
-  self.hidden         = true;
-  self.fileformats    = "unix,mac,dos";
-  self.magic          = true;
-  self.virtualedit    = "block";
-  self.synmaxcol      = 2500;
-  self.formatoptions  = "1jcroql";
-  self.encoding       = "utf-8";
-  self.viewoptions    = "folds,cursor,curdir,slash,unix";
-  self.sessionoptions = "curdir,help,tabpages,winsize";
-  self.clipboard      = "unnamedplus";
-  self.wildignorecase = true;
-  self.wildignore     = ".git,.hg,.svn,*.pyc,*.o,*.out,*.jpg,*.jpeg,*.png,*.gif,*.zip,**/tmp/**,*.DS_Store,**/node_modules/**,**/bower_modules/**";
-  self.backup         = false;
-  self.writebackup    = false;
-  self.undofile       = true;
-  self.swapfile       = false;
-  self.directory      = global.cache_dir .. "swag/";
-  self.undodir        = global.cache_dir .. "undo/";
-  self.backupdir      = global.cache_dir .. "backup/";
-  self.viewdir        = global.cache_dir .. "view/";
-  self.spellfile      = global.cache_dir .. "spell/en.uft-8.add";
-  self.history        = 2000;
-  self.shada          = "!,'300,<50,@100,s10,h";
-  self.backupskip     = "/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*/shm/*,/private/var/*,.vault.vim";
+  self.global_local = {
+    termguicolors  = true;
+    mouse          = "nv";
+    report         = 0;
+    errorbells     = true;
+    visualbell     = true;
+    hidden         = true;
+    fileformats    = "unix,mac,dos";
+    magic          = true;
+    virtualedit    = "block";
+    encoding       = "utf-8";
+    viewoptions    = "folds,cursor,curdir,slash,unix";
+    sessionoptions = "curdir,help,tabpages,winsize";
+    clipboard      = "unnamedplus";
+    wildignorecase = true;
+    wildignore     = ".git,.hg,.svn,*.pyc,*.o,*.out,*.jpg,*.jpeg,*.png,*.gif,*.zip,**/tmp/**,*.DS_Store,**/node_modules/**,**/bower_modules/**";
+    backup         = false;
+    writebackup    = false;
+    undofile       = true;
+    swapfile       = false;
+    directory      = global.cache_dir .. "swag/";
+    undodir        = global.cache_dir .. "undo/";
+    backupdir      = global.cache_dir .. "backup/";
+    viewdir        = global.cache_dir .. "view/";
+    spellfile      = global.cache_dir .. "spell/en.uft-8.add";
+    history        = 2000;
+    shada          = "!,'300,<50,@100,s10,h";
+    backupskip     = "/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*/shm/*,/private/var/*,.vault.vim";
+    smarttab       = true;
+    shiftround     = true;
+    timeout        = true;
+    ttimeout       = true;
+    timeoutlen     = 500;
+    ttimeoutlen    = 10;
+    updatetime     = 100;
+    redrawtime     = 1500;
+    ignorecase     = true;
+    smartcase      = true;
+    infercase      = true;
+    incsearch      = true;
+    wrapscan       = true;
+    complete       = ".,w,b,k";
+    inccommand     = "nosplit";
+    grepformat     = "%f:%l:%c:%m";
+    grepprg        = 'rg --hidden --vimgrep --smart-case --';
+    breakat        = [[\ \	;:,!?]];
+    startofline    = false;
+    whichwrap      = "h,l,<,>,[,],~";
+    splitbelow     = true;
+    splitright     = true;
+    switchbuf      = "useopen";
+    backspace      = "indent,eol,start";
+    diffopt        = "filler,iwhite,internal,algorithm:patience";
+    completeopt    = "menu,menuone,noselect,noinsert";
+    jumpoptions    = "stack";
+    showmode       = false;
+    shortmess      = "aoOTIcF";
+    scrolloff      = 2;
+    sidescrolloff  = 5;
+    foldlevelstart = 99;
+    ruler          = false;
+    list           = true;
+    showtabline    = 2;
+    winwidth       = 30;
+    winminwidth    = 10;
+    pumheight      = 15;
+    helpheight     = 12;
+    previewheight  = 12;
+    showcmd        = false;
+    cmdheight      = 2;
+    cmdwinheight   = 5;
+    equalalways    = false;
+    laststatus     = 2;
+    display        = "lastline";
+    showbreak      = "↳  ";
+    listchars      = "tab:»·,nbsp:+,trail:·,extends:→,precedes:←";
+    pumblend       = 10;
+    winblend       = 10;
+  }
 
-  self.textwidth      = 100;
-  self.expandtab      = true;
-  self.tabstop        = 2;
-  self.shiftwidth     = 2;
-  self.softtabstop    = -1;
-  self.smarttab       = true;
-  self.autoindent     = true;
-  self.shiftround     = true;
-  self.breakindentopt = "shift:2,min:20";
+  self.buffer_local = {
+    synmaxcol      = 2500;
+    formatoptions  = "1jcroql";
+    textwidth      = 100;
+    expandtab      = true;
+    tabstop        = 2;
+    shiftwidth     = 2;
+    softtabstop    = -1;
+    autoindent     = true;
+  }
 
-  self.timeout        = true;
-  self.ttimeout       = true;
-  self.timeoutlen     = 500;
-  self.ttimeoutlen    = 10;
-  self.updatetime     = 100;
-  self.redrawtime     = 1500;
+  self.window_local   = {
+    breakindentopt = "shift:2,min:20";
+    wrap           = false;
+    linebreak      = true;
+    number         = true;
+    relativenumber = true;
+    colorcolumn    = "100";
+    foldenable     = true;
+    foldmethod     = "indent";
+    signcolumn     = "yes";
+    conceallevel   = 2;
+    concealcursor  = "niv";
+  }
 
-  self.ignorecase     = true;
-  self.smartcase      = true;
-  self.infercase      = true;
-  self.incsearch      = true;
-  self.wrapscan       = true;
-
-  self.complete       = ".,w,b,k";
-  self.inccommand     = "nosplit";
-
-  self.grepformat     = "%f:%l:%c:%m";
-  self.grepprg        = 'rg --hidden --vimgrep --smart-case --';
-
-  self.wrap           = false;
-  self.linebreak      = true;
-  self.breakat        = [[\ \	;:,!?]];
-  self.startofline    = false;
-  self.whichwrap      = "h,l,<,>,[,],~";
-  self.splitbelow     = true;
-  self.splitright     = true;
-  self.switchbuf      = "useopen";
-  self.backspace      = "indent,eol,start";
-  self.diffopt        = "filler,iwhite,internal,algorithm:patience";
-  self.completeopt    = "menu,menuone,noselect,noinsert";
-  self.jumpoptions    = "stack";
-
-  self.showmode       = false;
-  self.shortmess      = "aoOTIcF";
-  self.scrolloff      = 2;
-  self.sidescrolloff  = 5;
-  self.ruler          = false;
-  self.list           = true;
-
-  self.showtabline    = 2;
-  self.winwidth       = 30;
-  self.winminwidth    = 10;
-  self.pumheight      = 15;
-  self.helpheight     = 12;
-  self.previewheight  = 12;
-
-  self.number         = true;
-  self.relativenumber = true;
-  self.showcmd        = false;
-  self.cmdheight      = 2;
-  self.cmdwinheight   = 5;
-  self.equalalways    = false;
-  self.laststatus     = 2;
-  self.colorcolumn    = "100";
-  self.display        = "lastline";
-
-  self.foldenable     = true;
-  self.foldmethod     = "indent";
-  self.foldlevelstart = 99;
-
-  self.signcolumn     = "yes";
-  self.showbreak      = "↳  ";
-  self.listchars      = "tab:»·,nbsp:+,trail:·,extends:→,precedes:←";
-  self.conceallevel   = 2;
-  self.concealcursor  = "niv";
-  self.termguicolors  = true;
-  self.pumblend       = 10;
-  self.winblend       = 10;
   if global.is_mac then
     vim.g.clipboard = {
       name = "macOS-clipboard",
@@ -133,8 +134,14 @@ function options:load_options()
     vim.g.python_host_prog = '/usr/bin/python'
     vim.g.python3_host_prog = '/usr/local/bin/python3'
   end
-  for name, value in pairs(self) do
+  for name, value in pairs(self.global_local) do
     vim.o[name] = value
+  end
+  for name, value in pairs(self.buffer_local) do
+    vim.bo[name] = value
+  end
+  for name, value in pairs(self.window_local) do
+    vim.wo[name] = value
   end
 end
 

@@ -241,7 +241,8 @@ function zephyr.load_syntax()
     CursorWord1 = {bg=zephyr.currsor_bg};
 
     luaTreeFolderName = {fg=zephyr.blue};
-    LuaTreeRootFolder = {fg=zephyr.red}
+    LuaTreeRootFolder = {fg=zephyr.red};
+    LuaTreeSpecialFile = {fg=zephyr.fg,bg=zephyr.none,stryle='NONE'};
   }
   return syntax
 end
