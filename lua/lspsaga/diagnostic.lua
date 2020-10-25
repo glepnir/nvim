@@ -142,7 +142,7 @@ local function jump_to_entry(entry)
   api.nvim_buf_set_var(0,"diagnostic_prev_position",{entry_line,entry_character})
   lsp.util.close_preview_autocmd({"CursorMovedI", "BufHidden", "BufLeave"}, fw)
   lsp.util.close_preview_autocmd({"CursorMovedI", "BufHidden", "BufLeave"}, bw)
-  api.nvim_command("autocmd CursorMoved <buffer> lua require('lsp.diagnostic').close_preview()")
+  api.nvim_command("autocmd CursorMoved <buffer> lua require('lspsaga.diagnostic').close_preview()")
 
   --add highlight
   api.nvim_buf_add_highlight(fb,-1,hiname[entry.severity],0,0,-1)
@@ -195,10 +195,10 @@ function M.jump_diagnostic_in_float(action_type)
 end
 
 local function apply_diagnostic_float_map()
-  api.nvim_buf_set_keymap(M.contents_bufnr,"n","q","<Cmd>lua require'lsp.diagnostic'.quit_diagnostic_float_win()<CR>",{noremap = true,silent = true})
-  api.nvim_buf_set_keymap(M.contents_bufnr,"n","<CR>","<cmd>lua require'lsp.diagnostic'.jump_diagnostic_in_float(0)<CR>",{noremap = true,silent= true})
-  api.nvim_buf_set_keymap(M.contents_bufnr,"n","v","<cmd>lua require'lsp.diagnostic'.jump_diagnostic_in_float(1)<CR>",{noremap = true,silent= true})
-  api.nvim_buf_set_keymap(M.contents_bufnr,"n","s","<cmd>lua require'lsp.diagnostic'.jump_diagnostic_in_float(2)<CR>",{noremap = true,silent= true})
+  api.nvim_buf_set_keymap(M.contents_bufnr,"n","q","<Cmd>lua require'lspsaga.diagnostic'.quit_diagnostic_float_win()<CR>",{noremap = true,silent = true})
+  api.nvim_buf_set_keymap(M.contents_bufnr,"n","<CR>","<cmd>lua require'lspsaga.diagnostic'.jump_diagnostic_in_float(0)<CR>",{noremap = true,silent= true})
+  api.nvim_buf_set_keymap(M.contents_bufnr,"n","v","<cmd>lua require'lspsaga.diagnostic'.jump_diagnostic_in_float(1)<CR>",{noremap = true,silent= true})
+  api.nvim_buf_set_keymap(M.contents_bufnr,"n","s","<cmd>lua require'lspsaga.diagnostic'.jump_diagnostic_in_float(2)<CR>",{noremap = true,silent= true})
 end
 
 function M.show_buf_diagnostics()

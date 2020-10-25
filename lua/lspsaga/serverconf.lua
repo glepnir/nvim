@@ -48,7 +48,7 @@ server.zig = {
 server.sh = {
   cmd = { "bash-language-server", "start" };
   filetypes = { "sh" };
-  root_patterns = {".git",vim.fn.getcwd()}
+  root_patterns = {".git"}
 }
 
 server.Dockerfile = {

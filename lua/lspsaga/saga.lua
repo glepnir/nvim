@@ -167,7 +167,7 @@ function lspsaga.start_lsp_server()
     if client.resolved_capabilities.document_formatting then
       if vim.api.nvim_buf_get_option(bufnr, "filetype") == "go" then
         lsp_event.organizeImports = {
-          {"BufWritePre","*.go","lua require('lsp.provider').go_organize_imports_sync(1000)"}
+          {"BufWritePre","*.go","lua require('lspsaga.provider').go_organize_imports_sync(1000)"}
         }
       end
       lsp_event.autoformat = {
