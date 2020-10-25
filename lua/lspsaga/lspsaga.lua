@@ -209,7 +209,7 @@ function lspsaga.create_saga_augroup()
   vim.api.nvim_command('augroup lsp_saga_event')
   vim.api.nvim_command('autocmd!')
   for ft, _ in pairs(filetype_server_map) do
-    vim.api.nvim_command(string.format('autocmd FileType %s lua require("lsp.lspinit").start_lsp_server()',ft))
+    vim.api.nvim_command(string.format('autocmd FileType %s lua require("lsp.lspsaga").start_lsp_server()',ft))
   end
   vim.api.nvim_command('augroup END')
 end
