@@ -22,5 +22,3 @@
             \ smartchr#loop(':=',';')
     autocmd FileType go inoremap <buffer> <expr> .
           \ smartchr#loop('.', '<-', '->','...')
-    autocmd FileType typescript,typescriptreact inoremap <buffer><expr>;
-            \ smartchr#loop(':',';')
