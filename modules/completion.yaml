@@ -1,5 +1,5 @@
 - repo: nvim-lua/completion-nvim
-  on_event: [BufReadPre,BufNewFile]
+  on_event: InsertEnter
   hook_add: |
     let g:completion_enable_auto_hover = 0
     let g:completion_auto_change_source = 1
@@ -14,6 +14,7 @@
         \  {'mode': '<c-p>'},
         \  {'mode': '<c-n>'}
       \]
+  hook_source: lua require('completion').on_attach()
 
 - repo: steelsojka/completion-buffers
   on_source: completion-nvim
