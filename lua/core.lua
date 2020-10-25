@@ -3,6 +3,7 @@ local options = require 'options'
 local autocmd = require 'event'
 local dein = require 'dein'
 local map = require 'mapping'
+local saga = require 'lsp.lspinit'
 local vim = vim
 local M = {}
 
@@ -70,6 +71,7 @@ function M.load_core()
   map.load_mapping()
   autocmd.load_autocmds()
   require 'spaceline'
+  saga.create_saga_augroup()
 end
 
 M.load_core()

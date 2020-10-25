@@ -6,7 +6,6 @@ function options:new()
   local instance = {}
   setmetatable(instance,self)
   self.__index = self
-  self.buffer_local = {}
   self.global_local = {}
   self.window_local = {}
   return instance
@@ -91,9 +90,7 @@ function options:load_options()
     listchars      = "tab:»·,nbsp:+,trail:·,extends:→,precedes:←";
     pumblend       = 10;
     winblend       = 10;
-  }
 
-  self.buffer_local = {
     synmaxcol      = 2500;
     formatoptions  = "1jcroql";
     textwidth      = 100;
@@ -136,9 +133,6 @@ function options:load_options()
   end
   for name, value in pairs(self.global_local) do
     vim.o[name] = value
-  end
-  for name, value in pairs(self.buffer_local) do
-    vim.bo[name] = value
   end
   for name, value in pairs(self.window_local) do
     vim.wo[name] = value

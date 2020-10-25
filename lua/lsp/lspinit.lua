@@ -8,6 +8,7 @@ local vim,api= vim,vim.api
 -- A table to store our root_dir to client_id lookup. We want one LSP per
 -- root directory, and this is how we assert that.
 local lsp_store = {}
+local filetype_server_map = {}
 
 local function add_hook_after(func, new_fn)
   if func then
@@ -107,23 +108,15 @@ local function buffer_find_root_dir(bufnr, is_root_path)
   end
 end
 
-local function load_completion()
-  local loaded,completion = pcall(require,'completion')
-  if loaded then
-    completion.on_attach()
-  end
-end
+local lspsaga = {}
 
--- async load completion-nvm then initialize lsp server
-function lsp_store.start_lsp_server()
+function lspsaga.start_lsp_server()
   local client_id = nil
   local bufnr = api.nvim_get_current_buf()
   local buf_filetype = api.nvim_buf_get_option(bufnr,'filetype')
-  local filetype_server_map = server.load_filetype_server()
   -- Filter which files we are considering.
   if not global.has_key(filetype_server_map,buf_filetype) then
     -- load completion in buffer for complete something else
-    load_completion()
     return
   end
 
@@ -142,7 +135,6 @@ function lsp_store.start_lsp_server()
 
   -- We couldn't find a root directory, so ignore this file.
   if not root_dir then
-    load_completion()
     print(string.format("initialize %s failed doesn't find root_dir",server_setup.name))
     return
   end
@@ -155,60 +147,71 @@ function lsp_store.start_lsp_server()
     return
   end
 
-  Completion_loaded = false
-  -- async load completion
-  local timer = vim.loop.new_timer()
-  timer:start(10,0,vim.schedule_wrap(function()
-    local has_completion,completion = pcall(require,'completion')
-    if has_completion and not Completion_loaded then
-       Completion_loaded = true
-
-      local on_attach = function(client,bufnr)
-        -- passing in a table with on_attach function
-        completion.on_attach()
-
-        local lsp_event = {}
-        if client.resolved_capabilities.document_highlight then
-          lsp_event.highlights = {
-            {"CursorHold,CursorHoldI","<buffer>", "lua vim.lsp.buf.document_highlight()"};
-            {"CursorMoved","<buffer>","lua vim.lsp.buf.clear_references()"};
-          }
-        end
-        if client.resolved_capabilities.document_formatting then
-          if vim.api.nvim_buf_get_option(bufnr, "filetype") == "go" then
-            lsp_event.organizeImports = {
-              {"BufWritePre","*.go","lua require('lsp.provider').go_organize_imports_sync(1000)"}
-            }
-          end
-          lsp_event.autoformat = {
-            {"BufWritePre","*" ,"lua vim.lsp.buf.formatting_sync(nil, 1000)"}
-          }
-        end
-        -- register lsp event
-        autocmd.nvim_create_augroups(lsp_event)
-        -- api.nvim_command("autocmd CompleteDone <buffer> lua require'lsp.callbacks'.show_signature_help()")
-        -- Source omnicompletion from LSP.
-        vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-      end
-
-      -- config the server config on_attach
-      server_setup.on_attach= on_attach
-      -- build a new server config
-      local new_config = vim.tbl_extend("error",add_options(server_setup), {
-        root_dir = root_dir;
-      })
-      -- start a new lsp server and store the cliend_id
-      client_id = vim.lsp.start_client(new_config)
-      if client_id ~= nil and timer:is_closing() == false then
-        lsp_store[root_dir] = client_id
-        vim.lsp.buf_attach_client(bufnr, client_id)
-
-        syntax.add_highlight()
-        timer:stop()
-        timer:close()
-      end
+  local on_attach = function(client,bufnr)
+    if not vim.o.runtimepath:find('completion-nvim') then
+      vim.o.runtimepath = vim.o.runtimepath ..','.. global.cache_dir ..'dein/repos/github.com/nvim-lua/completion-nvim.lua'
     end
-  end))
+    local has_completion,completion = pcall(require,'completion-nvim')
+    if has_completion then
+      -- passing in a table with on_attach function
+      completion.on_attach()
+    end
+
+    local lsp_event = {}
+    if client.resolved_capabilities.document_highlight then
+      lsp_event.highlights = {
+        {"CursorHold,CursorHoldI","<buffer>", "lua vim.lsp.buf.document_highlight()"};
+        {"CursorMoved","<buffer>","lua vim.lsp.buf.clear_references()"};
+      }
+    end
+    if client.resolved_capabilities.document_formatting then
+      if vim.api.nvim_buf_get_option(bufnr, "filetype") == "go" then
+        lsp_event.organizeImports = {
+          {"BufWritePre","*.go","lua require('lsp.provider').go_organize_imports_sync(1000)"}
+        }
+      end
+      lsp_event.autoformat = {
+        {"BufWritePre","*" ,"lua vim.lsp.buf.formatting_sync(nil, 1000)"}
+      }
+    end
+    -- register lsp event
+    autocmd.nvim_create_augroups(lsp_event)
+    -- api.nvim_command("autocmd CompleteDone <buffer> lua require'lsp.callbacks'.show_signature_help()")
+    -- Source omnicompletion from LSP.
+    vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+  end
+
+  -- config the server config on_attach
+  server_setup.on_attach= on_attach
+    -- build a new server config
+  local new_config = vim.tbl_extend("error",add_options(server_setup), {
+    root_dir = root_dir;
+  })
+  -- start a new lsp server and store the cliend_id
+  client_id = vim.lsp.start_client(new_config)
+  if client_id ~= nil then
+    lsp_store[root_dir] = client_id
+    vim.lsp.buf_attach_client(bufnr, client_id)
+
+    syntax.add_highlight()
+  end
 end
 
-return lsp_store
+function lspsaga.create_saga_augroup()
+  if vim.tbl_isempty(server) then return end
+  for server_name,value in pairs(server) do
+    if type(value) == 'table' then
+      for _,filetype in pairs(value.filetypes) do
+        filetype_server_map[filetype] = server_name
+      end
+    end
+  end
+  vim.api.nvim_command('augroup lsp_saga_event')
+  vim.api.nvim_command('autocmd!')
+  for ft, _ in pairs(filetype_server_map) do
+    vim.api.nvim_command(string.format('autocmd FileType %s lua require("lsp.lspinit").start_lsp_server()',ft))
+  end
+  vim.api.nvim_command('augroup END')
+end
+
+return lspsaga
