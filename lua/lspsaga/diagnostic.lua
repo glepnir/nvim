@@ -2,8 +2,8 @@
 local vim = vim
 local api = vim.api
 local lsp = vim.lsp
-local window = require 'lsp.window'
-local wrap = require 'lsp.wrap'
+local window = require 'lspsaga.window'
+local wrap = require 'lspsaga.wrap'
 local M = {}
 
 -- lsp severity icon
