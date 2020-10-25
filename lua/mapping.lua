@@ -69,18 +69,18 @@ end
 function mapping:load_plugin_define()
   self.plugin = {
     -- Lsp mapp work when insertenter and lsp start
-    ["n|[e"]             = map_cmd("<cmd>lua require'lsp.diagnostic'.lsp_jump_diagnostic_next()<CR>"):with_noremap():with_silent(),
-    ["n|]e"]             = map_cmd("<cmd>lua require'lsp.diagnostic'.lsp_jump_diagnostic_prev()<CR>"):with_noremap():with_silent(),
+    ["n|[e"]             = map_cmd("<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>"):with_noremap():with_silent(),
+    ["n|]e"]             = map_cmd("<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>"):with_noremap():with_silent(),
     ["n|K"]              = map_cmd("<cmd>lua vim.lsp.buf.hover()<CR>"):with_noremap():with_silent(),
     ["n|ga"]             = map_cmd("<cmd>lua vim.lsp.buf.code_action()<CR>"):with_noremap():with_silent(),
     ["n|gd"]             = map_cmd("<cmd>lua require'lsp.provider'.preview_definiton()<CR>"):with_noremap():with_silent(),
     ["n|gD"]             = map_cmd("<cmd>lua vim.lsp.buf.implementation()<CR>"):with_noremap():with_silent(),
     ["n|gs"]             = map_cmd("<cmd>lua vim.lsp.buf.signature_help()<CR>"):with_noremap():with_silent(),
     ["n|gr"]             = map_cmd("<cmd>lua vim.lsp.buf.references()<CR>"):with_noremap():with_silent(),
-    ["n|gh"]             = map_cmd("<cmd>lua require'lsp.provider'.lsp_peek_references()<CR>"):with_noremap():with_silent(),
+    ["n|gh"]             = map_cmd("<cmd>lua require'lspsaga.provider'.lsp_peek_references()<CR>"):with_noremap():with_silent(),
     ["n|gt"]             = map_cmd("<cmd>lua vim.lsp.buf.type_definition()<CR>"):with_noremap():with_silent(),
     ["n|<Leader>cw"]     = map_cmd("<cmd>lua vim.lsp.buf.workspace_symbol()<CR>"):with_noremap():with_silent(),
-    ["n|<Leader>ce"]     = map_cmd("<cmd>lua require'lsp.diagnostic'.show_buf_diagnostics()<CR>"):with_noremap():with_silent(),
+    ["n|<Leader>ce"]     = map_cmd("<cmd>lua require'lspsaga.diagnostic'.show_buf_diagnostics()<CR>"):with_noremap():with_silent(),
     -- dein
     ["n|<Leader>tr"]     = map_cr("call dein#recache_runtimepath()"):with_noremap():with_silent(),
     ["n|<Leader>tf"]     = map_cu('DashboardNewFile'):with_noremap():with_silent(),

@@ -1,5 +1,5 @@
 local vim,api,lsp = vim,vim.api,vim.lsp
-local window = require('lsp.window')
+local window = require('lspsaga.window')
 local callbacks = {}
 
 local function lookup_section(settings, section)

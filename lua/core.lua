@@ -3,7 +3,7 @@ local options = require 'options'
 local autocmd = require 'event'
 local dein = require 'dein'
 local map = require 'mapping'
-local saga = require 'lsp.lspsaga'
+local saga = require 'lspsaga.saga'
 local vim = vim
 local M = {}
 

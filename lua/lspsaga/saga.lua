@@ -1,7 +1,7 @@
 local global = require 'global'
-local syntax = require 'lsp.syntax'
-local server = require 'lsp.serverconf'
-local callbacks = require 'lsp.callbacks'
+local syntax = require 'lspsaga.syntax'
+local server = require 'lspsaga.serverconf'
+local callbacks = require 'lspsaga.callbacks'
 local autocmd = require 'event'
 local vim,api= vim,vim.api
 
@@ -209,7 +209,7 @@ function lspsaga.create_saga_augroup()
   vim.api.nvim_command('augroup lsp_saga_event')
   vim.api.nvim_command('autocmd!')
   for ft, _ in pairs(filetype_server_map) do
-    vim.api.nvim_command(string.format('autocmd FileType %s lua require("lsp.lspsaga").start_lsp_server()',ft))
+    vim.api.nvim_command(string.format('autocmd FileType %s lua require("lspsaga.saga").start_lsp_server()',ft))
   end
   vim.api.nvim_command('augroup END')
 end
