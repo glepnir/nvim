@@ -57,6 +57,12 @@ server.Dockerfile = {
   root_patterns = {"Dockerfile"};
 }
 
+server.tsserver = {
+  cmd = {"typescript-language-server","--stdio"};
+  filetypes = {"javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx"};
+  root_patterns  = {"package.json", "tsconfig.json", ".git"}
+}
+
 local lsp_intall_scripts = [=[
 # Install gopls
 cd $HOME
