@@ -25,6 +25,7 @@ function autocmd.load_autocmds()
       {"BufWritePre","MERGE_MSG","setlocal noundofile"};
       {"BufWritePre","*.tmp","setlocal noundofile"};
       {"BufWritePre","*.bak","setlocal noundofile"};
+      {"BufWritePre","*.tsx","lua vim.api.nvim_command('Format')"};
     };
 
     wins = {
