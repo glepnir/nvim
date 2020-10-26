@@ -243,6 +243,8 @@ function zephyr.load_syntax()
     luaTreeFolderName = {fg=zephyr.blue};
     LuaTreeRootFolder = {fg=zephyr.red};
     LuaTreeSpecialFile = {fg=zephyr.fg,bg=zephyr.none,stryle='NONE'};
+
+    TelescopeBorder = {fg=zephyr.teal}
   }
   return syntax
 end

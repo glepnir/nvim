@@ -25,7 +25,7 @@
     let g:dashboard_preview_file = getenv('HOME') . '/.config/nvim/neovim.cat'
     let g:dashboard_preview_file_height = 10
     let g:dashboard_preview_file_width = 80
-    let g:dashboard_default_executive ='clap'
+    let g:dashboard_default_executive ='telescope'
     let g:dashboard_custom_section = {
       \ 'last_session'        :{
           \ 'description': ['  Recently laset session                  SPC s l'],

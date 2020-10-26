@@ -102,19 +102,14 @@ function mapping:load_plugin_define()
     ["n|<Leader>fz"]     = map_cr('Farf'):with_noremap():with_silent();
     ["v|<Leader>fz"]     = map_cr('Farf'):with_noremap():with_silent();
     -- Plugin Clap
-    ["n|<Leader>tc"]     = map_cu('Clap colors'):with_noremap():with_silent(),
-    ["n|<Leader>bb"]     = map_cu('Clap buffers'):with_noremap():with_silent(),
-    ["n|<Leader>fa"]     = map_cu('Clap grep'):with_noremap():with_silent(),
-    ["n|<Leader>fb"]     = map_cu('Clap marks'):with_noremap():with_silent(),
-    ["n|<C-x><C-f>"]     = map_cu('Clap filer'):with_noremap():with_silent(),
-    ["n|<Leader>ff"]     = map_cu('Clap files ++finder=rg --ignore --hidden --files'):with_noremap():with_silent(),
-    ["n|<Leader>fg"]     = map_cu('Clap gfiles'):with_noremap():with_silent(),
-    ["n|<Leader>fw"]     = map_cu('Clap grep ++query=<Cword>'):with_noremap():with_silent(),
-    ["n|<Leader>fh"]     = map_cu('Clap history'):with_noremap():with_silent(),
-    ["n|<Leader>fW"]     = map_cu('Clap windows'):with_noremap():with_silent(),
-    ["n|<Leader>fl"]     = map_cu('Clap loclist'):with_noremap():with_silent(),
-    ["n|<Leader>fu"]     = map_cu('Clap git_diff_files'):with_noremap():with_silent(),
-    ["n|<Leader>fv"]     = map_cu('Clap grep ++query=@visual'):with_noremap():with_silent(),
+    ["n|<Leader>bb"]     = map_cu('TelescopeBuffers'):with_noremap():with_silent(),
+    ["n|<Leader>fa"]     = map_cu('TelescopeGrepString'):with_noremap():with_silent(),
+    ["n|<Leader>fb"]     = map_cu('TelescopeMarks'):with_noremap():with_silent(),
+    ["n|<Leader>ff"]     = map_cu('TelescopeFindFile'):with_noremap():with_silent(),
+    ["n|<Leader>fg"]     = map_cu('TelescopeFindGitFile'):with_noremap():with_silent(),
+    ["n|<Leader>fw"]     = map_cu('lua require"telescope.builtin".grep_string{search=true}'):with_noremap():with_silent(),
+    ["n|<Leader>fh"]     = map_cu('TelescopeOldFiles'):with_noremap():with_silent(),
+    ["n|<Leader>fl"]     = map_cu('TelescopeLocalList'):with_noremap():with_silent(),
     ["n|<Leader>fd"]     = map_cu('Clap dotfiles'):with_noremap():with_silent(),
     ["n|<Leader>fs"]      = map_cu('Clap gosource'):with_noremap():with_silent(),
     -- Plugin acceleratedjk
