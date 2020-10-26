@@ -47,10 +47,10 @@ let s:insert_pattern = get(g:, 'whitespace_pattern_insert',
 	\ s:ws_chars . '\+\%#\@<!$')
 
 let s:blacklist = get(g:, 'whitespace_filetype_blacklist', [
-	\ 'diff', 'git', 'gitcommit', 'help', 'qf', 'denite', 'defx' ])
+	\ 'diff', 'git', 'gitcommit', 'help', 'qf', 'denite', 'defx','dashboard' ])
 
 function! s:ToggleWhitespace(mode)
-	if &buftype =~? 'nofile\|help' || index(s:blacklist, &filetype) > -1
+	if &buftype =~? 'nofile\|help' || index(s:blacklist, &filetype) >= -1
 		return
 	elseif a:mode ==? ''
 		call matchdelete(w:whitespace_match_id)

@@ -15,7 +15,6 @@ function options:load_options()
   self.global_local = {
     termguicolors  = true;
     mouse          = "nv";
-    report         = 0;
     errorbells     = true;
     visualbell     = true;
     hidden         = true;
