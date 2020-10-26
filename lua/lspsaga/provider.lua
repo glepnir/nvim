@@ -1,4 +1,3 @@
-local global = require'global'
 local window = require 'lspsaga.window'
 local vim,api,lsp = vim,vim.api,vim.lsp
 local short_link = {}

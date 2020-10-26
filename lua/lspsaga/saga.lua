@@ -1,8 +1,9 @@
-local global = require 'global'
+local global = require 'domain.global'
+local ptbl = require('publibs.pltbl')
 local syntax = require 'lspsaga.syntax'
 local server = require 'lspsaga.serverconf'
 local callbacks = require 'lspsaga.callbacks'
-local autocmd = require 'event'
+local autocmd = require 'internal.event'
 local vim,api= vim,vim.api
 
 -- A table to store our root_dir to client_id lookup. We want one LSP per
@@ -33,7 +34,7 @@ local function add_options(server_setup)
   };
 
   for option,value in pairs(options) do
-    if not global.has_key(server_setup,option) then
+    if not ptbl.has_key(server_setup,option) then
       server_setup[option] = value
     end
   end
@@ -115,7 +116,7 @@ function lspsaga.start_lsp_server()
   local bufnr = api.nvim_get_current_buf()
   local buf_filetype = api.nvim_buf_get_option(bufnr,'filetype')
   -- Filter which files we are considering.
-  if not global.has_key(filetype_server_map,buf_filetype) then
+  if not ptbl.has_key(filetype_server_map,buf_filetype) then
     -- load completion in buffer for complete something else
     return
   end

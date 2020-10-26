@@ -1,4 +1,4 @@
-local global = require 'global'
+local global = require 'domain.global'
 local server = {}
 local vim = vim
 
