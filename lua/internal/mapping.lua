@@ -95,9 +95,9 @@ function mapping:load_plugin_define()
     -- Plugin DadbodUI
     ["n|<Leader>od"]     = map_cr('DBUIToggle'):with_noremap():with_silent(),
     -- Plugin Floaterm
-    ["n|<A-d>"]          = map_cu("lua require('selfunc').float_terminal()"):with_noremap():with_silent(),
-    ["t|<A-d>"]          = map_cu([[<C-\><C-n>:lua require('selfunc').close_float_terminal()<CR>]]):with_noremap():with_silent(),
-    ["n|<Leader>g"]      = map_cu("lua require('selfunc').float_terminal('lazygit')"):with_noremap():with_silent(),
+    ["n|<A-d>"]          = map_cu("lua require('internal.selfunc').float_terminal()"):with_noremap():with_silent(),
+    ["t|<A-d>"]          = map_cu([[<C-\><C-n>:lua require('internal.selfunc').close_float_terminal()<CR>]]):with_noremap():with_silent(),
+    ["n|<Leader>g"]      = map_cu("lua require('internal.selfunc').float_terminal('lazygit')"):with_noremap():with_silent(),
     -- Far.vim
     ["n|<Leader>fz"]     = map_cr('Farf'):with_noremap():with_silent();
     ["v|<Leader>fz"]     = map_cr('Farf'):with_noremap():with_silent();
@@ -110,13 +110,13 @@ function mapping:load_plugin_define()
     ["n|<Leader>fw"]     = map_cu('lua require"telescope.builtin".grep_string{search=true}'):with_noremap():with_silent(),
     ["n|<Leader>fh"]     = map_cu('TelescopeOldFiles'):with_noremap():with_silent(),
     ["n|<Leader>fl"]     = map_cu('TelescopeLocalList'):with_noremap():with_silent(),
-    ["n|<Leader>fd"]     = map_cu('Clap dotfiles'):with_noremap():with_silent(),
+    ["n|<Leader>fd"]     = map_cu('lua require"telescope".load_dotfiles()'):with_noremap():with_silent(),
     ["n|<Leader>fs"]      = map_cu('Clap gosource'):with_noremap():with_silent(),
     -- Plugin acceleratedjk
     ["n|j"]              = map_cmd('<Plug>(accelerated_jk_gj)'):with_silent(),
     ["n|k"]              = map_cmd('<Plug>(accelerated_jk_gk)'):with_silent(),
     -- Plugin QuickRun
-    ["n|<Leader>r"]     = map_cr("<cmd> lua require'selfunc'.run_command()"):with_noremap():with_silent(),
+    ["n|<Leader>r"]     = map_cr("<cmd> lua require'internal.selfunc'.run_command()"):with_noremap():with_silent(),
     -- Plugin Vista
     ["n|<Leader>v"]      = map_cu('Vista!!'):with_noremap():with_silent(),
     -- Plugin SplitJoin

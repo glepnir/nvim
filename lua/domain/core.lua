@@ -1,9 +1,10 @@
-local global = require 'global'
-local options = require 'options'
-local autocmd = require 'event'
-local dein = require 'dein'
-local map = require 'mapping'
+local options = require 'domain.options'
+local global = require 'domain.global'
+local dein = require 'domain.dein'
+local map = require 'internal.mapping'
+local autocmd = require 'internal.event'
 local saga = require 'lspsaga.saga'
+local fs = require 'publibs.plfs'
 local vim = vim
 local M = {}
 
@@ -18,7 +19,7 @@ function M.createdir()
   }
   -- There only check once that If cache_dir exists
   -- Then I don't want to check subs dir exists
-  if not global.isdir(global.cache_dir) then
+  if not fs.isdir(global.cache_dir) then
     os.execute("mkdir -p " .. global.cache_dir)
     for _,v in pairs(data_dir) do
       if not global.isdir(v) then
@@ -63,14 +64,14 @@ function M.load_core()
   local ops = options:new()
   ops:load_options()
   -- load my colorscheme
-  require'zephyr'
+  require'internal.zephyr'
 
   local d = dein:new()
   d:load_repos()
 
   map.load_mapping()
   autocmd.load_autocmds()
-  require 'spaceline'
+  require 'internal.spaceline'
   saga.create_saga_augroup()
 end
 

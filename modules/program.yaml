@@ -10,10 +10,10 @@
     let g:db_ui_use_nerd_fonts = 1
     let g:db_ui_winwidth = 35
     let g:db_ui_save_location = getenv("HOME") . '/.cache/vim/db_ui_queries'
-    let g:dbs = luaeval('require("selfunc").load_dbs')()
+    let g:dbs = luaeval('require("internal.selfunc").load_dbs')()
 
 - repo: editorconfig/editorconfig-vim
-  on_ft: [go,typescript,javascript,vim,rust,markdown]
+  on_ft: [go, typescript, javascript, vim, rust, markdown]
 
 - repo: Yggdroot/indentLine
   on_event: BufReadPre
@@ -70,4 +70,3 @@
     let g:gutentags_generate_on_missing = 0
     let g:gutentags_generate_on_new = 0
     let g:gutentags_exclude_filetypes = [ 'defx', 'denite', 'vista', 'magit' ]
-
