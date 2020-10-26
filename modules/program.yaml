@@ -70,3 +70,30 @@
     let g:gutentags_generate_on_missing = 0
     let g:gutentags_generate_on_new = 0
     let g:gutentags_exclude_filetypes = [ 'defx', 'denite', 'vista', 'magit' ]
+
+- repo: mhartington/formatter.nvim
+  on_fg: [typescript,typescriptreact,lua]
+  on_cmd: Format
+  hook_source: |
+    lua <<EOF
+      require('format').setup({
+        typescriptreact = {
+            prettier = function()
+              return {
+                exe = "prettier",
+                args = {"--stdin-filepath", vim.api.nvim_buf_get_name(0), '--single-quote'},
+                stdin = true
+              }
+            end
+        },
+        lua = {
+            luafmt = function()
+              return {
+                exe = "luafmt",
+                args = {"--indent-count", 2, "--stdin"},
+                stdin = true
+                }
+              end
+            }
+        })
+    EOF

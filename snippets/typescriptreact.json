@@ -9,8 +9,6 @@
     "body": [
       "import React from 'react';",
       "",
-      "// import { Container } from './styles';",
-      "",
       "const ${1:${TM_DIRECTORY/^.*(\\/|\\\\)([^(\\/|\\\\)]+)$/$2/}}: React.FC = () => {",
       "  return <div />;",
       "}",
