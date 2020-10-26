@@ -1,7 +1,6 @@
 local options = require 'domain.options'
 local global = require 'domain.global'
 local dein = require 'domain.dein'
-local map = require 'internal.mapping'
 local autocmd = require 'internal.event'
 local saga = require 'lspsaga.saga'
 local fs = require 'publibs.plfs'
@@ -61,17 +60,15 @@ function M.load_core()
   M.disable_distribution_plugins()
   M.leader_map()
 
-  local ops = options:new()
-  ops:load_options()
+  options:load_options()
   -- load my colorscheme
   require'internal.zephyr'
 
-  local d = dein:new()
-  d:load_repos()
+  dein:load_repos()
 
-  map.load_mapping()
+  require('internal.mapping')
   autocmd.load_autocmds()
-  require 'internal.spaceline'
+  require('internal.spaceline')
   saga.create_saga_augroup()
 end
 

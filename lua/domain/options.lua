@@ -1,15 +1,6 @@
 local global = require('domain.global')
 local vim = vim
-local options = {}
-
-function options:new()
-  local instance = {}
-  setmetatable(instance,self)
-  self.__index = self
-  self.global_local = {}
-  self.window_local = {}
-  return instance
-end
+local options = setmetatable({}, { __index = { global_local = {},window_local = {} } })
 
 function options:load_options()
   self.global_local = {

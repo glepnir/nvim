@@ -1,14 +1,10 @@
-local M = {}
+local pbind = require('publibs.plbind')
+local map_cr = pbind.map_cr
+local map_cu = pbind.map_cu
+local map_cmd = pbind.map_cmd
 local vim = vim
-local mapping = {}
-local rhs_options = {}
 
-function mapping:new()
-  local instance = {}
-  setmetatable(instance, self)
-  self.__index = self
-  return instance
-end
+local mapping = setmetatable({}, { __index = { vim = {},plugin = {} } })
 
 function _G.check_back_space()
     local col = vim.fn.col('.') - 1
@@ -140,84 +136,11 @@ function mapping:load_plugin_define()
   };
 end
 
-function M.nvim_load_mapping(mapping)
-  for _,v in pairs(mapping) do
-    for key,value in pairs(v) do
-      local mode,keymap = key:match("([^|]*)|?(.*)")
-      if type(value) == 'table' then
-        local rhs = value.cmd
-        local options = value.options
-        vim.fn.nvim_set_keymap(mode,keymap,rhs,options)
-      end
-    end
-  end
+local function load_mapping()
+  mapping:load_vim_define()
+  mapping:load_plugin_define()
+  pbind.nvim_load_mapping(mapping.vim)
+  pbind.nvim_load_mapping(mapping.plugin)
 end
 
-function rhs_options:new()
-  local instance = {
-    cmd = '',
-    options = {
-      noremap = false,
-      silent = false,
-      expr = false,
-    }
-  }
-  setmetatable(instance,self)
-  self.__index = self
-  return instance
-end
-
-function rhs_options:map_cmd(cmd_string)
-  self.cmd = cmd_string
-  return self
-end
-
-function rhs_options:map_cr(cmd_string)
-  self.cmd = (":%s<CR>"):format(cmd_string)
-  return self
-end
-
-function rhs_options:map_cu(cmd_string)
-  self.cmd = (":<C-u>%s<CR>"):format(cmd_string)
-  return self
-end
-
-function rhs_options:with_silent()
-  self.options.silent = true
-  return self
-end
-
-function rhs_options:with_noremap()
-  self.options.noremap = true
-  return self
-end
-
-function rhs_options:with_expr()
-  self.options.expr = true
-  return self
-end
-
-function map_cr(cmd_string)
-  local ro = rhs_options:new()
-  return ro:map_cr(cmd_string)
-end
-
-function map_cmd(cmd_string)
-  local ro = rhs_options:new()
-  return ro:map_cmd(cmd_string)
-end
-
-function map_cu(cmd_string)
-  local ro = rhs_options:new()
-  return ro:map_cu(cmd_string)
-end
-
-
-function M.load_mapping()
-  local map = mapping:new()
-  map:load_vim_define()
-  map:load_plugin_define()
-  M.nvim_load_mapping(map)
-end
-
-return M
+load_mapping()

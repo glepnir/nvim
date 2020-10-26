@@ -1,16 +1,7 @@
 local global = require 'domain.global'
 local fs = require 'publibs.plfs'
 local vim = vim
-local dein  = {}
-
-function dein:new()
-  local instance = {}
-  setmetatable(instance,self)
-  self.__index = self
-  self.repos = {}
-  self.config_files = {}
-  return instance
-end
+local dein  = setmetatable({}, { __index = { repos = {},config_files = {} } })
 
 function dein:parse_config()
   local cmd = nil
