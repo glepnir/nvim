@@ -111,6 +111,13 @@ end
 
 local lspsaga = {}
 
+local function load_completion()
+    if not vim.o.runtimepath:find('completion-nvim') then
+      vim.o.runtimepath = vim.o.runtimepath ..','.. global.cache_dir ..'dein/repos/github.com/nvim-lua/completion-nvim.lua'
+    end
+    require('completion').on_attach()
+end
+
 function lspsaga.start_lsp_server()
   local client_id = nil
   local bufnr = api.nvim_get_current_buf()
@@ -149,15 +156,7 @@ function lspsaga.start_lsp_server()
   end
 
   local on_attach = function(client,bufnr)
-    if not vim.o.runtimepath:find('completion-nvim') then
-      vim.o.runtimepath = vim.o.runtimepath ..','.. global.cache_dir ..'dein/repos/github.com/nvim-lua/completion-nvim.lua'
-    end
-    local has_completion,completion = pcall(require,'completion-nvim')
-    if has_completion then
-      -- passing in a table with on_attach function
-      completion.on_attach()
-    end
-
+    load_completion()
     local lsp_event = {}
     if client.resolved_capabilities.document_highlight then
       lsp_event.highlights = {
