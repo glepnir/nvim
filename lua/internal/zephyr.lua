@@ -165,15 +165,6 @@ function zephyr.load_syntax()
     TSType = {fg=zephyr.magenta};
     TSPunctBracket = {fg=zephyr.bracket};
 
-    typescriptImport = {fg=zephyr.purple};
-    typescriptAssign = {fg=zephyr.teal};
-    typescriptBraces = {fg=zephyr.bracket};
-    typescriptParens = {fg=zephyr.bracket};
-    typescriptExport = {fg=zephyr.red};
-    typescriptVariable = {fg=zephyr.orange};
-    typescriptDestructureVariable = {fg=zephyr.fg_cyan};
-    jsxComponentName = {fg=zephyr.blue};
-
     vimCommentTitle = {fg=zephyr.grey,style='bold'};
     vimLet = {fg=zephyr.orange};
     vimVar = {fg=zephyr.cyan};
@@ -244,7 +235,8 @@ function zephyr.load_syntax()
     LuaTreeRootFolder = {fg=zephyr.red};
     LuaTreeSpecialFile = {fg=zephyr.fg,bg=zephyr.none,stryle='NONE'};
 
-    TelescopeBorder = {fg=zephyr.teal}
+    TelescopeBorder = {fg=zephyr.teal};
+    TelescopePromptBorder = {fg=zephyr.blue}
   }
   return syntax
 end
