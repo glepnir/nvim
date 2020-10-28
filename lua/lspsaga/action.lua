@@ -15,7 +15,7 @@ function M.lsp_before_save(filetypes)
 
   for _,ft in pairs(filetypes) do
     if extensions[ft] ~= nil then
-      local tmp =  {"BufWritePre", extensions[ft] ,"lua vim.lsp.buf.formatting()"}
+      local tmp =  {"BufWritePre", extensions[ft] ,"lua vim.lsp.buf.formatting_sync(nil,500)"}
       table.insert(lsp_beforesave,tmp)
     end
     if ft == 'go' then
