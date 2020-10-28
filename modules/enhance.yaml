@@ -62,7 +62,6 @@
       startinsert
     endfunction
 
-
 - repo: mhinz/vim-signify
   on_event: [BufReadPre,BufNewFile]
   hook_source: |-

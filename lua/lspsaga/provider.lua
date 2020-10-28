@@ -9,14 +9,6 @@ local target_line_count = 0
 local definition_uri = 0
 local reference_uri = 0
 
-local function apply_float_map(contents_bufnr)
-  api.nvim_buf_set_keymap(contents_bufnr,'n',"o",":lua require'lsp.provider'.open_link(1)<CR>",{noremap = true,silent = true})
-  api.nvim_buf_set_keymap(contents_bufnr,'n',"s",":lua require'lsp.provider'.open_link(2)<CR>",{noremap = true,silent = true})
-  api.nvim_buf_set_keymap(contents_bufnr,'n',"i",":lua require'lsp.provider'.open_link(3)<CR>",{noremap = true,silent = true})
-  api.nvim_buf_set_keymap(contents_bufnr,'n',"<TAB>",":lua require'lsp.provider'.insert_preview()<CR>",{noremap = true,silent = true})
-  api.nvim_buf_set_keymap(contents_bufnr,'n',"q",":lua require'lsp.provider'.quit_float_window()<CR>",{noremap = true,silent = true})
-end
-
 local function defintion_reference(result,method_type)
   if vim.tbl_islist(result) then
     local method_option = {
@@ -102,7 +94,7 @@ local function defintion_reference(result,method_type)
         api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetFileName",i+definition_uri+4,0,-1)
       end
       -- load float window map
-      apply_float_map(M.contents_buf)
+      M.apply_float_map(M.contents_buf)
       -- clear contents
       contents = {}
       target_line_count = 0
@@ -110,6 +102,14 @@ local function defintion_reference(result,method_type)
       reference_uri = 0
     end
   end
+end
+
+function M.apply_float_map(contents_bufnr)
+  api.nvim_buf_set_keymap(contents_bufnr,'n',"o",":lua require'lsp.provider'.open_link(1)<CR>",{noremap = true,silent = true})
+  api.nvim_buf_set_keymap(contents_bufnr,'n',"s",":lua require'lsp.provider'.open_link(2)<CR>",{noremap = true,silent = true})
+  api.nvim_buf_set_keymap(contents_bufnr,'n',"i",":lua require'lsp.provider'.open_link(3)<CR>",{noremap = true,silent = true})
+  api.nvim_buf_set_keymap(contents_bufnr,'n',"<TAB>",":lua require'lsp.provider'.insert_preview()<CR>",{noremap = true,silent = true})
+  api.nvim_buf_set_keymap(contents_bufnr,'n',"q",":lua require'lsp.provider'.quit_float_window()<CR>",{noremap = true,silent = true})
 end
 
 -- action 1 mean enter
@@ -182,50 +182,6 @@ function M.lsp_peek_references(timeout)
   return
 end
 
--- jump to definition in split window
-function M.lsp_jump_definition()
-  local winr = vim.fn.winnr("$")
-  local winsize = vim.api.nvim_exec([[
-  echo (winwidth(0) - (max([len(line('$')), &numberwidth-1]) + 1)) < 110
-  ]],true)
-  if winr >= 4 or winsize == 1 then
-    vim.lsp.buf.definition()
-  else
-    vim.api.nvim_command("vsplit")
-    vim.lsp.buf.definition()
-  end
-end
-
--- Synchronously organise (Go) imports. Taken from
--- https://github.com/neovim/nvim-lsp/issues/115#issuecomment-654427197.
-function M.go_organize_imports_sync(timeout_ms)
-  local context = { source = { organizeImports = true } }
-  vim.validate { context = { context, 't', true } }
-  local params = vim.lsp.util.make_range_params()
-  params.context = context
-
-  -- See the implementation of the textDocument/codeAction callback
-  -- (lua/vim/lsp/callbacks.lua) for how to do this properly.
-  local result = lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout_ms)
-  if not result then return end
-  local actions = result[1].result
-  if not actions then return end
-  local action = actions[1]
-
-  -- textDocument/codeAction can return either Command[] or CodeAction[]. If it
-  -- is a CodeAction, it can have either an edit, a command or both. Edits
-  -- should be executed first.
-  if action.edit or type(action.command) == "table" then
-    if action.edit then
-      vim.lsp.util.apply_workspace_edit(action.edit)
-    end
-    if type(action.command) == "table" then
-      vim.lsp.buf.execute_command(action.command)
-    end
-  else
-    vim.lsp.buf.execute_command(action)
-  end
-end
 
 function M.preview_definiton(timeout_ms)
   local method = "textDocument/definition"
