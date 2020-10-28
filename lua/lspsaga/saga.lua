@@ -131,6 +131,11 @@ function lspsaga.start_lsp_server()
 
   local server_setup = server[filetype_server_map[buf_filetype]]
 
+  -- like css/shell etc server that does not have a root file.
+  -- so use the home dir as the root
+  if server_setup.root_patterns == nil then
+    server_setup.root_patterns = {os.getenv('HOME')}
+  end
   -- Try to find our root directory.
   local root_dir = buffer_find_root_dir(bufnr, function(dir)
     for _,root_file in pairs(server_setup.root_patterns) do

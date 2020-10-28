@@ -66,7 +66,6 @@ server.tsserver = {
 server.cssls = {
   cmd = {'css-languageserver','--stdio'};
   filetypes = {"css", "scss", "less"};
-  root_patterns = {os.getenv("HOME")};
 }
 
 local lsp_intall_scripts = [=[
