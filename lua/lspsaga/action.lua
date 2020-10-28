@@ -1,6 +1,31 @@
 local lsp = vim.lsp
 local M = {}
 
+function M.lsp_before_save(filetypes)
+  local lsp_beforesave = {}
+
+  local extensions = {
+    go = '*.go',
+    rust = '*.rs',
+    zig  = '*.zig',
+
+    typescript = '*.ts',
+    javascript = '*.js',
+  }
+
+  for _,ft in pairs(filetypes) do
+    if extensions[ft] ~= nil then
+      local tmp =  {"BufWritePre", extensions[ft] ,"lua vim.lsp.buf.formatting()"}
+      table.insert(lsp_beforesave,tmp)
+    end
+    if ft == 'go' then
+      local tmp = {"BufWritePre","*.go","lua require('lspsaga.action').go_organize_imports_sync(1000)"}
+      table.insert(lsp_beforesave,tmp)
+    end
+  end
+  return lsp_beforesave
+end
+
 -- jump to definition in split window
 function M.lsp_jump_definition()
   local winr = vim.fn.winnr("$")

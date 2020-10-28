@@ -4,6 +4,7 @@ local syntax = require 'lspsaga.syntax'
 local server = require 'lspsaga.serverconf'
 local callbacks = require 'lspsaga.callbacks'
 local autocmd = require 'internal.event'
+local action = require 'lspsaga.action'
 local vim,api= vim,vim.api
 
 -- A table to store our root_dir to client_id lookup. We want one LSP per
@@ -173,12 +174,9 @@ function lspsaga.start_lsp_server()
       }
     end
     if client.resolved_capabilities.document_formatting then
-      if vim.bo.filetype == "go" then
-        lsp_event.organizeImports = {
-          {"BufWritePre","*.go","lua require('lspsaga.action').go_organize_imports_sync(1000)"}
-        }
-      end
+      lsp_event.autofmt = action.lsp_before_save(server_setup.filetypes)
     end
+
     -- register lsp event
     autocmd.nvim_create_augroups(lsp_event)
     -- api.nvim_command("autocmd CompleteDone <buffer> lua require'lsp.callbacks'.show_signature_help()")
@@ -203,7 +201,6 @@ function lspsaga.start_lsp_server()
 end
 
 function lspsaga.create_saga_augroup()
-  local unformat_ft = {'lua','css','scss','less'}
 
   if vim.tbl_isempty(server) then return end
   for server_name,value in pairs(server) do
@@ -218,9 +215,6 @@ function lspsaga.create_saga_augroup()
   vim.api.nvim_command('autocmd!')
   for ft, _ in pairs(filetype_server_map) do
     vim.api.nvim_command(string.format('autocmd FileType %s lua require("lspsaga.saga").start_lsp_server()',ft))
-    if not ptbl.has_value(unformat_ft,ft) then
-      vim.api.nvim_command(string.format('autocmd BufWritePre *.%s lua vim.lsp.buf.formatting_sync(nil,1000)',ft))
-    end
   end
   vim.api.nvim_command('augroup END')
 end
