@@ -118,6 +118,7 @@ local function load_completion()
     require('completion').on_attach()
 end
 
+-- Start Lsp server
 function lspsaga.start_lsp_server()
   local client_id = nil
   local bufnr = api.nvim_get_current_buf()
@@ -136,6 +137,8 @@ function lspsaga.start_lsp_server()
       if vim.fn.filereadable(path_join(dir, root_file)) == 1 then
         return true
       elseif is_dir(path_join(dir, root_file)) then
+        return true
+      elseif root_file == os.getenv("HOME") then
         return true
       end
     end
@@ -170,9 +173,6 @@ function lspsaga.start_lsp_server()
           {"BufWritePre","*.go","lua require('lspsaga.action').go_organize_imports_sync(1000)"}
         }
       end
-      lsp_event.autoformat = {
-        {"BufWritePre","*" ,"lua vim.lsp.buf.formatting_sync(nil, 1000)"}
-      }
     end
     -- register lsp event
     autocmd.nvim_create_augroups(lsp_event)
@@ -198,6 +198,8 @@ function lspsaga.start_lsp_server()
 end
 
 function lspsaga.create_saga_augroup()
+  local unformat_ft = {'lua','css','scss','less'}
+
   if vim.tbl_isempty(server) then return end
   for server_name,value in pairs(server) do
     if type(value) == 'table' then
@@ -206,10 +208,14 @@ function lspsaga.create_saga_augroup()
       end
     end
   end
+
   vim.api.nvim_command('augroup lsp_saga_event')
   vim.api.nvim_command('autocmd!')
   for ft, _ in pairs(filetype_server_map) do
     vim.api.nvim_command(string.format('autocmd FileType %s lua require("lspsaga.saga").start_lsp_server()',ft))
+    if not ptbl.has_value(unformat_ft,ft) then
+      vim.api.nvim_command(string.format('autocmd BufWritePre *.%s lua vim.lsp.buf.formatting_sync(nil,1000)',ft))
+    end
   end
   vim.api.nvim_command('augroup END')
 end

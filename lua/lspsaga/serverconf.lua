@@ -63,6 +63,12 @@ server.tsserver = {
   root_patterns  = {"package.json", "tsconfig.json", ".git"}
 }
 
+server.cssls = {
+  cmd = {'css-languageserver','--stdio'};
+  filetypes = {"css", "scss", "less"};
+  root_patterns = {os.getenv("HOME")};
+}
+
 local lsp_intall_scripts = [=[
 # Install gopls
 cd $HOME
