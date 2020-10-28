@@ -1,5 +1,5 @@
 local global = require 'domain.global'
-local ptbl = require('publibs.pltbl')
+local ptbl = require 'publibs.pltbl'
 local syntax = require 'lspsaga.syntax'
 local server = require 'lspsaga.serverconf'
 local callbacks = require 'lspsaga.callbacks'
@@ -165,9 +165,9 @@ function lspsaga.start_lsp_server()
       }
     end
     if client.resolved_capabilities.document_formatting then
-      if vim.api.nvim_buf_get_option(bufnr, "filetype") == "go" then
+      if vim.bo.filetype == "go" then
         lsp_event.organizeImports = {
-          {"BufWritePre","*.go","lua require('lspsaga.provider').go_organize_imports_sync(1000)"}
+          {"BufWritePre","*.go","lua require('lspsaga.action').go_organize_imports_sync(1000)"}
         }
       end
       lsp_event.autoformat = {
