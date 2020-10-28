@@ -96,7 +96,6 @@ function options:load_options()
     wrap           = false;
     linebreak      = true;
     number         = true;
-    relativenumber = true;
     colorcolumn    = "100";
     foldenable     = true;
     foldmethod     = "indent";

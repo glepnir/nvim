@@ -5,16 +5,6 @@ function pbind.bind_option(options)
   for k, v in pairs(options) do
     if v == true or v == false then
       vim.api.nvim_command('set ' .. k)
-    elseif type(v) == 'table' then
-      local values = ''
-      for k2, v2 in pairs(v) do
-        if k2 == 1 then
-          values = values .. v2
-        else
-          values = values .. ',' .. v2
-        end
-      end
-      vim.api.nvim_command('set ' .. k .. '=' .. values)
     else
       vim.api.nvim_command('set ' .. k .. '=' .. v)
     end
