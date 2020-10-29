@@ -61,14 +61,13 @@ function M.load_core()
   M.leader_map()
 
   options:load_options()
-  -- load my colorscheme
-  require'internal.zephyr'
-
   dein:load_repos()
 
-  require('internal.mapping')
+  require'internal.zephyr'
+  require'internal.mapping'
+  require'internal.eviline'
+
   autocmd.load_autocmds()
-  require('internal.eviline')
   saga.create_saga_augroup()
 end
 
