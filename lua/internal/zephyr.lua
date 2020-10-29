@@ -241,14 +241,6 @@ function zephyr.load_syntax()
   return syntax
 end
 
-function zephyr.dynamic_treesitter_color()
-  local syntax = zephyr.load_syntax()
-  if vim.bo.filetype == 'typescriptreact' then
-    syntax.TSType = {fg = zephyr.blue}
-  end
-  zephyr.highlight('TSType',syntax.TSType)
-end
-
 function zephyr.colorscheme()
   vim.api.nvim_command('hi clear')
   if vim.fn.exists('syntax_on') then
@@ -262,9 +254,6 @@ function zephyr.colorscheme()
   for group,colors in pairs(zephyr.load_syntax()) do
     zephyr.highlight(group,colors)
   end
-  vim.api.nvim_command('autocmd FileType typescriptreact lua require"internal.zephyr".dynamic_treesitter_color()')
 end
 
 zephyr.colorscheme()
-
-return zephyr
