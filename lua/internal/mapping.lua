@@ -107,7 +107,7 @@ function mapping:load_plugin_define()
     ["n|<Leader>fh"]     = map_cu('TelescopeOldFiles'):with_noremap():with_silent(),
     ["n|<Leader>fl"]     = map_cu('TelescopeLocalList'):with_noremap():with_silent(),
     ["n|<Leader>fd"]     = map_cu('lua require"telescope".load_dotfiles()'):with_noremap():with_silent(),
-    ["n|<Leader>fs"]      = map_cu('Clap gosource'):with_noremap():with_silent(),
+    -- ["n|<Leader>fs"]      = map_cu('Clap gosource'):with_noremap():with_silent(),
     -- Plugin acceleratedjk
     ["n|j"]              = map_cmd('<Plug>(accelerated_jk_gj)'):with_silent(),
     ["n|k"]              = map_cmd('<Plug>(accelerated_jk_gk)'):with_silent(),
