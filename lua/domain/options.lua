@@ -1,4 +1,5 @@
 local global = require('domain.global')
+local pbind = require 'publibs.plbind'
 local vim = vim
 local options = setmetatable({}, { __index = { global_local = {},window_local = {} } })
 
@@ -80,7 +81,9 @@ function options:load_options()
     listchars      = "tab:»·,nbsp:+,trail:·,extends:→,precedes:←";
     pumblend       = 10;
     winblend       = 10;
+  }
 
+  self.bw_local   = {
     synmaxcol      = 2500;
     formatoptions  = "1jcroql";
     textwidth      = 100;
@@ -89,9 +92,6 @@ function options:load_options()
     shiftwidth     = 2;
     softtabstop    = -1;
     autoindent     = true;
-  }
-
-  self.window_local   = {
     breakindentopt = "shift:2,min:20";
     wrap           = false;
     linebreak      = true;
@@ -123,9 +123,7 @@ function options:load_options()
   for name, value in pairs(self.global_local) do
     vim.o[name] = value
   end
-  for name, value in pairs(self.window_local) do
-    vim.wo[name] = value
-  end
+  pbind.bind_option(self.bw_local)
 end
 
 return options

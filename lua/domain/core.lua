@@ -68,7 +68,7 @@ function M.load_core()
 
   require('internal.mapping')
   autocmd.load_autocmds()
-  require('internal.spaceline')
+  require('internal.eviline')
   saga.create_saga_augroup()
 end
 
