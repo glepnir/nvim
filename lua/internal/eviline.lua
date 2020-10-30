@@ -4,8 +4,9 @@ gl.short_line_list = {'LuaTree','vista','dbui'}
 
 local colors = {
   bg = '#282c34',
-  line_bg = '#21242b',
-  fg = '#c0c0c0',
+  line_bg = '#353644',
+  fg = '#8FBCBB',
+  fg_green = '#65a380',
 
   yellow = '#fabd2f',
   cyan = '#008080',
@@ -78,7 +79,7 @@ gls.left[6] = {
   GitBranch = {
     provider = 'GitBranch',
     condition = find_git_root,
-    highlight = {colors.fg,colors.line_bg,'bold'},
+    highlight = {'#8FBCBB',colors.line_bg,'bold'},
   }
 }
 
@@ -146,7 +147,7 @@ gls.right[1]= {
     provider = 'FileFormat',
     separator = ' ',
     separator_highlight = {colors.bg,colors.line_bg},
-    highlight = {colors.fg,colors.line_bg},
+    highlight = {colors.fg,colors.line_bg,'bold'},
   }
 }
 gls.right[2] = {
@@ -162,7 +163,7 @@ gls.right[3] = {
     provider = 'LinePercent',
     separator = ' ',
     separator_highlight = {colors.line_bg,colors.line_bg},
-    highlight = {colors.fg,colors.darkblue},
+    highlight = {colors.cyan,colors.darkblue,'bold'},
   }
 }
 gls.right[4] = {
