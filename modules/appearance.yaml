@@ -54,6 +54,8 @@
       \}
 
 - repo: kyazdani42/nvim-tree.lua
+  hook_add: |
+    autocmd FileType LuaTree setlocal nowrap
   hook_source: |
     let g:lua_tree_hide_dotfiles = 1
     let g:lua_tree_indent_markers = 1
