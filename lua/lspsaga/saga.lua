@@ -167,12 +167,7 @@ function lspsaga.start_lsp_server()
   local on_attach = function(client,bufnr)
     load_completion()
     local lsp_event = {}
-    if client.resolved_capabilities.document_highlight then
-      lsp_event.highlights = {
-        {"CursorHold,CursorHoldI","<buffer>", "lua vim.lsp.buf.document_highlight()"};
-        {"CursorMoved","<buffer>","lua vim.lsp.buf.clear_references()"};
-      }
-    end
+
     if client.resolved_capabilities.document_formatting then
       lsp_event.autofmt = action.lsp_before_save(server_setup.filetypes)
     end
