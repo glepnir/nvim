@@ -115,9 +115,6 @@ function mapping:load_plugin_define()
     ["n|<Leader>r"]     = map_cr("<cmd> lua require'internal.selfunc'.run_command()"):with_noremap():with_silent(),
     -- Plugin Vista
     ["n|<Leader>v"]      = map_cu('Vista!!'):with_noremap():with_silent(),
-    -- Plugin SplitJoin
-    ["n|sj"]             = map_cr('SplitjoinJoin'),
-    ["n|sk"]             = map_cr('SplitjoinSplit'),
     -- Plugin vim-operator-replace
     ["x|p"]              = map_cmd("<Plug>(operator-replace)"),
     -- Plugin vim-operator-surround
