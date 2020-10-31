@@ -76,12 +76,12 @@ function M.float_terminal(command)
     col = col,
   }
 
-  local contents_bufnr,contents_winid,border_bufnr,border_winid = window.create_float_window({},'floaterm',1,true,false,opts)
+  local contents_bufnr,contents_winid,_,shadow_winid = window.open_shadow_float_win({},'Floaterm',true,false,opts)
+  api.nvim_command('hi Floaterm guibg=#282c34')
   api.nvim_command('terminal '..cmd)
   api.nvim_command('setlocal nobuflisted')
   api.nvim_command('startinsert!')
-  api.nvim_command("hi LspFloatWinBorder guifg=#c594c5")
-  api.nvim_buf_set_var(contents_bufnr,'float_terminal_win',{contents_winid,border_winid,border_bufnr})
+  api.nvim_buf_set_var(contents_bufnr,'float_terminal_win',{contents_winid,shadow_winid})
 end
 
 function M.close_float_terminal()

@@ -83,6 +83,28 @@ local function make_border_option(contents,opts)
   return win_width+2,win_height,border_option
 end
 
+local function get_shadow_config()
+  local opts =  {
+    relative= 'editor',
+    style= 'minimal',
+    width= vim.o.columns,
+    height= vim.o.lines,
+    row= 0,
+    col= 0,
+  }
+  return opts
+end
+
+local function open_shadow_win()
+  local opts = get_shadow_config()
+  local shadow_winhl = 'Normal:SagaShadow,NormalNC:SagaShadow,EndOfBuffer:SagaShadow'
+  local shadow_bufnr = api.nvim_create_buf(false,true)
+  local shadow_winid = api.nvim_open_win(shadow_bufnr,true,opts)
+  api.nvim_win_set_option(shadow_winid,'winhl',shadow_winhl)
+  api.nvim_win_set_option(shadow_winid,'winblend',10)
+  api.nvim_command('hi SagaShadow guibg=#000000')
+  return shadow_bufnr,shadow_winid
+end
 
 local function create_float_boder(contents,border,opts)
   local win_width,win_height,border_option = make_border_option(contents,opts)
@@ -116,7 +138,7 @@ local function create_float_boder(contents,border,opts)
   return border_bufnr,border_winid
 end
 
-local function create_float_contents(contents, filetype,enter,modifiable,opts)
+function M.create_float_contents(contents, filetype,enter,modifiable,opts)
   -- create contents buffer
   local contents_bufnr = api.nvim_create_buf(false, true)
   -- buffer settings for contents buffer
@@ -133,7 +155,7 @@ local function create_float_contents(contents, filetype,enter,modifiable,opts)
   if filetype == 'markdown' then
     api.nvim_win_set_option(contents_winid, 'conceallevel', 2)
   end
-  api.nvim_win_set_option(contents_winid,"winhl","Normal:LspFloatNormal")
+  api.nvim_win_set_option(contents_winid,"winhl","Normal:"..filetype)
   return contents_bufnr, contents_winid
 end
 
@@ -151,13 +173,19 @@ function M.create_float_window(contents,filetype,border,enter,modifiable,opts)
 
   if enter then
     local border_bufnr,border_winid = create_float_boder(contents,border,opts)
-    local contents_bufnr,contents_winid = create_float_contents(contents,filetype,enter,modifiable,border_option)
+    local contents_bufnr,contents_winid = M.create_float_contents(contents,filetype,enter,modifiable,border_option)
     return contents_bufnr,contents_winid,border_bufnr,border_winid
   else
-    local contents_bufnr,contents_winid = create_float_contents(contents,filetype,enter,modifiable,contents_option)
+    local contents_bufnr,contents_winid = M.create_float_contents(contents,filetype,enter,modifiable,contents_option)
     local border_bufnr,border_winid = create_float_boder(contents,border,opts)
     return contents_bufnr,contents_winid,border_bufnr,border_winid
   end
+end
+
+function M.open_shadow_float_win(contents,filetype,enter,modifiable,opts)
+  local shadow_bufnr,shadow_winid =  open_shadow_win()
+  local contents_bufnr,contents_winid = M.create_float_contents(contents,filetype,enter,modifiable,opts)
+  return contents_bufnr,contents_winid,shadow_bufnr,shadow_winid
 end
 
 -- use our float window instead of.
