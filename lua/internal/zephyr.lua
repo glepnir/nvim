@@ -251,8 +251,17 @@ function zephyr.colorscheme()
   vim.o.termguicolors = true
 
   zephyr.terminal_color()
-  for group,colors in pairs(zephyr.load_syntax()) do
+  local syntax = zephyr.load_syntax()
+
+  for group,colors in pairs(syntax) do
     zephyr.highlight(group,colors)
+  end
+
+  if vim.g.zephyr_mode == 'magenta' then
+    syntax.Operator = zephyr.teal
+    syntax.TSType = zephyr.magenta
+    zephyr.highlight('Operator',syntax.Operator)
+    zephyr.highlight('TSType',syntax.TSType)
   end
 end
 
