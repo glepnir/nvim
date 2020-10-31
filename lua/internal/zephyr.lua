@@ -139,7 +139,7 @@ function zephyr.load_syntax()
     Tag = {fg=zephyr.orange};
     Label = {fg=zephyr.orange};
     Structure = {fg=zephyr.orange};
-    Operator = {fg=zephyr.teal};
+    Operator = {fg=zephyr.magenta};
     Title = {fg=zephyr.orange,style='bold'};
     Special = {fg=zephyr.yellow};
     SpecialChar = {fg=zephyr.yellow};
@@ -162,7 +162,7 @@ function zephyr.load_syntax()
     TSMethod = {fg=zephyr.yellow,style='bold'};
     TSKeywordFunction = {fg=zephyr.blue};
     TSProperty = {fg=zephyr.cyan};
-    TSType = {fg=zephyr.magenta};
+    TSType = {fg=zephyr.teal};
     TSPunctBracket = {fg=zephyr.bracket};
 
     vimCommentTitle = {fg=zephyr.grey,style='bold'};
