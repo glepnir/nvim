@@ -241,6 +241,10 @@ function zephyr.load_syntax()
   return syntax
 end
 
+function zephyr.get_zephyr_color()
+  return zephyr
+end
+
 function zephyr.colorscheme()
   vim.api.nvim_command('hi clear')
   if vim.fn.exists('syntax_on') then
@@ -256,13 +260,8 @@ function zephyr.colorscheme()
   for group,colors in pairs(syntax) do
     zephyr.highlight(group,colors)
   end
-
-  if vim.g.zephyr_mode == 'magenta' then
-    syntax.Operator = zephyr.teal
-    syntax.TSType = zephyr.magenta
-    zephyr.highlight('Operator',syntax.Operator)
-    zephyr.highlight('TSType',syntax.TSType)
-  end
 end
 
 zephyr.colorscheme()
+
+return zephyr
