@@ -64,6 +64,7 @@ end
 
 function mapping:load_plugin_define()
   self.plugin = {
+    ["n|gb"]             = map_cr("BufferLinePick"):with_noremap():with_silent(),
     -- Lsp mapp work when insertenter and lsp start
     ["n|[e"]             = map_cmd("<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>"):with_noremap():with_silent(),
     ["n|]e"]             = map_cmd("<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>"):with_noremap():with_silent(),
