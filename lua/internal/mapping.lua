@@ -18,7 +18,7 @@ end
 function mapping:load_vim_define()
   self.vim= {
     -- Vim map
-    ["n|<C-x>k"]     = map_cr('Bdelete'):with_noremap(),
+    ["n|<C-x>k"]     = map_cr('Bdelete'):with_noremap():with_silent(),
     ["n|<C-s>"]      = map_cu('write'):with_noremap(),
     ["n|Y"]          = map_cmd('y$'),
     ["n|]w"]         = map_cu('WhitespaceNext'):with_noremap(),
