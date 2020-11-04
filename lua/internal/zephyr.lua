@@ -219,9 +219,10 @@ function zephyr.load_syntax()
     Defx_filename_directory = {fg=zephyr.blue};
     Defx_filename_root = {fg=zephyr.red};
 
-    DashboardShortCut = {fg=zephyr.red,style='bold'};
-    DashboardHeader = {fg=zephyr.blue,style='bold'};
-    DashboardFooter = {fg=zephyr.purple,style='bold'};
+    DashboardShortCut = {fg=zephyr.purple};
+    DashboardHeader = {fg=zephyr.orange};
+    DashboardCenter = {fg=zephyr.blue};
+    DashboardFooter = {fg=zephyr.grey};
 
     LspDiagnosticsError = {fg=zephyr.red};
     LspDiagnosticsWarning = {fg=zephyr.yellow};
