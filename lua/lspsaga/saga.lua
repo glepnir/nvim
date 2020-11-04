@@ -40,6 +40,8 @@ local function add_options(server_setup)
     end
   end
 
+  -- see https://github.com/neovim/neovim/issues/12795
+  server_setup.capabilities.textDocument.completion.completionItem.snippetSupport = true
   server_setup.capabilities = vim.tbl_deep_extend('keep', server_setup.capabilities, {
     workspace = {
       configuration = true;
@@ -174,7 +176,6 @@ function lspsaga.start_lsp_server()
 
     -- register lsp event
     autocmd.nvim_create_augroups(lsp_event)
-    -- api.nvim_command("autocmd CompleteDone <buffer> lua require'lsp.callbacks'.show_signature_help()")
     -- Source omnicompletion from LSP.
     vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
   end

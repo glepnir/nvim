@@ -70,7 +70,7 @@ function mapping:load_plugin_define()
     ["n|]e"]             = map_cmd("<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>"):with_noremap():with_silent(),
     ["n|K"]              = map_cmd("<cmd>lua vim.lsp.buf.hover()<CR>"):with_noremap():with_silent(),
     ["n|ga"]             = map_cmd("<cmd>lua vim.lsp.buf.code_action()<CR>"):with_noremap():with_silent(),
-    ["n|gd"]             = map_cmd("<cmd>lua require'lsp.provider'.preview_definiton()<CR>"):with_noremap():with_silent(),
+    ["n|gd"]             = map_cmd("<cmd>lua require'lspsaga.provider'.preview_definiton()<CR>"):with_noremap():with_silent(),
     ["n|gD"]             = map_cmd("<cmd>lua vim.lsp.buf.implementation()<CR>"):with_noremap():with_silent(),
     ["n|gs"]             = map_cmd("<cmd>lua vim.lsp.buf.signature_help()<CR>"):with_noremap():with_silent(),
     ["n|gr"]             = map_cmd("<cmd>lua vim.lsp.buf.references()<CR>"):with_noremap():with_silent(),
