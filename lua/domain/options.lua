@@ -95,7 +95,7 @@ function options:load_options()
     breakindentopt = "shift:2,min:20";
     wrap           = false;
     linebreak      = true;
-    -- number         = true;
+    number         = true;
     colorcolumn    = "80";
     foldenable     = true;
     foldmethod     = "indent";
