@@ -99,14 +99,14 @@ function mapping:load_plugin_define()
     ["n|<Leader>fz"]     = map_cr('Farf'):with_noremap():with_silent();
     ["v|<Leader>fz"]     = map_cr('Farf'):with_noremap():with_silent();
     -- Plugin Clap
-    ["n|<Leader>bb"]     = map_cu('TelescopeBuffers'):with_noremap():with_silent(),
-    ["n|<Leader>fa"]     = map_cu('TelescopeGrepString'):with_noremap():with_silent(),
-    ["n|<Leader>fb"]     = map_cu('TelescopeMarks'):with_noremap():with_silent(),
-    ["n|<Leader>ff"]     = map_cu('TelescopeFindFile'):with_noremap():with_silent(),
-    ["n|<Leader>fg"]     = map_cu('TelescopeFindGitFile'):with_noremap():with_silent(),
+    ["n|<Leader>bb"]     = map_cu('Telescope buffers'):with_noremap():with_silent(),
+    ["n|<Leader>fa"]     = map_cu('DashboardFindWord'):with_noremap():with_silent(),
+    ["n|<Leader>fb"]     = map_cu('DashboardJumpMark'):with_noremap():with_silent(),
+    ["n|<Leader>ff"]     = map_cu('DashboardFindFile'):with_noremap():with_silent(),
+    ["n|<Leader>fg"]     = map_cu('Telescope git_files'):with_noremap():with_silent(),
     ["n|<Leader>fw"]     = map_cu('lua require"telescope.builtin".grep_string{search=true}'):with_noremap():with_silent(),
-    ["n|<Leader>fh"]     = map_cu('TelescopeOldFiles'):with_noremap():with_silent(),
-    ["n|<Leader>fl"]     = map_cu('TelescopeLocalList'):with_noremap():with_silent(),
+    ["n|<Leader>fh"]     = map_cu('DashboardFindHistory'):with_noremap():with_silent(),
+    ["n|<Leader>fl"]     = map_cu('Telescope loclist'):with_noremap():with_silent(),
     ["n|<Leader>fd"]     = map_cu('lua require"telescope".load_dotfiles()'):with_noremap():with_silent(),
     -- ["n|<Leader>fs"]      = map_cu('Clap gosource'):with_noremap():with_silent(),
     -- Plugin acceleratedjk
