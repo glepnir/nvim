@@ -19,6 +19,8 @@
       }
     EOF
 
+- repo: glepnir/galaxyline.nvim
+
 - repo: glepnir/dashboard-nvim
   hook_source: |
     let g:dashboard_preview_command = 'cat'
