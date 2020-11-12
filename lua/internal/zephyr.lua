@@ -97,7 +97,7 @@ function zephyr.load_syntax()
     ModeMsg = {fg=zephyr.fg,bg=zephyr.none,style='bold'};
     MatchParen = {fg=zephyr.red,bg=zephyr.none};
     NonText = {fg=zephyr.bg1};
-    Whitespace = {fg=zephyr.bg1};
+    Whitespace = {fg=zephyr.base4};
     SpecialKey = {fg=zephyr.bg1};
     Pmenu = {fg=zephyr.fg,bg=zephyr.bg_popup};
     PmenuSel = {fg=zephyr.base0,bg=zephyr.blue};
