@@ -1,6 +1,6 @@
 local vim,lsp = vim,vim.lsp
 local window = require('lspsaga.window')
-local callbacks = {}
+local handlers = {}
 
 local function lookup_section(settings, section)
   for part in vim.gsplit(section, '.', true) do
@@ -12,25 +12,25 @@ local function lookup_section(settings, section)
   return settings
 end
 
--- Add I custom callbacks function in lsp server config
-function callbacks.add_callbacks(server_setup)
+-- Add I custom handlers function in lsp server config
+function handlers.add_handlers(server_setup)
 
-  server_setup.callbacks["window/logMessage"] = function(err, method, params, client_id)
+  server_setup.handlers["window/logMessage"] = function(err, method, params, client_id)
         if params and params.type <= server_setup.log_level then
-          assert(vim.lsp.callbacks["window/logMessage"], "Callback for window/logMessage notification is not defined")
-          vim.lsp.callbacks["window/logMessage"](err, method, params, client_id)
+          assert(vim.lsp.handlers["window/logMessage"], "Callback for window/logMessage notification is not defined")
+          vim.lsp.handlers["window/logMessage"](err, method, params, client_id)
         end
       end
 
-  server_setup.callbacks["window/showMessage"] = function(err, method, params, client_id)
+  server_setup.handlers["window/showMessage"] = function(err, method, params, client_id)
     if params and params.type <= server_setup.message_level then
-      assert(vim.lsp.callbacks["window/showMessage"], "Callback for window/showMessage notification is not defined")
-      vim.lsp.callbacks["window/showMessage"](err, method, params, client_id)
+      assert(vim.lsp.handlers["window/showMessage"], "Callback for window/showMessage notification is not defined")
+      vim.lsp.handlers["window/showMessage"](err, method, params, client_id)
     end
   end
 
   -- add workspace/configuration callback function
-  server_setup.callbacks["workspace/configuration"] = function(err, _, params, _)
+  server_setup.handlers["workspace/configuration"] = function(err, _, params, _)
       if err then error(tostring(err)) end
       if not params.items then
         return {}
@@ -51,7 +51,7 @@ function callbacks.add_callbacks(server_setup)
     end
 
   -- diagnostic callback
-  server_setup.callbacks['textDocument/hover'] = function(_, method, result)
+  server_setup.handlers['textDocument/hover'] = function(_, method, result)
     vim.lsp.util.focusable_float(method, function()
         if not (result and result.contents) then return end
         local markdown_lines = lsp.util.convert_input_to_markdown_lines(result.contents)
@@ -65,7 +65,7 @@ function callbacks.add_callbacks(server_setup)
     end)
     end
 
-  server_setup.callbacks['textDocument/publishDiagnostics'] = vim.lsp.with(
+  server_setup.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(
     vim.lsp.diagnostic.on_publish_diagnostics, {
         -- Enable underline, use default values
         underline = true,
@@ -80,4 +80,4 @@ function callbacks.add_callbacks(server_setup)
     })
 end
 
-return callbacks
+return handlers
