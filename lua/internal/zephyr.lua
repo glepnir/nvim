@@ -24,7 +24,7 @@ local zephyr = {
   yellow = '#d8a657';
 
   green = '#5faf5f';
-  cyan = '#1fbed1';
+  cyan = '#3bb6c4';
   blue = '#51afef';
   violet = '#a9a1e1';
   teal = '#1abc9c';
@@ -224,10 +224,15 @@ function zephyr.load_syntax()
     DashboardCenter = {fg=zephyr.blue};
     DashboardFooter = {fg=zephyr.grey};
 
-    LspDiagnosticsError = {fg=zephyr.red};
-    LspDiagnosticsWarning = {fg=zephyr.yellow};
-    LspDiagnosticsInformation = {fg=zephyr.blue};
-    LspDiagnosticsHint = {fg=zephyr.cyan};
+    LspDiagnosticsSignError = {fg=zephyr.red};
+    LspDiagnosticsSignWarning = {fg=zephyr.yellow};
+    LspDiagnosticsSignInformation = {fg=zephyr.blue};
+    LspDiagnosticsSignHint = {fg=zephyr.cyan};
+
+    LspDiagnosticsVirtualTextError = {fg=zephyr.red};
+    LspDiagnosticsVirtualTextWarning= {fg=zephyr.yellow};
+    LspDiagnosticsVirtualTextInformation = {fg=zephyr.blue};
+    LspDiagnosticsVirtualTextHint = {fg=zephyr.cyan};
 
     CursorWord0 = {bg=zephyr.currsor_bg};
     CursorWord1 = {bg=zephyr.currsor_bg};
