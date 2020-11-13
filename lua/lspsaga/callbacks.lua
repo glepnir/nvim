@@ -1,4 +1,4 @@
-local vim,lsp = vim,vim.api,vim.lsp
+local vim,lsp = vim,vim.lsp
 local window = require('lspsaga.window')
 local callbacks = {}
 
