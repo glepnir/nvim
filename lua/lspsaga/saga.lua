@@ -186,12 +186,20 @@ function lspsaga.start_lsp_server()
   local new_config = vim.tbl_extend("error",add_options(server_setup), {
     root_dir = root_dir;
   })
+  -- lsp sign
+  local diagnositc_config_sign = function ()
+    vim.fn.sign_define('LspDiagnosticsSignError', {text='', texthl='LspDiagnosticsSignError',linehl='', numhl=''})
+    vim.fn.sign_define('LspDiagnosticsSignWarning', {text='', texthl='LspDiagnosticsSignWarning', linehl='', numhl=''})
+    vim.fn.sign_define('LspDiagnosticsSignInformation', {text='', texthl='LspDiagnosticsSignInformation', linehl='', numhl=''})
+    vim.fn.sign_define('LspDiagnosticsSignHint', {text='', texthl='LspDiagnosticsSignHint', linehl='', numhl=''})
+  end
+
   -- start a new lsp server and store the cliend_id
   client_id = vim.lsp.start_client(new_config)
   if client_id ~= nil then
     lsp_store[root_dir] = client_id
     vim.lsp.buf_attach_client(bufnr, client_id)
-
+    diagnositc_config_sign()
     syntax.add_highlight()
   end
 end

@@ -1,4 +1,4 @@
-local vim,api,lsp = vim,vim.api,vim.lsp
+local vim,lsp = vim,vim.api,vim.lsp
 local window = require('lspsaga.window')
 local callbacks = {}
 
@@ -10,14 +10,6 @@ local function lookup_section(settings, section)
     end
   end
   return settings
-end
-
--- lsp sign
-local function lsp_diagnostic_sign()
-  vim.fn.sign_define('LspDiagnosticsErrorSign', {text='', texthl='LspDiagnosticsError',linehl='', numhl=''})
-  vim.fn.sign_define('LspDiagnosticsWarningSign', {text='', texthl='LspDiagnosticsWarning', linehl='', numhl=''})
-  vim.fn.sign_define('LspDiagnosticsInformationSign', {text='', texthl='LspDiagnosticsInformation', linehl='', numhl=''})
-  vim.fn.sign_define('LspDiagnosticsHintSign', {text='', texthl='LspDiagnosticsHint', linehl='', numhl=''})
 end
 
 -- Add I custom callbacks function in lsp server config
@@ -72,6 +64,20 @@ function callbacks.add_callbacks(server_setup)
         return bufnr,contents_winid
     end)
     end
+
+  server_setup.callbacks['textDocument/publishDiagnostics'] = vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics, {
+        -- Enable underline, use default values
+        underline = true,
+        -- Enable virtual text, override spacing to 4
+        virtual_text = true,
+        signs = {
+          enable = true,
+          priority = 20
+        },
+        -- Disable a feature
+        update_in_insert = false,
+    })
 end
 
 return callbacks
