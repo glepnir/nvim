@@ -58,48 +58,7 @@ function callbacks.add_callbacks(server_setup)
       return result
     end
 
-  -- diagnostic callbacks
-  server_setup.callbacks['textDocument/publishDiagnostics'] = function(_, _, result)
-    if not result then return end
-    local uri = result.uri
-    local bufnr = vim.uri_to_bufnr(uri)
-    if not bufnr then
-      vim.api.nvim_out_write(string.format("LSP.publishDiagnostics: Couldn't find buffer for %s", uri))
-      return
-    end
-    lsp.util.buf_clear_diagnostics(bufnr)
-
-    local sign_ns = 'vim_lsp_signs'
-    local protocol = require 'vim.lsp.protocol'
-    lsp_diagnostic_sign()
-
-    local diagnostic_severity_map = {
-      [protocol.DiagnosticSeverity.Error] = "LspDiagnosticsErrorSign";
-      [protocol.DiagnosticSeverity.Warning] = "LspDiagnosticsWarningSign";
-      [protocol.DiagnosticSeverity.Information] = "LspDiagnosticsInformationSign";
-      [protocol.DiagnosticSeverity.Hint] = "LspDiagnosticsHintSign";
-    }
-    -- https://microsoft.github.io/language-server-protocol/specifications/specification-current/#diagnostic
-    -- The diagnostic's severity. Can be omitted. If omitted it is up to the
-    -- client to interpret diagnostics as error, warning, info or hint.
-    -- TODO: Replace this with server-specific heuristics to infer severity.
-    for _, diagnostic in ipairs(result.diagnostics) do
-      if diagnostic.severity == nil then
-        diagnostic.severity = vim.lsp.protocol.DiagnosticSeverity.Error
-      end
-      vim.fn.sign_place(0, sign_ns, diagnostic_severity_map[diagnostic.severity], bufnr, {lnum=(diagnostic.range.start.line+1),priority=90})
-    end
-
-    lsp.util.buf_diagnostics_save_positions(bufnr, result.diagnostics)
-    lsp.util.buf_diagnostics_underline(bufnr, result.diagnostics)
-    if vim.g.diagnostic_enable_virtual_text == 1 then
-      -- use virtual text show message diagnostic
-      lsp.util.buf_diagnostics_virtual_text(bufnr, result.diagnostics)
-    end
-    -- lsp.util.buf_diagnostics_signs(bufnr, result.diagnostics)
-    api.nvim_command("doautocmd User LspDiagnosticsChanged")
-  end
-
+  -- diagnostic callback
   server_setup.callbacks['textDocument/hover'] = function(_, method, result)
     vim.lsp.util.focusable_float(method, function()
         if not (result and result.contents) then return end

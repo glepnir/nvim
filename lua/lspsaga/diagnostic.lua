@@ -45,7 +45,7 @@ end
 
 local function get_sorted_diagnostics()
   local buffer_number = api.nvim_get_current_buf()
-  local diagnostics = lsp.util.diagnostics_by_buf[buffer_number]
+  local diagnostics = lsp.diagnostic.get(buffer_number)
 
   if diagnostics ~= nil then
       table.sort(diagnostics, compare_diagnostics_entries)
@@ -205,12 +205,12 @@ function M.show_buf_diagnostics()
   local diagnostics = get_sorted_diagnostics()
   local buf_fname = vim.fn.expand("%:t")
   -- 1:Error 2:Warning 3:Information 4:Hint
-  local buf_diagnostic_count = {0,0,0,0}
+  local buf_diagnostic_counts = {0,0,0,0}
   local contents = {}
   local hi_name = {'DiagnosticFloatError','DiagnosticFloatWarn','DiagnositcFLoatInfo','DiagnosticFloatHint'}
   local syntax_line_map = {}
   for idx,diagnostic in ipairs(diagnostics) do
-    buf_diagnostic_count[diagnostic.severity] = buf_diagnostic_count[diagnostic.severity] + 1
+    buf_diagnostic_counts[diagnostic.severity] = buf_diagnostic_counts[diagnostic.severity] + 1
     local diagnostic_line = diagnostic.range.start.line + 1
     local diagnostic_character = diagnostic.range.start.character
     local split_message = vim.fn.split(diagnostic.message," ")
@@ -225,7 +225,7 @@ function M.show_buf_diagnostics()
   end
   local title = '🐞 File: '..buf_fname
   local diagnostic_map = {"Error:","Warn:","Info:","Hint:"}
-  for idx,v in ipairs(buf_diagnostic_count) do
+  for idx,v in ipairs(buf_diagnostic_counts) do
     if v ~= 0 then
       title = title..' '..diagnostic_map[idx]..v
     end
