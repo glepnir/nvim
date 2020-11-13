@@ -2,7 +2,7 @@ local global = require 'domain.global'
 local ptbl = require 'publibs.pltbl'
 local syntax = require 'lspsaga.syntax'
 local server = require 'lspsaga.serverconf'
-local callbacks = require 'lspsaga.callbacks'
+local handlers = require 'lspsaga.handlers'
 local autocmd = require 'internal.event'
 local action = require 'lspsaga.action'
 local vim,api= vim,vim.api
@@ -26,7 +26,7 @@ end
 
 local function add_options(server_setup)
   local options = {
-    callbacks = {};
+    handlers = {};
     capabilities = vim.lsp.protocol.make_client_capabilities();
     settings = vim.empty_dict();
     init_options = vim.empty_dict();
@@ -65,7 +65,7 @@ local function add_options(server_setup)
 
   server_setup._on_attach = server_setup.on_attach;
 
-  callbacks.add_callbacks(server_setup)
+  handlers.add_handlers(server_setup)
 
   return server_setup
 end
