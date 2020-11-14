@@ -48,7 +48,7 @@ function dein:load_repos()
     for _,cfg in pairs(self.repos) do
       vim.fn['dein#add'](cfg.repo,cfg)
     end
-    -- vim.fn['dein#local']('', {frozen= 1, merged= 0 })
+    -- vim.fn['dein#local']('~/workstation/vim/indent-guides', {frozen= 1, merged= 0 })
     vim.fn['dein#end']()
     vim.fn['dein#save_state']()
 
