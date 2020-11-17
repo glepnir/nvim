@@ -19,8 +19,8 @@
   on_event: BufReadPre
   hook_source: |-
     lua <<EOF
-      require('indent_guides').default_opts.indent_guide_size =1
-      require('indent_guides').default_opts.exclude_filetypes = {'LuaTree','vista'}
+      require('indent_guides').options.indent_guide_size =1
+      require('indent_guides').options.exclude_filetypes = {'LuaTree','vista','help'}
     EOF
 
 # - repo: nathanaelkane/vim-indent-guides
