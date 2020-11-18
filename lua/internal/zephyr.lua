@@ -60,8 +60,9 @@ function zephyr.highlight(group, color)
     local style = color.style and 'gui=' .. color.style or 'gui=NONE'
     local fg = color.fg and 'guifg=' .. color.fg or 'guifg=NONE'
     local bg = color.bg and 'guibg=' .. color.bg or 'guibg=NONE'
+    local sp = color.sp and 'guisp=' .. color.sp or ''
     vim.api.nvim_command('highlight ' .. group .. ' ' .. style .. ' ' .. fg ..
-                             ' ' .. bg)
+                             ' ' .. bg..' '..sp)
 end
 
 
@@ -233,6 +234,11 @@ function zephyr.load_syntax()
     LspDiagnosticsVirtualTextWarning= {fg=zephyr.yellow};
     LspDiagnosticsVirtualTextInformation = {fg=zephyr.blue};
     LspDiagnosticsVirtualTextHint = {fg=zephyr.cyan};
+
+    LspDiagnosticsUnderlineError = {style="undercurl",sp=zephyr.red};
+    LspDiagnosticsUnderlineWarning = {style="undercurl",sp=zephyr.yellow};
+    LspDiagnosticsUnderlineInformation = {style="undercurl",sp=zephyr.blue};
+    LspDiagnosticsUnderlineHint = {style="undercurl",sp=zephyr.cyan};
 
     CursorWord0 = {bg=zephyr.currsor_bg};
     CursorWord1 = {bg=zephyr.currsor_bg};
