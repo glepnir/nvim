@@ -62,23 +62,17 @@ gls.left[4] = {
   }
 }
 
-local function find_git_root()
-  local path = vim.fn.expand('%:p:h')
-  local get_git_dir = require('galaxyline.provider_vcs').get_git_dir
-  return get_git_dir(path)
-end
-
 gls.left[5] = {
   GitIcon = {
     provider = function() return '  ' end,
-    condition = find_git_root,
+    condition = require('galaxyline.provider_vcs').check_git_workspace,
     highlight = {colors.orange,colors.line_bg},
   }
 }
 gls.left[6] = {
   GitBranch = {
     provider = 'GitBranch',
-    condition = find_git_root,
+    condition = require('galaxyline.provider_vcs').check_git_workspace,
     highlight = {'#8FBCBB',colors.line_bg,'bold'},
   }
 }
