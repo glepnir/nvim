@@ -10,7 +10,7 @@ local definition_uri = 0
 local reference_uri = 0
 
 local function defintion_reference(result,method_type)
-  if vim.tbl_islist(result) then
+  if type(result) == 'table' then
     local method_option = {
       {icon = vim.g.lsp_nvim_defintion_icon or '   ',title = ':  '.. #result ..' Definitions'};
       {icon = vim.g.lsp_nvim_references_icon or '   ',title = ':  '.. #result ..' References',};
