@@ -138,7 +138,7 @@ function lspsaga.start_lsp_server()
   local client_id = nil
   local bufnr = api.nvim_get_current_buf()
   local buf_filetype = vim.bo.filetype
-  if next(filetype_server_map) == nil then 
+  if next(filetype_server_map) == nil then
     init_server_map()
   end
   -- Filter which files we are considering.
@@ -168,7 +168,7 @@ function lspsaga.start_lsp_server()
 
   -- We couldn't find a root directory, so ignore this file.
   if not root_dir then
-    print(string.format("initialize %s failed doesn't find root_dir",server_setup.name))
+    api.nvim_command('silent! echomsg not found root dir')
     return
   end
 
@@ -191,7 +191,7 @@ function lspsaga.start_lsp_server()
     -- register lsp event
     autocmd.nvim_create_augroups(lsp_event)
     -- Source omnicompletion from LSP.
-    vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+    api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
   end
 
   -- config the server config on_attach
