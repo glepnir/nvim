@@ -2,7 +2,7 @@ local M = {}
 local api = vim.api
 
 function M.add_highlight()
-  api.nvim_command("hi LspFloatWinBorder guifg=#c594c5")
+  api.nvim_command("hi LspFloatWinBorder guifg=black")
   api.nvim_command("hi TargetWord guifg=#EC5f67 gui=bold")
   api.nvim_command("hi ReferencesCount guifg=#2e6ce8 gui=bold")
   api.nvim_command("hi DefinitionCount guifg=#2e6ce8 gui=bold")
