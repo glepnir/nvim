@@ -156,6 +156,7 @@ function M.create_float_contents(contents, filetype,enter,modifiable,opts)
     api.nvim_win_set_option(contents_winid, 'conceallevel', 2)
   end
   api.nvim_win_set_option(contents_winid,"winhl","Normal:"..filetype)
+  api.nvim_win_set_option(contents_winid,'winblend',0)
   return contents_bufnr, contents_winid
 end
 

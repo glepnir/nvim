@@ -105,11 +105,11 @@ local function defintion_reference(result,method_type)
 end
 
 function M.apply_float_map(contents_bufnr)
-  api.nvim_buf_set_keymap(contents_bufnr,'n',"o",":lua require'lsp.provider'.open_link(1)<CR>",{noremap = true,silent = true})
-  api.nvim_buf_set_keymap(contents_bufnr,'n',"s",":lua require'lsp.provider'.open_link(2)<CR>",{noremap = true,silent = true})
-  api.nvim_buf_set_keymap(contents_bufnr,'n',"i",":lua require'lsp.provider'.open_link(3)<CR>",{noremap = true,silent = true})
-  api.nvim_buf_set_keymap(contents_bufnr,'n',"<TAB>",":lua require'lsp.provider'.insert_preview()<CR>",{noremap = true,silent = true})
-  api.nvim_buf_set_keymap(contents_bufnr,'n',"q",":lua require'lsp.provider'.quit_float_window()<CR>",{noremap = true,silent = true})
+  api.nvim_buf_set_keymap(contents_bufnr,'n',"o",":lua require'lspsaga.provider'.open_link(1)<CR>",{noremap = true,silent = true})
+  api.nvim_buf_set_keymap(contents_bufnr,'n',"s",":lua require'lspsaga.provider'.open_link(2)<CR>",{noremap = true,silent = true})
+  api.nvim_buf_set_keymap(contents_bufnr,'n',"i",":lua require'lspsaga.provider'.open_link(3)<CR>",{noremap = true,silent = true})
+  api.nvim_buf_set_keymap(contents_bufnr,'n',"<TAB>",":lua require'lspsaga.provider'.insert_preview()<CR>",{noremap = true,silent = true})
+  api.nvim_buf_set_keymap(contents_bufnr,'n',"q",":lua require'lspsaga.provider'.quit_float_window()<CR>",{noremap = true,silent = true})
 end
 
 -- action 1 mean enter
