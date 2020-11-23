@@ -2,6 +2,7 @@ local pbind = require('publibs.plbind')
 local map_cr = pbind.map_cr
 local map_cu = pbind.map_cu
 local map_cmd = pbind.map_cmd
+local map_args = pbind.map_args
 local vim = vim
 
 local mapping = setmetatable({}, { __index = { vim = {},plugin = {} } })
@@ -78,6 +79,7 @@ function mapping:load_plugin_define()
     ["n|gt"]             = map_cmd("<cmd>lua vim.lsp.buf.type_definition()<CR>"):with_noremap():with_silent(),
     ["n|<Leader>cw"]     = map_cmd("<cmd>lua vim.lsp.buf.workspace_symbol()<CR>"):with_noremap():with_silent(),
     ["n|<Leader>ce"]     = map_cmd("<cmd>lua require'lspsaga.diagnostic'.show_buf_diagnostics()<CR>"):with_noremap():with_silent(),
+    ["n|<Leader>t"]      = map_args("Template"),
     -- dein
     ["n|<Leader>tr"]     = map_cr("call dein#recache_runtimepath()"):with_noremap():with_silent(),
     ["n|<Leader>tf"]     = map_cu('DashboardNewFile'):with_noremap():with_silent(),
