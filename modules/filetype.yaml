@@ -7,9 +7,6 @@
 - repo: ekalinin/Dockerfile.vim
   on_ft: [Dockerfile, docker-compose]
 
-- repo: cespare/vim-toml
-  on_fg: toml
-
 - repo: nvim-treesitter/nvim-treesitter
   on_event: BufRead
   hook_source: |
