@@ -79,7 +79,7 @@ function mapping:load_plugin_define()
     ["n|gt"]             = map_cmd("<cmd>lua vim.lsp.buf.type_definition()<CR>"):with_noremap():with_silent(),
     ["n|<Leader>cw"]     = map_cmd("<cmd>lua vim.lsp.buf.workspace_symbol()<CR>"):with_noremap():with_silent(),
     ["n|<Leader>ce"]     = map_cmd("<cmd>lua require'lspsaga.diagnostic'.show_buf_diagnostics()<CR>"):with_noremap():with_silent(),
-    ["n|<Leader>t"]      = map_args("Template"),
+    ["n|<Leader>ct"]      = map_args("Template"),
     -- dein
     ["n|<Leader>tr"]     = map_cr("call dein#recache_runtimepath()"):with_noremap():with_silent(),
     ["n|<Leader>tf"]     = map_cu('DashboardNewFile'):with_noremap():with_silent(),
@@ -106,9 +106,10 @@ function mapping:load_plugin_define()
     ["n|<Leader>fb"]     = map_cu('DashboardJumpMark'):with_noremap():with_silent(),
     ["n|<Leader>ff"]     = map_cu('DashboardFindFile'):with_noremap():with_silent(),
     ["n|<Leader>fg"]     = map_cu('Telescope git_files'):with_noremap():with_silent(),
-    ["n|<Leader>fw"]     = map_cu('lua require"telescope.builtin".grep_string{search=true}'):with_noremap():with_silent(),
+    ["n|<Leader>fw"]     = map_cu('Telescope grep_string'):with_noremap():with_silent(),
     ["n|<Leader>fh"]     = map_cu('DashboardFindHistory'):with_noremap():with_silent(),
     ["n|<Leader>fl"]     = map_cu('Telescope loclist'):with_noremap():with_silent(),
+    ["n|<Leader>fc"]     = map_cu('Telescope git_commits'):with_noremap():with_silent(),
     ["n|<Leader>fd"]     = map_cu('lua require"telescope".load_dotfiles()'):with_noremap():with_silent(),
     -- ["n|<Leader>fs"]      = map_cu('Clap gosource'):with_noremap():with_silent(),
     -- Plugin acceleratedjk

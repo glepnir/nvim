@@ -1,4 +1,4 @@
-- repo: nvim-lua/telescope.nvim
+- repo: nvim-telescope/telescope.nvim
   on_cmd: Telescope
 
 - repo: nvim-lua/popup.nvim
