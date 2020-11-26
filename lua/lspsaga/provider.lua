@@ -1,7 +1,7 @@
 local window = require 'lspsaga.window'
 local vim,api,lsp = vim,vim.api,vim.lsp
 local short_link = {}
-local root_dir = vim.lsp.buf_get_clients()[1].config.root_dir
+local root_dir = lsp.buf_get_clients()[1].config.root_dir or ''
 local M = {}
 
 local contents = {}
