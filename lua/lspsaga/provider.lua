@@ -218,7 +218,6 @@ function M.preview_definiton(timeout_ms)
   end
 end
 
-
 -- TODO: codeAction
 function M.code_action(timeout_ms)
   local method = "textDocument/codeAction"
