@@ -88,7 +88,7 @@
   on_cmd: Format
   hook_source: |
     lua <<EOF
-      require('format').setup({
+      require('formatter').setup({
         typescriptreact = {
             prettier = function()
               return {
