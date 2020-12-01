@@ -4,9 +4,6 @@
 - repo: ziglang/zig.vim
   on_ft: [zig, zir]
 
-- repo: ekalinin/Dockerfile.vim
-  on_ft: [Dockerfile, docker-compose]
-
 - repo: nvim-treesitter/nvim-treesitter
   on_event: BufRead
   hook_source: |
