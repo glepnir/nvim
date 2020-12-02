@@ -25,7 +25,7 @@
   hook_source: |
     let g:dashboard_preview_command = 'cat'
     let g:dashboard_preview_pipeline = 'lolcat'
-    let g:dashboard_preview_file = getenv('HOME') . '/.config/nvim/staic/tiger.txt'
+    let g:dashboard_preview_file = getenv('HOME') . '/.config/nvim/static/tiger.txt'
     let g:dashboard_preview_file_height = 20
     let g:dashboard_preview_file_width = 80
     let g:dashboard_default_executive ='telescope'
