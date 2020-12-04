@@ -11,11 +11,6 @@
           mappings = true,
           always_show_bufferline = false,
         };
-        highlights = {
-          bufferline_selected = {
-            gui = "bold",
-          };
-        };
       }
     EOF
 
