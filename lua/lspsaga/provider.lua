@@ -9,11 +9,13 @@ local target_line_count = 0
 local definition_uri = 0
 local reference_uri = 0
 
-local function defintion_reference(result,method_type)
+--TODO: set cursor
+
+local create_finder_contents =function (result,method_type,opts)
   if type(result) == 'table' then
     local method_option = {
-      {icon = vim.g.lsp_nvim_defintion_icon or '   ',title = ':  '.. #result ..' Definitions'};
-      {icon = vim.g.lsp_nvim_references_icon or '   ',title = ':  '.. #result ..' References',};
+      {icon = opts.definition_icon or '',title = ':  '.. #result ..' Definitions'};
+      {icon = opts.reference_icon or '',title = ':  '.. #result ..' References',};
     }
     local params = vim.fn.expand("<cword>")
     local title = method_option[method_type].icon.. params ..method_option[method_type].title
@@ -55,53 +57,62 @@ local function defintion_reference(result,method_type)
       short_link[target_line_count].preview_data = {}
       short_link[target_line_count].preview_data.status = 0
     end
-    if method_type == 2 then
-      for _ =1,10,1 do
-        table.insert(contents,' ')
-      end
-      local help = {
-        "  Help: ",
-        " ",
-        "[TAB] : Preview     [o] : Open File     [s] : Vsplit";
-        "[i]   : Split       [q] : Exit";
-      }
-      for _,v in ipairs(help) do
-        table.insert(contents,v)
-      end
-
-      local opts = {
-        relative = "cursor",
-        style = "minimal",
-      }
-      M.contents_buf,M.contents_win,M.border_bufnr,M.border_win = window.create_float_window(contents,'plaintext',2,true,true,opts)
-      api.nvim_win_set_cursor(M.contens_buf,{3,1})
-
-      api.nvim_buf_add_highlight(M.contents_buf,-1,"DefinitionIcon",0,1,#method_option[method_type].icon-1)
-      api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetWord",0,#method_option[method_type].icon,#params+#method_option[method_type].icon+1)
-      api.nvim_buf_add_highlight(M.contents_buf,-1,"DefinitionCount",0,0,-1)
-      api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetWord",3+definition_uri,#method_option[method_type].icon,#params+#method_option[method_type].icon+1)
-      api.nvim_buf_add_highlight(M.contents_buf,-1,"ReferencesIcon",3+definition_uri,1,#method_option[method_type].icon+4)
-      api.nvim_buf_add_highlight(M.contents_buf,-1,"ReferencesCount",3+definition_uri,0,-1)
-      api.nvim_buf_add_highlight(M.contents_buf,-1,"HelpTitle",definition_uri+reference_uri+15,0,-1)
-      api.nvim_buf_add_highlight(M.contents_buf,-1,"HelpItem",definition_uri+reference_uri+17,0,-1)
-      api.nvim_buf_add_highlight(M.contents_buf,-1,"HelpItem",definition_uri+reference_uri+18,0,-1)
-
-      for i=1,definition_uri,1 do
-        api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetFileName",1+i,0,-1)
-      end
-
-      for i=1,reference_uri,1 do
-        api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetFileName",i+definition_uri+4,0,-1)
-      end
-      -- load float window map
-      M.apply_float_map(M.contents_buf)
-      -- clear contents
-      contents = {}
-      target_line_count = 0
-      definition_uri = 0
-      reference_uri = 0
-    end
   end
+end
+
+local lsp_finder_highlight = function(opts)
+  local params = vim.fn.expand("<cword>")
+  local def_icon = opts.definition_icon or ''
+  local ref_icon = opts.reference_icon or ''
+  -- add syntax
+  api.nvim_buf_add_highlight(M.contents_buf,-1,"DefinitionIcon",0,1,#def_icon-1)
+  api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetWord",0,#def_icon,#params+#def_icon+3)
+  api.nvim_buf_add_highlight(M.contents_buf,-1,"DefinitionCount",0,0,-1)
+  api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetWord",3+definition_uri,#ref_icon,#params+#ref_icon+3)
+  api.nvim_buf_add_highlight(M.contents_buf,-1,"ReferencesIcon",3+definition_uri,1,#ref_icon+4)
+  api.nvim_buf_add_highlight(M.contents_buf,-1,"ReferencesCount",3+definition_uri,0,-1)
+  api.nvim_buf_add_highlight(M.contents_buf,-1,"HelpTitle",definition_uri+reference_uri+15,0,-1)
+  api.nvim_buf_add_highlight(M.contents_buf,-1,"HelpItem",definition_uri+reference_uri+17,0,-1)
+  api.nvim_buf_add_highlight(M.contents_buf,-1,"HelpItem",definition_uri+reference_uri+18,0,-1)
+end
+
+local render_finder_result= function (finder_opts)
+  for _ =1,10,1 do
+    table.insert(contents,' ')
+  end
+  local help = {
+    "  Help: ",
+    " ",
+    "[TAB] : Preview     [o] : Open File     [s] : Vsplit";
+    "[i]   : Split       [q] : Exit";
+  }
+  for _,v in ipairs(help) do
+    table.insert(contents,v)
+  end
+
+  local opts = {
+    relative = "cursor",
+    style = "minimal",
+  }
+  M.contents_buf,M.contents_win,M.border_bufnr,M.border_win = window.create_float_window(contents,'plaintext',2,true,true,opts)
+  api.nvim_win_set_cursor(M.contens_buf,{3,1})
+
+  for i=1,definition_uri,1 do
+    api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetFileName",1+i,0,-1)
+  end
+
+  for i=1,reference_uri,1 do
+    api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetFileName",i+definition_uri+4,0,-1)
+  end
+  -- load float window map
+  M.apply_float_map(M.contents_buf)
+  lsp_finder_highlight(finder_opts)
+
+  -- clear contents
+  contents = {}
+  target_line_count = 0
+  definition_uri = 0
+  reference_uri = 0
 end
 
 function M.apply_float_map(contents_bufnr)
@@ -158,7 +169,7 @@ function M.quit_float_window()
   end
 end
 
-function M.lsp_peek_references(timeout)
+local send_request = function(timeout)
   local method = {"textDocument/definition","textDocument/references"}
   local params = lsp.util.make_position_params()
   local results = {}
@@ -170,6 +181,7 @@ function M.lsp_peek_references(timeout)
   if not vim.tbl_isempty(response_b) then
     table.insert(results,response_b)
   end
+
   for i,v in ipairs(results) do
     if v[1].result == nil or vim.tbl_isempty(v[1].result) then
       print("No Location found:",method[i])
@@ -177,9 +189,21 @@ function M.lsp_peek_references(timeout)
       contents = {}
       return
     end
-    defintion_reference(v[1].result,i)
+    coroutine.yield(v[1].result,i)
   end
-  return
+end
+
+function M.lsp_finder(opts)
+  local request_instance = coroutine.create(send_request)
+  while true do
+    local _,result,method_type = coroutine.resume(request_instance)
+    create_finder_contents(result,method_type,opts)
+
+    if coroutine.status(request_instance) == 'dead' then
+      break
+    end
+  end
+  render_finder_result(opts)
 end
 
 
