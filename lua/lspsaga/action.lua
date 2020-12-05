@@ -26,20 +26,6 @@ function M.lsp_before_save(filetypes)
   return lsp_beforesave
 end
 
--- jump to definition in split window
-function M.lsp_jump_definition()
-  local winr = vim.fn.winnr("$")
-  local winsize = vim.api.nvim_exec([[
-  echo (winwidth(0) - (max([len(line('$')), &numberwidth-1]) + 1)) < 110
-  ]],true)
-  if winr >= 4 or winsize == 1 then
-    vim.lsp.buf.definition()
-  else
-    vim.api.nvim_command("vsplit")
-    vim.lsp.buf.definition()
-  end
-end
-
 -- Synchronously organise (Go) imports. Taken from
 -- https://github.com/neovim/nvim-lsp/issues/115#issuecomment-654427197.
 function M.go_organize_imports_sync(timeout_ms)
@@ -49,7 +35,7 @@ function M.go_organize_imports_sync(timeout_ms)
   params.context = context
 
   -- See the implementation of the textDocument/codeAction callback
-  -- (lua/vim/lsp/callbacks.lua) for how to do this properly.
+  -- (lua/vim/lsp/handler.lua) for how to do this properly.
   local result = lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout_ms)
   if not result then return end
   local actions = result[1].result

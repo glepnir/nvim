@@ -20,7 +20,7 @@
   hook_source: |-
     lua <<EOF
       require('indent_guides').options.indent_guide_size =1
-      require('indent_guides').options.exclude_filetypes = {'LuaTree','vista','help'}
+      require('indent_guides').options.exclude_filetypes = {'LuaTree','vista','help','sagahover'}
     EOF
 
 # - repo: nathanaelkane/vim-indent-guides
