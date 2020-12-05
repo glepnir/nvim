@@ -44,7 +44,10 @@ local function compare_diagnostics_entries(entry_a, entry_b)
 end
 
 local function get_sorted_diagnostics()
+  local active_clients = lsp.get_active_clients()
+
   local buffer_number = api.nvim_get_current_buf()
+  -- If no client id there will be get all diagnostics
   local diagnostics = lsp.diagnostic.get(buffer_number)
 
   if diagnostics ~= nil then
@@ -95,9 +98,9 @@ end
 -- TODO: when https://github.com/neovim/neovim/issues/12923 sovled
 -- rewrite this function
 function M.close_preview()
-  local has_value,prev_win = pcall(api.nvim_buf_get_var,0,"diagnostic_float_window")
+  local ok,prev_win = pcall(api.nvim_buf_get_var,0,"diagnostic_float_window")
   if prev_win == nil then return end
-  if has_value and prev_win[1] ~= nil and api.nvim_win_is_valid(prev_win[1]) then
+  if ok and prev_win[1] ~= nil and api.nvim_win_is_valid(prev_win[1]) then
     local current_position = vim.fn.getpos('.')
     local has_lineinfo,lines = pcall(api.nvim_buf_get_var,0,"diagnostic_prev_position")
     if has_lineinfo then
@@ -120,11 +123,16 @@ local function jump_to_entry(entry)
     api.nvim_win_close(prev_fw[1],true)
     api.nvim_win_close(prev_fw[2],true)
   end
+
   local diagnostic_message = {}
   local entry_line = get_line(entry) + 1
   local entry_character = get_character(entry)
   local hiname ={"DiagnosticError","DiagnosticWarning","DiagnosticInformation","DiagnosticHint"}
-  table.insert(diagnostic_message,severity_icon[entry.severity])
+
+  -- add server source in diagnostic float window
+  local server_source = entry.source
+  local header = severity_icon[entry.severity] ..' '..'['.. server_source..']'
+  table.insert(diagnostic_message,header)
 
   local wrap_message = wrap.wrap_line(entry.message,50)
   local truncate_line = wrap.add_truncate_line(wrap_message)

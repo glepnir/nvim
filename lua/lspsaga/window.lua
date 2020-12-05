@@ -1,5 +1,6 @@
 local vim,api = vim,vim.api
 local M = {}
+local wrap = require('lspsaga.wrap')
 
 -- 1 thin
 -- 2 radio
@@ -236,23 +237,44 @@ function M.fancy_floating_markdown(contents, opts)
 
   -- Compute size of float needed to show (wrapped) lines
   opts.wrap_at = opts.wrap_at or (vim.wo["wrap"] and api.nvim_win_get_width(0))
-  local width, height = vim.lsp.util._make_floating_popup_size(stripped, opts)
+  local width, _ = vim.lsp.util._make_floating_popup_size(stripped, opts)
 
-  -- Insert blank line separator after code block
-  local insert_separator = opts.separator or true
-  if insert_separator then
-    for i, h in ipairs(highlights) do
-      h.start = h.start + i - 1
-      h.finish = h.finish + i - 1
-      if h.finish + 1 <= #stripped then
-        table.insert(stripped, h.finish + 1, string.rep("─", width))
-        height = height + 1
+  local win_width = vim.fn.winwidth(0)
+  if #stripped[1] < win_width - 25 then
+    width = #stripped[1]
+  end
+
+  -- TODO: fix bug
+  local fix_lines = {}
+  local long_line_idx = {}
+  for index,value in pairs(stripped) do
+    if #value > width then
+      table.insert(long_line_idx,index)
+      local tmp = wrap.wrap_line(value,width)
+      fix_lines[index] = tmp
+    end
+  end
+
+  for idx,v in pairs(long_line_idx) do
+    if idx == 1 then
+      table.remove(stripped,v)
+    else
+      table.remove(stripped,v+#fix_lines[long_line_idx[idx-1]])
+    end
+    for i,line in ipairs(fix_lines[v]) do
+      if i == 1 then
+        table.insert(stripped,v,line)
+      else
+        table.insert(stripped,v+i,line)
       end
     end
   end
 
+  local truncate_line = wrap.add_truncate_line(stripped)
+  table.insert(stripped,2,truncate_line)
+
   -- Make the floating window.
-  local contents_bufnr,contents_winid,border_bufnr,border_winid = M.create_float_window(stripped,'',1,false,false,opts)
+  local contents_bufnr,contents_winid,border_bufnr,border_winid = M.create_float_window(stripped,'sagahover',1,false,false,opts)
 
   -- Switch to the floating window to apply the syntax highlighting.
   -- This is because the syntax command doesn't accept a target.
