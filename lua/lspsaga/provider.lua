@@ -8,6 +8,7 @@ local contents = {}
 local target_line_count = 0
 local definition_uri = 0
 local reference_uri = 0
+local param_length = 0
 
 --TODO: set cursor
 
@@ -18,6 +19,7 @@ local create_finder_contents =function (result,method_type,opts)
       {icon = opts.reference_icon or '',title = ':  '.. #result ..' References',};
     }
     local params = vim.fn.expand("<cword>")
+    param_length = #params
     local title = method_option[method_type].icon.. params ..method_option[method_type].title
     if method_type == 1 then
       table.insert(contents,title)
@@ -61,14 +63,13 @@ local create_finder_contents =function (result,method_type,opts)
 end
 
 local lsp_finder_highlight = function(opts)
-  local params = vim.fn.expand("<cword>")
   local def_icon = opts.definition_icon or ''
   local ref_icon = opts.reference_icon or ''
   -- add syntax
   api.nvim_buf_add_highlight(M.contents_buf,-1,"DefinitionIcon",0,1,#def_icon-1)
-  api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetWord",0,#def_icon,#params+#def_icon+3)
+  api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetWord",0,#def_icon,param_length+#def_icon+3)
   api.nvim_buf_add_highlight(M.contents_buf,-1,"DefinitionCount",0,0,-1)
-  api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetWord",3+definition_uri,#ref_icon,#params+#ref_icon+3)
+  api.nvim_buf_add_highlight(M.contents_buf,-1,"TargetWord",3+definition_uri,#ref_icon,param_length+#ref_icon+3)
   api.nvim_buf_add_highlight(M.contents_buf,-1,"ReferencesIcon",3+definition_uri,1,#ref_icon+4)
   api.nvim_buf_add_highlight(M.contents_buf,-1,"ReferencesCount",3+definition_uri,0,-1)
   api.nvim_buf_add_highlight(M.contents_buf,-1,"HelpTitle",definition_uri+reference_uri+15,0,-1)
@@ -113,6 +114,7 @@ local render_finder_result= function (finder_opts)
   target_line_count = 0
   definition_uri = 0
   reference_uri = 0
+  param_length = 0
 end
 
 function M.apply_float_map(contents_bufnr)
