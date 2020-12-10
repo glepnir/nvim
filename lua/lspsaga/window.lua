@@ -173,15 +173,15 @@ function M.create_float_window(contents,filetype,border,enter,modifiable,opts)
   end
   contents_option.col = border_option.col + 1
 
-  if enter then
-    local border_bufnr,border_winid = create_float_boder(contents,border,opts)
-    local contents_bufnr,contents_winid = M.create_float_contents(contents,filetype,enter,modifiable,border_option)
-    return contents_bufnr,contents_winid,border_bufnr,border_winid
-  else
+  if not enter then
     local contents_bufnr,contents_winid = M.create_float_contents(contents,filetype,enter,modifiable,contents_option)
     local border_bufnr,border_winid = create_float_boder(contents,border,opts)
     return contents_bufnr,contents_winid,border_bufnr,border_winid
   end
+
+  local border_bufnr,border_winid = create_float_boder(contents,border,opts)
+  local contents_bufnr,contents_winid = M.create_float_contents(contents,filetype,enter,modifiable,border_option)
+  return contents_bufnr,contents_winid,border_bufnr,border_winid
 end
 
 function M.open_shadow_float_win(contents,filetype,enter,modifiable,opts)
