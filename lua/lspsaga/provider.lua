@@ -78,6 +78,8 @@ local lsp_finder_highlight = function(opts)
 end
 
 local render_finder_result= function (finder_opts)
+  if next(contents) == nil then return end
+
   for _ =1,10,1 do
     table.insert(contents,' ')
   end
