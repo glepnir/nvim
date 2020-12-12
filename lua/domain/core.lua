@@ -8,7 +8,7 @@ local vim = vim
 local M = {}
 
 -- Create cache dir and subs dir
-function M.createdir()
+local createdir = function ()
   local data_dir = {
     global.cache_dir..'backup',
     global.cache_dir..'session',
@@ -28,7 +28,7 @@ function M.createdir()
   end
 end
 
-function M.disable_distribution_plugins()
+local disable_distribution_plugins= function()
   vim.g.loaded_gzip              = 1
   vim.g.loaded_tar               = 1
   vim.g.loaded_tarPlugin         = 1
@@ -49,16 +49,16 @@ function M.disable_distribution_plugins()
   vim.g.loaded_netrwFileHandlers = 1
 end
 
-function M.leader_map()
+local leader_map = function()
   vim.g.mapleader = " "
   vim.fn.nvim_set_keymap('n',' ','',{noremap = true})
   vim.fn.nvim_set_keymap('x',' ','',{noremap = true})
 end
 
-function M.load_core()
-  M.createdir()
-  M.disable_distribution_plugins()
-  M.leader_map()
+local load_core =function()
+  createdir()
+  disable_distribution_plugins()
+  leader_map()
 
   options:load_options()
 
@@ -72,4 +72,4 @@ function M.load_core()
   saga.create_saga_augroup()
 end
 
-M.load_core()
+load_core()
