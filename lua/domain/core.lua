@@ -5,7 +5,6 @@ local autocmd = require 'internal.event'
 local saga = require 'lspsaga.saga'
 local fs = require 'publibs.plfs'
 local vim = vim
-local M = {}
 
 -- Create cache dir and subs dir
 local createdir = function ()
