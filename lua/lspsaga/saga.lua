@@ -1,5 +1,5 @@
+local lib = require 'lspsaga.libs'
 local global = require 'domain.global'
-local ptbl = require 'publibs.pltbl'
 local syntax = require 'lspsaga.syntax'
 local server = require 'lspsaga.serverconf'
 local handlers = require 'lspsaga.handlers'
@@ -35,7 +35,7 @@ local function add_options(server_setup)
   };
 
   for option,value in pairs(options) do
-    if not ptbl.has_key(server_setup,option) then
+    if not lib.has_key(server_setup,option) then
       server_setup[option] = value
     end
   end
@@ -79,7 +79,7 @@ end
   -- Asumes filepath is a file.
 local function dirname(filepath)
   local is_changed = false
-  local result = filepath:gsub(global.path_sep.."([^"..global.path_sep.."]+)$", function()
+  local result = filepath:gsub(lib.path_sep.."([^"..lib.path_sep.."]+)$", function()
     is_changed = true
     return ""
   end)
@@ -87,7 +87,7 @@ local function dirname(filepath)
 end
 
 local function path_join(...)
-  return table.concat(vim.tbl_flatten {...}, global.path_sep)
+  return table.concat(vim.tbl_flatten {...}, lib.path_sep)
 end
 
 -- Ascend the buffer's path until we find the rootdir.
@@ -142,7 +142,7 @@ function lspsaga.start_lsp_server()
     init_server_map()
   end
   -- Filter which files we are considering.
-  if not ptbl.has_key(filetype_server_map,buf_filetype) then
+  if not lib.has_key(filetype_server_map,buf_filetype) then
     return
   end
 
@@ -180,7 +180,7 @@ function lspsaga.start_lsp_server()
     return
   end
 
-  local on_attach = function(client,bufnr)
+  local on_attach = function(client,buf_nr)
     load_completion()
     local lsp_event = {}
 
@@ -191,7 +191,7 @@ function lspsaga.start_lsp_server()
     -- register lsp event
     autocmd.nvim_create_augroups(lsp_event)
     -- Source omnicompletion from LSP.
-    api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+    api.nvim_buf_set_option(buf_nr, "omnifunc", "v:lua.vim.lsp.omnifunc")
   end
 
   -- config the server config on_attach
