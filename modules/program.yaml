@@ -84,7 +84,7 @@
     let g:gutentags_exclude_filetypes = [ 'defx', 'denite', 'vista', 'magit' ]
 
 - repo: mhartington/formatter.nvim
-  on_fg: [typescript,typescriptreact,lua]
+  on_ft: [typescript,typescriptreact,lua]
   on_cmd: Format
   hook_source: |
     lua <<EOF
