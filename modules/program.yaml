@@ -23,19 +23,6 @@
       require('indent_guides').options.exclude_filetypes = {'LuaTree','vista','help','sagahover'}
     EOF
 
-# - repo: nathanaelkane/vim-indent-guides
-#   on_event: BufReadPre
-#   hook_post_source: IndentGuidesEnable
-#   hook_add: |-
-#     let g:indent_guides_default_mapping = 0
-#     let g:indent_guides_tab_guides = 0
-#     let g:indent_guides_color_change_percent = 3
-#     let g:indent_guides_guide_size = 1
-#     let g:indent_guides_exclude_filetypes = [
-#       \ 'help', 'defx', 'denite', 'denite-filter', 'startify',
-#       \ 'vista', 'vista_kind', 'tagbar', 'lsp-hover', 'clap_input',
-#       \ 'any-jump', 'gina-status', 'gina-commit', 'dashboard','terminal']
-
 - repo: tyru/caw.vim
   depends: context_filetype.vim
   on_map: { nx: <Plug> }

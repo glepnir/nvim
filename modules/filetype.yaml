@@ -30,6 +30,9 @@
     }
     EOF
 
+- repo: nvim-treesitter/nvim-treesitter-textobjects
+  on_source: nvim-treesitter
+
 - repo: iamcco/markdown-preview.nvim
   on_ft: [markdown, pandoc.markdown, rmd]
   build: 'sh -c "cd app & yarn install"'
