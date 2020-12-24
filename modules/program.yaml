@@ -17,11 +17,6 @@
 
 - repo: glepnir/indent-guides.nvim
   on_event: BufReadPre
-  hook_source: |-
-    lua <<EOF
-      require('indent_guides').options.indent_guide_size =1
-      require('indent_guides').options.exclude_filetypes = {'LuaTree','vista','help','sagahover'}
-    EOF
 
 - repo: tyru/caw.vim
   depends: context_filetype.vim
