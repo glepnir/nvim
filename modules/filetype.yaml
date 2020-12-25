@@ -1,6 +1,3 @@
-- repo: Shougo/context_filetype.vim
-  on_event: BufReadPost
-
 - repo: ziglang/zig.vim
   on_ft: [zig, zir]
 
