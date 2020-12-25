@@ -1,5 +1,20 @@
 - repo: nvim-telescope/telescope.nvim
   on_cmd: Telescope
+  hook_source: |-
+    lua <<EOF
+      require('telescope').setup {
+          extensions = {
+              fzy_native = {
+                  override_generic_sorter = false,
+                  override_file_sorter = true,
+              }
+          }
+      }
+      require('telescope').load_extension('fzy_native')
+    EOF
+
+- repo: nvim-telescope/telescope-fzy-native.nvim
+  on_source: telescope.nvim
 
 - repo: nvim-lua/popup.nvim
   on_source: telescope.nvim
@@ -12,29 +27,3 @@
   hook_source: |
     let g:far#source = 'rg'
 
-# - repo: liuchengxu/vim-clap
-#   merged: 0
-#   build: "bash install.sh"
-#   on_map: { n: <Plug> }
-#   hook_source: |
-#     let g:clap_cache_directory = $DATA_PATH . '/clap'
-#     let g:clap_theme = 'material_design_dark'
-#     let g:clap_current_selection_sign= { 'text': '🌼', 'texthl': "ClapCurrentSelectionSign", "linehl": "ClapCurrentSelection"}
-#     let g:clap_layout = { 'relative': 'editor' }
-#     let g:clap_enable_icon = 1
-#     let g:clap_search_box_border_style = 'curve'
-#     let g:clap_provider_grep_enable_icon = 1
-#     let g:clap_prompt_format = '%spinner%%forerunner_status% %provider_id%: '
-#     let g:clap_provider_dotfiles = initself#clap_my_dotfiles()
-#     let g:clap_provider_gosource = initself#clap_go_source()
-# 
-#     " A funtion to config highlight of ClapSymbol
-#     " when the background color is opactiy
-#     function! s:ClapSymbolHL() abort
-#         let s:current_bgcolor = synIDattr(hlID("Normal"), "bg")
-#         if s:current_bgcolor == ''
-#             hi ClapSymbol guibg=NONE ctermbg=NONE
-#         endif
-#     endfunction
-# 
-#     autocmd User ClapOnEnter call s:ClapSymbolHL()
