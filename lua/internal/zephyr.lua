@@ -243,9 +243,9 @@ function zephyr.load_syntax()
     CursorWord0 = {bg=zephyr.currsor_bg};
     CursorWord1 = {bg=zephyr.currsor_bg};
 
-    luaTreeFolderName = {fg=zephyr.blue};
-    LuaTreeRootFolder = {fg=zephyr.red};
-    LuaTreeSpecialFile = {fg=zephyr.fg,bg=zephyr.none,stryle='NONE'};
+    NvimTreeFolderName = {fg=zephyr.blue};
+    NvimTreeRootFolder = {fg=zephyr.red};
+    NvimTreeSpecialFile = {fg=zephyr.fg,bg=zephyr.none,stryle='NONE'};
 
     TelescopeBorder = {fg=zephyr.teal};
     TelescopePromptBorder = {fg=zephyr.blue}

@@ -87,8 +87,8 @@ function mapping:load_plugin_define()
     ["n|[g"]             = map_cmd("<plug>(signify-next-hunk)"),
     ["n|]g"]             = map_cmd("<plug>(signify-prev-hunk)"),
     -- Plugin nvim-tree
-    ["n|<Leader>e"]      = map_cr('LuaTreeToggle'):with_noremap():with_silent(),
-    ["n|<Leader>F"]      = map_cr('LuaTreeFindFile'):with_noremap():with_silent(),
+    ["n|<Leader>e"]      = map_cr('NvimTreeToggle'):with_noremap():with_silent(),
+    ["n|<Leader>F"]      = map_cr('NvimTreeFindFile'):with_noremap():with_silent(),
     -- Plugin MarkdownPreview
     ["n|<Leader>om"]     = map_cu('MarkdownPreview'):with_noremap():with_silent(),
     -- Plugin DadbodUI
