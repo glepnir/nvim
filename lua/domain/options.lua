@@ -98,7 +98,6 @@ function options:load_options()
     number         = true;
     colorcolumn    = "80";
     foldenable     = true;
-    foldmethod     = "indent";
     signcolumn     = "yes";
     conceallevel   = 2;
     concealcursor  = "niv";
