@@ -26,6 +26,7 @@ function autocmd.load_autocmds()
       {"BufWritePre","*.tmp","setlocal noundofile"};
       {"BufWritePre","*.bak","setlocal noundofile"};
       {"BufWritePre","*.tsx","lua vim.api.nvim_command('Format')"};
+      {"BufRead","*","lua require('internal.selfunc').enable_fold()"}
     };
 
     wins = {
