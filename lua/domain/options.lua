@@ -86,12 +86,12 @@ function options:load_options()
   self.bw_local   = {
     synmaxcol      = 2500;
     formatoptions  = "1jcroql";
-    textwidth      = 100;
+    textwidth      = 80;
     expandtab      = true;
+    autoindent     = true;
     tabstop        = 2;
     shiftwidth     = 2;
     softtabstop    = -1;
-    autoindent     = true;
     breakindentopt = "shift:2,min:20";
     wrap           = false;
     linebreak      = true;

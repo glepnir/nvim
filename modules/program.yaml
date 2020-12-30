@@ -19,7 +19,6 @@
   on_event: BufReadPre
 
 - repo: tyru/caw.vim
-  depends: context_filetype.vim
   on_map: { nx: <Plug> }
   hook_add: |
     function! InitCaw() abort
