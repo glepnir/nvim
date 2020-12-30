@@ -1,5 +1,5 @@
 local global = require 'domain.global'
-local server = {}
+local server = require 'lspsaga.saga'
 local vim = vim
 
 -- gopls configuration template use daemon
@@ -96,14 +96,3 @@ chmod +x $RUSTANALYZER
 mv $RUSTANALYZER /usr/local/bin/
 
 ]=]
-
--- TODO: check install scripts and design a better install function
-function server.lsp_install_server()
-  os.execute("sh -c"..lsp_intall_scripts)
-end
-
-function server.install_command()
-    vim.api.nvim_command("command! -nargs=0 -bar LspInstall lua require'lspconf'.lsp_install_server()")
-end
-
-return server

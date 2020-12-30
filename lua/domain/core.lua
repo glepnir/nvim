@@ -68,6 +68,7 @@ local load_core =function()
   require('internal.mapping')
   autocmd.load_autocmds()
   require('internal.eviline')
+  require('internal.lspserver')
   saga.create_saga_augroup()
 end
 

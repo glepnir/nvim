@@ -35,12 +35,11 @@
     EOF
 
 - repo: itchyny/vim-cursorword
-  on_event: FileType
-  hook_add: let g:cursorword = 0
-  hook_source: |-
+  on_event: [BufReadPre,BufNewFile]
+  hook_source: |
     augroup user_plugin_cursorword
       autocmd!
-      autocmd FileType yaml,markdown let b:cursorword = 1
+      autocmd FileType defx,denite,fern,clap,vista let b:cursorword = 0
       autocmd WinEnter * if &diff || &pvw | let b:cursorword = 0 | endif
       autocmd InsertEnter * let b:cursorword = 0
       autocmd InsertLeave * let b:cursorword = 1

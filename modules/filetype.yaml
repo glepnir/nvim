@@ -1,3 +1,6 @@
+- repo: Shougo/context_filetype.vim
+  on_event: BufReadPre
+
 - repo: ziglang/zig.vim
   on_ft: [zig, zir]
 
@@ -5,6 +8,8 @@
   on_event: BufRead
   hook_source: |
     lua <<EOF
+    vim.api.nvim_command('set foldmethod=expr')
+    vim.api.nvim_command('set foldexpr=nvim_treesitter#foldexpr()')
     require'nvim-treesitter.configs'.setup {
         highlight = {
           enable = true,
