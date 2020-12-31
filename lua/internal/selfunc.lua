@@ -5,13 +5,6 @@ local M = {
   lua = {'lua '}
 }
 
-function M.enable_fold()
-  if vim.o.runtimepath:find('nvim-treesitter') then
-    vim.api.nvim_command('set foldmethod=expr')
-    vim.api.nvim_command('set foldexpr=nvim_treesitter#foldexpr()')
-  end
-end
-
 function M.run_command()
   local cmd = nil
   local file_type = vim.fn.expand("%:e")
