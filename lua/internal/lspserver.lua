@@ -1,5 +1,5 @@
 local global = require 'domain.global'
-local server = require 'lspsaga.saga'
+local server = require 'lspsaga.server'
 local vim = vim
 
 -- gopls configuration template use daemon
@@ -15,8 +15,8 @@ server.go = {
 }
 
 server.lua = {
-  cmd = { global.home.."/lua-language-server/bin/macOS/lua-language-server", "-E",
-          global.home.."/lua-language-server/main.lua"};
+  cmd = { global.home.."/workstation/lua-language-server/bin/macOS/lua-language-server", "-E",
+          global.home.."/workstation/lua-language-server/main.lua"};
   filetypes = {'lua'};
   root_patterns = {'.git'};
   settings = {
