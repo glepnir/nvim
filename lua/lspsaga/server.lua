@@ -111,6 +111,7 @@ local function buffer_find_root_dir(bufnr, is_root_path)
   end
 end
 
+-- check file exists
 local exists =  function (file)
   local ok, _, code = os.rename(file, file)
   if not ok then
@@ -131,15 +132,6 @@ local init_server_map = function()
       end
     end
   end
-end
-
-local attach_fn = {}
-
-function server.register_on_attach(fn)
-  if type(fn) ~= 'function' then
-    print('fn must be a function type')
-  end
-  table.insert(attach_fn,fn)
 end
 
 -- Start Lsp server
