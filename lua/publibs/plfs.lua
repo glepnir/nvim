@@ -1,5 +1,6 @@
 local pfs = {}
 
+-- check file exists
 function pfs.exists(file)
   local ok, err, code = os.rename(file, file)
   if not ok then
