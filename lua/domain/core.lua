@@ -2,7 +2,6 @@ local options = require 'domain.options'
 local global = require 'domain.global'
 local dein = require 'domain.dein'
 local autocmd = require 'internal.event'
-local saga = require 'lspsaga.saga'
 local fs = require 'publibs.plfs'
 local vim = vim
 
@@ -69,7 +68,7 @@ local load_core =function()
   autocmd.load_autocmds()
   require('internal.eviline')
   require('internal.lspserver')
-  saga.create_saga_augroup()
+  require('lspsaga.server').create_saga_augroup()
 end
 
 load_core()

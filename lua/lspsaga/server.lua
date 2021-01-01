@@ -4,6 +4,7 @@ local handlers = require 'lspsaga.handlers'
 local autocmd = require 'internal.event'
 local action = require 'lspsaga.action'
 local vim,api= vim,vim.api
+local server = {}
 
 -- A table to store our root_dir to client_id lookup. We want one LSP per
 -- root directory, and this is how we assert that.
@@ -110,7 +111,16 @@ local function buffer_find_root_dir(bufnr, is_root_path)
   end
 end
 
-local server = {}
+local exists =  function (file)
+  local ok, _, code = os.rename(file, file)
+  if not ok then
+    if code == 13 then
+      -- Permission denied, but it exists
+      return true
+    end
+  end
+  return ok
+end
 
 local init_server_map = function()
   if vim.tbl_isempty(server) then return end
@@ -137,15 +147,23 @@ function server.start_lsp_server()
   local client_id = nil
   local bufnr = api.nvim_get_current_buf()
   local buf_filetype = vim.bo.filetype
+
   if next(filetype_server_map) == nil then
     init_server_map()
   end
+
   -- Filter which files we are considering.
   if not lib.has_key(filetype_server_map,buf_filetype) then
     return
   end
 
   local server_setup = server[filetype_server_map[buf_filetype]]
+
+  -- check server executable file doesnot exist
+  if not exists(server_setup.cmd[1]) then
+    print(string.format("%s does not exist",server_setup.cmd[1]))
+    return
+  end
 
   -- like css/shell etc server that does not have a root file.
   -- so use the home dir as the root
@@ -223,7 +241,7 @@ function server.create_saga_augroup()
   vim.api.nvim_command('augroup lsp_saga_event')
   vim.api.nvim_command('autocmd!')
   for ft, _ in pairs(filetype_server_map) do
-    vim.api.nvim_command(string.format('autocmd FileType %s lua require("lspsaga.saga").start_lsp_server()',ft))
+    vim.api.nvim_command(string.format('autocmd FileType %s lua require("lspsaga.server").start_lsp_server()',ft))
   end
   vim.api.nvim_command('augroup END')
 end
