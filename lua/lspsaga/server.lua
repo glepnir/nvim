@@ -134,7 +134,7 @@ local init_server_map = function()
   end
 end
 
--- Start Lsp server
+-- Start Lspserver
 function server.start_lsp_server()
   local client_id = nil
   local bufnr = api.nvim_get_current_buf()
@@ -151,7 +151,7 @@ function server.start_lsp_server()
 
   local server_setup = server[filetype_server_map[buf_filetype]]
 
-  -- check server executable file doesnot exist
+  -- check server executable file exist
   if not exists(server_setup.cmd[1]) then
     print(string.format("%s does not exist",server_setup.cmd[1]))
     return
