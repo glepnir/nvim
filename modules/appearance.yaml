@@ -45,7 +45,7 @@
           \ 'command': 'DashboardFindWord'},
       \ 'find_dotfiles'       :{
           \ 'description': ['  Open Personal dotfiles                  SPC f d'],
-          \ 'command': "lua require'telescope'.extensions.dotfiles.dotfiles{path=os.getenv('HOME')..'/.dotfiles'}"},
+          \ 'command': 'Telescope dotfiles path='.getenv('HOME').'/.dotfiles'},
       \ 'go_source'           :{
           \ 'description': ['  Find Go Source Code                     SPC f s'],
           \ 'command': 'Clap gosource'},
