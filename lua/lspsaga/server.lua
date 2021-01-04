@@ -112,7 +112,7 @@ local function buffer_find_root_dir(bufnr, is_root_path)
 end
 
 -- check file exists
-local exists =  function (file)
+local command_exists =  function (file)
   local ok, _, code = os.rename(file, file)
   if not ok then
     if code == 13 then
@@ -150,12 +150,6 @@ function server.start_lsp_server()
   end
 
   local server_setup = server[filetype_server_map[buf_filetype]]
-
-  -- check server executable file exist
-  if not exists(server_setup.cmd[1]) then
-    print(string.format("%s does not exist",server_setup.cmd[1]))
-    return
-  end
 
   -- like css/shell etc server that does not have a root file.
   -- so use the home dir as the root
