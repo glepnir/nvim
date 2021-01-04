@@ -110,7 +110,7 @@ function mapping:load_plugin_define()
     ["n|<Leader>fh"]     = map_cu('DashboardFindHistory'):with_noremap():with_silent(),
     ["n|<Leader>fl"]     = map_cu('Telescope loclist'):with_noremap():with_silent(),
     ["n|<Leader>fc"]     = map_cu('Telescope git_commits'):with_noremap():with_silent(),
-    ["n|<Leader>fd"]     = map_cu('lua require"telescope".extensions.dotfiles.dotfiles{path=os.getenv("HOME").."/.dotfiles"}'):with_noremap():with_silent(),
+    ["n|<Leader>fd"]     = map_cu('Telescope dotfiles path='..os.getenv("HOME")..'/.dotfiles'):with_noremap():with_silent(),
     -- ["n|<Leader>fs"]      = map_cu('Clap gosource'):with_noremap():with_silent(),
     -- Plugin acceleratedjk
     ["n|j"]              = map_cmd('<Plug>(accelerated_jk_gj)'):with_silent(),
