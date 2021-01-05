@@ -1,6 +1,7 @@
 local telescope = require('telescope')
 local finders = require('telescope.finders')
 local pickers = require('telescope.pickers')
+local make_entry = require('telescope.make_entry')
 local conf = require('telescope.config').values
 local os_name = vim.loop.os_uname().sysname
 local fn = vim.fn
@@ -32,7 +33,8 @@ local gosource = function(opts)
     prompt_title = 'Find In Go Root',
     results_title = 'Go Source Code',
     finder = finders.new_table {
-      results = results
+      results = results,
+      entry_maker = make_entry.gen_from_file(opts)
     },
     previewer = conf.file_previewer(opts),
     sorter = conf.file_sorter(opts)
