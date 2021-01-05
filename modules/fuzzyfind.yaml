@@ -12,6 +12,7 @@
       }
       require('telescope').load_extension('fzy_native')
       require'telescope'.load_extension('dotfiles')
+      require'telescope'.load_extension('gosource')
     EOF
 
 - repo: nvim-telescope/telescope-fzy-native.nvim
