@@ -6,7 +6,7 @@ local conf = require('telescope.config').values
 local dotfiles_list = function(opts)
   local dir = opts.path or ''
   local list = {}
-   local p = io.popen('find "'..dir..'" -type f')
+   local p = io.popen('rg --files '..dir)
    for file in p:lines() do
      if not file:match('.DS_Store') then
       table.insert(list,file)
