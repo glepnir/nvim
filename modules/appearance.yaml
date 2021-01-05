@@ -48,7 +48,7 @@
           \ 'command': 'Telescope dotfiles path='.getenv('HOME').'/.dotfiles'},
       \ 'go_source'           :{
           \ 'description': ['  Find Go Source Code                     SPC f s'],
-          \ 'command': 'Clap gosource'},
+          \ 'command': 'Telescope gosource'},
       \}
 
 - repo: kyazdani42/nvim-tree.lua
