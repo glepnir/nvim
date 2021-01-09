@@ -11,12 +11,13 @@ local colors = {
   yellow = '#fabd2f',
   cyan = '#008080',
   darkblue = '#081633',
-  green = '#afd700',
+  green = '#98be65',
   orange = '#FF8800',
   purple = '#5d4d7a',
   magenta = '#c678dd',
   blue = '#51afef';
-  red = '#ec5f67'
+  red = '#ec5f67';
+  white = '#bbc2cf'
 }
 
 local buffer_not_empty = function()
@@ -58,22 +59,23 @@ gls.left[4] = {
   FileName = {
     provider = {'FileName','FileSize'},
     condition = buffer_not_empty,
-    highlight = {colors.fg,colors.line_bg,'bold'}
+    highlight = {colors.white,colors.line_bg,'bold'}
   }
 }
 
 gls.left[5] = {
   GitIcon = {
-    provider = function() return '  ' end,
+    provider = function() return '  ' end,
     condition = require('galaxyline.provider_vcs').check_git_workspace,
-    highlight = {colors.orange,colors.line_bg},
+    highlight = {colors.green,colors.line_bg,'bold'},
   }
 }
+
 gls.left[6] = {
   GitBranch = {
     provider = 'GitBranch',
     condition = require('galaxyline.provider_vcs').check_git_workspace,
-    highlight = {'#8FBCBB',colors.line_bg,'bold'},
+    highlight = {colors.green,colors.line_bg,'bold'},
   }
 }
 
@@ -163,7 +165,7 @@ gls.right[3] = {
 gls.right[4] = {
   ScrollBar = {
     provider = 'ScrollBar',
-    highlight = {colors.blue,colors.purple},
+    highlight = {colors.yellow,colors.purple},
   }
 }
 

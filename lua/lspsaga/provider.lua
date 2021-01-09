@@ -10,9 +10,10 @@ local definition_uri = 0
 local reference_uri = 0
 local param_length = 0
 
---TODO: set cursor
+--TODO: set cursor in lsp finder
+--TODO: fancy code action
 
-local create_finder_contents =function (result,method_type,opts)
+local create_finder_contents =function(result,method_type,opts)
   if type(result) == 'table' then
     local method_option = {
       {icon = opts.definition_icon or '',title = ':  '.. #result ..' Definitions'};
@@ -96,8 +97,9 @@ local render_finder_result= function (finder_opts)
   local opts = {
     relative = "cursor",
     style = "minimal",
+    enter = true,
   }
-  M.contents_buf,M.contents_win,M.border_bufnr,M.border_win = window.create_float_window(contents,'plaintext',2,true,true,opts)
+  M.contents_buf,M.contents_win,M.border_bufnr,M.border_win = window.create_float_window(contents,'plaintext',2,true,opts)
   api.nvim_win_set_cursor(M.contens_buf,{3,1})
 
   for i=1,definition_uri,1 do
@@ -145,6 +147,7 @@ function M.open_link(action_type)
 end
 
 function M.insert_preview()
+  api.nvim_buf_set_option(M.contents_bufnr,'modifiable',true)
   local current_line = vim.fn.line('.')
   if short_link[current_line] ~= nil and short_link[current_line].preview_data.status ~= 1  then
     short_link[current_line].preview_data.status = 1
@@ -162,6 +165,7 @@ function M.insert_preview()
   elseif short_link[current_line] == nil then
     return
   end
+  api.nvim_buf_set_option(M.contents_bufnr,'modifiable',true)
 end
 
 function M.quit_float_window()
@@ -237,31 +241,13 @@ function M.preview_definiton(timeout_ms)
       relative = "cursor",
       style = "minimal",
     }
-    local contents_buf,contents_winid,_,border_winid = window.create_float_window(content,filetype,1,false,false,opts)
+    local contents_buf,contents_winid,_,border_winid = window.create_float_window(content,filetype,1,opts)
     vim.lsp.util.close_preview_autocmd({"CursorMoved", "CursorMovedI", "BufHidden", "BufLeave"},
                                         border_winid)
     vim.lsp.util.close_preview_autocmd({"CursorMoved", "CursorMovedI", "BufHidden", "BufLeave"},
                                         contents_winid)
     vim.api.nvim_buf_add_highlight(contents_buf,-1,"DefinitionPreviewTitle",0,0,-1)
   end
-end
-
--- TODO: codeAction
-function M.code_action(timeout_ms)
-  local method = "textDocument/codeAction"
-  local params = lsp.util.make_position_params()
-  local response = vim.lsp.buf_request_sync(0,method,params,timeout_ms or 1000)
-  if vim.tbl_isempty(response) then
-    print("No code actions available")
-    return
-  end
-  local data = {'Code Action:'}
-  for _,action in ipairs(response[1].result) do
-    local title = action.title:gsub('\r\n', '\\r\\n')
-    title = title:gsub('\n','\\n')
-    table.insert(data,title)
-  end
-  window.create_float_window(data,'plaintext',1,true,false)
 end
 
 return M

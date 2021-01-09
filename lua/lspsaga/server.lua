@@ -111,18 +111,6 @@ local function buffer_find_root_dir(bufnr, is_root_path)
   end
 end
 
--- check file exists
-local command_exists =  function (file)
-  local ok, _, code = os.rename(file, file)
-  if not ok then
-    if code == 13 then
-      -- Permission denied, but it exists
-      return true
-    end
-  end
-  return ok
-end
-
 local init_server_map = function()
   if vim.tbl_isempty(server) then return end
   for server_name,value in pairs(server) do
