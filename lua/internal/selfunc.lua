@@ -78,7 +78,7 @@ function M.float_terminal(command)
     col = col,
   }
 
-  local contents_bufnr,contents_winid,_,shadow_winid = window.open_shadow_float_win({},'Floaterm',true,false,opts)
+  local contents_bufnr,contents_winid,_,shadow_winid = window.open_shadow_float_win({},'Floaterm',true,opts)
   api.nvim_command('hi Floaterm guibg=#282c34')
   api.nvim_command('terminal '..cmd)
   api.nvim_command('setlocal nobuflisted')
@@ -87,7 +87,8 @@ function M.float_terminal(command)
 end
 
 function M.close_float_terminal()
-  local float_terminal_win = api.nvim_buf_get_var(0,'float_terminal_win')
+  local has_var,float_terminal_win = pcall(api.nvim_buf_get_var,0,'float_terminal_win')
+  if not has_var then return end
   if float_terminal_win[1] ~= nil and api.nvim_win_is_valid(float_terminal_win[1]) and float_terminal_win[2] ~= nil and api.nvim_win_is_valid(float_terminal_win[2]) then
     api.nvim_win_close(float_terminal_win[1],true)
     api.nvim_win_close(float_terminal_win[2],true)
