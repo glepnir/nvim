@@ -91,7 +91,7 @@ gls.left[7] = {
   DiffAdd = {
     provider = 'DiffAdd',
     condition = checkwidth,
-    icon = ' ',
+    icon = '  ',
     highlight = {colors.green,colors.line_bg},
   }
 }
@@ -99,7 +99,7 @@ gls.left[8] = {
   DiffModified = {
     provider = 'DiffModified',
     condition = checkwidth,
-    icon = ' ',
+    icon = '  ',
     highlight = {colors.orange,colors.line_bg},
   }
 }
@@ -107,7 +107,7 @@ gls.left[9] = {
   DiffRemove = {
     provider = 'DiffRemove',
     condition = checkwidth,
-    icon = ' ',
+    icon = '  ',
     highlight = {colors.red,colors.line_bg},
   }
 }
