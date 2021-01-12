@@ -17,6 +17,13 @@
 
 - repo: glepnir/indent-guides.nvim
   on_event: BufReadPre
+  hook_source: |-
+    lua <<EOF
+    require('indent_guides').setup {
+      even_colors = { fg ='NONE',bg='#23272e'},
+      odd_colors = {fg='NONE',bg='#23272e'}
+    }
+    EOF
 
 - repo: tyru/caw.vim
   depends: context_filetype.vim

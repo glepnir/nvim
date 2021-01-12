@@ -35,7 +35,7 @@ function dein:load_repos()
     vim.api.nvim_set_var('dein#install_log_filename',global.cache_dir ..'dein.log')
 
     if not vim.o.runtimepath:match('/dein.vim') then
-      if not fs.isdir(dein_dir) then
+      if not fs.is_dir(dein_dir) then
         os.execute(cmd)
       end
       vim.o.runtimepath = vim.o.runtimepath ..','..dein_dir

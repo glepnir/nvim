@@ -16,7 +16,7 @@ local createdir = function ()
   }
   -- There only check once that If cache_dir exists
   -- Then I don't want to check subs dir exists
-  if not fs.isdir(global.cache_dir) then
+  if not fs.is_dir(global.cache_dir) then
     os.execute("mkdir -p " .. global.cache_dir)
     for _,v in pairs(data_dir) do
       if not global.isdir(v) then
