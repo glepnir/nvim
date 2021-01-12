@@ -12,10 +12,9 @@ function pfs.exists(file)
   return ok, err
 end
 
---- Check if a directory exists in this path
-function pfs.isdir(path)
-  -- "/" works on both Unix and Windows
-  return pfs.exists(path.."/")
+function pfs.is_dir(filename)
+  local stat = vim.loop.fs_stat(filename)
+  return stat and stat.type == 'directory' or false
 end
 
 function pfs.readAll(file)

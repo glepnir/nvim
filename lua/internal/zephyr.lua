@@ -18,7 +18,7 @@ local zephyr = {
   fg = '#bbc2cf';
   fg_alt  = '#5B6268';
 
-  red = '#EC5f67';
+  red = '#ff6c6b';
   magenta = '#d16d9e';
   orange = '#da8548';
   yellow = '#ECBE7B';
