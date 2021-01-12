@@ -25,7 +25,7 @@ end
 
 gls.left[1] = {
   FirstElement = {
-    provider = function() return ' ' end,
+    provider = function() return '▊ ' end,
     highlight = {colors.blue,colors.bg}
   },
 }
