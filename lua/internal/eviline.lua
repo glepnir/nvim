@@ -61,6 +61,7 @@ gls.left[4] ={
     highlight = {require('galaxyline.provider_fileinfo').get_file_icon_color,colors.bg},
   },
 }
+
 gls.left[5] = {
   FileName = {
     provider = {'FileName'},
@@ -174,10 +175,28 @@ gls.right[7] = {
 gls.short_line_left[1] = {
   BufferType = {
     provider = 'FileTypeName',
+    separator = ' ',
+    separator_highlight = {'NONE',colors.bg},
     highlight = {colors.fg,colors.bg}
   }
 }
 
+gls.short_line_left[2] = {
+  SFileName = {
+    provider = function ()
+      local fileinfo = require('galaxyline.provider_fileinfo')
+      local fname = fileinfo.get_current_file_name()
+      for _,v in ipairs(gl.short_line_list) do
+        if v == vim.bo.filetype then
+          return ''
+        end
+      end
+      return fname
+    end,
+    condition = buffer_not_empty,
+    highlight = {colors.white,colors.bg,'bold'}
+  }
+}
 
 gls.short_line_right[1] = {
   BufferIcon = {
