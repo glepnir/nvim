@@ -38,6 +38,12 @@ function prodoc.generate_comment()
   if mode == 'n' then
     local pos = vim.fn.getpos('.')
     local line = vim.fn.getline('.')
+
+    if line:match('^'..comment_prefix) then
+      local pre_line = line:gsub('//','',1)
+      vim.fn.setline(pos[2],pre_line)
+      return
+    end
     vim.fn.setline(pos[2],comment_prefix ..' '..line)
   end
 end
