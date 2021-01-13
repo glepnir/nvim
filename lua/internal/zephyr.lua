@@ -110,8 +110,8 @@ function zephyr.load_syntax()
     NormalFloat = {fg=zephyr.base8,bg=zephyr.bg_highlight};
     TabLineFill = {style=zephyr.none};
     TabLineSel = {bg=zephyr.blue};
-    StatusLine = {fg=zephyr.base8,bg=zephyr.none,style=zephyr.none};
-    StatusLineNC = {fg=zephyr.grey,bg=zephyr.none,style=zephyr.none};
+    StatusLine = {fg=zephyr.base8,bg=zephyr.base2,style=zephyr.none};
+    StatusLineNC = {fg=zephyr.grey,bg=zephyr.base2,style=zephyr.none};
     SpellBad = {fg=zephyr.red,bg=zephyr.none,style='undercurl'};
     SpellCap = {fg=zephyr.blue,bg=zephyr.none,style='undercurl'};
     SpellLocal = {fg=zephyr.cyan,bg=zephyr.none,style='undercurl'};
