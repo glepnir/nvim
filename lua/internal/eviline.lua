@@ -184,7 +184,6 @@ gls.right[7] = {
     provider = 'DiffRemove',
     condition = checkwidth,
     icon = '  ',
-    separator = ' ',
     highlight = {colors.red,colors.bg},
   }
 }

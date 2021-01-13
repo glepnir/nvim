@@ -2,8 +2,14 @@ local vim,api = vim,vim.api
 local prodoc = {}
 
 local prefix = {
+  yaml = '#',
+  c  = '//',
+  cpp = '//',
   go = '//',
-  lua = '--'
+  js = '//',
+  ts = '//',
+  lua = '--',
+  vim = '"',
 }
 
 do
@@ -30,22 +36,48 @@ local prefix_with_doc = function(pf)
   return prefix_doc
 end
 
--- TODO: support visual mode
+local generate_line_comment = function(line,lnum,comment_prefix)
+  if line:match('^'..comment_prefix) then
+    local pre_line = line:gsub(comment_prefix..' ','',1)
+    vim.fn.setline(lnum,pre_line)
+    return
+  end
+  vim.fn.setline(lnum,comment_prefix ..' '..line)
+end
+
 function prodoc.generate_comment()
-  local mode = vim.fn.mode()
+  if not vim.bo.modifiable then
+    error('Buffer is not modifiable')
+    return
+  end
+
   local ft = vim.bo.filetype
   local comment_prefix = prefix[ft]
-  if mode == 'n' then
+
+  local normal_mode = function()
     local pos = vim.fn.getpos('.')
     local line = vim.fn.getline('.')
-
-    if line:match('^'..comment_prefix) then
-      local pre_line = line:gsub('//','',1)
-      vim.fn.setline(pos[2],pre_line)
-      return
-    end
-    vim.fn.setline(pos[2],comment_prefix ..' '..line)
+    generate_line_comment(line,pos[2],comment_prefix)
   end
+
+  local visual_mode = function()
+    local vstart = vim.fn.getpos("'<")
+    local vend = vim.fn.getpos("'>")
+    local line_start,_ = vstart[2],vstart[3]
+    local line_end,_ = vend[2],vend[3]
+    local lines = vim.fn.getline(line_start,line_end)
+    for k,line in ipairs(lines) do
+      generate_line_comment(line,line_start+k-1,comment_prefix)
+    end
+  end
+
+  local _switch = {
+    n = normal_mode,
+    v = visual_mode,
+    V = visual_mode,
+  }
+
+  _switch[vim.fn.mode()]()
 end
 
 -- generate doc
