@@ -29,7 +29,7 @@ gls.left[1] = {
     highlight = {colors.blue,colors.bg}
   },
 }
-gls.left[4] = {
+gls.left[2] = {
   ViMode = {
     provider = function()
       -- auto change color according the vim mode
@@ -47,14 +47,14 @@ gls.left[4] = {
     highlight = {colors.red,colors.bg,'bold'},
   },
 }
-gls.left[5] = {
+gls.left[3] = {
   FileSize = {
     provider = 'FileSize',
     condition = buffer_not_empty,
     highlight = {colors.fg,colors.bg}
   }
 }
-gls.left[6] ={
+gls.left[4] ={
   FileIcon = {
     provider = 'FileIcon',
     condition = buffer_not_empty,
@@ -62,7 +62,7 @@ gls.left[6] ={
   },
 }
 
-gls.left[7] = {
+gls.left[5] = {
   FileName = {
     provider = {'FileName'},
     condition = buffer_not_empty,
@@ -70,7 +70,7 @@ gls.left[7] = {
   }
 }
 
-gls.left[8] = {
+gls.left[6] = {
   LineInfo = {
     provider = 'LineColumn',
     separator = ' ',
@@ -79,7 +79,7 @@ gls.left[8] = {
   },
 }
 
-gls.left[9] = {
+gls.left[7] = {
   PerCent = {
     provider = 'LinePercent',
     separator = ' ',
@@ -88,14 +88,14 @@ gls.left[9] = {
   }
 }
 
-gls.left[10] = {
+gls.left[8] = {
   DiagnosticError = {
     provider = 'DiagnosticError',
     icon = '  ',
     highlight = {colors.red,colors.bg}
   }
 }
-gls.left[11] = {
+gls.left[9] = {
   DiagnosticWarn = {
     provider = 'DiagnosticWarn',
     icon = '  ',
@@ -103,7 +103,7 @@ gls.left[11] = {
   }
 }
 
-gls.left[12] = {
+gls.left[10] = {
   DiagnosticHint = {
     provider = 'DiagnosticHint',
     icon = '  ',
@@ -111,7 +111,7 @@ gls.left[12] = {
   }
 }
 
-gls.left[13] = {
+gls.left[11] = {
   DiagnosticInfo = {
     provider = 'DiagnosticInfo',
     icon = '  ',
