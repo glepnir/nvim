@@ -3,7 +3,7 @@ local gls = gl.section
 gl.short_line_list = {'NvimTree','vista','dbui'}
 
 local colors = {
-  bg = '#21242b',
+  bg = '#202328',
   fg = '#bbc2cf',
   yellow = '#fabd2f',
   cyan = '#008080',
@@ -24,12 +24,12 @@ local buffer_not_empty = function()
 end
 
 gls.left[1] = {
-  FirstElement = {
+  RainbowRed = {
     provider = function() return '▊ ' end,
     highlight = {colors.blue,colors.bg}
   },
 }
-gls.left[2] = {
+gls.left[4] = {
   ViMode = {
     provider = function()
       -- auto change color according the vim mode
@@ -47,14 +47,14 @@ gls.left[2] = {
     highlight = {colors.red,colors.bg,'bold'},
   },
 }
-gls.left[3] = {
+gls.left[5] = {
   FileSize = {
     provider = 'FileSize',
     condition = buffer_not_empty,
     highlight = {colors.fg,colors.bg}
   }
 }
-gls.left[4] ={
+gls.left[6] ={
   FileIcon = {
     provider = 'FileIcon',
     condition = buffer_not_empty,
@@ -62,15 +62,15 @@ gls.left[4] ={
   },
 }
 
-gls.left[5] = {
+gls.left[7] = {
   FileName = {
     provider = {'FileName'},
     condition = buffer_not_empty,
-    highlight = {colors.white,colors.bg,'bold'}
+    highlight = {colors.green,colors.bg,'bold'}
   }
 }
 
-gls.left[6] = {
+gls.left[8] = {
   LineInfo = {
     provider = 'LineColumn',
     separator = ' ',
@@ -79,7 +79,7 @@ gls.left[6] = {
   },
 }
 
-gls.left[7] = {
+gls.left[9] = {
   PerCent = {
     provider = 'LinePercent',
     separator = ' ',
@@ -88,17 +88,33 @@ gls.left[7] = {
   }
 }
 
-gls.left[12] = {
+gls.left[10] = {
   DiagnosticError = {
     provider = 'DiagnosticError',
     icon = '  ',
     highlight = {colors.red,colors.bg}
   }
 }
-gls.left[13] = {
+gls.left[11] = {
   DiagnosticWarn = {
     provider = 'DiagnosticWarn',
     icon = '  ',
+    highlight = {colors.yellow,colors.bg},
+  }
+}
+
+gls.left[12] = {
+  DiagnosticHint = {
+    provider = 'DiagnosticHint',
+    icon = '  ',
+    highlight = {colors.cyan,colors.bg},
+  }
+}
+
+gls.left[13] = {
+  DiagnosticInfo = {
+    provider = 'DiagnosticInfo',
+    icon = '  ',
     highlight = {colors.blue,colors.bg},
   }
 }
@@ -108,7 +124,7 @@ gls.right[1] = {
     provider = 'FileEncode',
     separator = ' ',
     separator_highlight = {'NONE',colors.bg},
-    highlight = {colors.fg,colors.bg,'bold'}
+    highlight = {colors.cyan,colors.bg,'bold'}
   }
 }
 
@@ -117,7 +133,7 @@ gls.right[2] = {
     provider = 'FileFormat',
     separator = ' ',
     separator_highlight = {'NONE',colors.bg},
-    highlight = {colors.fg,colors.bg,'bold'}
+    highlight = {colors.cyan,colors.bg,'bold'}
   }
 }
 
@@ -151,7 +167,7 @@ gls.right[5] = {
   DiffAdd = {
     provider = 'DiffAdd',
     condition = checkwidth,
-    icon = '  ',
+    icon = '  ',
     highlight = {colors.green,colors.bg},
   }
 }
@@ -167,9 +183,17 @@ gls.right[7] = {
   DiffRemove = {
     provider = 'DiffRemove',
     condition = checkwidth,
-    icon = '  ',
+    icon = '  ',
+    separator = ' ',
     highlight = {colors.red,colors.bg},
   }
+}
+
+gls.right[8] = {
+  RainbowBlue = {
+    provider = function() return ' ▊' end,
+    highlight = {colors.blue,colors.bg}
+  },
 }
 
 gls.short_line_left[1] = {
@@ -177,7 +201,7 @@ gls.short_line_left[1] = {
     provider = 'FileTypeName',
     separator = ' ',
     separator_highlight = {'NONE',colors.bg},
-    highlight = {colors.fg,colors.bg}
+    highlight = {colors.blue,colors.bg,'bold'}
   }
 }
 
