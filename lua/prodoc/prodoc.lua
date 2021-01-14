@@ -109,4 +109,10 @@ function prodoc.generate_doc()
   api.nvim_command('startinsert!')
 end
 
+function prodoc.generate_command()
+  api.nvim_command('command! -range -bar ProDoc lua require("prodoc.prodoc").generate_doc()')
+  api.nvim_command('command! -range -bar ProComment lua require("prodoc.prodoc").generate_comment()')
+  api.nvim_command('xnoremap <expr> <Plug>ProComment :call v:lua.require("prodoc.prodoc").generate_comment()')
+end
+
 return prodoc

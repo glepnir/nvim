@@ -64,6 +64,7 @@ local load_core =function()
   require'internal.zephyr'
   dein:load_repos()
 
+  require('prodoc.prodoc').generate_command()
   require('internal.mapping')
   autocmd.load_autocmds()
   require('internal.eviline')

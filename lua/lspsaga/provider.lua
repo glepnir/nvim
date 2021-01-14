@@ -97,7 +97,6 @@ local render_finder_result= function (finder_opts)
   local opts = {
     relative = "cursor",
     style = "minimal",
-    enter = true,
   }
   M.contents_buf,M.contents_win,M.border_bufnr,M.border_win = window.create_float_window(contents,'plaintext',2,true,opts)
   api.nvim_win_set_cursor(M.contens_buf,{3,1})
@@ -241,7 +240,7 @@ function M.preview_definiton(timeout_ms)
       relative = "cursor",
       style = "minimal",
     }
-    local contents_buf,contents_winid,_,border_winid = window.create_float_window(content,filetype,1,opts)
+    local contents_buf,contents_winid,_,border_winid = window.create_float_window(content,filetype,1,false,opts)
     vim.lsp.util.close_preview_autocmd({"CursorMoved", "CursorMovedI", "BufHidden", "BufLeave"},
                                         border_winid)
     vim.lsp.util.close_preview_autocmd({"CursorMoved", "CursorMovedI", "BufHidden", "BufLeave"},
