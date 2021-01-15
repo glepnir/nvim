@@ -3,18 +3,9 @@ local prodoc = {}
 
 local prefix = {
   yaml = '#',
-  c  = '//',
-  cpp = '//',
   go = '//',
-  js = '//',
-  ts = '//',
   lua = '--',
   vim = '"',
-}
-
-local param = {
-  lua = '%((.*)%)',
-  go = '%((.*)%)'
 }
 
 do
@@ -47,13 +38,19 @@ local _split = function(s,reg)
   return split_table
 end
 
-local generate_line_comment = function(line,lnum,comment_prefix)
-  if _split(line,'%S+')[1] == comment_prefix then
-    local pre_line = line:gsub(comment_prefix..' ','',1)
-    vim.fn.setline(lnum,pre_line)
-    return
+local generate_line_comment = function(co)
+  while true do
+    local _,line,lnum,comment_prefix = coroutine.resume(co)
+    if coroutine.status(co) == 'dead' then
+      break
+    end
+    if _split(line,'%S+')[1] == comment_prefix then
+      local pre_line = line:gsub(comment_prefix..' ','',1)
+      vim.fn.setline(lnum,pre_line)
+    else
+      vim.fn.setline(lnum,comment_prefix ..' '..line)
+    end
   end
-  vim.fn.setline(lnum,comment_prefix ..' '..line)
 end
 
 function prodoc.generate_comment(...)
@@ -67,29 +64,30 @@ function prodoc.generate_comment(...)
   local ft = vim.bo.filetype
   local comment_prefix = prefix[ft]
 
-  local normal_mode = function()
+  local normal_mode = coroutine.create(function()
     local pos = vim.fn.getpos('.')
     local line = vim.fn.getline('.')
-    generate_line_comment(line,pos[2],comment_prefix)
-  end
+    coroutine.yield(line,pos[2],comment_prefix)
+  end)
 
-  local visual_mode = function()
+  local visual_mode = coroutine.create(function()
     local vstart = vim.fn.getpos("'<")
     local vend = vim.fn.getpos("'>")
     local line_start,_ = vstart[2],vstart[3]
     local line_end,_ = vend[2],vend[3]
     local lines = vim.fn.getline(line_start,line_end)
+
     for k,line in ipairs(lines) do
-      generate_line_comment(line,line_start+k-1,comment_prefix)
+      coroutine.yield(line,line_start+k-1,comment_prefix)
     end
-  end
+  end)
 
   if lnum1 == lnum2 then
-    normal_mode()
+    generate_line_comment(normal_mode)
     return
   end
 
-  visual_mode()
+  generate_line_comment(visual_mode)
 end
 
 -- generate doc
@@ -98,7 +96,7 @@ function prodoc.generate_doc()
   local comment_prefix = prefix[ft]
   local pos = vim.fn.getpos('.')
   local line = vim.fn.getline('.')
-  local content = _split(line,param[ft])
+  local content = _split(line,'%((.*)%)')
   local params = _split(content[1],'[^,%s]+')
   local doc = prefix_with_doc(comment_prefix,params)
 
