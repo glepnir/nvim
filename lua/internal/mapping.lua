@@ -100,7 +100,7 @@ function mapping:load_plugin_define()
     -- Far.vim
     ["n|<Leader>fz"]     = map_cr('Farf'):with_noremap():with_silent();
     ["v|<Leader>fz"]     = map_cr('Farf'):with_noremap():with_silent();
-    -- Plugin Clap
+    -- Plugin Telescope
     ["n|<Leader>bb"]     = map_cu('Telescope buffers'):with_noremap():with_silent(),
     ["n|<Leader>fa"]     = map_cu('DashboardFindWord'):with_noremap():with_silent(),
     ["n|<Leader>fb"]     = map_cu('DashboardJumpMark'):with_noremap():with_silent(),
