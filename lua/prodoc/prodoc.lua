@@ -56,7 +56,9 @@ local generate_line_comment = function(line,lnum,comment_prefix)
   vim.fn.setline(lnum,comment_prefix ..' '..line)
 end
 
-function prodoc.generate_comment()
+function prodoc.generate_comment(...)
+  local lnum1,lnum2 = ...
+
   if not vim.bo.modifiable then
     error('Buffer is not modifiable')
     return
@@ -82,13 +84,12 @@ function prodoc.generate_comment()
     end
   end
 
-  local _switch = {
-    n = normal_mode,
-    v = visual_mode,
-    V = visual_mode,
-  }
+  if lnum1 == lnum2 then
+    normal_mode()
+    return
+  end
 
-  _switch[vim.fn.mode()]()
+  visual_mode()
 end
 
 -- generate doc
@@ -111,8 +112,7 @@ end
 
 function prodoc.generate_command()
   api.nvim_command('command! -range -bar ProDoc lua require("prodoc.prodoc").generate_doc()')
-  api.nvim_command('command! -range -bar ProComment lua require("prodoc.prodoc").generate_comment()')
-  api.nvim_command('xnoremap <expr> <Plug>ProComment :call v:lua.require("prodoc.prodoc").generate_comment()')
+  api.nvim_command('command! -range -bar ProComment lua require("prodoc.prodoc").generate_comment(<line1>,<line2>)')
 end
 
 return prodoc

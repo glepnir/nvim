@@ -113,9 +113,9 @@ function mapping:load_plugin_define()
     ["n|<Leader>fd"]     = map_cu('Telescope dotfiles path='..os.getenv("HOME")..'/.dotfiles'):with_noremap():with_silent(),
     ["n|<Leader>fs"]     = map_cu('Telescope gosource'):with_noremap():with_silent(),
     -- prodoc
-    ["n|gcc"]            = map_cu('lua require("prodoc.prodoc").generate_comment()'):with_noremap():with_silent(),
-    ["x|gcc"]            = map_cmd('<Plug>ProComment'),
-    ["n|gcj"]            = map_cu('lua require("prodoc.prodoc").generate_doc()'):with_silent():with_silent(),
+    ["n|gcc"]            = map_cu('ProComment'):with_noremap():with_silent(),
+    ["x|gcc"]            = map_cr('ProComment'),
+    ["n|gcj"]            = map_cu('ProDoc'):with_silent():with_silent(),
     -- Plugin acceleratedjk
     ["n|j"]              = map_cmd('<Plug>(accelerated_jk_gj)'):with_silent(),
     ["n|k"]              = map_cmd('<Plug>(accelerated_jk_gk)'):with_silent(),
