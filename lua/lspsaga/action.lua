@@ -38,7 +38,7 @@ function M.go_organize_imports_sync(timeout_ms)
   -- (lua/vim/lsp/handler.lua) for how to do this properly.
   local result = lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout_ms)
   if not result or next(result) == nil then return end
-  local actions = result[1].result and result[1].result or nil
+  local actions = result[1].result
   if not actions then return end
   local action = actions[1]
 
