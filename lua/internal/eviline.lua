@@ -98,7 +98,7 @@ gls.left[8] = {
 gls.left[9] = {
   DiagnosticWarn = {
     provider = 'DiagnosticWarn',
-    icon = '  ',
+    icon = '  ',
     highlight = {colors.yellow,colors.bg},
   }
 }
@@ -106,7 +106,7 @@ gls.left[9] = {
 gls.left[10] = {
   DiagnosticHint = {
     provider = 'DiagnosticHint',
-    icon = '  ',
+    icon = '  ',
     highlight = {colors.cyan,colors.bg},
   }
 }
@@ -175,7 +175,7 @@ gls.right[6] = {
   DiffModified = {
     provider = 'DiffModified',
     condition = checkwidth,
-    icon = '  ',
+    icon = ' 柳',
     highlight = {colors.orange,colors.bg},
   }
 }
