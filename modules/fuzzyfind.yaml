@@ -4,7 +4,8 @@
     lua <<EOF
       require('telescope').setup {
         defaults = {
-          prompt_position = 'top'
+          prompt_position = 'top',
+          sorting_strategy = 'ascending',
         },
         extensions = {
             fzy_native = {
