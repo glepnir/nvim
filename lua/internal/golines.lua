@@ -3,8 +3,19 @@ local stdin = uv.new_pipe(true)
 local stdout = uv.new_pipe(false)
 local stderr = uv.new_pipe(false)
 
+local check_same = function(tbl1,tbl2)
+  if #tbl1 ~= #tbl2 then return end
+  for k,v in ipairs(tbl1) do
+    if v ~= tbl2[k] then
+      return true
+    end
+  end
+  return false
+end
+
 local golines_format = function()
   if api.nvim_buf_get_option(0,'filetype') ~= 'go' then return end
+  local old_lines = api.nvim_buf_get_lines(0,0,-1,true)
   local file = api.nvim_buf_get_name(0)
 
   local handle, pid = uv.spawn("golines", {
@@ -25,8 +36,10 @@ local golines_format = function()
         end
         index = index + 1
       end
-      api.nvim_buf_set_lines(0,0,10,true,content)
-      api.nvim_command('write')
+      if not check_same(old_lines,content) then
+        api.nvim_buf_set_lines(0,0,#old_lines,true,content)
+        api.nvim_command('write')
+      end
     end
   end))
 
