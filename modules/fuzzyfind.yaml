@@ -4,6 +4,7 @@
     lua <<EOF
       require('telescope').setup {
         defaults = {
+          prompt_prefix = '🤖',
           prompt_position = 'top',
           sorting_strategy = 'ascending',
         },
