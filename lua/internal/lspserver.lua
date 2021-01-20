@@ -68,6 +68,45 @@ server.cssls = {
   filetypes = {"css", "scss", "less"};
 }
 
+server.diagnosticls = {
+  filetypes = {"javascript", "javascriptreact", "typescript", "typescriptreact"};
+  root_patterns  = {"package.json", "tsconfig.json", ".git"},
+  init_options = {
+    linters = {
+        eslint = {
+            command = "./node_modules/.bin/eslint",
+            rootPatterns = {".git"},
+            debounce = 100,
+            args = {
+                "--stdin",
+                "--stdin-filename",
+                "%filepath",
+                "--format",
+                "json"
+            },
+            sourceName = "eslint",
+            parseJson = {
+                errorsRoot = "[0].messages",
+                line = "line",
+                column = "column",
+                endLine = "endLine",
+                endColumn = "endColumn",
+                message = "${message} [${ruleId}]",
+                security = "severity"
+            },
+            securities = {
+                [2] = "error",
+                [1] = "warning"
+            }
+        },
+    filetypes = {
+        javascript = "eslint",
+        typescript = "eslint"
+      }
+    }
+  }
+}
+
 local lsp_intall_scripts = [=[
 # Install gopls
 cd $HOME
