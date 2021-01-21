@@ -69,6 +69,7 @@ server.cssls = {
 }
 
 server.diagnosticls = {
+  cmd = {"diagnostic-languageserver","--stdio", "--log-level", "2"},
   filetypes = {"javascript", "javascriptreact", "typescript", "typescriptreact"};
   root_patterns  = {"package.json", "tsconfig.json", ".git"},
   init_options = {
@@ -100,8 +101,8 @@ server.diagnosticls = {
             }
         },
     filetypes = {
-        javascript = "eslint",
-        typescript = "eslint"
+        typescript = "eslint",
+        typescriptreact = "eslint"
       }
     }
   }

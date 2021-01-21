@@ -116,28 +116,21 @@ local init_server_map = function()
   for server_name,value in pairs(server) do
     if type(value) == 'table' then
       for _,filetype in pairs(value.filetypes) do
-        filetype_server_map[filetype] = server_name
+        if filetype_server_map[filetype] == nil then
+          filetype_server_map[filetype] = {}
+          table.insert(filetype_server_map[filetype],server_name)
+        else
+          table.insert(filetype_server_map[filetype],server_name)
+        end
       end
     end
   end
 end
 
 -- Start Lspserver
-function server.start_lsp_server()
+local function start_server(server_setup)
   local client_id = nil
   local bufnr = api.nvim_get_current_buf()
-  local buf_filetype = vim.bo.filetype
-
-  if next(filetype_server_map) == nil then
-    init_server_map()
-  end
-
-  -- Filter which files we are considering.
-  if not lib.has_key(filetype_server_map,buf_filetype) then
-    return
-  end
-
-  local server_setup = server[filetype_server_map[buf_filetype]]
 
   -- like css/shell etc server that does not have a root file.
   -- so use the home dir as the root
@@ -164,9 +157,12 @@ function server.start_lsp_server()
   end
 
   if lsp_store[root_dir] ~= nil then
-    client_id = lsp_store[root_dir]
-    vim.lsp.buf_attach_client(bufnr, client_id)
-    return
+    if #lsp_store[root_dir] == #filetype_server_map[vim.bo.filetype] then
+      for _,c_id in pairs(lsp_store[root_dir]) do
+        vim.lsp.buf_attach_client(bufnr, c_id)
+      end
+      return
+    end
   end
 
   local on_attach = function(client,buf_nr)
@@ -190,22 +186,36 @@ function server.start_lsp_server()
     root_dir = root_dir;
   })
 
-  -- lsp sign
-  local diagnositc_config_sign = function ()
-    vim.fn.sign_define('LspDiagnosticsSignError', {text='', texthl='LspDiagnosticsSignError',linehl='', numhl=''})
-    vim.fn.sign_define('LspDiagnosticsSignWarning', {text='', texthl='LspDiagnosticsSignWarning', linehl='', numhl=''})
-    vim.fn.sign_define('LspDiagnosticsSignInformation', {text='', texthl='LspDiagnosticsSignInformation', linehl='', numhl=''})
-    vim.fn.sign_define('LspDiagnosticsSignHint', {text='', texthl='LspDiagnosticsSignHint', linehl='', numhl=''})
-  end
-
-  -- start a new lsp server and store the cliend_id
+  -- start a new lsp server and store the client_id
   client_id = vim.lsp.start_client(new_config)
   if client_id ~= nil then
-    lsp_store[root_dir] = client_id
+    lsp_store[root_dir] = {}
+    table.insert(lsp_store[root_dir],client_id)
     vim.lsp.buf_attach_client(bufnr, client_id)
-    diagnositc_config_sign()
     syntax.add_highlight()
   end
+end
+
+function server.start_lsp_server()
+  local buf_filetype = vim.bo.filetype
+  if next(filetype_server_map) == nil then
+    init_server_map()
+  end
+
+  -- Filter which files we are considering.
+  if not lib.has_key(filetype_server_map,buf_filetype) then
+    return
+  end
+
+  local server_table = filetype_server_map[buf_filetype]
+  for _,server_name in pairs(server_table) do
+    start_server(server[server_name])
+  end
+    -- lsp sign
+  vim.fn.sign_define('LspDiagnosticsSignError', {text='', texthl='LspDiagnosticsSignError',linehl='', numhl=''})
+  vim.fn.sign_define('LspDiagnosticsSignWarning', {text='', texthl='LspDiagnosticsSignWarning', linehl='', numhl=''})
+  vim.fn.sign_define('LspDiagnosticsSignInformation', {text='', texthl='LspDiagnosticsSignInformation', linehl='', numhl=''})
+  vim.fn.sign_define('LspDiagnosticsSignHint', {text='', texthl='LspDiagnosticsSignHint', linehl='', numhl=''})
 end
 
 function server.create_saga_augroup()
