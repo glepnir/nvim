@@ -37,7 +37,7 @@ local golines_format = function()
         index = index + 1
       end
       if not check_same(old_lines,content) then
-        api.nvim_buf_set_lines(0,0,#old_lines,true,content)
+        api.nvim_buf_set_lines(0,0,#old_lines,false,content)
         api.nvim_command('write')
       end
     end
