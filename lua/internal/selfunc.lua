@@ -89,7 +89,11 @@ end
 function M.close_float_terminal()
   local has_var,float_terminal_win = pcall(api.nvim_buf_get_var,0,'float_terminal_win')
   if not has_var then return end
-  if float_terminal_win[1] ~= nil and api.nvim_win_is_valid(float_terminal_win[1]) and float_terminal_win[2] ~= nil and api.nvim_win_is_valid(float_terminal_win[2]) then
+  if float_terminal_win[1] ~= nil and
+    api.nvim_win_is_valid(float_terminal_win[1]) and
+    float_terminal_win[2] ~= nil and
+    api.nvim_win_is_valid(float_terminal_win[2])
+  then
     api.nvim_win_close(float_terminal_win[1],true)
     api.nvim_win_close(float_terminal_win[2],true)
   end
