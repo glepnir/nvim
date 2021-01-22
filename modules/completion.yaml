@@ -37,9 +37,6 @@
     let g:sonictemplate_postfix_key = '<C-j>'
     let g:sonictemplate_vim_template_dir = getenv("HOME") . '/.config/nvim/template'
 
-# - repo: cohama/lexima.vim
-#   on_event: InsertCharPre
-
 - repo: Raimondi/delimitMate
   on_event: InsertCharPre
   hook_source: |
