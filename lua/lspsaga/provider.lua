@@ -12,7 +12,6 @@ local param_length = 0
 
 --TODO: set cursor in lsp finder
 --TODO: fancy code action
-
 local create_finder_contents =function(result,method_type,opts)
   if type(result) == 'table' then
     local method_option = {
@@ -121,11 +120,19 @@ local render_finder_result= function (finder_opts)
 end
 
 function M.apply_float_map(contents_bufnr)
-  api.nvim_buf_set_keymap(contents_bufnr,'n',"o",":lua require'lspsaga.provider'.open_link(1)<CR>",{noremap = true,silent = true})
-  api.nvim_buf_set_keymap(contents_bufnr,'n',"s",":lua require'lspsaga.provider'.open_link(2)<CR>",{noremap = true,silent = true})
-  api.nvim_buf_set_keymap(contents_bufnr,'n',"i",":lua require'lspsaga.provider'.open_link(3)<CR>",{noremap = true,silent = true})
-  api.nvim_buf_set_keymap(contents_bufnr,'n',"<TAB>",":lua require'lspsaga.provider'.insert_preview()<CR>",{noremap = true,silent = true})
-  api.nvim_buf_set_keymap(contents_bufnr,'n',"q",":lua require'lspsaga.provider'.quit_float_window()<CR>",{noremap = true,silent = true})
+  local nvim_create_keymap = require('lspsaga.libs').nvim_create_keymap
+  local lhs = {
+    noremap = true,
+    silent = true
+  }
+  local keymaps = {
+    {contents_bufnr,'n',"o",":lua require'lspsaga.provider'.open_link(1)<CR>"},
+    {contents_bufnr,'n',"s",":lua require'lspsaga.provider'.open_link(2)<CR>"},
+    {contents_bufnr,'n',"i",":lua require'lspsaga.provider'.open_link(3)<CR>"},
+    {contents_bufnr,'n',"<TAB>",":lua require'lspsaga.provider'.insert_preview()<CR>"},
+    {contents_bufnr,'n',"q",":lua require'lspsaga.provider'.quit_float_window()<CR>"}
+  }
+  nvim_create_keymap(keymaps,lhs)
 end
 
 -- action 1 mean enter
