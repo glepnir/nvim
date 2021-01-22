@@ -11,8 +11,19 @@ local function has_key (tab,idx)
   return false
 end
 
+local function nvim_create_augroup(group_name,definitions)
+  vim.api.nvim_command('augroup '..group_name)
+  vim.api.nvim_command('autocmd!')
+  for _, def in ipairs(definitions) do
+    local command = table.concat(vim.tbl_flatten{'autocmd', def}, ' ')
+    vim.api.nvim_command(command)
+  end
+  vim.api.nvim_command('augroup END')
+end
+
 return {
   is_windows = is_windows,
   path_sep = path_sep,
-  has_key = has_key
+  has_key = has_key,
+  nvim_create_augroup = nvim_create_augroup
 }
