@@ -3,7 +3,7 @@
   on_source: completion-nvim
   hook_source: |-
     lua <<EOF
-      require('internal.lsp')
+      require('internal.lspconfig')
     EOF
 
 - repo: nvim-lua/completion-nvim
