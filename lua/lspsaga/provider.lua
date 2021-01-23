@@ -11,7 +11,6 @@ local reference_uri = 0
 local param_length = 0
 
 --TODO: set cursor in lsp finder
---TODO: fancy code action
 local create_finder_contents =function(result,method_type,opts)
   if type(result) == 'table' then
     local method_option = {
@@ -141,7 +140,7 @@ end
 function M.open_link(action_type)
   local action = {"edit ","vsplit ","split "}
   local current_line = vim.fn.line('.')
-  print(current_line)
+
   if short_link[current_line] ~= nil then
     api.nvim_win_close(M.contents_win,true)
     api.nvim_win_close(M.border_win,true)
@@ -183,43 +182,37 @@ function M.quit_float_window()
   end
 end
 
-local send_request = function(timeout)
+local send_request = coroutine.create(function(timeout)
   local method = {"textDocument/definition","textDocument/references"}
   local params = lsp.util.make_position_params()
   local results = {}
-  local response_a = lsp.buf_request_sync(0, method[1], params, timeout or 1000)
-  local response_b = lsp.buf_request_sync(0, method[2], params, timeout or 1000)
-  if not vim.tbl_isempty(response_a) then
-    table.insert(results,response_a)
+  local def_response = lsp.buf_request_sync(0, method[1], params, timeout or 1000)
+  local ref_response = lsp.buf_request_sync(0, method[2], params, timeout or 1000)
+  if not vim.tbl_isempty(def_response) then
+    table.insert(results,def_response)
   end
-  if not vim.tbl_isempty(response_b) then
-    table.insert(results,response_b)
+  if not vim.tbl_isempty(ref_response) then
+    table.insert(results,ref_response)
   end
 
   for i,v in ipairs(results) do
-    if v[1].result == nil or vim.tbl_isempty(v[1].result) then
-      print("No Location found:",method[i])
-      -- if no References we doesn't popup window so need clean contents
-      contents = {}
-      return
+    if v[1].result ~= nil and not vim.tbl_isempty(v[1].result) then
+      coroutine.yield(v[1].result,i)
     end
-    coroutine.yield(v[1].result,i)
   end
-end
+end)
 
 function M.lsp_finder(opts)
-  local request_instance = coroutine.create(send_request)
   while true do
-    local _,result,method_type = coroutine.resume(request_instance)
+    local _,result,method_type = coroutine.resume(send_request)
     create_finder_contents(result,method_type,opts)
 
-    if coroutine.status(request_instance) == 'dead' then
+    if coroutine.status(send_request) == 'dead' then
       break
     end
   end
   render_finder_result(opts)
 end
-
 
 function M.preview_definiton(timeout_ms)
   local method = "textDocument/definition"
