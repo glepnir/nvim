@@ -2,7 +2,7 @@ local api = vim.api
 local lspconfig = require 'lspconfig'
 local global = require 'domain.global'
 local action = require 'lspsaga.action'
-local saga = require 'lspsaga.saga'
+local saga = require 'lspsaga'
 
 saga.init_lsp_saga()
 
