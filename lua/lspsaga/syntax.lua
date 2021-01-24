@@ -28,6 +28,8 @@ function M.add_highlight()
   api.nvim_command("hi DiagnosticFloatHint guifg=#56b6c2")
 
   api.nvim_command("hi LspSagaDocTruncateLine guifg=black")
+  api.nvim_command("hi LspSagaCodeActionTitle guifg=#da8548 gui=bold")
+  api.nvim_command("hi LspSagaCodeActionTruncateLine guifg=black")
 end
 
 return M
