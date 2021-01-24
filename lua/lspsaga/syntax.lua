@@ -9,8 +9,8 @@ function M.add_highlight()
   api.nvim_command("hi def link TargetFileName  Comment")
   api.nvim_command("hi def link DefinitionIcon Special")
   api.nvim_command("hi def link ReferencesIcon Special")
-  api.nvim_command("hi def link HelpTitle Comment")
   api.nvim_command("hi def link HelpItem Comment")
+  api.nvim_command("hi ProviderTruncateLine guifg=black")
 
   -- diagnostic
   api.nvim_command("hi DiagnosticTruncateLine guifg=#6699cc gui=bold")
@@ -30,6 +30,8 @@ function M.add_highlight()
   api.nvim_command("hi LspSagaDocTruncateLine guifg=black")
   api.nvim_command("hi LspSagaCodeActionTitle guifg=#da8548 gui=bold")
   api.nvim_command("hi LspSagaCodeActionTruncateLine guifg=black")
+
+  api.nvim_command("hi LspSagaCodeActionContent guifg=#98be65 gui=bold")
 end
 
 return M
