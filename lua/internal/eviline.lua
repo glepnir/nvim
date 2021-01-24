@@ -37,7 +37,7 @@ gls.left[2] = {
                           [''] = colors.blue,V=colors.blue,
                           c = colors.red,no = colors.magenta,s = colors.orange,
                           S=colors.orange,[''] = colors.orange,
-                          ic = colors.yellow,R = colors.purple,Rv = colors.purple,
+                          ic = colors.yellow,R = colors.violet,Rv = colors.violet,
                           cv = colors.red,ce=colors.red, r = colors.cyan,
                           rm = colors.cyan, ['r?'] = colors.cyan,
                           ['!']  = colors.red,t = colors.red}
