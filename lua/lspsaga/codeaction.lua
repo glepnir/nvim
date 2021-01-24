@@ -1,4 +1,4 @@
-local api,lsp = vim.api,vim.lsp
+local api= vim.api
 local window = require('lspsaga.window')
 local saga = require('lspsaga')
 local wrap = require('lspsaga.wrap')
@@ -28,11 +28,40 @@ local function code_action(context)
   table.insert(contents,2,truncate_line)
 
   contents_bufnr,contents_winid,_,border_winid = window.create_float_window(contents,'LspSagaCodeAction',1,true)
+  api.nvim_command('autocmd CursorMoved <buffer> lua require("lspsaga.codeaction").set_cursor()')
 
   api.nvim_buf_add_highlight(contents_bufnr,-1,"LspSagaCodeActionTitle",0,0,-1)
   api.nvim_buf_add_highlight(contents_bufnr,-1,"LspSagaCodeActionTruncateLine",1,0,-1)
+  for i=1,#contents-2,1 do
+    api.nvim_buf_add_highlight(contents_bufnr,-1,"LspSagaCodeActionContent",1+i,0,-1)
+  end
+
   api.nvim_command('nnoremap <buffer><nowait><silent><cr> <cmd>lua require("lspsaga.codeaction").do_code_action()<CR>')
+  api.nvim_command('nnoremap <buffer><nowait><silent>q <cmd>lua require("lspsaga.codeaction").quit_action_window()<CR>')
 end
+
+local quit_action_window = function()
+  if api.nvim_win_is_valid(contents_winid) and api.nvim_win_is_valid(border_winid) then
+    api.nvim_win_close(contents_winid,true)
+    api.nvim_win_close(border_winid,true)
+  end
+  code_actions = {}
+end
+
+local set_cursor = function()
+  local column = 2
+  local current_line = vim.fn.line('.')
+  print(current_line)
+
+  if current_line == 1 then
+    vim.fn.cursor(3,column)
+  elseif current_line == 2 then
+    vim.fn.cursor(2+#code_actions,column)
+  elseif current_line == #code_actions + 3 then
+    vim.fn.cursor(3,column)
+  end
+end
+
 
 local do_code_action = function()
   local number = tonumber(vim.fn.expand("<cword>"))
@@ -48,12 +77,16 @@ local do_code_action = function()
   else
     vim.lsp.buf.execute_command(action)
   end
-  api.nvim_win_close(contents_winid,true)
-  api.nvim_win_close(border_winid,true)
+  if api.nvim_win_is_valid(contents_winid) and api.nvim_win_is_valid(border_winid) then
+    api.nvim_win_close(contents_winid,true)
+    api.nvim_win_close(border_winid,true)
+  end
   code_actions = {}
 end
 
 return {
   code_action = code_action,
-  do_code_action = do_code_action
+  do_code_action = do_code_action,
+  quit_action_window = quit_action_window,
+  set_cursor = set_cursor
 }
