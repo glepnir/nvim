@@ -70,7 +70,7 @@ function mapping:load_plugin_define()
     ["n|[e"]             = map_cmd("<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>"):with_noremap():with_silent(),
     ["n|]e"]             = map_cmd("<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>"):with_noremap():with_silent(),
     ["n|K"]              = map_cmd("<cmd>lua vim.lsp.buf.hover()<CR>"):with_noremap():with_silent(),
-    ["n|ga"]             = map_cmd("<cmd>lua vim.lsp.buf.code_action()<CR>"):with_noremap():with_silent(),
+    ["n|ga"]             = map_cmd("<cmd>lua require('lspsaga.codeaction').code_action()<CR>"):with_noremap():with_silent(),
     ["n|gd"]             = map_cmd("<cmd>lua require'lspsaga.provider'.preview_definiton()<CR>"):with_noremap():with_silent(),
     ["n|gD"]             = map_cmd("<cmd>lua vim.lsp.buf.implementation()<CR>"):with_noremap():with_silent(),
     ["n|gs"]             = map_cmd("<cmd>lua vim.lsp.buf.signature_help()<CR>"):with_noremap():with_silent(),
@@ -96,7 +96,7 @@ function mapping:load_plugin_define()
     -- Plugin Floaterm
     ["n|<A-d>"]          = map_cu("lua require('lspsaga.floaterm').open_float_terminal()"):with_noremap():with_silent(),
     ["t|<A-d>"]          = map_cu([[<C-\><C-n>:lua require('lspsaga.floaterm').close_float_terminal()<CR>]]):with_noremap():with_silent(),
-    ["n|<Leader>g"]      = map_cu("lua require('lspsaga.floaterm').float_terminal('lazygit')"):with_noremap():with_silent(),
+    ["n|<Leader>g"]      = map_cu("lua require('lspsaga.floaterm').open_float_terminal('lazygit')"):with_noremap():with_silent(),
     -- Far.vim
     ["n|<Leader>fz"]     = map_cr('Farf'):with_noremap():with_silent();
     ["v|<Leader>fz"]     = map_cr('Farf'):with_noremap():with_silent();
