@@ -249,7 +249,7 @@ function M.fancy_floating_markdown(contents, opts)
   table.insert(stripped,2,truncate_line)
 
   -- Make the floating window.
-  local contents_bufnr,contents_winid,border_bufnr,border_winid = M.create_float_window(stripped,'sagahover',1,false,opts)
+  local contents_bufnr,contents_winid,border_bufnr,border_winid = M.create_float_window(stripped,'sagahover',opts.border_style,false,opts)
 
   api.nvim_buf_add_highlight(contents_bufnr,-1,'LspSagaDocTruncateLine',1,0,-1)
 
