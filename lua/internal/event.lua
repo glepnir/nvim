@@ -49,10 +49,6 @@ function autocmd.load_autocmds()
     yank = {
       {"TextYankPost", [[* silent! lua vim.highlight.on_yank({higroup="IncSearch", timeout=400})]]};
     };
-    -- gitblame = {
-    --   {"CursorHold","*","lua require'version'.blameVirtualText()"};
-    --   {"CursorMoved,CursorMovedI","*","lua require'version'.clearBlameVirtualText()"};
-    -- }
   }
 
   autocmd.nvim_create_augroups(definitions)
