@@ -37,9 +37,6 @@
       \ 'new_file'            :{
           \ 'description': ['  New   File                              SPC t f'],
           \ 'command': 'DashboardNewFile'},
-      \ 'change_colorscheme'  :{
-          \ 'description': ['  Change Colorscheme                      SPC t c'],
-          \ 'command': 'DashboardChangeColorscheme'},
       \ 'find_word'           :{
           \ 'description': ['  Find  word                              SPC f w'],
           \ 'command': 'DashboardFindWord'},
