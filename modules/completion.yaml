@@ -1,10 +1,12 @@
 - repo: neovim/nvim-lspconfig
   on_event: BufRead
-  on_source: completion-nvim
+  on_source: [completion-nvim,lspaga.nvim]
   hook_source: |-
     lua <<EOF
       require('internal.lspconfig')
     EOF
+
+- repo: glepnir/lspsaga.nvim
 
 - repo: nvim-lua/completion-nvim
   on_event: [BufReadPre,BufNewFile]
