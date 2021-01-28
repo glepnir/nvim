@@ -7,13 +7,6 @@ local saga = require 'lspsaga'
 saga.init_lsp_saga()
 
 local enhance_attach = function(client,bufnr)
-  local has_completion,completion = pcall(require,'completion')
-  if not has_completion then
-    print('Does not load completion-nvim')
-    return
-  end
-  completion.on_attach()
-
   if client.resolved_capabilities.document_formatting then
     action.lsp_before_save()
   end
