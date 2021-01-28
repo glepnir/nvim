@@ -51,7 +51,7 @@ function mapping:load_vim_define()
     -- TODO Wrap line
     ["i|<TAB>"]      = map_cmd([[pumvisible() ? "\<C-n>" : vsnip#available(1) ?"\<Plug>(vsnip-expand-or-jump)" : v:lua.check_back_space() ? "\<TAB>" : completion#trigger_completion()]]):with_expr():with_silent(),
     ["i|<S-TAB>"]    = map_cmd([[pumvisible() ? "\<C-p>" : "\<C-h>"]]):with_noremap():with_expr(),
-    ["i|<CR>"]       = map_cmd([[pumvisible() ? complete_info()["selected"] != "-1" ?"\<Plug>(completion_confirm_completion)"  : "\<c-e>\<CR>":(delimitMate#WithinEmptyPair() ? "\<Plug>delimitMateCR" : "\<CR>")]]):with_expr(),
+    ["i|<CR>"]       = map_cmd('compe#confirm("<Plug>delimitMateCR")'):with_noremap():with_expr(),
   -- command line
     ["c|<C-b>"]      = map_cmd('<Left>'):with_noremap(),
     ["c|<C-f>"]      = map_cmd('<Right>'):with_noremap(),
@@ -74,7 +74,7 @@ function mapping:load_plugin_define()
     ["n|gd"]             = map_cmd("<cmd>lua require'lspsaga.provider'.preview_definiton()<CR>"):with_noremap():with_silent(),
     ["n|gD"]             = map_cmd("<cmd>lua vim.lsp.buf.implementation()<CR>"):with_noremap():with_silent(),
     ["n|gs"]             = map_cmd("<cmd>lua require('lspsaga.signaturehelp').signature_help()<CR>"):with_noremap():with_silent(),
-    ["n|gr"]             = map_cmd("<cmd>lua require('lspsaga.reanme').rename()<CR>"):with_noremap():with_silent(),
+    ["n|gr"]             = map_cmd("<cmd>lua require('lspsaga.rename').rename()<CR>"):with_noremap():with_silent(),
     ["n|gh"]             = map_cmd("<cmd>lua require'lspsaga.provider'.lsp_finder()<CR>"):with_noremap():with_silent(),
     ["n|gt"]             = map_cmd("<cmd>lua vim.lsp.buf.type_definition()<CR>"):with_noremap():with_silent(),
     ["n|<Leader>cw"]     = map_cmd("<cmd>lua vim.lsp.buf.workspace_symbol()<CR>"):with_noremap():with_silent(),

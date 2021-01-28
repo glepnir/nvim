@@ -1,6 +1,6 @@
 - repo: neovim/nvim-lspconfig
   on_event: BufRead
-  on_source: [completion-nvim,lspaga.nvim]
+  on_source: lspsaga.nvim
   hook_source: |-
     lua <<EOF
       require('internal.lspconfig')
@@ -8,24 +8,26 @@
 
 - repo: glepnir/lspsaga.nvim
 
-- repo: nvim-lua/completion-nvim
-  on_event: [BufReadPre,BufNewFile]
-  hook_add: |
-    let g:completion_enable_auto_hover = 0
-    let g:completion_auto_change_source = 1
-    let g:completion_matching_ignore_case = 1
-    let g:completion_enable_snippet = 'vim-vsnip'
-    let g:completion_confirm_key = ""
-    let g:completion_chain_complete_list = [
-        \  {'complete_items': ['lsp']},
-        \  {'complete_items': ['snippet']},
-        \  {'complete_items': ['buffers']},
-        \  {'complete_items': ['path']},
-        \  {'mode': '<c-p>'},
-        \  {'mode': '<c-n>'}
-      \]
-  hook_source: |
-      autocmd BufReadPre,BufNewFile * lua require'completion'.on_attach()
+- repo: hrsh7th/nvim-compe
+  on_event: InsertEnter
+  hook_source: |-
+    lua <<EOF
+    require'compe'.setup {
+      enabled = true;
+      debug = false;
+      min_length = 1;
+      preselect = 'always';
+      allow_prefix_unmatch = false;
+
+      source = {
+        path = true;
+        buffer = true;
+        vsnip = true;
+        nvim_lsp = true;
+        nvim_lua = true;
+      };
+    }
+    EOF
 
 - repo: steelsojka/completion-buffers
   on_source: completion-nvim
