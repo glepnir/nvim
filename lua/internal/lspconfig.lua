@@ -5,6 +5,7 @@ local action = require 'lspsaga.action'
 local saga = require 'lspsaga'
 
 saga.init_lsp_saga()
+-- vim.cmd [[autocmd CursorHold * lua require'lspsaga.diagnostic'.show_line_diagnostics()]]
 
 local enhance_attach = function(client,bufnr)
   if client.resolved_capabilities.document_formatting then
@@ -59,7 +60,7 @@ lspconfig.tsserver.setup {
 }
 
 local servers = {
-  'dockerls','bashls','zls'
+  'dockerls','bashls','zls','rust_analyzer'
 }
 
 for _,server in ipairs(servers) do
