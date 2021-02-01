@@ -1,15 +1,15 @@
 local api = vim.api
 local lspconfig = require 'lspconfig'
 local global = require 'domain.global'
-local action = require 'lspsaga.action'
 local saga = require 'lspsaga'
+local format = require('internal.format')
 
 saga.init_lsp_saga()
 -- vim.cmd [[autocmd CursorHold * lua require'lspsaga.diagnostic'.show_line_diagnostics()]]
 
 local enhance_attach = function(client,bufnr)
   if client.resolved_capabilities.document_formatting then
-    action.lsp_before_save()
+    format.lsp_before_save()
   end
   api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 end
