@@ -69,7 +69,7 @@ function mapping:load_plugin_define()
     -- Lsp mapp work when insertenter and lsp start
     ["n|[e"]             = map_cmd("<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_next()<CR>"):with_noremap():with_silent(),
     ["n|]e"]             = map_cmd("<cmd>lua require'lspsaga.diagnostic'.lsp_jump_diagnostic_prev()<CR>"):with_noremap():with_silent(),
-    ["n|K"]              = map_cmd("<cmd>lua vim.lsp.buf.hover()<CR>"):with_noremap():with_silent(),
+    ["n|K"]              = map_cr("LspSagaHoverDoc"):with_noremap():with_silent(),
     ["n|ga"]             = map_cmd("<cmd>lua require('lspsaga.codeaction').code_action()<CR>"):with_noremap():with_silent(),
     ["v|ga"]             = map_cmd("'<,'>LspSagaRangeCodeAction<CR>"):with_noremap():with_silent(),
     ["n|gd"]             = map_cmd("<cmd>lua require'lspsaga.provider'.preview_definiton()<CR>"):with_noremap():with_silent(),
@@ -111,6 +111,7 @@ function mapping:load_plugin_define()
     ["n|<Leader>fh"]     = map_cu('DashboardFindHistory'):with_noremap():with_silent(),
     ["n|<Leader>fl"]     = map_cu('Telescope loclist'):with_noremap():with_silent(),
     ["n|<Leader>fc"]     = map_cu('Telescope git_commits'):with_noremap():with_silent(),
+    ["n|<Leader>ft"]     = map_cu('Telescope help_tags'):with_noremap():with_silent(),
     ["n|<Leader>fd"]     = map_cu('Telescope dotfiles path='..os.getenv("HOME")..'/.dotfiles'):with_noremap():with_silent(),
     ["n|<Leader>fs"]     = map_cu('Telescope gosource'):with_noremap():with_silent(),
     -- prodoc
