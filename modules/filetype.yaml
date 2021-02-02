@@ -3,6 +3,7 @@
 
 - repo: nvim-treesitter/nvim-treesitter
   on_event: BufRead
+  on_source: telescope.nvim
   hook_source: |
     lua <<EOF
     vim.api.nvim_command('set foldmethod=expr')
