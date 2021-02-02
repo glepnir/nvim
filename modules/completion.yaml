@@ -6,7 +6,8 @@
       require('internal.lspconfig')
     EOF
 
-# - repo: glepnir/lspsaga.nvim
+- repo: glepnir/lspsaga.nvim
+  on_cmd: Lspsaga
 
 - repo: hrsh7th/nvim-compe
   on_event: InsertEnter
