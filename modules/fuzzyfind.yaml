@@ -7,6 +7,7 @@
           prompt_prefix = '🍔 ',
           prompt_position = 'top',
           sorting_strategy = 'ascending',
+          file_previewer = require'telescope.previewers'.vim_buffer_cat.new
         },
         extensions = {
             fzy_native = {
