@@ -1,13 +1,14 @@
 - repo: neovim/nvim-lspconfig
   on_event: BufRead
-  on_source: lspsaga.nvim
   hook_source: |-
     lua <<EOF
       require('internal.lspconfig')
     EOF
 
 - repo: glepnir/lspsaga.nvim
+  on_event: BufRead
   on_cmd: Lspsaga
+  depends: nvim-lspconfig
 
 - repo: hrsh7th/nvim-compe
   on_event: InsertEnter
