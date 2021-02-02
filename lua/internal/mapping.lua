@@ -51,7 +51,7 @@ function mapping:load_vim_define()
     -- TODO Wrap line
     ["i|<TAB>"]      = map_cmd([[pumvisible() ? "\<C-n>" : vsnip#available(1) ?"\<Plug>(vsnip-expand-or-jump)" : v:lua.check_back_space() ? "\<TAB>" : completion#trigger_completion()]]):with_expr():with_silent(),
     ["i|<S-TAB>"]    = map_cmd([[pumvisible() ? "\<C-p>" : "\<C-h>"]]):with_noremap():with_expr(),
-    ["i|<CR>"]       = map_cmd([[compe#confirm({ 'keys': "\<Plug>delimitMateCR", 'mode': '' })]]):with_noremap():with_expr(),
+    ["i|<CR>"]       = map_cmd([[compe#confirm({ 'keys': "\<Plug>delimitMateCR", 'mode': '' })]]):with_noremap():with_expr():with_nowait(),
   -- command line
     ["c|<C-b>"]      = map_cmd('<Left>'):with_noremap(),
     ["c|<C-f>"]      = map_cmd('<Right>'):with_noremap(),
@@ -67,6 +67,8 @@ function mapping:load_plugin_define()
   self.plugin = {
     ["n|gb"]             = map_cr("BufferLinePick"):with_noremap():with_silent(),
     -- Lsp mapp work when insertenter and lsp start
+    ["n|<C-f>"]          = map_cmd("<cmd>lua require('lspsaga.hover').smart_scroll_hover(1)<CR>"):with_silent():with_noremap():with_nowait(),
+    ["n|<C-b>"]          = map_cmd("<cmd>lua require('lspsaga.hover').smart_scroll_hover(-1)<CR>"):with_silent():with_noremap():with_nowait(),
     ["n|[e"]             = map_cr('Lspsaga diagnostic_jump_next'):with_noremap():with_silent(),
     ["n|]e"]             = map_cr('Lspsaga diagnostic_jump_prev'):with_noremap():with_silent(),
     ["n|K"]              = map_cr("Lspsaga hover_doc"):with_noremap():with_silent(),

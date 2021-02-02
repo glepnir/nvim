@@ -4,9 +4,9 @@ local pbind = {}
 function pbind.bind_option(options)
   for k, v in pairs(options) do
     if v == true or v == false then
-      vim.api.nvim_command('set ' .. k)
+      vim.cmd('set ' .. k)
     else
-      vim.api.nvim_command('set ' .. k .. '=' .. v)
+      vim.cmd('set ' .. k .. '=' .. v)
     end
   end
 end
@@ -20,6 +20,7 @@ function rhs_options:new()
       noremap = false,
       silent = false,
       expr = false,
+      nowait = false,
     }
   }
   setmetatable(instance,self)
@@ -59,6 +60,11 @@ end
 
 function rhs_options:with_expr()
   self.options.expr = true
+  return self
+end
+
+function rhs_options:with_nowait()
+  self.options.nowait = true
   return self
 end
 
