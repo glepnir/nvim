@@ -38,9 +38,6 @@
   hook_source: |
     let g:vsnip_snippet_dir = getenv("HOME") . "/.config/nvim/snippets"
 
-- repo: hrsh7th/vim-vsnip-integ
-  on_event: InsertCharPre
-
 - repo: mattn/vim-sonictemplate
   on_cmd: Template
   on_ft: [go,typescript,lua,javascript,vim,rust,markdown]
@@ -48,14 +45,8 @@
     let g:sonictemplate_postfix_key = '<C-j>'
     let g:sonictemplate_vim_template_dir = getenv("HOME") . '/.config/nvim/template'
 
-- repo: Raimondi/delimitMate
+- repo: cohama/lexima.vim
   on_event: InsertCharPre
-  hook_source: |
-    let g:delimitMate_expand_cr = 0
-    let g:delimitMate_expand_space = 1
-    let g:delimitMate_smart_quotes = 1
-    let g:delimitMate_expand_inside_quotes = 0
-    au FileType markdown let b:delimitMate_nesting_quotes = ["`"]
 
 - repo: mattn/emmet-vim
   on_event: InsertEnter
