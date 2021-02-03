@@ -50,10 +50,7 @@
   hook_source: |
     let g:gutentags_cache_dir = getenv("HOME").'/.cache/vim/tags'
     let g:gutentags_project_root = ['.root', '.git', '.svn','.project','go.mod','.Cargo.toml','tsconfig.js','jsconfig.js']
-    let g:gutentags_generate_on_write = 0
-    let g:gutentags_generate_on_missing = 0
-    let g:gutentags_generate_on_new = 0
-    let g:gutentags_exclude_filetypes = [ 'defx', 'denite', 'vista', 'magit' ]
+    let g:gutentags_exclude_project_root = [ '/usr/local' ]
 
 - repo: mhartington/formatter.nvim
   on_ft: [typescript,typescriptreact,lua]
