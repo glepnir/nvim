@@ -7,11 +7,11 @@ local conf = require('telescope.config').values
 local dotfiles_list = function(opts)
   local dir = opts.path or ''
   local list = {}
-   local p = io.popen('rg --files '..dir)
-   for file in p:lines() do
-     table.insert(list,file)
-   end
-   return list
+  local p = io.popen('rg --files '..dir)
+  for file in p:lines() do
+    table.insert(list,file)
+  end
+  return list
 end
 
 local dotfiles = function(opts)
