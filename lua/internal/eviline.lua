@@ -66,7 +66,7 @@ gls.left[5] = {
   FileName = {
     provider = {'FileName'},
     condition = buffer_not_empty,
-    highlight = {colors.green,colors.bg,'bold'}
+    highlight = {'#F3EA98',colors.bg,'bold'}
   }
 }
 
