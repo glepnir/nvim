@@ -47,29 +47,39 @@
 - repo: mhartington/formatter.nvim
   on_ft: [typescript,typescriptreact,lua]
   on_cmd: Format
-  hook_source: |
+  hook_source: |-
     lua <<EOF
-      require('formatter').setup({
-        logging = false,
-        filetype = {
-          typescriptreact = {
-              prettier = function()
-                return {
-                  exe = "prettier",
-                  args = {"--stdin-filepath", vim.api.nvim_buf_get_name(0), '--single-quote'},
-                  stdin = true
-                }
-              end
-          },
-          lua = {
-              luafmt = function()
-                return {
-                  exe = "lua-format",
-                  args = {"-i", "--config", ".luafmt"}
-                  stdin = true
-                  }
-                end
+    require('formatter').setup({
+      logging = false,
+      filetype = {
+        typescriptreact = {
+          function()
+              return {
+                exe = "prettier",
+                args = {"--stdin-filepath", vim.api.nvim_buf_get_name(0), '--single-quote'},
+                stdin = true
               }
+            end
+        },
+        typescript = {
+          function()
+              return {
+                exe = "prettier",
+                args = {"--stdin-filepath", vim.api.nvim_buf_get_name(0), '--single-quote'},
+                stdin = true
+              }
+            end
+        },
+        lua = {
+            -- luafmt
+            function()
+              return {
+                exe = "lua-format",
+                args = {"--indent-count", 2, "--stdin"},
+                stdin = true
+              }
+            end
           }
-        })
+        }
+      })
     EOF
