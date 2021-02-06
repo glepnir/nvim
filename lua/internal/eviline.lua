@@ -217,7 +217,7 @@ gls.short_line_left[2] = {
       return fname
     end,
     condition = buffer_not_empty,
-    highlight = {colors.white,colors.bg,'bold'}
+    highlight = {colors.fg,colors.bg,'bold'}
   }
 }
 
