@@ -49,8 +49,9 @@ function mapping:load_vim_define()
     ["n|<C-l>"]      = map_cmd('<C-w>l'):with_noremap(),
     ["n|<C-j>"]      = map_cmd('<C-w>j'):with_noremap(),
     ["n|<C-k>"]      = map_cmd('<C-w>k'):with_noremap(),
-    ["n|<A-[>"]     = map_cr('vertical resize -5'),
-    ["n|<A-]>"]     = map_cr('vertical resize +5'),
+    ["n|<A-[>"]      = map_cr('vertical resize -5'),
+    ["n|<A-]>"]      = map_cr('vertical resize +5'),
+    ["n|<C-q>"]      = map_cmd(':wq<CR>'),
     ["n|<Leader>ss"] = map_cu('SessionSave'):with_noremap(),
     ["n|<Leader>sl"] = map_cu('SessionLoad'):with_noremap(),
   -- Insert
