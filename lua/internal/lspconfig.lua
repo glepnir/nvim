@@ -6,7 +6,7 @@ local format = require('internal.format')
 
 saga.init_lsp_saga()
 -- vim.cmd [[autocmd CursorHold * lua require'lspsaga.diagnostic'.show_line_diagnostics()]]
-
+vim.cmd [[autocmd CursorHold * lua vim.defer_fn(function() require('lspsaga.hover').render_hover_doc() end, 5000)]]
 local enhance_attach = function(client,bufnr)
   if client.resolved_capabilities.document_formatting then
     format.lsp_before_save()
