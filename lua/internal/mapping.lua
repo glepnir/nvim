@@ -83,6 +83,8 @@ end
 
 function mapping:load_plugin_define()
   self.plugin = {
+    -- person keymap
+    ["n|mf"]             = map_cr("<cmd>lua require('internal.fsevent').file_event()<CR>"):with_silent():with_nowait():with_noremap();
     ["n|gb"]             = map_cr("BufferLinePick"):with_noremap():with_silent(),
     -- Lsp mapp work when insertenter and lsp start
     ["n|<C-f>"]          = map_cmd("<cmd>lua require('lspsaga.hover').smart_scroll_hover(1)<CR>"):with_silent():with_noremap():with_nowait(),
