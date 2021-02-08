@@ -49,8 +49,8 @@ function mapping:load_vim_define()
     ["n|<C-l>"]      = map_cmd('<C-w>l'):with_noremap(),
     ["n|<C-j>"]      = map_cmd('<C-w>j'):with_noremap(),
     ["n|<C-k>"]      = map_cmd('<C-w>k'):with_noremap(),
-    ["n|<C-w>["]     = map_cr('vertical resize -5'),
-    ["n|<C-w>]"]     = map_cr('vertical resize +5'),
+    ["n|<A-[>"]     = map_cr('vertical resize -5'),
+    ["n|<A-]>"]     = map_cr('vertical resize +5'),
     ["n|<Leader>ss"] = map_cu('SessionSave'):with_noremap(),
     ["n|<Leader>sl"] = map_cu('SessionLoad'):with_noremap(),
   -- Insert
@@ -62,11 +62,10 @@ function mapping:load_vim_define()
     ["i|<C-b>"]      = map_cmd('<Left>'):with_noremap(),
     ["i|<C-f>"]      = map_cmd('<Right>'):with_noremap(),
     ["i|<C-a>"]      = map_cmd('<ESC>^i'):with_noremap(),
-    ["i|<C-o>"]      = map_cmd('<Esc>o'):with_noremap(),
+    ["i|<C-j>"]      = map_cmd('<Esc>o'):with_noremap(),
     ["i|<C-s>"]      = map_cmd('<Esc>:w<CR>'),
     ["i|<C-q>"]      = map_cmd('<Esc>:wq<CR>'),
     ["i|<C-e>"]      = map_cmd([[pumvisible() ? "\<C-e>" : "\<End>"]]):with_noremap():with_expr(),
-    -- TODO Wrap line
     ["i|<TAB>"]      = map_cmd('v:lua.tab_complete()'):with_expr():with_silent(),
     ["i|<S-TAB>"]    = map_cmd([[pumvisible() ? "\<C-p>" : "\<C-h>"]]):with_noremap():with_expr(),
     ["i|<CR>"]       = map_cmd([[compe#confirm({ 'keys': "\<Plug>delimitMateCR", 'mode': '' })]]):with_noremap():with_expr():with_nowait(),

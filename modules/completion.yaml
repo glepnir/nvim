@@ -42,7 +42,7 @@
   on_cmd: Template
   on_ft: [go,typescript,lua,javascript,vim,rust,markdown]
   hook_source: |
-    let g:sonictemplate_postfix_key = '<C-j>'
+    let g:sonictemplate_postfix_key = '<C-k>'
     let g:sonictemplate_vim_template_dir = getenv("HOME") . '/.config/nvim/template'
 
 - repo: Raimondi/delimitMate
