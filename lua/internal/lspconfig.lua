@@ -6,6 +6,9 @@ local format = require('internal.format')
 
 saga.init_lsp_saga()
 
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+
 local enhance_attach = function(client,bufnr)
   if client.resolved_capabilities.document_formatting then
     format.lsp_before_save()
@@ -16,15 +19,7 @@ end
 lspconfig.gopls.setup {
   cmd = {"gopls","--remote=auto"},
   on_attach = enhance_attach,
-  capabilities ={
-    textDocument = {
-      completion = {
-        completionItem = {
-          snippetSupport = true
-        }
-      }
-    }
-  },
+  capabilities = capabilities,
   init_options = {
     usePlaceholders=true,
     completeUnimported=true,
