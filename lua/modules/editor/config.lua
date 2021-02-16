@@ -36,20 +36,6 @@ function config.vim_cursorwod()
   vim.api.nvim_command('augroup END')
 end
 
-function config.vim_signify()
-  vim.g.signify_sign_add = '▋'
-  vim.g.signify_sign_change = '▋'
-  vim.g.signify_sign_delete = '▋'
-  vim.g.signify_sign_delete_first_line = '▘'
-  vim.g.signify_sign_show_count = 0
-end
-
-function config.vim_niceblock()
-  vim.api.nvim_command('silent! xmap I <Plug>(niceblock-I)')
-  vim.api.nvim_command('silent! xmap gI <Plug>(niceblock-gI)')
-  vim.api.nvim_command('silent! xmap A  <Plug>(niceblock-A)')
-end
-
 function config.vim_smartchar()
   vim.api.nvim_command("autocmd FileType go inoremap <buffer><expr> ; smartchr#loop(':=',';')")
 end

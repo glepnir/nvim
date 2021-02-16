@@ -27,25 +27,6 @@ editor['hrsh7th/vim-eft'] = {
   end
 }
 
-editor['mhinz/vim-signify'] = {
-  event = {'BufReadPre *','BufNewFile *'},
-  config = conf.vim_signify
-}
-
-editor['iamcco/markdown-preview.nvim'] = {
-  ft = 'markdown',
-  config = function ()
-    vim.g.mkdp_auto_start = 0
-  end
-}
-
-editor['brooth/far.vim'] = {
-  cmd = {'Far','Farp'},
-  config = function ()
-    vim.g['far#source'] = 'rg'
-  end
-}
-
 editor['kana/vim-operator-replace'] = {
   event = 'BufRead *',
   requires = 'kana/vim-operator-user'
@@ -57,8 +38,7 @@ editor['rhysd/vim-operator-surround'] = {
 }
 
 editor['kana/vim-niceblock']  = {
-  event = 'BufRead *',
-  setup = conf.vim_niceblock
+  opt = true
 }
 
 editor['kana/vim-smartchr'] = {

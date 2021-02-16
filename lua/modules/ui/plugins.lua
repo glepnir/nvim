@@ -26,4 +26,9 @@ ui['kyazdani42/nvim-tree.lua'] = {
   requires = {'kyazdani42/nvim-web-devicons'}
 }
 
+ui['mhinz/vim-signify'] = {
+  event = {'BufReadPre *','BufNewFile *'},
+  config = conf.vim_signify
+}
+
 return ui
