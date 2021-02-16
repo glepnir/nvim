@@ -49,8 +49,4 @@ local def_map = {
     ["c|<C-t>"]      = map_cmd([[<C-R>=expand("%:p:h") . "/" <CR>]]):with_noremap(),
 }
 
-local function load_mapping()
-  bind.nvim_load_mapping(def_map)
-end
-
-load_mapping()
+bind.nvim_load_mapping(def_map)
