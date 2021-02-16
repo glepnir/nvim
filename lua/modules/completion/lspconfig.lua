@@ -1,6 +1,6 @@
 local api = vim.api
 local lspconfig = require 'lspconfig'
-local global = require 'domain.global'
+local global = require 'core.global'
 local format = require('modules.completion.format')
 
 vim.cmd [[packadd lspsaga.nvim]]

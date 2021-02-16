@@ -3,7 +3,7 @@ local finders = require('telescope.finders')
 local pickers = require('telescope.pickers')
 local make_entry = require('telescope.make_entry')
 local conf = require('telescope.config').values
-local global = require('domain.global')
+local global = require('core.global')
 
 local dotfiles_list = function(opts)
   local dir = opts.path or ''

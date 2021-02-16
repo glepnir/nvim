@@ -44,4 +44,3 @@ _G.enhance_ft_move = function(key)
   }
   return t(map[key])
 end
-
