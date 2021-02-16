@@ -52,9 +52,9 @@ function config.nvim_tree()
   vim.g.nvim_tree_hide_dotfiles = 1
   vim.g.nvim_tree_indent_markers = 1
   vim.g.nvim_tree_bindings = {
-    edit = {'<CR>', 'l'},
-    edit_vsplit = 's',
-    edit_split = 'i',
+    edit = {"<CR>", "l"},
+    edit_vsplit = "s",
+    edit_split = "i"
   }
   vim.g.nvim_tree_icons = {
     default =  '',
