@@ -8,9 +8,13 @@ local packer = nil
 local Packer = {}
 Packer.__index = Packer
 
+function Packer:get_plugins_list()
+end
+
 function Packer:load_plugins()
   self.repos = {}
-  local get_plugins = function()
+
+  local get_plugins_list = function ()
     local list = {}
     local tmp = vim.split(fn.globpath(modules_dir,'*/plugins.lua'),'\n')
     for _,f in ipairs(tmp) do
@@ -19,7 +23,7 @@ function Packer:load_plugins()
     return list
   end
 
-  local plugins_file = get_plugins()
+  local plugins_file = get_plugins_list()
   for _,m in ipairs(plugins_file) do
     local repos = require(m:sub(0,#m-4))
     for repo,conf in pairs(repos) do
@@ -49,6 +53,7 @@ function Packer:init_ensure_plugins()
     disable_commands = true
   })
   packer.reset()
+  use {"wbthomason/packer.nvim", opt = true}
   for _,repo in ipairs(self.repos) do
     use(repo)
   end
@@ -65,5 +70,17 @@ local plugins = setmetatable({}, {
     return packer[key]
   end
 })
+
+function plugins.install_with_compile()
+  plugins.install()
+  plugins.compile()
+end
+
+function plugins.auto_compile()
+  local file = vim.fn.expand('%:p')
+  if file:match(modules_dir) then
+    plugins.compile()
+  end
+end
 
 return plugins
