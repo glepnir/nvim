@@ -32,7 +32,7 @@ function Packer:load_plugins()
   end
 end
 
-local load_packer = function ()
+function Packer:load_packer()
   if not packer then
     api.nvim_command('packadd packer.nvim')
     packer = require('packer')
@@ -43,18 +43,12 @@ local load_packer = function ()
     disable_commands = true
   })
   packer.reset()
-end
-
-function Packer:installer()
-  load_packer()
   local use = packer.use
   self:load_plugins()
   use {"wbthomason/packer.nvim", opt = true}
   for _,repo in ipairs(self.repos) do
     use(repo)
   end
-  packer.install()
-  packer.compile()
 end
 
 function Packer:init_ensure_plugins()
@@ -66,13 +60,15 @@ function Packer:init_ensure_plugins()
     uv.fs_mkdir(data_dir..'plugin',511,function()
       assert("make compile path dir faield")
     end)
-    self:installer()
+    self:load_packer()
+    packer.install()
+    packer.compile()
   end
 end
 
 local plugins = setmetatable({}, {
   __index = function(_, key)
-    Packer:init_ensure_plugins()
+    Packer:load_packer()
     if not packer then
       load_packer()
     end
