@@ -77,11 +77,6 @@ function plugins.ensure_plugins()
   Packer:init_ensure_plugins()
 end
 
-function plugins.install_with_compile()
-  plugins.install()
-  plugins.compile()
-end
-
 function plugins.auto_compile()
   local file = vim.fn.expand('%:p')
   if file:match(modules_dir) then
