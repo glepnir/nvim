@@ -37,7 +37,7 @@ tools['brooth/far.vim'] = {
   end
 }
 
-editor['iamcco/markdown-preview.nvim'] = {
+tools['iamcco/markdown-preview.nvim'] = {
   ft = 'markdown',
   config = function ()
     vim.g.mkdp_auto_start = 0
