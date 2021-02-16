@@ -30,4 +30,18 @@ tools['mhartington/formatter.nvim'] = {
   config = conf.fomatter_nvim
 }
 
+tools['brooth/far.vim'] = {
+  cmd = {'Far','Farp'},
+  config = function ()
+    vim.g['far#source'] = 'rg'
+  end
+}
+
+editor['iamcco/markdown-preview.nvim'] = {
+  ft = 'markdown',
+  config = function ()
+    vim.g.mkdp_auto_start = 0
+  end
+}
+
 return tools
