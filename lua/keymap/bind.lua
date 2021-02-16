@@ -1,16 +1,3 @@
-local pbind = {}
-
--- bind options
-function pbind.bind_option(options)
-  for k, v in pairs(options) do
-    if v == true or v == false then
-      vim.cmd('set ' .. k)
-    else
-      vim.cmd('set ' .. k .. '=' .. v)
-    end
-  end
-end
-
 local rhs_options = {}
 
 function rhs_options:new()
@@ -67,6 +54,8 @@ function rhs_options:with_nowait()
   self.options.nowait = true
   return self
 end
+
+local pbind = {}
 
 function pbind.map_cr(cmd_string)
   local ro = rhs_options:new()

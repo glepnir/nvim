@@ -1,9 +1,10 @@
 local api = vim.api
 local lspconfig = require 'lspconfig'
 local global = require 'domain.global'
-local saga = require 'lspsaga'
-local format = require('internal.format')
+local format = require('modules.completion.format')
 
+vim.cmd [[packadd lspsaga.nvim]]
+local saga = require 'lspsaga'
 saga.init_lsp_saga()
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
