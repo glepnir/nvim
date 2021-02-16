@@ -32,17 +32,7 @@ function Packer:load_plugins()
   end
 end
 
-function Packer:init_ensure_plugins()
-  local packer_dir = data_dir..'pack/packer/opt/packer.nvim'
-  local state = uv.fs_stat(packer_dir)
-  if not state then
-    local cmd = "!git clone https://github.com/wbthomason/packer.nvim " ..packer_dir
-    api.nvim_command(cmd)
-    uv.fs_mkdir(data_dir..'plugin',511,function()
-      assert("make compile path dir faield")
-    end)
-  end
-
+function Packer:installer()
   api.nvim_command('packadd packer.nvim')
   self:load_plugins()
   packer = require('packer')
@@ -57,10 +47,20 @@ function Packer:init_ensure_plugins()
   for _,repo in ipairs(self.repos) do
     use(repo)
   end
+  packer.install()
+  packer.compile()
+end
 
-  api.nvim_command('filetype plugin indent on')
-  if fn.has('vim_starting') == 1 then
-    api.nvim_command('syntax enable')
+function Packer:init_ensure_plugins()
+  local packer_dir = data_dir..'pack/packer/opt/packer.nvim'
+  local state = uv.fs_stat(packer_dir)
+  if not state then
+    local cmd = "!git clone https://github.com/wbthomason/packer.nvim " ..packer_dir
+    api.nvim_command(cmd)
+    uv.fs_mkdir(data_dir..'plugin',511,function()
+      assert("make compile path dir faield")
+    end)
+    self:installer()
   end
 end
 
@@ -71,9 +71,8 @@ local plugins = setmetatable({}, {
   end
 })
 
-function plugins.install_with_compile()
-  plugins.install()
-  plugins.compile()
+function plugins.auto_install_compile()
+  Packer:init_ensure_plugins()
 end
 
 function plugins.auto_compile()
