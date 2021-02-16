@@ -32,17 +32,23 @@ function Packer:load_plugins()
   end
 end
 
-function Packer:installer()
-  api.nvim_command('packadd packer.nvim')
-  self:load_plugins()
-  packer = require('packer')
-  local use = packer.use
+local load_packer = function ()
+  if not packer then
+    api.nvim_command('packadd packer.nvim')
+    packer = require('packer')
+  end
   packer.init({
     compile_path = packer_compiled,
     git = { clone_timeout = 120 },
     disable_commands = true
   })
   packer.reset()
+end
+
+function Packer:installer()
+  load_packer()
+  local use = packer.use
+  self:load_plugins()
   use {"wbthomason/packer.nvim", opt = true}
   for _,repo in ipairs(self.repos) do
     use(repo)
@@ -67,12 +73,20 @@ end
 local plugins = setmetatable({}, {
   __index = function(_, key)
     Packer:init_ensure_plugins()
+    if not packer then
+      load_packer()
+    end
     return packer[key]
   end
 })
 
-function plugins.auto_install_compile()
+function plugins.ensure_plugins()
   Packer:init_ensure_plugins()
+end
+
+function plugins.install_with_compile()
+  plugins.install()
+  plugins.compile()
 end
 
 function plugins.auto_compile()

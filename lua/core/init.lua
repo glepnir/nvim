@@ -54,7 +54,7 @@ local load_core =function()
   disable_distribution_plugins()
   leader_map()
 
-  require('core.pack').auto_install_compile()
+  require('core.pack').ensure_plugins()
   require('core.options')
   require('core.mapping')
   require('keymap')
