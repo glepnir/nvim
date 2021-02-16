@@ -8,9 +8,6 @@ local packer = nil
 local Packer = {}
 Packer.__index = Packer
 
-function Packer:get_plugins_list()
-end
-
 function Packer:load_plugins()
   self.repos = {}
 
