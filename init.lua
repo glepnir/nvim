@@ -1,2 +1,2 @@
 -- Load Modules:
-require("domain.core")
+require("core")
