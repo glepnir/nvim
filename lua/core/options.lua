@@ -1,10 +1,17 @@
-local global = require('domain.global')
-local pbind = require 'publibs.plbind'
-local vim = vim
-local options = setmetatable({}, { __index = { global_local = {},window_local = {} } })
+local global = require('core.global')
 
-function options:load_options()
-  self.global_local = {
+local function bind_option(options)
+  for k, v in pairs(options) do
+    if v == true or v == false then
+      vim.cmd('set ' .. k)
+    else
+      vim.cmd('set ' .. k .. '=' .. v)
+    end
+  end
+end
+
+local function load_options()
+  local global_local = {
     termguicolors  = true;
     mouse          = "nv";
     errorbells     = true;
@@ -83,7 +90,7 @@ function options:load_options()
     winblend       = 10;
   }
 
-  self.bw_local   = {
+  local bw_local  = {
     synmaxcol      = 2500;
     formatoptions  = "1jcroql";
     textwidth      = 80;
@@ -119,10 +126,10 @@ function options:load_options()
     vim.g.python_host_prog = '/usr/bin/python'
     vim.g.python3_host_prog = '/usr/local/bin/python3'
   end
-  for name, value in pairs(self.global_local) do
+  for name, value in pairs(bw_local) do
     vim.o[name] = value
   end
-  pbind.bind_option(self.bw_local)
+  bind_option(bw_local)
 end
 
-return options
+load_options()
