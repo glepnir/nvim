@@ -30,7 +30,7 @@ _G.enhance_jk_move = function(key)
     vim.cmd [[packadd accelerated-jk]]
   end
   local map = key == 'j' and '<Plug>(accelerated_jk_gj)' or '<Plug>(accelerated_jk_gk)'
-  return t(key)
+  return t(map)
 end
 
 _G.enhance_ft_move = function(key)
