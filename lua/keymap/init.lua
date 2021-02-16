@@ -29,8 +29,6 @@ local plug_map = {
     ["n|<Leader>cw"]     = map_cmd("<cmd>lua vim.lsp.buf.workspace_symbol()<CR>"):with_noremap():with_silent(),
     ["n|<Leader>ce"]     = map_cr('Lspsaga show_line_diagnostics'):with_noremap():with_silent(),
     ["n|<Leader>ct"]      = map_args("Template"),
-    -- dein
-    ["n|<Leader>tr"]     = map_cr("call dein#recache_runtimepath()"):with_noremap():with_silent(),
     ["n|<Leader>tf"]     = map_cu('DashboardNewFile'):with_noremap():with_silent(),
     -- mhinz/vim-signify
     ["n|[g"]             = map_cmd("<plug>(signify-next-hunk)"),
@@ -67,8 +65,8 @@ local plug_map = {
     ["x|gcc"]            = map_cr('ProComment'),
     ["n|gcj"]            = map_cu('ProDoc'):with_silent():with_silent(),
     -- Plugin acceleratedjk
---     ["n|j"]              = map_cmd('v:lua.enhance_jk_move("j")'):with_silent():with_expr(),
---     ["n|k"]              = map_cmd('v:lua.enhance_jk_move("k")'):with_silent():with_expr(),
+    ["n|j"]              = map_cmd('v:lua.enhance_jk_move("j")'):with_silent():with_expr(),
+    ["n|k"]              = map_cmd('v:lua.enhance_jk_move("k")'):with_silent():with_expr(),
     -- Plugin QuickRun
     ["n|<Leader>r"]     = map_cr("<cmd> lua require'internal.selfunc'.run_command()"):with_noremap():with_silent(),
     -- Plugin Vista
