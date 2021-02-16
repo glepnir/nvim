@@ -1,8 +1,4 @@
-local options = require 'domain.options'
-local global = require 'domain.global'
-local dein = require 'domain.dein'
-local autocmd = require 'internal.event'
-local fs = require 'publibs.plfs'
+local global = require 'core.global'
 local vim = vim
 
 -- Create cache dir and subs dir
@@ -16,10 +12,10 @@ local createdir = function ()
   }
   -- There only check once that If cache_dir exists
   -- Then I don't want to check subs dir exists
-  if not fs.is_dir(global.cache_dir) then
+  if vim.fn.isdirectory(global.cache_dir) == 0 then
     os.execute("mkdir -p " .. global.cache_dir)
     for _,v in pairs(data_dir) do
-      if not global.isdir(v) then
+      if vim.fn.isdirectory(v) == 0 then
         os.execute("mkdir -p " .. v)
       end
     end
@@ -58,15 +54,17 @@ local load_core =function()
   disable_distribution_plugins()
   leader_map()
 
-  options:load_options()
+  require('core.pack').auto_install_compile()
+  require('core.options')
+  require('core.mapping')
+  require('keymap')
+  require('core.event')
 
-  -- load my colorscheme
-  require'internal.zephyr'
-  dein:load_repos()
-
-  require('internal.mapping')
-  autocmd.load_autocmds()
-  require('internal.eviline')
+  vim.cmd [[command! PackerCompile lua require('core.pack').compile()]]
+  vim.cmd [[command! PackerInstall lua require('core.pack').install()]]
+  vim.cmd [[command! PackerUpdate lua require('core.pack').update()]]
+  vim.cmd [[command! PackerSync lua require('core.pack').sync()]]
+  vim.cmd [[command! PackerClean lua require('core.pack').clean()]]
 end
 
 load_core()
