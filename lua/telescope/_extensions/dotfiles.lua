@@ -8,7 +8,7 @@ local global = require('core.global')
 local dotfiles_list = function(opts)
   local dir = opts.path or ''
   local list = {}
-  local p = io.popen('rg --files '..dir)
+  local p = io.popen('rg --files --hidden '..dir)
   for file in p:lines() do
     table.insert(list,file)
   end
