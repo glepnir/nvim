@@ -54,7 +54,7 @@ lspconfig.tsserver.setup {
   end
 }
 
-lspconfig.clangd.setup({
+lspconfig.clangd.setup {
   cmd = {
     "clangd",
     "--background-index",
@@ -62,10 +62,7 @@ lspconfig.clangd.setup({
     "--clang-tidy",
     "--header-insertion=iwyu",
   },
-  init_options = {
-    clangdFileStatus = true
-  },
-})
+}
 
 local servers = {
   'dockerls','bashls','zls','rust_analyzer'
