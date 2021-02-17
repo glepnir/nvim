@@ -28,7 +28,10 @@ editor['hrsh7th/vim-eft'] = {
 }
 
 editor['kana/vim-operator-replace'] = {
-  event = 'BufRead *',
+  keys = {{'x','p'}},
+  config = function()
+    vim.api.nvim_set_keymap("x", "p", "<Plug>(operator-replace)",{silent =true})
+  end,
   requires = 'kana/vim-operator-user'
 }
 
