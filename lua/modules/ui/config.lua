@@ -53,9 +53,9 @@ function config.nvim_tree()
   vim.g.nvim_tree_hide_dotfiles = 1
   vim.g.nvim_tree_indent_markers = 1
   vim.g.nvim_tree_bindings = {
-    edit = {"<CR>", "l"},
-    edit_vsplit = "s",
-    edit_split = "i"
+    ["l"] = ":lua require'nvim-tree'.on_keypress('edit')<CR>",
+    ["s"] = ":lua require'nvim-tree'.on_keypress('vsplit')<CR>",
+    ["i"] = ":lua require'nvim-tree'.on_keypress('split')<CR>",
   }
   vim.g.nvim_tree_icons = {
     default =  '',
