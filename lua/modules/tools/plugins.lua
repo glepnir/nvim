@@ -13,7 +13,6 @@ tools['editorconfig/editorconfig-vim'] = {
 
 tools['glepnir/indent-guides.nvim'] = {
   event = 'BufReadPre *',
-  config = conf.indent_guides
 }
 
 tools['glepnir/prodoc.nvim'] = {
