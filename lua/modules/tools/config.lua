@@ -28,7 +28,7 @@ local function load_dbs()
 end
 
 function config.vim_dadbod_ui()
-  if packer_plugins['vim-dadbod'] and not pakcer_plugins['vim-dadbod'].loaded then
+  if packer_plugins['vim-dadbod'] and not packer_plugins['vim-dadbod'].loaded then
     vim.cmd [[packadd vim-dadbod]]
   end
   vim.g.db_ui_show_help = 0
@@ -37,13 +37,6 @@ function config.vim_dadbod_ui()
   vim.g.db_ui_winwidth = 35
   vim.g.db_ui_save_location = os.getenv("HOME") .. '/.cache/vim/db_ui_queries'
   vim.g.dbs = load_dbs()
-end
-
-function config.indent_guides()
-  require('indent_guides').setup {
-    even_colors = { fg ='NONE',bg='#23272e'},
-    odd_colors = {fg='NONE',bg='#23272e'}
-  }
 end
 
 function config.vim_vista()
