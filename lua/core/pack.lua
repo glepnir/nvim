@@ -65,9 +65,8 @@ end
 
 local plugins = setmetatable({}, {
   __index = function(_, key)
-    Packer:load_packer()
     if not packer then
-      load_packer()
+      Packer:load_packer()
     end
     return packer[key]
   end
