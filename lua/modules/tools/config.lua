@@ -76,17 +76,8 @@ function config.fomatter_nvim()
             }
           end
       },
-      lua = {
-          function()
-            return {
-              exe = "lua-format",
-              args = {"--indent-count", 2, "--stdin"},
-              stdin = true
-            }
-          end
-        }
-      }
-    })
+    }
+  })
 end
 
 return config
