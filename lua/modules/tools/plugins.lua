@@ -11,10 +11,6 @@ tools['editorconfig/editorconfig-vim'] = {
   ft = { 'go','typescript','javascript','vim','rust','zig','c','cpp' }
 }
 
-tools['glepnir/indent-guides.nvim'] = {
-  event = 'BufReadPre *',
-}
-
 tools['glepnir/prodoc.nvim'] = {
   event = 'BufReadPre *'
 }
