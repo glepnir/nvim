@@ -10,7 +10,11 @@ local golang_source = function()
   local root
   local result = {}
   if os_name == 'Darwin' then
-    root = fn.globpath('/usr/local/Cellar/go', '*') .. '/libexec/src/'
+    if vim.fn.isdirectory('/usr/local/go') then
+      root = '/usr/local/go/src/'
+    else
+      root = fn.globpath('/usr/local/Cellar/go', '*') .. '/libexec/src/'
+    end
   end
   local dicts = fn.split(fn.globpath(root, '*'))
 
