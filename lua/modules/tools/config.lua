@@ -54,30 +54,4 @@ function config.vim_vista()
   }
 end
 
-function config.fomatter_nvim()
-  require('formatter').setup({
-    logging = false,
-    filetype = {
-      typescriptreact = {
-        function()
-            return {
-              exe = "prettier",
-              args = {"--stdin-filepath", vim.api.nvim_buf_get_name(0), '--single-quote'},
-              stdin = true
-            }
-          end
-      },
-      typescript = {
-        function()
-            return {
-              exe = "prettier",
-              args = {"--stdin-filepath", vim.api.nvim_buf_get_name(0), '--single-quote'},
-              stdin = true
-            }
-          end
-      },
-    }
-  })
-end
-
 return config

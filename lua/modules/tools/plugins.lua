@@ -20,11 +20,6 @@ tools['liuchengxu/vista.vim'] = {
   config = conf.vim_vista
 }
 
-tools['mhartington/formatter.nvim'] = {
-  ft = { 'typescript','typescriptreact','lua' },
-  config = conf.fomatter_nvim
-}
-
 tools['brooth/far.vim'] = {
   cmd = {'Far','Farp'},
   config = function ()
