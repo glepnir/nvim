@@ -20,6 +20,9 @@ function _G.open_lsp_log()
   vim.cmd("edit " .. path)
 end
 
+vim.cmd('command! -nargs=0 LspLog call v:lua.open_lsp_log()')
+vim.cmd('command! -nargs=0 LspRestart call v:lua.reload_lsp()')
+
 local enhance_attach = function(client,bufnr)
   if client.resolved_capabilities.document_formatting then
     format.lsp_before_save()
@@ -75,7 +78,7 @@ lspconfig.clangd.setup {
 }
 
 local servers = {
-  'dockerls','bashls','zls','rust_analyzer'
+  'dockerls','bashls','rust_analyzer','pyls'
 }
 
 for _,server in ipairs(servers) do
