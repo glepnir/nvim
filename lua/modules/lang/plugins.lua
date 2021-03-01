@@ -6,7 +6,7 @@ lang['ziglang/zig.vim'] = {
 }
 
 lang['nvim-treesitter/nvim-treesitter'] = {
-  event = 'BufRead *',
+  event = 'BufRead',
   after = 'telescope.nvim',
   config = conf.nvim_treesitter,
 }

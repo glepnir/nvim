@@ -12,7 +12,7 @@ ui['glepnir/galaxyline.nvim'] = {
 }
 
 ui['glepnir/indent-guides.nvim'] = {
-  event = 'BufReadPre *',
+  event = 'BufReadPre',
 }
 
 ui['Akin909/nvim-bufferline.lua'] = {
@@ -31,7 +31,7 @@ ui['kyazdani42/nvim-tree.lua'] = {
 }
 
 ui['mhinz/vim-signify'] = {
-  event = {'BufReadPre *','BufNewFile *'},
+  event = {'BufReadPre','BufNewFile'},
   config = conf.vim_signify
 }
 
