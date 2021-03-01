@@ -2,7 +2,7 @@ local editor = {}
 local conf = require('modules.editor.config')
 
 editor['Raimondi/delimitMate'] = {
-  event = 'InsertEnter *',
+  event = 'InsertEnter',
   config = conf.delimimate,
 }
 
@@ -16,7 +16,7 @@ editor['norcalli/nvim-colorizer.lua'] = {
 }
 
 editor['itchyny/vim-cursorword'] = {
-  event = {'BufReadPre *','BufNewFile *'},
+  event = {'BufReadPre','BufNewFile'},
   config = conf.vim_cursorwod
 }
 
@@ -36,7 +36,7 @@ editor['kana/vim-operator-replace'] = {
 }
 
 editor['rhysd/vim-operator-surround'] = {
-  event = 'BufRead *',
+  event = 'BufRead',
   requires = 'kana/vim-operator-user'
 }
 

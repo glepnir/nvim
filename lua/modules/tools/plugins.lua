@@ -12,7 +12,7 @@ tools['editorconfig/editorconfig-vim'] = {
 }
 
 tools['glepnir/prodoc.nvim'] = {
-  event = 'BufReadPre *'
+  event = 'BufReadPre'
 }
 
 tools['liuchengxu/vista.vim'] = {
