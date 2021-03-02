@@ -42,7 +42,7 @@ function Packer:load_packer()
   packer.reset()
   local use = packer.use
   self:load_plugins()
-  use {"glepnir/packer.nvim", opt = true}
+  use {"glepnir/packer.nvim", opt = true,branch= 'glepnir-patch-1'}
   for _,repo in ipairs(self.repos) do
     use(repo)
   end
