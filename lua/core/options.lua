@@ -63,7 +63,7 @@ local function load_options()
     switchbuf      = "useopen";
     backspace      = "indent,eol,start";
     diffopt        = "filler,iwhite,internal,algorithm:patience";
-    completeopt    = "menu,menuone,noselect";
+    completeopt    = "menuone,noselect";
     jumpoptions    = "stack";
     showmode       = false;
     shortmess      = "aoOTIcF";
