@@ -78,7 +78,7 @@ lspconfig.clangd.setup {
 }
 
 local servers = {
-  'dockerls','bashls','rust_analyzer','pyls'
+  'dockerls','bashls','rust_analyzer','pyright'
 }
 
 for _,server in ipairs(servers) do
