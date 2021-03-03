@@ -59,6 +59,7 @@ function Packer:init_ensure_plugins()
     end)
     self:load_packer()
     packer.install()
+    packer.compile()
   end
 end
 
