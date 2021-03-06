@@ -20,7 +20,7 @@ function config.nvim_compe()
       nvim_lua = true;
       spell = true;
       tags = true;
-      snippets_nvim = true;
+      snippets_nvim = false;
     };
   }
 end
