@@ -30,9 +30,10 @@ ui['kyazdani42/nvim-tree.lua'] = {
   requires = {'kyazdani42/nvim-web-devicons'}
 }
 
-ui['mhinz/vim-signify'] = {
+ui['lewis6991/gitsigns.nvim'] = {
   event = {'BufReadPre','BufNewFile'},
-  config = conf.vim_signify
+  config = conf._gitsigns,
+  requires = {'nvim-lua/plenary.nvim',opt=true}
 }
 
 return ui
