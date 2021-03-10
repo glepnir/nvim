@@ -83,7 +83,7 @@ function pbind.nvim_load_mapping(mapping)
       if type(value) == 'table' then
         local rhs = value.cmd
         local options = value.options
-        vim.fn.nvim_set_keymap(mode,keymap,rhs,options)
+        vim.api.nvim_set_keymap(mode,keymap,rhs,options)
       end
     end
 end

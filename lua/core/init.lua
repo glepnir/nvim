@@ -45,8 +45,8 @@ end
 
 local leader_map = function()
   vim.g.mapleader = " "
-  vim.fn.nvim_set_keymap('n',' ','',{noremap = true})
-  vim.fn.nvim_set_keymap('x',' ','',{noremap = true})
+  vim.api.nvim_set_keymap('n',' ','',{noremap = true})
+  vim.api.nvim_set_keymap('x',' ','',{noremap = true})
 end
 
 local load_core =function()
