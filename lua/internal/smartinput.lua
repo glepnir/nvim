@@ -17,7 +17,7 @@ function _G.smart_input_loop(loop1,loop2)
     return delete_chars(#loop1) .. loop2
   end
   if pchars2 == loop2 then
-    return delete_chars(#loop1) .. loop1
+    return delete_chars(#loop2) .. loop1
   end
   if pchars1 ~= loop1 and pchars2 ~= loop2 then
     return loop1
