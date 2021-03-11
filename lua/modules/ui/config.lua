@@ -34,8 +34,8 @@ function config.dashboard()
       description = {'  Find  File                              SPC f f'},
       command = 'DashboardFindFile'},
     new_file = {
-     description = {'  New   File                              SPC t f'},
-     command =  'DashboardNewFile'},
+     description = {'  File Browser                            SPC f d'},
+     command =  'Telescope file_browser'},
     find_word = {
      description = {'  Find  word                              SPC f w'},
      command = 'DashboardFindWord'},

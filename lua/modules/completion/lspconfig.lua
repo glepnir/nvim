@@ -3,9 +3,14 @@ local lspconfig = require 'lspconfig'
 local global = require 'core.global'
 local format = require('modules.completion.format')
 
-vim.cmd [[packadd lspsaga.nvim]]
+if not packer_plugins['lspsaga.nvim'].loaded then
+  vim.cmd [[packadd lspsaga.nvim]]
+end
+
 local saga = require 'lspsaga'
-saga.init_lsp_saga()
+saga.init_lsp_saga({
+  code_action_icon = '💡'
+})
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
