@@ -62,6 +62,11 @@ function config.vim_sonictemplate()
   vim.g.sonictemplate_vim_template_dir = os.getenv("HOME").. '/.config/nvim/template'
 end
 
+function config.smart_input()
+  require('smartinput').setup {
+    ['go'] = { ';',':=',';' }
+  }
+end
 
 function config.emmet()
   vim.g.user_emmet_complete_tag = 0
