@@ -59,6 +59,7 @@ local load_core =function()
   require('core.mapping')
   require('keymap')
   require('core.event')
+  require('internal.smartinput')
 
   vim.cmd [[command! PackerCompile lua require('core.pack').compile()]]
   vim.cmd [[command! PackerInstall lua require('core.pack').install()]]

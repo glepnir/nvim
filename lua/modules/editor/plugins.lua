@@ -44,9 +44,4 @@ editor['kana/vim-niceblock']  = {
   opt = true
 }
 
-editor['kana/vim-smartchr'] = {
-  ft = 'go',
-  config = conf.vim_smartchar
-}
-
 return editor
