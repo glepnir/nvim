@@ -37,7 +37,7 @@ function config.telescope()
   end
   require('telescope').setup {
     defaults = {
-      prompt_prefix = '🍔 ',
+      prompt_prefix = '🔭 ',
       prompt_position = 'top',
       sorting_strategy = 'ascending',
       results_width = 0.6,

@@ -111,7 +111,7 @@ gls.mid[1] = {
       return true
     end,
     icon = ' LSP:',
-    highlight = {colors.cyan,colors.bg,'bold'}
+    highlight = {colors.yellow,colors.bg,'bold'}
   }
 }
 
