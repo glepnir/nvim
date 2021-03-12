@@ -47,7 +47,7 @@ gls.left[5] = {
   FileName = {
     provider = 'FileName',
     condition = condition.buffer_not_empty,
-    highlight = {colors.magenta,colors.bg,'bold'}
+    highlight = {colors.fg,colors.bg,'bold'}
   }
 }
 
