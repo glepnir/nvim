@@ -33,7 +33,7 @@ function config.dashboard()
       command =  'DashboardFindHistory'},
     find_file  = {
       description = {'  Find  File                              SPC f f'},
-      command = 'DashboardFindFile'},
+      command = 'Telescope find_files find_command=rg,--hidden,--files'},
     new_file = {
      description = {'  File Browser                            SPC f d'},
      command =  'Telescope file_browser'},
