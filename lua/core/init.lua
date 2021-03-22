@@ -59,12 +59,14 @@ local load_core =function()
   require('core.mapping')
   require('keymap')
   require('core.event')
+  require('_compiled')
 
-  vim.cmd [[command! PackerCompile lua require('core.pack').compile()]]
+  vim.cmd [[command! PackerCompile lua require('core.pack').magic_compile()]]
   vim.cmd [[command! PackerInstall lua require('core.pack').install()]]
   vim.cmd [[command! PackerUpdate lua require('core.pack').update()]]
   vim.cmd [[command! PackerSync lua require('core.pack').sync()]]
   vim.cmd [[command! PackerClean lua require('core.pack').clean()]]
+  vim.cmd [[autocmd User PackerComplete lua require('core.pack').magic_compile()]]
 end
 
 load_core()

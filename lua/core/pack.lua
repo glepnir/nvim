@@ -2,7 +2,7 @@ local fn,uv,api = vim.fn,vim.loop,vim.api
 local vim_path = require('core.global').vim_path
 local modules_dir = vim_path .. '/lua/modules'
 local data_dir = string.format('%s/site/',vim.fn.stdpath('data'))
-local packer_compiled = data_dir..'plugin/packer_compiled.vim'
+local packer_compiled = data_dir..'packer_compiled.vim'
 local packer = nil
 
 local Packer = {}
@@ -54,12 +54,11 @@ function Packer:init_ensure_plugins()
   if not state then
     local cmd = "!git clone https://github.com/wbthomason/packer.nvim " ..packer_dir
     api.nvim_command(cmd)
-    uv.fs_mkdir(data_dir..'plugin',511,function()
+    uv.fs_mkdir(data_dir..'lua',511,function()
       assert("make compile path dir faield")
     end)
     self:load_packer()
     packer.install()
-    packer.compile()
   end
 end
 
@@ -76,11 +75,49 @@ function plugins.ensure_plugins()
   Packer:init_ensure_plugins()
 end
 
+function plugins.convert_compile_file()
+  local compile_to_lua = data_dir..'lua/_compiled.lua'
+  local lines = {}
+  local lnum = 1
+  lines[#lines+1] = 'vim.cmd [[packadd packer.nvim]]\n'
+
+  for line in io.lines(packer_compiled) do
+    lnum = lnum + 1
+    if lnum > 15 then
+      lines[#lines+1] = line .. '\n'
+      if line == 'END' then
+        break
+      end
+    end
+  end
+  table.remove(lines,#lines)
+
+  if vim.fn.filereadable(compile_to_lua) == 1 then
+    os.remove(compile_to_lua)
+  else
+    if vim.fn.isdirectory(data_dir .. 'lua') ~= 1 then
+      os.execute('mkdir -p '..data_dir .. 'lua')
+    end
+  end
+
+  local file = io.open(compile_to_lua,"w")
+  for _,line in ipairs(lines) do
+    file:write(line)
+  end
+  file:close()
+end
+
+function plugins.magic_compile()
+  plugins.compile()
+  plugins.convert_compile_file()
+end
+
 function plugins.auto_compile()
   local file = vim.fn.expand('%:p')
   if file:match(modules_dir) then
     plugins.clean()
     plugins.compile()
+    plugins.convert_compile_file()
   end
 end
 
