@@ -59,7 +59,9 @@ local load_core =function()
   require('core.mapping')
   require('keymap')
   require('core.event')
-  require('_compiled')
+  if vim.fn.filereadable(global.data_dir..'lua/_compiled.lua') == 1 then
+    require('_compiled')
+  end
 
   vim.cmd [[command! PackerCompile lua require('core.pack').magic_compile()]]
   vim.cmd [[command! PackerInstall lua require('core.pack').install()]]
