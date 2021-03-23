@@ -12,6 +12,7 @@ function global:load_variables()
   self.modules_dir = self.vim_path .. path_sep..'modules'
   self.path_sep = path_sep
   self.home = home
+  self.data_dir = string.format('%s/site/',vim.fn.stdpath('data'))
 end
 
 global:load_variables()

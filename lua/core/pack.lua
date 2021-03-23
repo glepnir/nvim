@@ -1,7 +1,7 @@
 local fn,uv,api = vim.fn,vim.loop,vim.api
 local vim_path = require('core.global').vim_path
+local data_dir = require('core.global').data_dir
 local modules_dir = vim_path .. '/lua/modules'
-local data_dir = string.format('%s/site/',vim.fn.stdpath('data'))
 local packer_compiled = data_dir..'packer_compiled.vim'
 local packer = nil
 
