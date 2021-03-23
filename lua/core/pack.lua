@@ -105,6 +105,8 @@ function plugins.convert_compile_file()
     file:write(line)
   end
   file:close()
+
+  os.remove(packer_compiled)
 end
 
 function plugins.magic_compile()
