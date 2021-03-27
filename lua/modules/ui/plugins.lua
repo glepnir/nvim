@@ -20,7 +20,6 @@ ui['glepnir/indent-guides.nvim'] = {
 }
 
 ui['akinsho/nvim-bufferline.lua'] = {
-  disable = true,
   config = conf.nvim_bufferline,
   requires = {'kyazdani42/nvim-web-devicons'}
 }

@@ -50,25 +50,17 @@ local leader_map = function()
 end
 
 local load_core =function()
+  local pack = require('core.pack')
   createdir()
   disable_distribution_plugins()
   leader_map()
 
-  require('core.pack').ensure_plugins()
+  pack.ensure_plugins()
   require('core.options')
   require('core.mapping')
   require('keymap')
   require('core.event')
-  if vim.fn.filereadable(global.data_dir..'lua/_compiled.lua') == 1 then
-    require('_compiled')
-  end
-
-  vim.cmd [[command! PackerCompile lua require('core.pack').magic_compile()]]
-  vim.cmd [[command! PackerInstall lua require('core.pack').install()]]
-  vim.cmd [[command! PackerUpdate lua require('core.pack').update()]]
-  vim.cmd [[command! PackerSync lua require('core.pack').sync()]]
-  vim.cmd [[command! PackerClean lua require('core.pack').clean()]]
-  vim.cmd [[autocmd User PackerComplete lua require('core.pack').magic_compile()]]
+  pack.load_compile()
 end
 
 load_core()
