@@ -28,7 +28,6 @@ local function load_options()
     wildignore     = ".git,.hg,.svn,*.pyc,*.o,*.out,*.jpg,*.jpeg,*.png,*.gif,*.zip,**/tmp/**,*.DS_Store,**/node_modules/**,**/bower_modules/**";
     backup         = false;
     writebackup    = false;
-    undofile       = true;
     swapfile       = false;
     directory      = global.cache_dir .. "swag/";
     undodir        = global.cache_dir .. "undo/";
@@ -91,6 +90,7 @@ local function load_options()
   }
 
   local bw_local  = {
+    undofile       = true;
     synmaxcol      = 2500;
     formatoptions  = "1jcroql";
     textwidth      = 80;
