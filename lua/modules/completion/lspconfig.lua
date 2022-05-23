@@ -81,7 +81,7 @@ lspconfig.sumneko_lua.setup {
 
 lspconfig.tsserver.setup {
   on_attach = function(client)
-    client.resolved_capabilities.document_formatting = false
+    client.server_capabilities.document_formatting = false
     enhance_attach(client)
   end
 }
