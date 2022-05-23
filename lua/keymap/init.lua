@@ -37,6 +37,16 @@ local plug_map = {
     ["n|<Leader>ce"]     = map_cr('Lspsaga show_line_diagnostics'):with_noremap():with_silent(),
     ["n|<Leader>ct"]      = map_args("Template"),
     ["n|<Leader>tf"]     = map_cu('DashboardNewFile'):with_noremap():with_silent(),
+    -- Plugin bufferline
+    ["n|<leader>1"]     = map_cmd("BufferLineGoToBuffer 1"):with_silent():with_noremap():with_nowait();
+    ["n|<leader>2"]     = map_cmd("BufferLineGoToBuffer 2"):with_silent():with_noremap():with_nowait();
+    ["n|<leader>3"]     = map_cmd("BufferLineGoToBuffer 3"):with_silent():with_noremap():with_nowait();
+    ["n|<leader>4"]     = map_cmd("BufferLineGoToBuffer 4"):with_silent():with_noremap():with_nowait();
+    ["n|<leader>5"]     = map_cmd("BufferLineGoToBuffer 5"):with_silent():with_noremap():with_nowait();
+    ["n|<leader>6"]     = map_cmd("BufferLineGoToBuffer 6"):with_silent():with_noremap():with_nowait();
+    ["n|<leader>7"]     = map_cmd("BufferLineGoToBuffer 7"):with_silent():with_noremap():with_nowait();
+    ["n|<leader>8"]     = map_cmd("BufferLineGoToBuffer 8"):with_silent():with_noremap():with_nowait();
+    ["n|<leader>9"]     = map_cmd("BufferLineGoToBuffer 9"):with_silent():with_noremap():with_nowait();
     -- Plugin nvim-tree
     ["n|<Leader>e"]      = map_cr('NvimTreeToggle'):with_noremap():with_silent(),
     ["n|<Leader>F"]      = map_cr('NvimTreeFindFile'):with_noremap():with_silent(),

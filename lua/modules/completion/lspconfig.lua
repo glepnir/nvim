@@ -43,7 +43,7 @@ vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(
 })
 
 local enhance_attach = function(client,bufnr)
-  if client.resolved_capabilities.document_formatting then
+  if client.server_capabilities.document_formatting then
     format.lsp_before_save()
   end
   api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
@@ -61,9 +61,9 @@ lspconfig.gopls.setup {
 
 lspconfig.sumneko_lua.setup {
   cmd = {
-    global.home.."/workstation/lua-language-server/bin/macOS/lua-language-server",
+    global.home.."/Program/lua-language-server/bin/lua-language-server",
     "-E",
-    global.home.."/workstation/lua-language-server/main.lua"
+    global.home.."/Program/lua-language-server/main.lua"
   };
   settings = {
     Lua = {
