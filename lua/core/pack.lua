@@ -105,13 +105,14 @@ function plugins.convert_compile_file()
     file:write(line)
   end
   file:close()
-
-  os.remove(packer_compiled)
 end
 
 function plugins.magic_compile()
   plugins.compile()
   plugins.convert_compile_file()
+
+  if vim.fn.filereadable(packer_compiled) == 1 then
+  end
 end
 
 function plugins.auto_compile()
