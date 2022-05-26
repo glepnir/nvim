@@ -105,14 +105,11 @@ function plugins.convert_compile_file()
     file:write(line)
   end
   file:close()
-end
-
-function plugins.magic_compile()
-  plugins.compile()
-  plugins.convert_compile_file()
 
   if vim.fn.filereadable(packer_compiled) == 1 then
+    os.remove(packer_compiled)
   end
+  vim.notify('Magic Compile Done!','info',{ title = 'Packer' })
 end
 
 function plugins.auto_compile()
@@ -120,7 +117,6 @@ function plugins.auto_compile()
   if file:match(modules_dir) then
     plugins.clean()
     plugins.compile()
-    plugins.convert_compile_file()
   end
 end
 
@@ -130,12 +126,13 @@ function plugins.load_compile()
   else
     assert('Missing packer compile file Run PackerCompile Or PackerInstall to fix')
   end
-  vim.cmd [[command! PackerCompile lua require('core.pack').magic_compile()]]
+
+  vim.cmd [[command! PackerCompile lua require('core.pack').compile()]]
   vim.cmd [[command! PackerInstall lua require('core.pack').install()]]
   vim.cmd [[command! PackerUpdate lua require('core.pack').update()]]
   vim.cmd [[command! PackerSync lua require('core.pack').sync()]]
   vim.cmd [[command! PackerClean lua require('core.pack').clean()]]
-  vim.cmd [[autocmd User PackerComplete lua require('core.pack').magic_compile()]]
+  vim.cmd [[autocmd User PackerCompileDone lua require('core.pack').convert_compile_file()]]
   vim.cmd [[command! PackerStatus  lua require('packer').status()]]
 end
 
