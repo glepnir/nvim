@@ -4,15 +4,22 @@ local conf = require('modules.completion.config')
 completion['neovim/nvim-lspconfig'] = {
   event = 'BufReadPre',
   config = conf.nvim_lsp,
+  requires = {
+    {'hrsh7th/cmp-nvim-lsp', opt = true }, 
+  }
 }
 
 completion['glepnir/lspsaga.nvim'] = {
   cmd = 'Lspsaga',
 }
 
-completion['hrsh7th/nvim-compe'] = {
+completion['hrsh7th/nvim-cmp'] = {
   event = 'InsertEnter',
-  config = conf.nvim_compe,
+  config = conf.nvim_cmp,
+  -- requires = {
+  --   {'hrsh7th/cmp-path' , after = 'nvim-cmp'},
+  --   {'hrsh7th/cmp-buffer', after = 'nvim-cmp' },
+  -- }
 }
 
 completion['hrsh7th/vim-vsnip'] = {

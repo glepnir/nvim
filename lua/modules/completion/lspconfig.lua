@@ -13,7 +13,11 @@ saga.init_lsp_saga({
 })
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+if not packer_plugins['cmp-nvim-lsp'].loaded then
+  vim.cmd [[packadd cmp-nvim-lsp]]
+end
+capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 function _G.reload_lsp()
   vim.lsp.stop_client(vim.lsp.get_active_clients())
@@ -61,9 +65,9 @@ lspconfig.gopls.setup {
 
 lspconfig.sumneko_lua.setup {
   cmd = {
-    global.home.."/Program/lua-language-server/bin/lua-language-server",
+    global.home.."/Workspace/lua-language-server/bin/lua-language-server",
     "-E",
-    global.home.."/Program/lua-language-server/main.lua"
+    global.home.."/Workspace/lua-language-server/main.lua"
   };
   settings = {
     Lua = {
