@@ -4,9 +4,6 @@ local conf = require('modules.completion.config')
 completion['neovim/nvim-lspconfig'] = {
   event = 'BufReadPre',
   config = conf.nvim_lsp,
-  requires = {
-    {'hrsh7th/cmp-nvim-lsp', opt = true }, 
-  }
 }
 
 completion['glepnir/lspsaga.nvim'] = {
@@ -16,10 +13,11 @@ completion['glepnir/lspsaga.nvim'] = {
 completion['hrsh7th/nvim-cmp'] = {
   event = 'InsertEnter',
   config = conf.nvim_cmp,
-  -- requires = {
-  --   {'hrsh7th/cmp-path' , after = 'nvim-cmp'},
-  --   {'hrsh7th/cmp-buffer', after = 'nvim-cmp' },
-  -- }
+  requires = {
+    {'hrsh7th/cmp-nvim-lsp', after = 'nvim-lspconfig' }, 
+    {'hrsh7th/cmp-path' , after = 'nvim-cmp'},
+    {'hrsh7th/cmp-buffer', after = 'nvim-cmp' },
+  }
 }
 
 completion['hrsh7th/vim-vsnip'] = {
@@ -49,7 +47,6 @@ completion['mattn/vim-sonictemplate'] = {
 }
 
 completion['mattn/emmet-vim'] = {
-  event = 'InsertEnter',
   ft = {'html','css','javascript','javascriptreact','vue','typescript','typescriptreact'},
   config = conf.emmet,
 }
