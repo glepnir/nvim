@@ -1,4 +1,4 @@
-local global = require('core.global')
+local cache_dir  = os.getenv("HOME") .. '/.cache/nvim/'
 
 vim.opt.termguicolors  = true;
 vim.opt.mouse          = "nv";
@@ -17,11 +17,11 @@ vim.opt.wildignore     = ".git,.hg,.svn,*.pyc,*.o,*.out,*.jpg,*.jpeg,*.png,*.gif
 vim.opt.backup         = false;
 vim.opt.writebackup    = false;
 vim.opt.swapfile       = false;
-vim.opt.directory      = global.cache_dir .. "swag/";
-vim.opt.undodir        = global.cache_dir .. "undo/";
-vim.opt.backupdir      = global.cache_dir .. "backup/";
-vim.opt.viewdir        = global.cache_dir .. "view/";
-vim.opt.spellfile      = global.cache_dir .. "spell/en.uft-8.add";
+vim.opt.directory      = cache_dir .. "swag/";
+vim.opt.undodir        = cache_dir .. "undo/";
+vim.opt.backupdir      = cache_dir .. "backup/";
+vim.opt.viewdir        = cache_dir .. "view/";
+vim.opt.spellfile      = cache_dir .. "spell/en.uft-8.add";
 vim.opt.history        = 2000;
 vim.opt.shada          = "!,'300,<50,@100,s10,h";
 vim.opt.backupskip     = "/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*/shm/*,/private/var/*,.vault.vim";
@@ -95,7 +95,7 @@ vim.opt.signcolumn     = "yes";
 vim.opt.conceallevel   = 2;
 vim.opt.concealcursor  = "niv";
 
-if global.is_mac then
+if vim.loop.os_uname().sysname == 'Darwin' then
   vim.g.clipboard = {
     name = "macOS-clipboard",
     copy = {
