@@ -1,6 +1,6 @@
 local api = vim.api
+local home = os.getenv("HOME")
 local lspconfig = require 'lspconfig'
-local global = require 'core.global'
 local format = require('modules.completion.format')
 
 if not packer_plugins['lspsaga.nvim'].loaded then
@@ -65,9 +65,9 @@ lspconfig.gopls.setup {
 
 lspconfig.sumneko_lua.setup {
   cmd = {
-    global.home.."/Workspace/lua-language-server/bin/lua-language-server",
+    home.."/Workspace/lua-language-server/bin/lua-language-server",
     "-E",
-    global.home.."/Workspace/lua-language-server/main.lua"
+    home.."/Workspace/lua-language-server/main.lua"
   };
   settings = {
     Lua = {
