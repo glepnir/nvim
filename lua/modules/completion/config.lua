@@ -80,8 +80,8 @@ function config.nvim_cmp()
       ["<Tab>"] = cmp.mapping(function(fallback)
         if cmp.visible() then
           cmp.select_next_item()
-        elseif luasnip.expand_or_jumpable() then
-          luasnip.expand_or_jump()
+        elseif vim.fn["vsnip#available"](1) == 1 then
+          feedkey("<Plug>(vsnip-expand-or-jump)", "")
         elseif has_words_before() then
           cmp.complete()
         else
@@ -89,23 +89,22 @@ function config.nvim_cmp()
         end
       end, { "i", "s" }),
   
-      ["<S-Tab>"] = cmp.mapping(function(fallback)
+      ["<S-Tab>"] = cmp.mapping(function()
         if cmp.visible() then
           cmp.select_prev_item()
-        elseif luasnip.jumpable(-1) then
-          luasnip.jump(-1)
-        else
-          fallback()
+        elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+          feedkey("<Plug>(vsnip-jump-prev)", "")
         end
       end, { "i", "s" }),
-		}),
+    }),
 		snippet = {
 			expand = function(args)
-				require("luasnip").lsp_expand(args.body)
+        vim.fn["vsnip#anonymous"](args.body) 
 			end,
 		},
 		sources = {
 			{ name = "nvim_lsp" },
+      { name = "vsnip" },
       { name = "path" },
       { name = "buffer" },
 		},
