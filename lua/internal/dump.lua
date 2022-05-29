@@ -27,7 +27,7 @@ end
 @params desciption
 @params nesting
 ]]
-function dump(value, desciption, nesting)
+return function dump(value, desciption, nesting)
     if type(nesting) ~= "number" then nesting = 3 end
  
     local lookupTable = {}
@@ -83,5 +83,3 @@ function dump(value, desciption, nesting)
         print(line)
     end
 end
-
-return dump
