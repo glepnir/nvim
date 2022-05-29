@@ -17,16 +17,14 @@ local cmp_window = {
     }, ','),
 }
 
-
-
 function config.nvim_cmp()
 	local cmp = require("cmp")
 
 	cmp.setup({
-		preselect = cmp.PreselectMode.None,
+		preselect = cmp.PreselectMode.Item,
 		window = {
-		completion = cmp.config.window.bordered(cmp_window),
-		documentation = cmp.config.window.bordered(cmp_window),
+			completion = cmp.config.window.bordered(cmp_window),
+			documentation = cmp.config.window.bordered(cmp_window),
 		},
 		formatting = {
 			format = function(entry, vim_item)
@@ -112,6 +110,7 @@ function config.auto_pairs()
   if not status then
     vim.cmd [[packadd nvim-cmp]]
   end
+  cmp = require('cmp')
   local cmp_autopairs = require('nvim-autopairs.completion.cmp')
   cmp.event:on( 'confirm_done', cmp_autopairs.on_confirm_done({  map_char = { tex = '' } }))
   cmp_autopairs.lisp[#cmp_autopairs.lisp+1] = "racket"
