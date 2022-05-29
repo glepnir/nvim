@@ -26,10 +26,10 @@ completion["L3MON4D3/LuaSnip"] = {
   config = conf.lua_snip
 }
 
--- completion['windwp/nvim-autopairs'] = {
---   event = 'InsertEnter',
---   config = conf.auto_pairs,
--- }
+completion['windwp/nvim-autopairs'] = {
+  event = 'InsertEnter',
+  config = conf.auto_pairs,
+}
 
 completion['glepnir/smartinput.nvim'] = {
   ft = 'go',
