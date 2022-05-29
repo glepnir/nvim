@@ -14,7 +14,7 @@ completion['hrsh7th/nvim-cmp'] = {
   event = 'InsertEnter',
   config = conf.nvim_cmp,
   requires = {
-    {'hrsh7th/cmp-nvim-lsp', after = 'nvim-lspconfig' }, 
+    {'hrsh7th/cmp-nvim-lsp', after = 'nvim-lspconfig' },
     {'hrsh7th/cmp-path' , after = 'nvim-cmp'},
     {'hrsh7th/cmp-buffer', after = 'nvim-cmp' },
     {'hrsh7th/cmp-vsnip', after = 'vim-vsnip'},
@@ -26,14 +26,9 @@ completion['hrsh7th/vim-vsnip'] = {
   config = conf.vim_vsnip
 }
 
-completion['nvim-telescope/telescope.nvim'] = {
-  cmd = 'Telescope',
-  config = conf.telescope,
-  requires = {
-    {'nvim-lua/popup.nvim', opt = true},
-    {'nvim-lua/plenary.nvim',opt = true},
-    {'nvim-telescope/telescope-fzy-native.nvim',opt = true},
-  }
+completion['windwp/nvim-autopairs'] = {
+  event = 'InsertEnter',
+  config = conf.auto_pairs,
 }
 
 completion['glepnir/smartinput.nvim'] = {

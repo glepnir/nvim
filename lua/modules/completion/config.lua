@@ -6,7 +6,7 @@ local has_words_before = function()
     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
     return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
-  
+
 local feedkey = function(key, mode)
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
 end
@@ -88,7 +88,6 @@ function config.nvim_cmp()
           fallback()
         end
       end, { "i", "s" }),
-  
       ["<S-Tab>"] = cmp.mapping(function()
         if cmp.visible() then
           cmp.select_prev_item()
@@ -99,7 +98,7 @@ function config.nvim_cmp()
     }),
 		snippet = {
 			expand = function(args)
-        vim.fn["vsnip#anonymous"](args.body) 
+        vim.fn["vsnip#anonymous"](args.body)
 			end,
 		},
 		sources = {
@@ -115,37 +114,15 @@ function config.vim_vsnip()
     vim.g.vsnip_snippet_dir = os.getenv('HOME') .. '/.config/nvim/snippets'
 end
 
-function config.telescope()
-    if not packer_plugins['plenary.nvim'].loaded then
-        vim.cmd [[packadd plenary.nvim]]
-        vim.cmd [[packadd popup.nvim]]
-        vim.cmd [[packadd telescope-fzy-native.nvim]]
-    end
-    require('telescope').setup {
-        defaults = {
-            prompt_prefix = '🔭 ',
-            selection_caret = " ",
-            layout_config = {
-                horizontal = {prompt_position = "top", results_width = 0.6},
-                vertical = {mirror = false}
-            },
-            sorting_strategy = 'ascending',
-            file_previewer = require'telescope.previewers'.vim_buffer_cat.new,
-            grep_previewer = require'telescope.previewers'.vim_buffer_vimgrep
-                .new,
-            qflist_previewer = require'telescope.previewers'.vim_buffer_qflist
-                .new
-        },
-        extensions = {
-            fzy_native = {
-                override_generic_sorter = false,
-                override_file_sorter = true
-            }
-        }
-    }
-    require('telescope').load_extension('fzy_native')
-    require'telescope'.load_extension('dotfiles')
-    require'telescope'.load_extension('gosource')
+function config.auto_pairs()
+  require("nvim-autopairs").setup({})
+  local status,cmp = pcall(require,"cmp")
+  if not status then
+    vim.cmd [[packadd nvim-cmp]]
+  end
+  local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+  cmp.event:on( 'confirm_done', cmp_autopairs.on_confirm_done({  map_char = { tex = '' } }))
+  cmp_autopairs.lisp[#cmp_autopairs.lisp+1] = "racket"
 end
 
 function config.vim_sonictemplate()
