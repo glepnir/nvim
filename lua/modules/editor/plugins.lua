@@ -15,11 +15,6 @@ editor['rhysd/accelerated-jk'] = {
   opt = true
 }
 
-editor['norcalli/nvim-colorizer.lua'] = {
-  ft = { 'html','css','sass','vim','typescript','typescriptreact'},
-  config = conf.nvim_colorizer
-}
-
 editor['itchyny/vim-cursorword'] = {
   event = {'BufReadPre','BufNewFile'},
   config = conf.vim_cursorwod
