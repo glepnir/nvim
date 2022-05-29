@@ -17,19 +17,19 @@ completion['hrsh7th/nvim-cmp'] = {
     {'hrsh7th/cmp-nvim-lsp', after = 'nvim-lspconfig' },
     {'hrsh7th/cmp-path' , after = 'nvim-cmp'},
     {'hrsh7th/cmp-buffer', after = 'nvim-cmp' },
-    {'hrsh7th/cmp-vsnip', after = 'vim-vsnip'},
-  }
+    {'saadparwaiz1/cmp_luasnip', after = "LuaSnip" },
+  },
 }
 
-completion['hrsh7th/vim-vsnip'] = {
+completion["L3MON4D3/LuaSnip"] = {
   event = 'InsertCharPre',
-  config = conf.vim_vsnip
+  config = conf.lua_snip
 }
 
-completion['windwp/nvim-autopairs'] = {
-  event = 'InsertEnter',
-  config = conf.auto_pairs,
-}
+-- completion['windwp/nvim-autopairs'] = {
+--   event = 'InsertEnter',
+--   config = conf.auto_pairs,
+-- }
 
 completion['glepnir/smartinput.nvim'] = {
   ft = 'go',

@@ -6,8 +6,8 @@ local map_args = bind.map_args
 require('keymap.config')
 
 local plug_map = {
-    -- ["i|<TAB>"]      = map_cmd('v:lua.tab_complete()'):with_expr():with_silent(),
-    -- ["i|<S-TAB>"]    = map_cmd('v:lua.s_tab_complete()'):with_silent():with_expr(),
+    ["i|<TAB>"]      = map_cmd('v:lua.smart_tab()'):with_expr():with_silent(),
+    ["i|<S-TAB>"]    = map_cmd('v:lua.smart_shift_tab()'):with_silent():with_expr(),
     -- person keymap
     ["n|mf"]             = map_cr("<cmd>lua require('internal.fsevent').file_event()<CR>"):with_silent():with_nowait():with_noremap();
     ["n|gb"]             = map_cr("BufferLinePick"):with_noremap():with_silent(),
@@ -37,15 +37,15 @@ local plug_map = {
     ["n|<Leader>ct"]      = map_args("Template"),
     ["n|<Leader>tf"]     = map_cu('DashboardNewFile'):with_noremap():with_silent(),
     -- Plugin bufferline
-    ["n|<leader>1"]     = map_cmd("BufferLineGoToBuffer 1"):with_silent():with_noremap():with_nowait();
-    ["n|<leader>2"]     = map_cmd("BufferLineGoToBuffer 2"):with_silent():with_noremap():with_nowait();
-    ["n|<leader>3"]     = map_cmd("BufferLineGoToBuffer 3"):with_silent():with_noremap():with_nowait();
-    ["n|<leader>4"]     = map_cmd("BufferLineGoToBuffer 4"):with_silent():with_noremap():with_nowait();
-    ["n|<leader>5"]     = map_cmd("BufferLineGoToBuffer 5"):with_silent():with_noremap():with_nowait();
-    ["n|<leader>6"]     = map_cmd("BufferLineGoToBuffer 6"):with_silent():with_noremap():with_nowait();
-    ["n|<leader>7"]     = map_cmd("BufferLineGoToBuffer 7"):with_silent():with_noremap():with_nowait();
-    ["n|<leader>8"]     = map_cmd("BufferLineGoToBuffer 8"):with_silent():with_noremap():with_nowait();
-    ["n|<leader>9"]     = map_cmd("BufferLineGoToBuffer 9"):with_silent():with_noremap():with_nowait();
+    ["n|<leader>1"]     = map_cr("BufferLineGoToBuffer 1"):with_silent():with_noremap():with_nowait();
+    ["n|<leader>2"]     = map_cr("BufferLineGoToBuffer 2"):with_silent():with_noremap():with_nowait();
+    ["n|<leader>3"]     = map_cr("BufferLineGoToBuffer 3"):with_silent():with_noremap():with_nowait();
+    ["n|<leader>4"]     = map_cr("BufferLineGoToBuffer 4"):with_silent():with_noremap():with_nowait();
+    ["n|<leader>5"]     = map_cr("BufferLineGoToBuffer 5"):with_silent():with_noremap():with_nowait();
+    ["n|<leader>6"]     = map_cr("BufferLineGoToBuffer 6"):with_silent():with_noremap():with_nowait();
+    ["n|<leader>7"]     = map_cr("BufferLineGoToBuffer 7"):with_silent():with_noremap():with_nowait();
+    ["n|<leader>8"]     = map_cr("BufferLineGoToBuffer 8"):with_silent():with_noremap():with_nowait();
+    ["n|<leader>9"]     = map_cr("BufferLineGoToBuffer 9"):with_silent():with_noremap():with_nowait();
     -- Plugin nvim-tree
     ["n|<Leader>e"]      = map_cr('NvimTreeToggle'):with_noremap():with_silent(),
     -- Plugin MarkdownPreview
@@ -77,8 +77,8 @@ local plug_map = {
     ["x|gcc"]            = map_cr('ProComment'),
     ["n|gcj"]            = map_cu('ProDoc'):with_silent():with_silent(),
     -- Plugin acceleratedjk
-    -- ["n|j"]              = map_cmd('v:lua.enhance_jk_move("j")'):with_silent():with_expr(),
-    -- ["n|k"]              = map_cmd('v:lua.enhance_jk_move("k")'):with_silent():with_expr(),
+    ["n|j"]              = map_cmd('v:lua.enhance_jk_move("j")'):with_silent():with_expr(),
+    ["n|k"]              = map_cmd('v:lua.enhance_jk_move("k")'):with_silent():with_expr(),
     -- Plugin QuickRun
     ["n|<Leader>r"]     = map_cr("<cmd> lua require'internal.quickrun'.run_command()"):with_noremap():with_silent(),
     -- Plugin Vista
