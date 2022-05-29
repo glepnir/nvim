@@ -48,7 +48,6 @@ local plug_map = {
     ["n|<leader>9"]     = map_cmd("BufferLineGoToBuffer 9"):with_silent():with_noremap():with_nowait();
     -- Plugin nvim-tree
     ["n|<Leader>e"]      = map_cr('NvimTreeToggle'):with_noremap():with_silent(),
-    ["n|<Leader>F"]      = map_cr('NvimTreeFindFile'):with_noremap():with_silent(),
     -- Plugin MarkdownPreview
     ["n|<Leader>om"]     = map_cu('MarkdownPreview'):with_noremap():with_silent(),
     -- Plugin DadbodUI
