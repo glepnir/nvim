@@ -15,10 +15,6 @@ end
 
 function autocmd.load_autocmds()
   local definitions = {
-    -- auto compile and clean the neovim config which write in lua
-    packer = {
-      {"BufWritePost","*.lua","lua require('core.pack').auto_compile()"};
-    },
     bufs = {
       {"BufWritePre","/tmp/*","setlocal noundofile"};
       {"BufWritePre","COMMIT_EDITMSG","setlocal noundofile"};
