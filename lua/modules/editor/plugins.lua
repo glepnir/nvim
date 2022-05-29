@@ -1,8 +1,14 @@
 local editor = {}
 local conf = require('modules.editor.config')
 
-editor['windwp/nvim-autopairs'] = {
-  event = 'InsertEnter',
+editor['nvim-telescope/telescope.nvim'] = {
+  cmd = 'Telescope',
+  config = conf.telescope,
+  requires = {
+    {'nvim-lua/popup.nvim', opt = true},
+    {'nvim-lua/plenary.nvim',opt = true},
+    {'nvim-telescope/telescope-fzy-native.nvim',opt = true},
+  }
 }
 
 editor['rhysd/accelerated-jk'] = {
