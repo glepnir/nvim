@@ -5,93 +5,93 @@
     "description": "Snippet for a constant"
   },
   "variable declaration": {
-      "prefix": "var",
-      "body": "var ${1:name} ${2:type}",
-      "description": "Snippet for a variable"
+    "prefix": "var",
+    "body": "var ${1:name} ${2:type}",
+    "description": "Snippet for a variable"
   },
   "type interface declaration": {
-      "prefix": "tyi",
-      "body": "type ${1:name} interface {\n\t$0\n}",
-      "description": "Snippet for a type interface"
+    "prefix": "tyi",
+    "body": "type ${1:name} interface {\n\t$0\n}",
+    "description": "Snippet for a type interface"
   },
   "main": {
     "prefix": "main",
-    "body": [ "func main() {","\t$0", "}"],
+    "body": ["func main() {", "\t$0", "}"],
     "description": "main function"
   },
   "struct": {
     "prefix": "st",
-    "body": ["type ${1} struct {","\t${2}","}"],
+    "body": ["type ${1} struct {", "\t${2}", "}"],
     "description": "struct"
   },
-  "func":{
+  "func": {
     "prefix": "fn",
-    "body": ["func ${1}() ${2} {","\t${3}","}"],
+    "body": ["func ${1}() ${2} {", "\t${3}", "}"],
     "description": "function"
   },
   "method declaration": {
-      "prefix": "meth",
-      "body": "func (${1:receiver} ${2:type}) ${3:method}($4) $5 {\n\t$0\n}",
-      "description": "Snippet for method declaration"
+    "prefix": "meth",
+    "body": "func (${1:receiver} ${2:type}) ${3:method}($4) $5 {\n\t$0\n}",
+    "description": "Snippet for method declaration"
   },
   "if statement": {
-      "prefix": "if",
-      "body": "if ${1:condition} {\n\t$0\n}",
-      "description": "Snippet for if statement"
+    "prefix": "if",
+    "body": "if ${1:condition} {\n\t$0\n}",
+    "description": "Snippet for if statement"
   },
   "else branch": {
-      "prefix": "el",
-      "body": "else {\n\t$0\n}",
-      "description": "Snippet for else branch"
+    "prefix": "el",
+    "body": "else {\n\t$0\n}",
+    "description": "Snippet for else branch"
   },
   "if else statement": {
-      "prefix": "ie",
-      "body": "if ${1:condition} {\n\t$2\n} else {\n\t$0\n}",
-      "description": "Snippet for if else"
+    "prefix": "ie",
+    "body": "if ${1:condition} {\n\t$2\n} else {\n\t$0\n}",
+    "description": "Snippet for if else"
   },
   "if err != nil": {
-      "prefix": "iferr",
-      "body": "if err != nil {\n\t${1:return ${2:nil, }${3:err}}\n}",
-      "description": "Snippet for if err != nil"
+    "prefix": "iferr",
+    "body": "if err != nil {\n\t${1:return ${2:nil, }${3:err}}\n}",
+    "description": "Snippet for if err != nil"
   },
   "switch statement": {
-      "prefix": "switch",
-      "body": "switch ${1:expression} {\ncase ${2:condition}:\n\t$0\n}",
-      "description": "Snippet for switch statement"
+    "prefix": "switch",
+    "body": "switch ${1:expression} {\ncase ${2:condition}:\n\t$0\n}",
+    "description": "Snippet for switch statement"
   },
   "select statement": {
-      "prefix": "sel",
-      "body": "select {\ncase ${1:condition}:\n\t$0\n}",
-      "description": "Snippet for select statement"
+    "prefix": "sel",
+    "body": "select {\ncase ${1:condition}:\n\t$0\n}",
+    "description": "Snippet for select statement"
   },
   "case clause": {
-      "prefix": "cs",
-      "body": "case ${1:condition}:$0",
-      "description": "Snippet for case clause"
+    "prefix": "cs",
+    "body": "case ${1:condition}:$0",
+    "description": "Snippet for case clause"
   },
   "for statement": {
-      "prefix": "for",
-      "body": "for ${1:i} := 0; $1 < ${2:count}; $1${3:++} {\n\t$0\n}",
-      "description": "Snippet for a for loop"
+    "prefix": "for",
+    "body": "for ${1:i} := 0; $1 < ${2:count}; $1${3:++} {\n\t$0\n}",
+    "description": "Snippet for a for loop"
   },
   "for range statement": {
-      "prefix": "forr",
-      "body": "for ${1:_, }${2:var} := range ${3:var} {\n\t$0\n}",
-      "description": "Snippet for a for range loop"
+    "prefix": "forr",
+    "body": "for ${1:_, }${2:var} := range ${3:var} {\n\t$0\n}",
+    "description": "Snippet for a for range loop"
   },
   "map declaration": {
-      "prefix": "map",
-      "body": "map[${1:type}]${2:type}",
-      "description": "Snippet for a map"
+    "prefix": "map",
+    "body": "map[${1:type}]${2:type}",
+    "description": "Snippet for a map"
   },
   "goroutine anonymous function": {
-      "prefix": "go",
-      "body": "go func($1) {\n\t$0\n}($2)",
-      "description": "Snippet for anonymous goroutine declaration"
+    "prefix": "go",
+    "body": "go func($1) {\n\t$0\n}($2)",
+    "description": "Snippet for anonymous goroutine declaration"
   },
   "goroutine function": {
-      "prefix": "gf",
-      "body": "go ${1:func}($0)",
-      "description": "Snippet for goroutine declaration"
+    "prefix": "gf",
+    "body": "go ${1:func}($0)",
+    "description": "Snippet for goroutine declaration"
   }
 }
