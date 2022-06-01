@@ -1,26 +1,26 @@
 {
-    "contributes": {
-      "snippets": [
-        {
-          "language": "go",
-          "path": "./go.json"
-        },
-        {
-          "language": "lua",
-          "path": "./lua.json"
-        },
-        {
-          "language": "rust",
-          "path": "./rust.json"
-        },
-        {
-          "language": "typescriptreact",
-          "path": "./typescriptreact.json"
-        },
-        {
-          "language": "zig",
-          "path": "./zig.json"
-        }
-      ]
-    }
+  "contributes": {
+    "snippets": [
+      {
+        "language": "go",
+        "path": "./go.json"
+      },
+      {
+        "language": "lua",
+        "path": "./lua.json"
+      },
+      {
+        "language": "rust",
+        "path": "./rust.json"
+      },
+      {
+        "language": "typescriptreact",
+        "path": "./typescriptreact.json"
+      },
+      {
+        "language": "zig",
+        "path": "./zig.json"
+      }
+    ]
+  }
 }
