@@ -67,7 +67,7 @@ function config.nvim_tree()
 			hide_root_folder = false,
       mappings = {
         list = {
-          { key = {"l"}, action = "edit" }, 
+          { key = {"l"}, action = "edit" },
         }
       }
 		},
