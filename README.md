@@ -1,4 +1,4 @@
-<h3 align="center">
+<h1 align="center">
   <img
     src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/misc/transparent.png"
     height="30"
@@ -10,7 +10,7 @@
     height="30"
     width="0px"
   />
-</h3>
+</h1>
 
 <p align="center">
   <a href="https://github.com/glepnir/nvim/stargazers">
