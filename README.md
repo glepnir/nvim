@@ -50,6 +50,8 @@ My personal neovim configuration written in lua.
 - Fastest startup time in 20-35ms with 42 plugins.
 - ...
 
+&nbsp;
+
 <p align="center">
   <img
     src="https://raw.githubusercontent.com/catppuccin/catppuccin/dev/assets/footers/gray0_ctp_on_line.svg?sanitize=true"
