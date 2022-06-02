@@ -67,7 +67,7 @@ function config.nvim_tree()
 			hide_root_folder = false,
       mappings = {
         list = {
-          { key = {"l"}, action = "edit" }, 
+          { key = {"l"}, action = "edit" },
         }
       }
 		},
@@ -93,26 +93,26 @@ function config.nvim_tree()
           git = true,
         },
         glyphs = {
-          default = "",
+          default = '',
           symlink = "",
           folder = {
-            arrow_closed = "",
-            arrow_open = "",
+            arrow_closed = "",
+            arrow_open = "",
             default = "",
-            open = "",
             empty = "",
             empty_open = "",
+            open = "",
             symlink = "",
             symlink_open = "",
           },
           git = {
-            unstaged = "✗",
-            staged = "✓",
-            unmerged = "",
-            renamed = "➜",
-            untracked = "★",
-            deleted = "",
-            ignored = "◌",
+            deleted = '',
+            ignored = '',
+            renamed = '',
+            staged = '',
+            unmerged = '',
+            unstaged = '',
+            untracked = 'ﲉ',
           },
         },
       },
