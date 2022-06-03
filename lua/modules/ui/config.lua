@@ -1,5 +1,9 @@
 local config = {}
 
+function config.zephyr()
+  vim.cmd('colorscheme zephyr')
+end
+
 function config.galaxyline()
   require('modules.ui.eviline')
 end

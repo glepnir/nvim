@@ -7,62 +7,53 @@ local has_words_before = function()
     return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
-local cmp_window = {
-    border = { '🭽', '▔', '🭾', '▕', '🭿', '▁', '🭼', '▏' },
-    winhighlight = table.concat({
-      'Normal:NormalFloat',
-      'FloatBorder:FloatBorder',
-      'CursorLine:Visual',
-      'Search:None',
-    }, ','),
-}
-
 function config.nvim_cmp()
 	local cmp = require("cmp")
 
 	cmp.setup({
 		preselect = cmp.PreselectMode.Item,
 		window = {
-			completion = cmp.config.window.bordered(cmp_window),
-			documentation = cmp.config.window.bordered(cmp_window),
+			completion = cmp.config.window.bordered(),
+			documentation = cmp.config.window.bordered(),
 		},
 		formatting = {
+      fields = {'kind', 'abbr', 'menu'},
 			format = function(entry, vim_item)
 				local lspkind_icons = {
-					Text = "",
-					Method = "",
-					Function = "",
-					Constructor = "",
-					Field = "",
-					Variable = "",
-					Class = "ﴯ",
-					Interface = "",
-					Module = "",
-					Property = "ﰠ",
-					Unit = "",
-					Value = "",
-					Enum = "",
-					Keyword = "",
-					Snippet = "",
-					Color = "",
-					File = "",
-					Reference = "",
-					Folder = "",
-					EnumMember = "",
-					Constant = "",
-					Struct = "",
+					Text = "",
+					Method = "",
+					Function = "",
+					Constructor = " ",
+					Field = "",
+					Variable = "",
+					Class = "",
+					Interface = "",
+					Module = "硫",
+					Property = "",
+					Unit = " ",
+					Value = "",
+					Enum = " ",
+					Keyword = "ﱃ",
+					Snippet = " ",
+					Color = " ",
+					File = " ",
+					Reference = "Ꮢ",
+					Folder = " ",
+					EnumMember = " ",
+					Constant = " ",
+					Struct = " ",
 					Event = "",
-					Operator = "",
-					TypeParameter = "",
+					Operator = "",
+					TypeParameter = " ",
 				}
 				-- load lspkind icons
-				vim_item.kind = string.format("%s %s", lspkind_icons[vim_item.kind], vim_item.kind)
+				vim_item.kind = lspkind_icons[vim_item.kind]..''
 
 				vim_item.menu = ({
-					buffer = "[BUF]",
-					nvim_lsp = "[LSP]",
-					path = "[PATH]",
-					luasnip = "[SNIP]"
+					buffer = " Buf",
+					nvim_lsp = " Lsp",
+					path = " Pat",
+					luasnip = " Sni"
 				})[entry.source.name]
 
 				return vim_item
@@ -90,6 +81,7 @@ function config.nvim_cmp()
 			},
 		}
 	)
+  vim.cmd('hi CmpFloatBorder guifg=red')
 end
 
 function config.lua_snip()
@@ -99,8 +91,8 @@ function config.lua_snip()
 		updateevents = "TextChanged,TextChangedI",
 	})
 	require("luasnip.loaders.from_vscode").lazy_load()
-	require("luasnip.loaders.from_vscode").lazy_load({ 
-		paths = {'./snippets/' } 
+	require("luasnip.loaders.from_vscode").lazy_load({
+		paths = {'./snippets/' }
 	})
 end
 
