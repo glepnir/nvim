@@ -63,6 +63,7 @@ local load_core =function()
   require('keymap')
   require('core.event')
   pack.load_compile()
+  require('internal.trimwhite')
 end
 
 load_core()

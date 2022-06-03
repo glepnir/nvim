@@ -23,6 +23,7 @@ function autocmd.load_autocmds()
       {"BufWritePre","*.bak","setlocal noundofile"};
       {"BufWritePre","*.tsx","lua vim.api.nvim_command('Format')"};
       {"BufWritePre","*.go","lua require('internal.golines').golines_format()"};
+      {"BufReadPre,BufNewFile","*","lua require('internal.cursorwod).highlight_cursorword()"}
     };
 
     wins = {
@@ -48,6 +49,13 @@ function autocmd.load_autocmds()
   }
 
   autocmd.nvim_create_augroups(definitions)
+
+  local cursorword = require('internal.cursorword')
+
+  cursorword.highlight_cursorword()
+  vim.api.nvim_create_autocmd({"CursorMoved", "CursorMovedI"}, {
+    pattern = "*",
+    callback = cursorword.cursor_moved})
 end
 
 autocmd.load_autocmds()

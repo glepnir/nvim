@@ -15,10 +15,10 @@ editor['rhysd/accelerated-jk'] = {
   opt = true
 }
 
-editor['itchyny/vim-cursorword'] = {
-  event = {'BufReadPre','BufNewFile'},
-  config = conf.vim_cursorwod
-}
+-- editor['itchyny/vim-cursorword'] = {
+--   event = {'BufReadPre','BufNewFile'},
+--   config = conf.vim_cursorwod
+-- }
 
 editor['hrsh7th/vim-eft'] = {
   opt = true,
