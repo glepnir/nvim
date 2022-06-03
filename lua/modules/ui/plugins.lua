@@ -1,11 +1,11 @@
 local ui = {}
 local conf = require('modules.ui.config')
 
-ui['glepnirzephyr-nvim'] = {
+ui['glepnir/zephyr-nvim'] = {
   config = conf.zephyr,
 }
 
-ui['glepnir/dashboard-nvim/'] = {
+ui['glepnir/dashboard-nvim'] = {
   config = conf.dashboard
 }
 
