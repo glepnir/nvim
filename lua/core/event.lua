@@ -23,7 +23,6 @@ function autocmd.load_autocmds()
       {"BufWritePre","*.bak","setlocal noundofile"};
       {"BufWritePre","*.tsx","lua vim.api.nvim_command('Format')"};
       {"BufWritePre","*.go","lua require('internal.golines').golines_format()"};
-      {"BufReadPre,BufNewFile","*","lua require('internal.cursorwod).highlight_cursorword()"}
     };
 
     wins = {
@@ -40,7 +39,6 @@ function autocmd.load_autocmds()
 
     ft = {
       {"FileType", "dashboard", "set showtabline=0 | autocmd WinLeave <buffer> set showtabline=2"};
-      {"BufNewFile,BufRead","*.toml"," setf toml"},
     };
 
     yank = {
@@ -52,10 +50,11 @@ function autocmd.load_autocmds()
 
   local cursorword = require('internal.cursorword')
 
-  cursorword.highlight_cursorword()
   vim.api.nvim_create_autocmd({"CursorMoved", "CursorMovedI"}, {
     pattern = "*",
     callback = cursorword.cursor_moved})
+
+  require('internal.trimwhite')
 end
 
 autocmd.load_autocmds()

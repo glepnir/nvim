@@ -7,9 +7,20 @@ function M.highlight_cursorword()
 end
 
 function M.matchadd()
-  if vim.fn.hlexists("CursorWord") == 0 then
+  local disable_ft = {
+    ['NvimTree'] = true,
+    ['lspsagafinder'] = true,
+    ['dashboard'] = true
+  }
+  if disable_ft[vim.bo.ft] then
     return
   end
+
+  local mode = vim.api.nvim_get_mode().mode
+  if mode == 'i' then
+    return
+  end
+
   local column = vim.api.nvim_win_get_cursor(0)[2]
   local line = vim.api.nvim_get_current_line()
   local cursorword =
