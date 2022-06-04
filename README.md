@@ -43,11 +43,13 @@ My personal neovim configuration written in lua.
 
 ## 🧩 Requires
 
+- Neovim Nightly
+
 - [🌈 lolcat](https://github.com/busyloop/lolcat)
 
 ## 🎁 Features
 
-- Fastest startup time in 20-35ms with 42 plugins.
+- Fastest startup time in 20-35ms with 40 plugins.
 - ...
 
 &nbsp;
