@@ -1,12 +1,18 @@
-local M = {}
-
-function M.highlight_cursorword()
+local function highlight_cursorword()
   if vim.g.cursorword_highlight ~= false then
     vim.cmd('highlight CursorWord term=underline cterm=underline gui=underline')
   end
 end
 
-function M.matchadd()
+local function disable_cursorword()
+  if vim.w.cursorword_id ~= 0 and vim.w.cursorword_id ~= nil  then
+    vim.fn.matchdelete(vim.w.cursorword_id)
+    vim.w.cursorword_id = 0
+    vim.w.cursorword_match = 0
+  end
+end
+
+local function matchadd()
   local disable_ft = {
     ['NvimTree'] = true,
     ['lspsagafinder'] = true,
@@ -16,15 +22,13 @@ function M.matchadd()
     return
   end
 
-  local mode = vim.api.nvim_get_mode().mode
-  if mode == 'i' then
+  if vim.api.nvim_get_mode().mode == 'i' then
     return
   end
 
   local column = vim.api.nvim_win_get_cursor(0)[2]
   local line = vim.api.nvim_get_current_line()
-  local cursorword =
-    vim.fn.matchstr(line:sub(1, column + 1), [[\k*$]]) .. vim.fn.matchstr(line:sub(column + 1), [[^\k*]]):sub(2)
+  local cursorword = vim.fn.matchstr(line:sub(1, column + 1), [[\k*$]]) .. vim.fn.matchstr(line:sub(column + 1), [[^\k*]]):sub(2)
 
   if cursorword == vim.w.cursorword then
     return
@@ -42,10 +46,19 @@ function M.matchadd()
   vim.w.cursorword_match = 1
 end
 
-function M.cursor_moved()
+local function cursor_moved()
   if vim.api.nvim_get_mode().mode == 'n' then
-    M.matchadd()
+    matchadd()
   end
 end
 
-return M
+highlight_cursorword()
+
+vim.api.nvim_create_autocmd({"CursorMoved", "CursorMovedI"}, {
+  pattern = "*",
+  callback = cursor_moved})
+
+vim.api.nvim_create_autocmd('InsertEnter',{
+  pattern = '*',
+  callback = disable_cursorword
+})

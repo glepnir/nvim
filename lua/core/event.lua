@@ -48,12 +48,6 @@ function autocmd.load_autocmds()
 
   autocmd.nvim_create_augroups(definitions)
 
-  local cursorword = require('internal.cursorword')
-
-  vim.api.nvim_create_autocmd({"CursorMoved", "CursorMovedI"}, {
-    pattern = "*",
-    callback = cursorword.cursor_moved})
-
   require('internal.trimwhite')
 end
 
