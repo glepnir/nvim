@@ -23,7 +23,7 @@ local function hold_timer(fn)
       fix_ch_nvim_timer:close()
     end
     fix_ch_nvim_timer = uv.new_timer()
-    fix_ch_nvim_timer:start(ch_updatetime,0,vim.schedule_wrap(function()
+    fix_ch_nvim_timer:start(0,ch_updatetime,vim.schedule_wrap(function()
       fn()
     end))
   end
