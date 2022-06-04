@@ -72,6 +72,8 @@ function config.nvim_tree()
       mappings = {
         list = {
           { key = {"l"}, action = "edit" },
+          { key = {"s"}, action = "split" },
+          { key = {"v"}, action = "vsplit" },
         }
       }
 		},
