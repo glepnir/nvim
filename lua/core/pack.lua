@@ -96,7 +96,7 @@ function plugins.load_compile()
   if vim.fn.filereadable(packer_compiled) == 1 then
     require('packer_compiled')
   else
-    assert('Missing packer compile file Run PackerCompile Or PackerInstall to fix')
+    vim.notify('Run PackerInstall','info',{title= 'Packer'})
   end
 
   vim.cmd [[command! PackerCompile lua require('core.pack').compile_notify()]]
