@@ -47,8 +47,6 @@ function autocmd.load_autocmds()
   }
 
   autocmd.nvim_create_augroups(definitions)
-
-  require('internal.trimwhite')
 end
 
 autocmd.load_autocmds()
