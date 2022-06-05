@@ -82,13 +82,14 @@ end
 
 function plugins.auto_compile()
   local file = vim.fn.expand('%:p')
-  if file:match('plugins.lua') then
-    plugins.clean()
+  if not file:match(vim_path) then
     return
   end
-  if file:match(vim_path) then
-    plugins.compile_notify()
+
+  if file:match('plugins.lua') then
+    plugins.clean()
   end
+  plugins.compile_notify()
   require('packer_compiled')
 end
 
