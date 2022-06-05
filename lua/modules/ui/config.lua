@@ -128,11 +128,6 @@ function config.nvim_tree()
 			enable = true,
 			auto_open = true,
 		},
-		update_focused_file = {
-			enable = true,
-			update_cwd = true,
-			ignore_list = {},
-		},
 		ignore_ft_on_setup = {},
 		filters = {
 			dotfiles = false,
