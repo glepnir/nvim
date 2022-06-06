@@ -43,8 +43,7 @@ My personal neovim configuration written in lua.
 
 ## 🧩 Requires
 
-- Neovim Nightly
-
+- [Neovim Nightly](https://github.com/neovim/neovim/releases)
 - [🌈 lolcat](https://github.com/busyloop/lolcat)
 
 ## 🎁 Features
