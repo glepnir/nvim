@@ -9,7 +9,7 @@
     src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/misc/transparent.png"
     height="30"
     width="0px"
-  />
+  />“
 </h1>
 
 <p align="center">
@@ -34,7 +34,10 @@
 </p>
 
 <p align="center">
-  <img src="assets/demo.png" />
+  <img src="https://user-images.githubusercontent.com/41671631/172047114-58deb5a9-f67b-400b-bace-2982bf901ff6.png"
+  height = "40%"
+  widht = "40%"
+  />
 </p>
 
 ## 💭 About
