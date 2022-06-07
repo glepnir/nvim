@@ -46,14 +46,15 @@ function config.nvim_cmp()
 					Operator = "",
 					TypeParameter = " ",
 				}
+        local meta_type = vim_item.kind
 				-- load lspkind icons
 				vim_item.kind = lspkind_icons[vim_item.kind]..''
 
 				vim_item.menu = ({
-					buffer = " Buf",
-					nvim_lsp = " Lsp",
-					path = " Pat",
-					luasnip = " Sni"
+					buffer = " Buffer",
+					nvim_lsp = meta_type,
+					path = " Path",
+					luasnip = " LuaSnip"
 				})[entry.source.name]
 
 				return vim_item
