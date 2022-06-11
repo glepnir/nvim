@@ -6,7 +6,7 @@ completion['neovim/nvim-lspconfig'] = {
   config = conf.nvim_lsp,
 }
 
-completion['glepnir/lspsaga.nvim'] = {
+completion['~/Workspace/lspsaga.nvim'] = {
   cmd = 'Lspsaga',
 }
 
