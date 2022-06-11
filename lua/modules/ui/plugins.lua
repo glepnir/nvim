@@ -5,7 +5,7 @@ ui['~/Workspace/zephyr-nvim'] = {
   config = conf.zephyr,
 }
 
-ui['~/Workspace/dashboard-nvim'] = {
+ui['glepnir/dashboard-nvim'] = {
   config = conf.dashboard
 }
 
