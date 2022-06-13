@@ -27,9 +27,9 @@ function config.dashboard()
   db.preview_file_width = 80
   db.custom_center = {
       {icon = '  ',
-      desc = 'Recently laset session                  ',
-      shortcut = 'SPC s l',
-      action ='SessionLoad'},
+      desc = 'Update Plugins                          ',
+      shortcut = 'SPC p u',
+      action ='PackerUpdate'},
       {icon = '  ',
       desc = 'Recently opened files                   ',
       action =  'Telescope oldfiles',
