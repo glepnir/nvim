@@ -56,6 +56,12 @@ My personal neovim configuration written in lua.
 
 &nbsp;
 
+
+## Donate
+[![](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/bobbyhub)
+
+If you'd like to support my work financially, buy me a drink through [paypal](https://paypal.me/bobbyhub)
+
 <p align="center">
   <img
     src="https://raw.githubusercontent.com/catppuccin/catppuccin/dev/assets/footers/gray0_ctp_on_line.svg?sanitize=true"
