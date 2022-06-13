@@ -1,7 +1,7 @@
-local editor = {}
+local package = require('core.pack').package
 local conf = require('modules.editor.config')
 
-editor['nvim-telescope/telescope.nvim'] = {
+package {'nvim-telescope/telescope.nvim',
   cmd = 'Telescope',
   config = conf.telescope,
   requires = {
@@ -11,18 +11,16 @@ editor['nvim-telescope/telescope.nvim'] = {
   }
 }
 
-editor['rhysd/accelerated-jk'] = {
-  opt = true
-}
+package {'rhysd/accelerated-jk', opt = true }
 
-editor['hrsh7th/vim-eft'] = {
+package {'hrsh7th/vim-eft',
   opt = true,
   config = function()
     vim.g.eft_ignorecase = true
   end
 }
 
-editor['kana/vim-operator-replace'] = {
+package {'kana/vim-operator-replace',
   keys = {{'x','p'}},
   config = function()
     vim.api.nvim_set_keymap("x", "p", "<Plug>(operator-replace)",{silent =true})
@@ -30,13 +28,9 @@ editor['kana/vim-operator-replace'] = {
   requires = 'kana/vim-operator-user'
 }
 
-editor['rhysd/vim-operator-surround'] = {
+package {'rhysd/vim-operator-surround',
   event = 'BufRead',
   requires = 'kana/vim-operator-user'
 }
 
-editor['kana/vim-niceblock']  = {
-  opt = true
-}
-
-return editor
+package {'kana/vim-niceblock', opt = true }

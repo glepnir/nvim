@@ -1,16 +1,14 @@
-local completion = {}
+local package = require('core.pack').package
 local conf = require('modules.completion.config')
 
-completion['neovim/nvim-lspconfig'] = {
-  ft = { 'go','lua','sh'},
+package {'neovim/nvim-lspconfig',
+  ft = { 'go','lua','sh','rust','c'},
   config = conf.nvim_lsp,
 }
 
-completion['~/Workspace/lspsaga.nvim'] = {
-  cmd = 'Lspsaga',
-}
+package {'~/Workspace/lspsaga.nvim', cmd = 'Lspsaga',}
 
-completion['hrsh7th/nvim-cmp'] = {
+package {'hrsh7th/nvim-cmp',
   event = 'InsertEnter',
   config = conf.nvim_cmp,
   requires = {
@@ -21,30 +19,17 @@ completion['hrsh7th/nvim-cmp'] = {
   },
 }
 
-completion["L3MON4D3/LuaSnip"] = {
-  event = 'InsertCharPre',
-  config = conf.lua_snip
-}
+package {"L3MON4D3/LuaSnip",event = 'InsertCharPre',config = conf.lua_snip }
 
-completion['windwp/nvim-autopairs'] = {
-  event = 'InsertEnter',
-  config = conf.auto_pairs,
-}
+package {'windwp/nvim-autopairs',event = 'InsertEnter', config = conf.auto_pairs}
 
-completion['glepnir/smartinput.nvim'] = {
-  ft = 'go',
-  config = conf.smart_input
-}
-
-completion['mattn/vim-sonictemplate'] = {
+package {'mattn/vim-sonictemplate',
   cmd = 'Template',
   ft = {'go','typescript','lua','javascript','vim','rust','markdown'},
   config = conf.vim_sonictemplate,
 }
 
-completion['mattn/emmet-vim'] = {
+package {'mattn/emmet-vim',
   ft = {'html','css','javascript','javascriptreact','vue','typescript','typescriptreact'},
   config = conf.emmet,
 }
-
-return completion

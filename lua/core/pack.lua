@@ -22,10 +22,7 @@ function Packer:load_plugins()
 
   local plugins_file = get_plugins_list()
   for _,m in ipairs(plugins_file) do
-    local repos = require(m:sub(0,#m-4))
-    for repo,conf in pairs(repos) do
-      self.repos[#self.repos+1] = vim.tbl_extend('force',{repo},conf)
-    end
+    require(m:sub(0,#m-4))
   end
 end
 
@@ -73,6 +70,10 @@ local plugins = setmetatable({}, {
 
 function plugins.ensure_plugins()
   Packer:init_ensure_plugins()
+end
+
+function plugins.package(repo)
+  table.insert(Packer.repos,repo)
 end
 
 function plugins.compile_notify()
