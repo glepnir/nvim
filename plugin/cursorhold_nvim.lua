@@ -5,6 +5,9 @@ vim.opt.eventignore:append {'CursorHold','CursorHoldI'}
 
 local function hold_cb(event)
   return function()
+    if vim.v.exiting ~= vim.NIL then
+      return
+    end
     vim.opt.eventignore:remove {event}
     vim.api.nvim_exec_autocmds({event},{
       modeline = false,
@@ -29,8 +32,27 @@ local function hold_timer(fn)
   end
 end
 
-CursorHoldTimer = hold_timer(CursorHold_Cb)
-CursorHoldITimer = hold_timer(CursorHoldI_Cb)
+CursorHoldTimer = function()
+  if fix_ch_nvim_timer ~= nil then
+    fix_ch_nvim_timer:close()
+  end
+  if vim.api.nvim_get_mode().mode == 'n' then
+    fix_ch_nvim_timer = uv.new_timer()
+    fix_ch_nvim_timer:start(ch_updatetime,0,vim.schedule_wrap(
+      CursorHold_Cb
+    ))
+  end
+end
+
+CursorHoldITimer = function()
+  if fix_ch_nvim_timer ~= nil then
+    fix_ch_nvim_timer:close()
+  end
+  fix_ch_nvim_timer = uv.new_timer()
+  fix_ch_nvim_timer:start(ch_updatetime,0,vim.schedule_wrap(
+    CursorHold_Cb
+  ))
+end
 
 local fix_cursorhold_nvim = vim.api.nvim_create_augroup('FixCursorHoldNvim',{})
 vim.api.nvim_create_autocmd({'CursorHold'},{
