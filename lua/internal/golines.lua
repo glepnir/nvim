@@ -23,6 +23,7 @@ local golines_format = function()
     args = {"--max-len=80",file}
   }, function(code, signal) -- on exit
   end)
+  print(pid)
 
   uv.read_start(stdout, vim.schedule_wrap(function(err, data)
     assert(not err, err)
