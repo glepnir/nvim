@@ -35,3 +35,5 @@ package {'rhysd/vim-operator-surround',
 }
 
 package {'kana/vim-niceblock', opt = true }
+
+package {'antoinemadec/FixCursorHold.nvim',event = 'BufReadPre'}
