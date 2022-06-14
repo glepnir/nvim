@@ -24,3 +24,22 @@ api.nvim_create_autocmd('BufWritePre',{
     require('internal.golines').golines_format()
   end
 })
+
+api.nvim_create_autocmd({'WinEnter','BufEnter','InsertLeave'},{
+  pattern = '*',
+  callback = function()
+    if vim.bo.filetype ~= 'dashboard' and not vim.opt_local.cursorline:get() then
+      vim.opt_local.cursorline = true
+    end
+  end
+})
+
+
+api.nvim_create_autocmd({'WinLeave','BufLeave','InsertEnter'},{
+  pattern = '*',
+  callback = function()
+    if vim.bo.filetype ~= 'dashboard' and vim.opt_local.cursorline:get() then
+      vim.opt_local.cursorline = false
+    end
+  end
+})
