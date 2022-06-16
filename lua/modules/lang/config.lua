@@ -23,4 +23,8 @@ function config.nvim_treesitter()
   }
 end
 
+function config.smart_input()
+    require('smartinput').setup {['go'] = {';', ':=', ';'}}
+end
+
 return config
