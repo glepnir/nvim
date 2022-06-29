@@ -13,7 +13,7 @@ package {'glepnir/galaxyline.nvim',
 
 package {'lukas-reineke/indent-blankline.nvim',
   event = 'BufRead',
-  config = conf.indent_blakline
+  config = conf.indent_blankline
 }
 
 package {'akinsho/nvim-bufferline.lua',
