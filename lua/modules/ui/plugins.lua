@@ -16,10 +16,11 @@ package {'lukas-reineke/indent-blankline.nvim',
   config = conf.indent_blankline
 }
 
-package {'akinsho/nvim-bufferline.lua',
-  config = conf.nvim_bufferline,
-  requires = 'kyazdani42/nvim-web-devicons'
-}
+-- lspsaga winbar instead
+-- package {'akinsho/nvim-bufferline.lua',
+--   config = conf.nvim_bufferline,
+--   requires = 'kyazdani42/nvim-web-devicons'
+-- }
 
 
 package {'kyazdani42/nvim-tree.lua',
