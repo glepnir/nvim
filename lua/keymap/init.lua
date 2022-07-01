@@ -37,19 +37,19 @@ local plug_map = {
     ["n|<Leader>ct"]      = map_args("Template"),
     ["n|<Leader>tf"]     = map_cu('DashboardNewFile'):with_noremap():with_silent(),
     -- Plugin bufferline
-    ["n|<leader>1"]     = map_cr("BufferLineGoToBuffer 1"):with_silent():with_noremap():with_nowait();
-    ["n|<leader>2"]     = map_cr("BufferLineGoToBuffer 2"):with_silent():with_noremap():with_nowait();
-    ["n|<leader>3"]     = map_cr("BufferLineGoToBuffer 3"):with_silent():with_noremap():with_nowait();
-    ["n|<leader>4"]     = map_cr("BufferLineGoToBuffer 4"):with_silent():with_noremap():with_nowait();
-    ["n|<leader>5"]     = map_cr("BufferLineGoToBuffer 5"):with_silent():with_noremap():with_nowait();
-    ["n|<leader>6"]     = map_cr("BufferLineGoToBuffer 6"):with_silent():with_noremap():with_nowait();
-    ["n|<leader>7"]     = map_cr("BufferLineGoToBuffer 7"):with_silent():with_noremap():with_nowait();
-    ["n|<leader>8"]     = map_cr("BufferLineGoToBuffer 8"):with_silent():with_noremap():with_nowait();
-    ["n|<leader>9"]     = map_cr("BufferLineGoToBuffer 9"):with_silent():with_noremap():with_nowait();
+--     ["n|<leader>1"]     = map_cr("BufferLineGoToBuffer 1"):with_silent():with_noremap():with_nowait();
+--     ["n|<leader>2"]     = map_cr("BufferLineGoToBuffer 2"):with_silent():with_noremap():with_nowait();
+--     ["n|<leader>3"]     = map_cr("BufferLineGoToBuffer 3"):with_silent():with_noremap():with_nowait();
+--     ["n|<leader>4"]     = map_cr("BufferLineGoToBuffer 4"):with_silent():with_noremap():with_nowait();
+--     ["n|<leader>5"]     = map_cr("BufferLineGoToBuffer 5"):with_silent():with_noremap():with_nowait();
+--     ["n|<leader>6"]     = map_cr("BufferLineGoToBuffer 6"):with_silent():with_noremap():with_nowait();
+--     ["n|<leader>7"]     = map_cr("BufferLineGoToBuffer 7"):with_silent():with_noremap():with_nowait();
+--     ["n|<leader>8"]     = map_cr("BufferLineGoToBuffer 8"):with_silent():with_noremap():with_nowait();
+--     ["n|<leader>9"]     = map_cr("BufferLineGoToBuffer 9"):with_silent():with_noremap():with_nowait();
     -- Plugin nvim-tree
     ["n|<Leader>e"]      = map_cr('NvimTreeToggle'):with_noremap():with_silent(),
     -- Plugin MarkdownPreview
-    ["n|<Leader>om"]     = map_cu('MarkdownPreview'):with_noremap():with_silent(),
+--     ["n|<Leader>om"]     = map_cu('MarkdownPreview'):with_noremap():with_silent(),
     -- Plugin DadbodUI
     ["n|<Leader>od"]     = map_cr('DBUIToggle'):with_noremap():with_silent(),
     -- Plugin Floaterm
@@ -60,7 +60,7 @@ local plug_map = {
     ["n|<Leader>fz"]     = map_cr('Farf'):with_noremap():with_silent();
     ["v|<Leader>fz"]     = map_cr('Farf'):with_noremap():with_silent();
     -- Plugin Telescope
-    ["n|<Leader>bb"]     = map_cu('Telescope buffers'):with_noremap():with_silent(),
+    ["n|<Leader>b"]     = map_cu('Telescope buffers'):with_noremap():with_silent(),
     ["n|<Leader>fa"]     = map_cu('Telescope live_grep'):with_noremap():with_silent(),
     ["n|<Leader>fb"]     = map_cu('Telescope file_browser'):with_noremap():with_silent(),
     ["n|<Leader>ff"]     = map_cu('Telescope find_files'):with_noremap():with_silent(),
@@ -76,9 +76,6 @@ local plug_map = {
     ["n|gcc"]            = map_cu('ProComment'):with_noremap():with_silent(),
     ["x|gcc"]            = map_cr('ProComment'),
     ["n|gcj"]            = map_cu('ProDoc'):with_silent():with_silent(),
-    -- Plugin acceleratedjk
-    ["n|j"]              = map_cmd('v:lua.enhance_jk_move("j")'):with_silent():with_expr(),
-    ["n|k"]              = map_cmd('v:lua.enhance_jk_move("k")'):with_silent():with_expr(),
     -- Plugin QuickRun
     ["n|<Leader>r"]     = map_cr("<cmd> lua require'internal.quickrun'.run_command()"):with_noremap():with_silent(),
     -- Plugin Vista

@@ -12,8 +12,6 @@ package {'nvim-telescope/telescope.nvim',
   }
 }
 
-package {'rhysd/accelerated-jk', opt = true }
-
 package {'hrsh7th/vim-eft',
   opt = true,
   config = function()

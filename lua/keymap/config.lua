@@ -41,14 +41,6 @@ _G.smart_shift_tab = function()
   end
 end
 
-_G.enhance_jk_move = function(key)
-  if packer_plugins['accelerated-jk'] and not packer_plugins['accelerated-jk'].loaded then
-    vim.cmd [[packadd accelerated-jk]]
-  end
-  local map = key == 'j' and '<Plug>(accelerated_jk_gj)' or '<Plug>(accelerated_jk_gk)'
-  return t(map)
-end
-
 _G.enhance_ft_move = function(key)
   if not packer_plugins['vim-eft'].loaded then
     vim.cmd [[packadd vim-eft]]
