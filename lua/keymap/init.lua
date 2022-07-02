@@ -1,7 +1,7 @@
 require('keymap.remap')
 local keymap = require('core.keymap')
 local map = keymap.map
-local silent,noremap,expr =keymap.silent,keymap.noremap,keymap.expr
+local silent,noremap,expr,remap =keymap.silent,keymap.noremap,keymap.expr,keymap.remap
 local opts = keymap.new_opts
 local cmd,cu = keymap.cmd,keymap.cu
 local home = os.getenv('HOME')
@@ -9,8 +9,8 @@ require('keymap.config')
 
 map {
   -- tab key
-  {'i','<TAB>',_G.smart_tab,opts(expr,silent)},
-  {'i','<S-TAB>',_G.smart_shift_tab,opts(expr,silent)},
+  {'i','<TAB>',_G.smart_tab,opts(expr,silent,remap)},
+  {'i','<S-TAB>',_G.smart_shift_tab,opts(expr,silent,remap)},
 
   -- packer
   {'n','<Leader>pu',cmd('PackerUpdate'),opts(noremap,silent)},
@@ -55,8 +55,8 @@ map {
   {'n','<Leader>gc',cmd('Telescope git_commits'),opts(noremap,silent)},
   {'n','<Leader>gc',cmd('Telescope dotfiles path'..home ..'/.dotfiles'),opts(noremap,silent)},
   -- prodoc
-  {'n','gcc',cmd('ProcComment'),opts(noremap,silent)},
-  {'x','gcc',cmd('ProcComment'),opts(noremap,silent)},
+  {'n','gcc',cmd('ProComment'),opts(noremap,silent)},
+  {'x','gcc',cmd('ProComment'),opts(noremap,silent)},
   {'n','gcj',cmd('ProDoc'),opts(noremap,silent)},
   -- vista
   {'n','<Leader>v',cmd('Vista'),opts(noremap,silent)},

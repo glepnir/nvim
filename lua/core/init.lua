@@ -20,6 +20,7 @@ vim.g.loaded_netrwFileHandlers = 1
 vim.g.did_load_filetypes = 0
 vim.g.do_filetype_lua = 1
 vim.g.mapleader = " "
+
 vim.api.nvim_set_keymap('n',' ','',{noremap = true})
 vim.api.nvim_set_keymap('x',' ','',{noremap = true})
 

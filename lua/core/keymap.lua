@@ -32,6 +32,12 @@ function keymap.expr(opt)
   end
 end
 
+function keymap.remap(opt)
+  return function()
+    opt.remap = true
+  end
+end
+
 function keymap.nowait(opt)
   return function()
     opt.nowait = true
