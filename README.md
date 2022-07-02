@@ -42,7 +42,7 @@
 
 ## 💭 About
 
-My personal neovim configuration written in lua.
+Hi this is my personal config .If you like it Recommand use [Fernvim](https://github.com/glepnir/fernvim)
 
 ## 🧩 Requires
 
