@@ -3,10 +3,6 @@ local has_words_before = function()
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
-local t = function(str)
-  return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
 --- move to prev/next item in completion menuone
 --- jump to prev/next snippet's placeholder
 _G.smart_tab = function()
@@ -18,13 +14,13 @@ _G.smart_tab = function()
   end
 
   if cmp.visible() and not luasnip_status then
-    return t "<C-n>"
+    return "<C-n>"
   elseif luasnip_status then
-    return t "<Plug>luasnip-expand-or-jump"
+    return "<Plug>luasnip-expand-or-jump"
   elseif has_words_before() then
-    return t "<Tab>"
+    return "<Tab>"
   else
-    return t "<Tab>"
+    return "<Tab>"
   end
 end
 
@@ -33,11 +29,11 @@ _G.smart_shift_tab = function()
   local _,luasnip = pcall(require,'luasnip')
 
   if cmp.visible() then
-    return t "<C-p>"
+    return "<C-p>"
   elseif luasnip.jumpable(-1) then
-    return t "<cmd>lua require'luasnip'.jump(-1)<CR>"
+    return "<cmd>lua require'luasnip'.jump(-1)<CR>"
   else
-    return t "<S-Tab>"
+    return "<S-Tab>"
   end
 end
 
@@ -50,7 +46,7 @@ _G.enhance_ft_move = function(key)
     F = '<Plug>(eft-F)',
     [';'] = '<Plug>(eft-repeat)'
   }
-  return t(map[key])
+  return map[key]
 end
 
 _G.enhance_nice_block = function (key)
@@ -62,5 +58,5 @@ _G.enhance_nice_block = function (key)
     ['gI'] = '<Plug>(niceblock-gI)',
     A = '<Plug>(niceblock-A)'
   }
-  return t(map[key])
+  return map[key]
 end
