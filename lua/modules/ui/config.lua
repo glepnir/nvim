@@ -191,43 +191,46 @@ function config.gitsigns()
 end
 
 function config.indent_blankline()
-  vim.g.indent_blankline_char = "│"
-  vim.g.indent_blankline_show_first_indent_level = true
-  vim.g.indent_blankline_filetype_exclude = {
-    "dashboard",
-    "DogicPrompt",
-    "log",
-    "fugitive",
-    "gitcommit",
-    "packer",
-    "markdown",
-    "json",
-    "txt",
-    "vista",
-    "help",
-    "todoist",
-    "NvimTree",
-    "git",
-    "TelescopePrompt",
-    "undotree",
-    "" -- for all buffers without a file type
-  }
-  vim.g.indent_blankline_buftype_exclude = {"terminal", "nofile","prompt"}
-  vim.g.indent_blankline_show_trailing_blankline_indent = false
-  vim.g.indent_blankline_show_current_context = true
-  vim.g.indent_blankline_context_patterns = {
-    "class",
-    "function",
-    "method",
-    "block",
-    "list_literal",
-    "selector",
-    "^if",
-    "^table",
-    "if_statement",
-    "while",
-    "for"
-  }
+  require('indent_blankline').setup({
+    char = "│",
+    use_treesitter_scope = true,
+    show_first_indent_level = true,
+    show_current_context = true,
+    show_current_context_start = false,
+    show_current_context_start_on_current_line = false,
+    filetype_exclude = {
+      "dashboard",
+      "DogicPrompt",
+      "log",
+      "fugitive",
+      "gitcommit",
+      "packer",
+      "markdown",
+      "json",
+      "txt",
+      "vista",
+      "help",
+      "todoist",
+      "NvimTree",
+      "git",
+      "TelescopePrompt",
+      "undotree",
+    },
+    buftype_exclude = {"terminal", "nofile","prompt"},
+    context_patterns = {
+      'class',
+      'function',
+      'method',
+      'block',
+      'list_literal',
+      'selector',
+      '^if',
+      '^table',
+      'if_statement',
+      'while',
+      'for',
+    },
+  })
   -- because lazy load indent-blankline so need readd this autocmd
   vim.cmd('autocmd CursorMoved * IndentBlanklineRefresh')
 end
