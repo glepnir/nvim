@@ -42,7 +42,7 @@
 
 ## 💭 About
 
-Hi this is my personal config .If you like it Recommand use [Fernvim](https://github.com/glepnir/fernvim)
+Hi this is my personal config .If you like it Recommand use [Cosynvim](https://github.com/glepnir/cosynvim)
 
 ## 🧩 Requires
 
