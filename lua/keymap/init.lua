@@ -31,7 +31,7 @@ map {
   {'n','gd',cmd('Lspsaga range_code_action'),opts(noremap,silent)},
   {'n','gs',cmd('Lspsaga signature_hel'),opts(noremap,silent)},
   {'n','gr',cmd('Lspsaga rename'),opts(noremap,silent)},
-  {'n','gh',cmd('Lspsaga finder'),opts(noremap,silent)},
+  {'n','gh',cmd('Lspsaga lsp_finder'),opts(noremap,silent)},
   -- Lspsaga floaterminal
   {'n','<A-d>',cmd('Lspsaga open_floaterm'),opts(noremap,silent)},
   {'n','<Leader>g',cmd('Lspsaga open_floaterm lazygit'),opts(noremap,silent)},
