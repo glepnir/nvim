@@ -69,33 +69,42 @@ function keymap.cu(str)
 end
 
 --@private
-local keymap_set = function(tbl)
+local keymap_set = function(mode,tbl)
   vim.validate {
     tbl = {tbl,'table'}
   }
   local len = #tbl
-  if len < 3 then
+  if len < 2 then
     vim.notify('keymap must has rhs')
     return
   end
 
-  local options = len == 4 and tbl[4] or keymap.new_opts()
+  local options = len == 4 and tbl[3] or keymap.new_opts()
 
-  vim.keymap.set(tbl[1],tbl[2],tbl[3],options)
+  vim.keymap.set(mode,tbl[1],tbl[2],options)
 end
 
-function keymap.map(tbl)
-  vim.validate {
-    tbl = { tbl,'table' }
-  }
+local function map(mod)
+  return function(tbl)
+    vim.validate {
+      tbl = { tbl,'table' }
+    }
 
-  if type(tbl[1]) == 'table' and type(tbl[2]) == 'table' then
-    for _,v in pairs(tbl) do
-      keymap_set(v)
+    if type(tbl[1]) == 'table' and type(tbl[2]) == 'table' then
+      for _,v in pairs(tbl) do
+        keymap_set(mod,v)
+      end
+    else
+      keymap_set(mod,tbl)
     end
-  else
-    keymap_set(tbl)
   end
 end
+
+keymap.nmap = map('n')
+keymap.imap = map('i')
+keymap.cmap = map('c')
+keymap.vmap = map('v')
+keymap.xmap = map('x')
+keymap.tmap = map('t')
 
 return keymap
