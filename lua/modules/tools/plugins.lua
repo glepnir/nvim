@@ -23,9 +23,3 @@ package {'brooth/far.vim',
 }
 
 package {'~/Workspace/dogic-nvim/'}
-
-package {'TimUntersberger/neogit',
-  cmd = 'Neogit',
-  config = conf.neo_git,
-  requires = 'nvim-lua/plenary.nvim'
-}

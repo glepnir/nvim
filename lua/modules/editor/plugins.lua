@@ -12,13 +12,6 @@ package {'nvim-telescope/telescope.nvim',
   }
 }
 
-package {'hrsh7th/vim-eft',
-  opt = true,
-  config = function()
-    vim.g.eft_ignorecase = true
-  end
-}
-
 package {'kana/vim-operator-replace',
   keys = {{'x','p'}},
   config = function()

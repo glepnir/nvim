@@ -37,18 +37,6 @@ _G.smart_shift_tab = function()
   end
 end
 
-_G.enhance_ft_move = function(key)
-  if not packer_plugins['vim-eft'].loaded then
-    vim.cmd [[packadd vim-eft]]
-  end
-  local map = {
-    f = '<Plug>(eft-f)',
-    F = '<Plug>(eft-F)',
-    [';'] = '<Plug>(eft-repeat)'
-  }
-  return map[key]
-end
-
 _G.enhance_nice_block = function (key)
   if not packer_plugins['vim-niceblock'].loaded then
     vim.cmd [[packadd vim-niceblock]]

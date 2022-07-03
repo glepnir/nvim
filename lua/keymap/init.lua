@@ -64,15 +64,6 @@ map {
   {'n','sa','<Plug>(operator-surround-append)',opts(noremap,silent)},
   {'n','sd','<Plug>(operator-surround-delete)',opts(noremap,silent)},
   {'n','sr','<Plug>(operator-surround-replace)',opts(noremap,silent)},
-  -- vim-eft
-  {'n',';',_G.enhance_ft_move(';'),opts(noremap,silent)},
-  {'x',';',_G.enhance_ft_move(';'),opts(noremap,silent)},
-  {'n','f',_G.enhance_ft_move('f'),opts(noremap,silent)},
-  {'x','f',_G.enhance_ft_move('f'),opts(noremap,silent)},
-  {'o','f',_G.enhance_ft_move('f'),opts(noremap,silent)},
-  {'n','F',_G.enhance_ft_move('F'),opts(noremap,silent)},
-  {'x','F',_G.enhance_ft_move('F'),opts(noremap,silent)},
-  {'o','F',_G.enhance_ft_move('F'),opts(noremap,silent)},
   -- nice_block
   {'x','I',_G.enhance_nice_block('I'),opts(expr)},
   {'x','gI',_G.enhance_nice_block('gI'),opts(expr)},

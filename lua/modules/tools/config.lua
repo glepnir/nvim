@@ -54,16 +54,4 @@ function config.vim_vista()
   }
 end
 
-function config.neo_git()
-  local neogit = require('neogit')
-  neogit.setup({
-    signs = {
-      -- { CLOSED, OPENED }
-      section = { ">", "v" },
-      item = { ">", "v" },
-      hunk = { "", "" },
-    },
-  })
-end
-
 return config
