@@ -44,6 +44,10 @@
 
 Hi this is my personal config .If you like it Recommand use [Cosynvim](https://github.com/glepnir/cosynvim)
 
+I don't like install too many plugins. it will make my neovim wired.
+
+Don't limit yourself.
+
 ## 🧩 Requires
 
 - [Neovim Nightly](https://github.com/neovim/neovim/releases)

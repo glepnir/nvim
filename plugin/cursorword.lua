@@ -7,6 +7,7 @@ end
 local function disable_cursorword()
   local disable_ft = {
     ['lspsagafinder'] = true,
+    ['NeogitStatus'] = true,
   }
   if not disable_ft[vim.bo.ft] then
     return

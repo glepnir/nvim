@@ -56,7 +56,7 @@ map {
   {'n','<Leader>gc',cmd('Telescope dotfiles path'..home ..'/.dotfiles'),opts(noremap,silent)},
   -- prodoc
   {'n','gcc',cmd('ProComment'),opts(noremap,silent)},
-  {'x','gcc',cmd('ProComment'),opts(noremap,silent)},
+  {'x','gcc',cu('ProComment'),opts(noremap,silent)},
   {'n','gcj',cmd('ProDoc'),opts(noremap,silent)},
   -- vista
   {'n','<Leader>v',cmd('Vista'),opts(noremap,silent)},

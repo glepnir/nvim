@@ -24,10 +24,8 @@ package {'brooth/far.vim',
 
 package {'~/Workspace/dogic-nvim/'}
 
--- TODO: write a new markdown preview plugin
--- package {'iamcco/markdown-preview.nvim',
---   ft = 'markdown',
---   config = function ()
---     vim.g.mkdp_auto_start = 0
---   end
--- }
+package {'TimUntersberger/neogit',
+  cmd = 'Neogit',
+  config = conf.neo_git,
+  requires = 'nvim-lua/plenary.nvim'
+}

@@ -22,14 +22,3 @@ package {'hrsh7th/nvim-cmp',
 package {"L3MON4D3/LuaSnip",event = 'InsertCharPre',config = conf.lua_snip }
 
 package {'windwp/nvim-autopairs',event = 'InsertEnter', config = conf.auto_pairs}
-
-package {'mattn/vim-sonictemplate',
-  cmd = 'Template',
-  ft = {'go','typescript','lua','javascript','vim','rust','markdown'},
-  config = conf.vim_sonictemplate,
-}
-
-package {'mattn/emmet-vim',
-  ft = {'html','css','javascript','javascriptreact','vue','typescript','typescriptreact'},
-  config = conf.emmet,
-}
