@@ -79,7 +79,7 @@ local keymap_set = function(mode,tbl)
     return
   end
 
-  local options = len == 4 and tbl[3] or keymap.new_opts()
+  local options = len == 3 and tbl[3] or keymap.new_opts()
 
   vim.keymap.set(mode,tbl[1],tbl[2],options)
 end
