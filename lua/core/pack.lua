@@ -55,7 +55,7 @@ function Packer:init_ensure_plugins()
       assert("make compile path dir faield")
     end)
     self:load_packer()
-    packer.install()
+    packer.sync()
   end
 end
 
