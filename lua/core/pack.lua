@@ -78,7 +78,7 @@ end
 
 function plugins.compile_notify()
   plugins.compile()
-  vim.notify('Compile Done!','info',{ title = 'Packer' })
+--   vim.notify('Compile Done!','info',{ title = 'Packer' })
 end
 
 function plugins.auto_compile()

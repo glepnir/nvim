@@ -68,7 +68,7 @@ nmap {
 tmap {'<A-d>',[[<C-\><C-n>:Lspsaga close_floaterm<CR>]],opts(noremap,silent)}
 
 xmap {
-  {'gcc','<cmd>ProComment<CR>',opts(noremap,silent)},
+  {'gcc',':ProComment<CR>',opts(noremap,silent)},
   {'ga',cu('Lspsaga code_action'),opts(noremap,silent)},
   -- nice_block
   {'I',_G.enhance_nice_block('I'),opts(expr,remap)},
