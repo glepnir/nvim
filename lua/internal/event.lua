@@ -63,5 +63,3 @@ api.nvim_create_autocmd({'BufEnter'},{
   end
 })
 
--- Template
-require('internal.template').genreate_command()

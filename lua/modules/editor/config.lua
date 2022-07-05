@@ -33,6 +33,7 @@ function config.telescope()
     require'telescope'.load_extension('dotfiles')
     require'telescope'.load_extension('gosource')
     require("telescope").load_extension('file_browser')
+    require("telescope").load_extension('find_template')
 end
 
 function config.nvim_treesitter()

@@ -1,4 +1,5 @@
 local config = {}
+local home = os.getenv("HOME")
 
 local function load_env_file()
   local env_file = os.getenv("HOME")..'/.env'
@@ -52,6 +53,13 @@ function config.vim_vista()
     typescript = 'nvim_lsp',
     typescriptreact =  'nvim_lsp',
   }
+end
+
+function config.template_nvim()
+  local temp = require('template')
+  temp.dir = home .. '/.config/nvim/template'
+  temp.author = 'glepnir'
+  temp.email = 'glephunter@gmail.com'
 end
 
 return config
