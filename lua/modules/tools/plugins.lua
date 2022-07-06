@@ -22,6 +22,6 @@ package {'brooth/far.vim',
   end
 }
 
-package {'glepnir/template.nvim', cmd = 'Template',conf = conf.template_nvim}
+package {'~/Workspace/template.nvim/', config = conf.template_nvim}
 
 package {'~/Workspace/dogic-nvim'}
