@@ -1,2 +1,2 @@
 -- Load Modules:
-require("core")
+require('core')

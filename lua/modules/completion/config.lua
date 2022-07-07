@@ -1,119 +1,119 @@
 local config = {}
 
-function config.nvim_lsp() require('modules.completion.lspconfig') end
+function config.nvim_lsp()
+  require('modules.completion.lspconfig')
+end
 
 function config.nvim_cmp()
-	local cmp = require("cmp")
+  local cmp = require('cmp')
 
-	cmp.setup({
-		preselect = cmp.PreselectMode.Item,
-		window = {
-			completion = cmp.config.window.bordered(),
-			documentation = cmp.config.window.bordered(),
-		},
-		formatting = {
-      fields = {'kind', 'abbr', 'menu'},
-			format = function(entry, vim_item)
-				local lspkind_icons = {
-					Text = "",
-					Method = "",
-					Function = "",
-					Constructor = " ",
-					Field = "",
-					Variable = "",
-					Class = "",
-					Interface = "",
-					Module = "硫",
-					Property = "",
-					Unit = " ",
-					Value = "",
-					Enum = " ",
-					Keyword = "ﱃ",
-					Snippet = " ",
-					Color = " ",
-					File = " ",
-					Reference = "Ꮢ",
-					Folder = " ",
-					EnumMember = " ",
-					Constant = " ",
-					Struct = " ",
-					Event = "",
-					Operator = "",
-					TypeParameter = " ",
-				}
+  cmp.setup({
+    preselect = cmp.PreselectMode.Item,
+    window = {
+      completion = cmp.config.window.bordered(),
+      documentation = cmp.config.window.bordered(),
+    },
+    formatting = {
+      fields = { 'kind', 'abbr', 'menu' },
+      format = function(entry, vim_item)
+        local lspkind_icons = {
+          Text = '',
+          Method = '',
+          Function = '',
+          Constructor = ' ',
+          Field = '',
+          Variable = '',
+          Class = '',
+          Interface = '',
+          Module = '硫',
+          Property = '',
+          Unit = ' ',
+          Value = '',
+          Enum = ' ',
+          Keyword = 'ﱃ',
+          Snippet = ' ',
+          Color = ' ',
+          File = ' ',
+          Reference = 'Ꮢ',
+          Folder = ' ',
+          EnumMember = ' ',
+          Constant = ' ',
+          Struct = ' ',
+          Event = '',
+          Operator = '',
+          TypeParameter = ' ',
+        }
         local meta_type = vim_item.kind
-				-- load lspkind icons
-				vim_item.kind = lspkind_icons[vim_item.kind]..''
+        -- load lspkind icons
+        vim_item.kind = lspkind_icons[vim_item.kind] .. ''
 
-				vim_item.menu = ({
-					buffer = " Buffer",
-					nvim_lsp = meta_type,
-					path = " Path",
-					luasnip = " LuaSnip"
-				})[entry.source.name]
+        vim_item.menu = ({
+          buffer = ' Buffer',
+          nvim_lsp = meta_type,
+          path = ' Path',
+          luasnip = ' LuaSnip',
+        })[entry.source.name]
 
-				return vim_item
-			end,
-		},
-		-- You can set mappings if you want
-		mapping = cmp.mapping.preset.insert({
-			["<CR>"] = cmp.mapping.confirm({ select = true }),
-			["<C-p>"] = cmp.mapping.select_prev_item(),
-			["<C-n>"] = cmp.mapping.select_next_item(),
-			["<C-d>"] = cmp.mapping.scroll_docs(-4),
-			["<C-f>"] = cmp.mapping.scroll_docs(4),
-			["<C-e>"] = cmp.mapping.close(),
-		}),
-		snippet = {
-			expand = function(args)
-				require("luasnip").lsp_expand(args.body)
-			end,
-			},
-		sources = {
-			{ name = "nvim_lsp" },
-			{ name = "luasnip" },
-			{ name = "path" },
-			{ name = "buffer" },
-			},
-		}
-	)
+        return vim_item
+      end,
+    },
+    -- You can set mappings if you want
+    mapping = cmp.mapping.preset.insert({
+      ['<CR>'] = cmp.mapping.confirm({ select = true }),
+      ['<C-p>'] = cmp.mapping.select_prev_item(),
+      ['<C-n>'] = cmp.mapping.select_next_item(),
+      ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-e>'] = cmp.mapping.close(),
+    }),
+    snippet = {
+      expand = function(args)
+        require('luasnip').lsp_expand(args.body)
+      end,
+    },
+    sources = {
+      { name = 'nvim_lsp' },
+      { name = 'luasnip' },
+      { name = 'path' },
+      { name = 'buffer' },
+    },
+  })
   vim.cmd('hi CmpFloatBorder guifg=red')
 end
 
 function config.lua_snip()
-	local ls = require('luasnip')
-	ls.config.set_config({
-		history = true,
-		updateevents = "TextChanged,TextChangedI",
-	})
-	require("luasnip.loaders.from_vscode").lazy_load()
-	require("luasnip.loaders.from_vscode").lazy_load({
-		paths = {'./snippets/' }
-	})
+  local ls = require('luasnip')
+  ls.config.set_config({
+    history = true,
+    updateevents = 'TextChanged,TextChangedI',
+  })
+  require('luasnip.loaders.from_vscode').lazy_load()
+  require('luasnip.loaders.from_vscode').lazy_load({
+    paths = { './snippets/' },
+  })
 end
 
 function config.auto_pairs()
-  require("nvim-autopairs").setup({})
-  local status,cmp = pcall(require,"cmp")
+  require('nvim-autopairs').setup({})
+  local status, cmp = pcall(require, 'cmp')
   if not status then
-    vim.cmd [[packadd nvim-cmp]]
+    vim.cmd([[packadd nvim-cmp]])
   end
   cmp = require('cmp')
   local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-  cmp.event:on( 'confirm_done', cmp_autopairs.on_confirm_done({  map_char = { tex = '' } }))
+  cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done({ map_char = { tex = '' } }))
 end
 
 function config.vim_sonictemplate()
-    vim.g.sonictemplate_postfix_key = '<C-,>'
-    vim.g.sonictemplate_vim_template_dir =
-        os.getenv("HOME") .. '/.config/nvim/template'
+  vim.g.sonictemplate_postfix_key = '<C-,>'
+  vim.g.sonictemplate_vim_template_dir = os.getenv('HOME') .. '/.config/nvim/template'
 end
 
 function config.emmet()
-    vim.g.user_emmet_complete_tag = 0
-    vim.g.user_emmet_install_global = 0
-    vim.g.user_emmet_install_command = 0
-    vim.g.user_emmet_mode = 'i'
+  vim.g.user_emmet_complete_tag = 0
+  vim.g.user_emmet_install_global = 0
+  vim.g.user_emmet_install_command = 0
+  vim.g.user_emmet_mode = 'i'
 end
 
 return config

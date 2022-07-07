@@ -2,15 +2,16 @@ local keymap = {}
 local opts = {}
 
 function opts:new(instance)
-  instance = instance or {
-    options = {
-      silent = false,
-      nowait = false,
-      expr = false,
-      noremap = false
+  instance = instance
+    or {
+      options = {
+        silent = false,
+        nowait = false,
+        expr = false,
+        noremap = false,
+      },
     }
-  }
-  setmetatable(instance,self)
+  setmetatable(instance, self)
   self.__index = self
   return instance
 end
@@ -53,7 +54,7 @@ function keymap.new_opts(...)
     return o.options
   end
 
-  for _,arg in pairs(args) do
+  for _, arg in pairs(args) do
     arg(o.options)()
   end
   return o.options
@@ -69,10 +70,10 @@ function keymap.cu(str)
 end
 
 --@private
-local keymap_set = function(mode,tbl)
-  vim.validate {
-    tbl = {tbl,'table'}
-  }
+local keymap_set = function(mode, tbl)
+  vim.validate({
+    tbl = { tbl, 'table' },
+  })
   local len = #tbl
   if len < 2 then
     vim.notify('keymap must has rhs')
@@ -81,21 +82,21 @@ local keymap_set = function(mode,tbl)
 
   local options = len == 3 and tbl[3] or keymap.new_opts()
 
-  vim.keymap.set(mode,tbl[1],tbl[2],options)
+  vim.keymap.set(mode, tbl[1], tbl[2], options)
 end
 
 local function map(mod)
   return function(tbl)
-    vim.validate {
-      tbl = { tbl,'table' }
-    }
+    vim.validate({
+      tbl = { tbl, 'table' },
+    })
 
     if type(tbl[1]) == 'table' and type(tbl[2]) == 'table' then
-      for _,v in pairs(tbl) do
-        keymap_set(mod,v)
+      for _, v in pairs(tbl) do
+        keymap_set(mod, v)
       end
     else
-      keymap_set(mod,tbl)
+      keymap_set(mod, tbl)
     end
   end
 end

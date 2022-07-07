@@ -13,28 +13,26 @@ local function trim_space(opts, preview_ns, preview_buf)
     if startidx ~= nil then
       -- Highlight the match if in command preview mode
       if preview_ns ~= nil then
-	vim.api.nvim_buf_add_highlight(
-	  buf, preview_ns, 'Substitute', line1 + i - 2, startidx - 1,
-	  endidx
-	)
-	-- Add lines and highlight to the preview buffer
-	-- if inccommand=split
-	if preview_buf ~= nil then
-	  local prefix = string.format('|%d| ', line1 + i - 1)
-	  vim.api.nvim_buf_set_lines(
-	    preview_buf, preview_buf_line, preview_buf_line, 0,
-	    { prefix .. line }
-	  )
-	  vim.api.nvim_buf_add_highlight(
-	    preview_buf, preview_ns, 'Substitute', preview_buf_line,
-	    #prefix + startidx - 1, #prefix + endidx
-	  )
-	  preview_buf_line = preview_buf_line + 1
-	end
+        vim.api.nvim_buf_add_highlight(buf, preview_ns, 'Substitute', line1 + i - 2, startidx - 1, endidx)
+        -- Add lines and highlight to the preview buffer
+        -- if inccommand=split
+        if preview_buf ~= nil then
+          local prefix = string.format('|%d| ', line1 + i - 1)
+          vim.api.nvim_buf_set_lines(preview_buf, preview_buf_line, preview_buf_line, 0, { prefix .. line })
+          vim.api.nvim_buf_add_highlight(
+            preview_buf,
+            preview_ns,
+            'Substitute',
+            preview_buf_line,
+            #prefix + startidx - 1,
+            #prefix + endidx
+          )
+          preview_buf_line = preview_buf_line + 1
+        end
       end
     end
     if not preview_ns then
-      new_lines[#new_lines+1] = string.gsub(line, '%s+$', '')
+      new_lines[#new_lines + 1] = string.gsub(line, '%s+$', '')
     end
   end
   -- Don't make any changes to the buffer if previewing
