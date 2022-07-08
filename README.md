@@ -50,7 +50,7 @@
 
 ## 💭 About
 
-Hi there is my personal neovim config with neovim nightly, because i do develop work in neovim
+Hi there is my personal neovim config with neovim nightly, because i'm neovim member
 
 If you like my config and want to use it, Please see my anohter project [Cosynvim](https://github.com/glepnir/cosynvim), Cosy based on
 
