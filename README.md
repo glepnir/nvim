@@ -34,29 +34,31 @@
 </p>
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/41671631/172047114-58deb5a9-f67b-400b-bace-2982bf901ff6.png"
+  <img src="https://user-images.githubusercontent.com/41671631/177981299-0e935c5f-545a-4e9c-a3ce-431e3c079b76.png"
   height = "40%"
   widht = "40%"
   />
 </p>
 
-## 💭 About
-
-Hi this is my personal config .If you like it Recommand use [Cosynvim](https://github.com/glepnir/cosynvim)
-
-I don't like install too many plugins. it will make my neovim wired.
-
-Don't limit yourself.
-
-## 🧩 Requires
-
-- [Neovim Nightly](https://github.com/neovim/neovim/releases)
-- [🌈 lolcat](https://github.com/busyloop/lolcat)
-
 ## 🎁 Features
 
-- Fastest startup time in 20-35ms with 40 plugins.
-- ...
+- Fastest startup time in 20-35ms.
+
+- Modern structure
+  
+- Lightweight
+
+## 💭 About
+
+Hi there is my personal neovim config with neovim nightly, because i do develop work in neovim
+
+If you like my config and want to use it, Please see my anohter project [Cosynvim](https://github.com/glepnir/cosynvim), Cosy based on
+
+my config and have a detailed documentation tutorial. I don't like install too many plugins,It will 
+
+make my neovim very slow and wired. so I prefer to write it by my self.
+
+Don't limit yourself.
 
 &nbsp;
 
