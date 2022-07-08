@@ -104,16 +104,4 @@ function config.auto_pairs()
   cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done({ map_char = { tex = '' } }))
 end
 
-function config.vim_sonictemplate()
-  vim.g.sonictemplate_postfix_key = '<C-,>'
-  vim.g.sonictemplate_vim_template_dir = os.getenv('HOME') .. '/.config/nvim/template'
-end
-
-function config.emmet()
-  vim.g.user_emmet_complete_tag = 0
-  vim.g.user_emmet_install_global = 0
-  vim.g.user_emmet_install_command = 0
-  vim.g.user_emmet_mode = 'i'
-end
-
 return config

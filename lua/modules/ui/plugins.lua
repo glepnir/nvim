@@ -14,12 +14,6 @@ package({
 
 package({ 'lukas-reineke/indent-blankline.nvim', event = 'BufRead', config = conf.indent_blankline })
 
--- lspsaga winbar instead
--- package {'akinsho/nvim-bufferline.lua',
---   config = conf.nvim_bufferline,
---   requires = 'kyazdani42/nvim-web-devicons'
--- }
-
 package({
   'kyazdani42/nvim-tree.lua',
   cmd = 'NvimTreeToggle',

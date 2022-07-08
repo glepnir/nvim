@@ -57,8 +57,6 @@ nmap({
   -- prodoc
   { 'gcc', cmd('ProComment'), opts(noremap, silent) },
   { 'gcj', cmd('ProDoc'), opts(noremap, silent) },
-  -- vista
-  { '<Leader>v', cmd('Vista'), opts(noremap, silent) },
   -- vim-operator-surround
   { 'sa', '<Plug>(operator-surround-append)', opts(noremap, silent) },
   { 'sd', '<Plug>(operator-surround-delete)', opts(noremap, silent) },

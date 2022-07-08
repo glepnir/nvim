@@ -15,8 +15,6 @@ package({
 
 package({ 'glepnir/prodoc.nvim', event = 'BufReadPre' })
 
-package({ 'liuchengxu/vista.vim', cmd = 'Vista', config = conf.vim_vista })
-
 package({
   'brooth/far.vim',
   cmd = { 'Far', 'Farp' },
