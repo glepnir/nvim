@@ -1,0 +1,7 @@
+- uses: actions/checkout@v2
+- uses: JohnnyMorganz/stylua-action@1.0.0
+  with:
+    token: ${{ secrets.GITHUB_TOKEN }}
+    # CLI arguments
+    args: --check .
+    # Specify `version` to pin a specific version, otherwise action will always use latest version/automatically update
