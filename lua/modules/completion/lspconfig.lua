@@ -74,20 +74,20 @@ lspconfig.gopls.setup({
 })
 
 lspconfig.sumneko_lua.setup({
-  cmd = {
-    home .. '/Workspace/lua-language-server/bin/lua-language-server',
-    '-E',
-    home .. '/Workspace/lua-language-server/main.lua',
-  },
   settings = {
     Lua = {
+      runtime = {
+        version = 'LuaJIT',
+      },
       diagnostics = {
-        enable = true,
         globals = { 'vim', 'packer_plugins' },
       },
-      runtime = { version = 'LuaJIT' },
       workspace = {
-        library = vim.list_extend({ [vim.fn.expand('$VIMRUNTIME/lua')] = true }, {}),
+        library = vim.api.nvim_get_runtime_file('', true),
+      },
+      -- Do not send telemetry data containing a randomized but unique identifier
+      telemetry = {
+        enable = false,
       },
     },
   },
