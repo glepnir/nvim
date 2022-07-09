@@ -132,7 +132,7 @@ local servers = {
   'dockerls',
   'pyright',
   'tsserver',
-  'bashls'
+  'bashls',
 }
 
 for _, server in ipairs(servers) do
