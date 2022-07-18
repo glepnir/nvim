@@ -33,8 +33,15 @@ function Packer:load_packer()
   end
   packer.init({
     compile_path = packer_compiled,
-    git = { clone_timeout = 120 },
     disable_commands = true,
+    display = {
+      working_sym = 'ﰭ',
+      error_sym = '',
+      done_sym = '',
+      removed_sym = '',
+      moved_sym = 'ﰳ',
+    },
+    git = { clone_timeout = 120 },
   })
   packer.reset()
   local use = packer.use
@@ -52,7 +59,7 @@ function Packer:init_ensure_plugins()
     local cmd = '!git clone https://github.com/wbthomason/packer.nvim ' .. packer_dir
     api.nvim_command(cmd)
     uv.fs_mkdir(data_dir .. 'lua', 511, function()
-      assert('make compile path dir faield')
+      assert('make compile path dir failed')
     end)
     self:load_packer()
     packer.sync()
