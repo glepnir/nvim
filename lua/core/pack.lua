@@ -33,8 +33,15 @@ function Packer:load_packer()
   end
   packer.init({
     compile_path = packer_compiled,
-    git = { clone_timeout = 120 },
     disable_commands = true,
+    display = {
+      working_sym = 'ﰭ',
+      error_sym = '',
+      done_sym = '',
+      removed_sym = '',
+      moved_sym = 'ﰳ',
+    },
+    git = { clone_timeout = 120 },
   })
   packer.reset()
   local use = packer.use
