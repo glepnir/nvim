@@ -22,8 +22,16 @@ nmap({
   { '<Leader>li', cmd('LspInfo'), opts(noremap, silent) },
   { '<Leader>ll', cmd('LspLog'), opts(noremap, silent) },
   { '<Leader>lr', cmd('LspRestart'), opts(noremap, silent) },
-  { '<C-f>', cmd("lua require('lspsaga.action').smart_scroll_with_saga(1)"), opts(noremap, silent) },
-  { '<C-b>', cmd("lua require('lspsaga.action').smart_scroll_with_saga(-1)"), opts(noremap, silent) },
+  {
+    '<C-f>',
+    cmd("lua require('lspsaga.action').smart_scroll_with_saga(1)"),
+    opts(noremap, silent),
+  },
+  {
+    '<C-b>',
+    cmd("lua require('lspsaga.action').smart_scroll_with_saga(-1)"),
+    opts(noremap, silent),
+  },
   -- Lspsaga
   { '[e', cmd('Lspsaga diagnostic_jump_next'), opts(noremap, silent) },
   { ']e', cmd('Lspsaga diagnostic_jump_prev'), opts(noremap, silent) },
@@ -51,7 +59,8 @@ nmap({
   { '<Leader>ff', cmd('Telescope find_files'), opts(noremap, silent) },
   { '<Leader>fg', cmd('Telescope gif_files'), opts(noremap, silent) },
   { '<Leader>fw', cmd('Telescope grep_string'), opts(noremap, silent) },
-  { '<Leader>fh', cmd('Telescope oldfiles'), opts(noremap, silent) },
+  { '<Leader>fh', cmd('Telescope help_tags'), opts(noremap, silent) },
+  { '<Leader>fo', cmd('Telescope oldfiles'), opts(noremap, silent) },
   { '<Leader>gc', cmd('Telescope git_commits'), opts(noremap, silent) },
   { '<Leader>gc', cmd('Telescope dotfiles path' .. home .. '/.dotfiles'), opts(noremap, silent) },
   -- prodoc

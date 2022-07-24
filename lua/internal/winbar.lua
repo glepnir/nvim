@@ -7,7 +7,8 @@ local function get_file_name()
   local file_path = ''
   -- Then generate winbar string. For example:
   for _, cur in ipairs(path_list) do
-    file_path = (cur == '.' or cur == '~') and '' or file_path .. cur .. ' ' .. '%#LspSagaWinbarSep#>%*' .. ' %*'
+    file_path = (cur == '.' or cur == '~') and ''
+      or file_path .. cur .. ' ' .. '%#LspSagaWinbarSep#>%*' .. ' %*'
   end
   local ok, devicons = pcall(require, 'nvim-web-devicons')
   local f_icon = ''
@@ -17,7 +18,15 @@ local function get_file_name()
   end -- if filetype doesn't match devicon will set f_icon to nil so add a patch
   f_icon = f_icon == nil and '' or (f_icon .. ' ') -- No icon no space after separator
   f_hl = f_hl == nil and '' or f_hl
-  return file_path .. '%#' .. f_hl .. '#' .. f_icon .. '%*' .. '%#LspSagaWinbarFile#' .. vim.fn.expand('%:t') .. '%*'
+  return file_path
+    .. '%#'
+    .. f_hl
+    .. '#'
+    .. f_icon
+    .. '%*'
+    .. '%#LspSagaWinbarFile#'
+    .. vim.fn.expand('%:t')
+    .. '%*'
 end
 
 local exclude_buffer = {
@@ -44,13 +53,16 @@ local function config_winbar()
   vim.wo.winbar = win_val
 end
 
-api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter', 'CursorMoved', 'WinLeave', 'User LspsagaUpdateSymbol' }, {
-  pattern = '*',
-  callback = function()
-    if vim.fn.winheight(0) > 1 then
-      config_winbar()
-    end
-  end,
-})
+api.nvim_create_autocmd(
+  { 'BufEnter', 'BufWinEnter', 'CursorMoved', 'WinLeave', 'User LspsagaUpdateSymbol' },
+  {
+    pattern = '*',
+    callback = function()
+      if vim.fn.winheight(0) > 1 then
+        config_winbar()
+      end
+    end,
+  }
+)
 
 return winbar

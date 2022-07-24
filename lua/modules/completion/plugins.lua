@@ -1,9 +1,24 @@
 local package = require('core.pack').package
 local conf = require('modules.completion.config')
 
-package({ 'neovim/nvim-lspconfig', ft = { 'go', 'lua', 'sh', 'rust', 'c', 'cpp' }, config = conf.nvim_lsp })
+local enable_lsp_filetype = {
+  'go',
+  'lua',
+  'sh',
+  'rust',
+  'c',
+  'cpp',
+  'typescript',
+  'typescriptreact',
+}
 
-package({ '~/Workspace/lspsaga.nvim', cmd = 'Lspsaga' })
+package({
+  'neovim/nvim-lspconfig',
+  ft = enable_lsp_filetype,
+  config = conf.nvim_lsp,
+})
+
+package({ '~/Workspace/lspsaga.nvim', after = 'nvim-lspconfig' })
 
 package({
   'hrsh7th/nvim-cmp',

@@ -12,7 +12,11 @@ package({
   requires = 'kyazdani42/nvim-web-devicons',
 })
 
-package({ 'lukas-reineke/indent-blankline.nvim', event = 'BufRead', config = conf.indent_blankline })
+package({
+  'lukas-reineke/indent-blankline.nvim',
+  event = 'BufRead',
+  config = conf.indent_blankline,
+})
 
 package({
   'kyazdani42/nvim-tree.lua',

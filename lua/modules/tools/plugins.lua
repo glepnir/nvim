@@ -24,5 +24,3 @@ package({
 })
 
 package({ '~/Workspace/template.nvim/', config = conf.template_nvim })
-
-package({ '~/Workspace/dogic-nvim' })

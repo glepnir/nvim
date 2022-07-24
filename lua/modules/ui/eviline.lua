@@ -6,7 +6,7 @@ end
 local colors = require('galaxyline.theme').default
 local condition = require('galaxyline.condition')
 local gls = galaxyline.section
-galaxyline.short_line_list = { 'NvimTree', 'vista', 'dbui', 'packer' }
+galaxyline.short_line_list = { 'NvimTree', 'vista', 'dbui', 'packer', 'lspsagaoutline' }
 
 gls.left[1] = {
   RainbowRed = {
@@ -43,7 +43,9 @@ gls.left[2] = {
         v = colors.blue,
         V = colors.blue,
       }
-      vim.api.nvim_command('hi GalaxyViMode guifg=' .. mode_color[vim.fn.mode()] .. ' guibg=' .. colors.bg)
+      vim.api.nvim_command(
+        'hi GalaxyViMode guifg=' .. mode_color[vim.fn.mode()] .. ' guibg=' .. colors.bg
+      )
       return '  '
     end,
   },

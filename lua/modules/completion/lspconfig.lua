@@ -60,7 +60,7 @@ local enhance_attach = function(client, bufnr)
   if client.server_capabilities.document_formatting then
     format.lsp_before_save()
   end
-  api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+  --   api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 end
 
 lspconfig.gopls.setup({
@@ -74,20 +74,18 @@ lspconfig.gopls.setup({
 })
 
 lspconfig.sumneko_lua.setup({
+  cmd = {
+    home .. '/Workspace/lua-language-server/bin/lua-language-server',
+  },
   settings = {
     Lua = {
-      runtime = {
-        version = 'LuaJIT',
-      },
       diagnostics = {
+        enable = true,
         globals = { 'vim', 'packer_plugins' },
       },
+      runtime = { version = 'LuaJIT' },
       workspace = {
-        library = vim.api.nvim_get_runtime_file('', true),
-      },
-      -- Do not send telemetry data containing a randomized but unique identifier
-      telemetry = {
-        enable = false,
+        library = vim.list_extend({ [vim.fn.expand('$VIMRUNTIME/lua')] = true }, {}),
       },
     },
   },

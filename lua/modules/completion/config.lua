@@ -18,11 +18,11 @@ function config.nvim_cmp()
       format = function(entry, vim_item)
         local lspkind_icons = {
           Text = '',
-          Method = '',
+          Method = ' ',
           Function = '',
           Constructor = ' ',
-          Field = '',
-          Variable = '',
+          Field = ' ',
+          Variable = ' ',
           Class = '',
           Interface = '',
           Module = '硫',
@@ -78,7 +78,6 @@ function config.nvim_cmp()
       { name = 'buffer' },
     },
   })
-  vim.cmd('hi CmpFloatBorder guifg=red')
 end
 
 function config.lua_snip()

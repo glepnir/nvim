@@ -16,10 +16,11 @@ function format.lsp_before_save()
   local ext = vim.fn.expand('%:e')
   table.insert(defs, { 'BufWritePre', '*.' .. ext, 'lua vim.lsp.buf.formatting_sync(nil,1000)' })
   if ext == 'go' then
-    table.insert(
-      defs,
-      { 'BufWritePre', '*.go', "lua require('modules.completion.format').go_organize_imports_sync(1000)" }
-    )
+    table.insert(defs, {
+      'BufWritePre',
+      '*.go',
+      "lua require('modules.completion.format').go_organize_imports_sync(1000)",
+    })
   end
   nvim_create_augroup('lsp_before_save', defs)
 end
