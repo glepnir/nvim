@@ -1,15 +1,17 @@
-local uv,api = vim.loop,vim.api
+local uv, api = vim.loop, vim.api
 local fmt = {}
 
 local function get_format_opts()
   local file_name = api.nvim_buf_get_name(0)
   local fmt_tools = {
     go = {
-      cmd = 'golines',args = {'--max-len=100', file_name}
+      cmd = 'golines',
+      args = { '--max-len=100', file_name },
     },
     lua = {
-      cmd = 'stylua',args = {file_name}
-    }
+      cmd = 'stylua',
+      args = { file_name },
+    },
   }
 
   if fmt_tools[vim.bo.filetype] then
@@ -36,13 +38,13 @@ local function safe_close(handle)
   end
 end
 
-function fmt:format_file(err,data)
-  assert( not err ,err)
+function fmt:format_file(err, data)
+  assert(not err, err)
   if data then
-    local new_lines = vim.split(data,'\n')
+    local new_lines = vim.split(data, '\n')
 
-    if not check_same(self.old_lines,new_lines) then
-      api.nvim_buf_set_lines(0,0,-1,false,new_lines)
+    if not check_same(self.old_lines, new_lines) then
+      api.nvim_buf_set_lines(0, 0, -1, false, new_lines)
       api.nvim_command('write')
       if vim.bo.filetype == 'lua' then
         api.nvim_command('edit')
@@ -53,7 +55,7 @@ function fmt:format_file(err,data)
 end
 
 function fmt:get_current_lines()
-  self.old_lines = api.nvim_buf_get_lines(0,0,-1,true)
+  self.old_lines = api.nvim_buf_get_lines(0, 0, -1, true)
 end
 
 function fmt:new_spawn(cmd, args)
@@ -63,7 +65,7 @@ function fmt:new_spawn(cmd, args)
 
   self.handle, self.pid = uv.spawn(cmd, {
     args = args,
-    stdio = { stdin,stdout, stderr },
+    stdio = { stdin, stdout, stderr },
   }, function(_, _)
     uv.read_stop(stdout)
     uv.read_stop(stderr)
@@ -72,15 +74,18 @@ function fmt:new_spawn(cmd, args)
     safe_close(stderr)
   end)
 
-  uv.read_start(stdout, vim.schedule_wrap(function(err,data)
-    self:format_file(err,data)
-  end))
+  uv.read_start(
+    stdout,
+    vim.schedule_wrap(function(err, data)
+      self:format_file(err, data)
+    end)
+  )
 
-  uv.read_start(stderr, function(err,_)
-    assert(not err ,err)
+  uv.read_start(stderr, function(err, _)
+    assert(not err, err)
   end)
 
-  uv.shutdown(stdin,function()
+  uv.shutdown(stdin, function()
     safe_close(stdin)
   end)
 end
@@ -89,7 +94,7 @@ function fmt.formatter()
   local opts = get_format_opts()
   if opts ~= nil then
     fmt:get_current_lines()
-    fmt:new_spawn(opts.cmd,opts.args)
+    fmt:new_spawn(opts.cmd, opts.args)
   end
 end
 
