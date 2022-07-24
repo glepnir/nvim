@@ -182,6 +182,7 @@ gls.right[4] = {
 
 gls.right[5] = {
   Separator = {
+    highlight = { colors.fg, colors.bg, 'bold' },
     provider = function()
       return ' '
     end,
