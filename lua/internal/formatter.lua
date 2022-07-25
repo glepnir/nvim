@@ -46,9 +46,9 @@ function fmt:format_file(err, data)
     if not check_same(self.old_lines, new_lines) then
       api.nvim_buf_set_lines(0, 0, -1, false, new_lines)
       api.nvim_command('write')
-      if vim.bo.filetype == 'lua' then
-        api.nvim_command('edit')
-      end
+      --       if vim.bo.filetype == 'lua' then
+      --         vim.cmd('edit')
+      --       end
       self.old_lines = new_lines
     end
   end

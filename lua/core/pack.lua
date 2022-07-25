@@ -83,11 +83,6 @@ function plugins.package(repo)
   table.insert(Packer.repos, repo)
 end
 
-function plugins.compile_notify()
-  plugins.compile()
-  vim.notify('Compile Done!', 'info', { title = 'Packer' })
-end
-
 function plugins.auto_compile()
   local file = vim.fn.expand('%:p')
   if not file:match(vim_path) then
@@ -97,7 +92,7 @@ function plugins.auto_compile()
   if file:match('plugins.lua') then
     plugins.clean()
   end
-  plugins.compile_notify()
+  plugins.compile()
   require('packer_compiled')
 end
 
@@ -108,12 +103,28 @@ function plugins.load_compile()
     vim.notify('Run PackerInstall', 'info', { title = 'Packer' })
   end
 
-  vim.cmd([[command! PackerCompile lua require('core.pack').compile_notify()]])
-  vim.cmd([[command! PackerInstall lua require('core.pack').install()]])
-  vim.cmd([[command! PackerUpdate lua require('core.pack').update()]])
-  vim.cmd([[command! PackerSync lua require('core.pack').sync()]])
-  vim.cmd([[command! PackerClean lua require('core.pack').clean()]])
-  vim.cmd([[command! PackerStatus  lua require('packer').status()]])
+  local cmds = {
+    'Compile',
+    'Install',
+    'Update',
+    'Sync',
+    'Clean',
+    'Status',
+  }
+  for _, cmd in ipairs(cmds) do
+    api.nvim_create_user_command('Packer' .. cmd, function()
+      require('core.pack')[fn.tolower(cmd)]()
+    end, {})
+  end
+
+  local PackerHooks = vim.api.nvim_create_augroup('PackerHooks', { clear = true })
+  vim.api.nvim_create_autocmd('User', {
+    pattern = 'PackerCompileDone',
+    callback = function()
+      vim.notify('Compile Done!', vim.log.levels.INFO, { title = 'Packer' })
+    end,
+    group = PackerHooks,
+  })
 
   api.nvim_create_autocmd('BufWritePost', {
     pattern = '*.lua',
