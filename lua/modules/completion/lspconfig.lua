@@ -1,7 +1,5 @@
-local api = vim.api
 local home = os.getenv('HOME')
 local lspconfig = require('lspconfig')
-local format = require('modules.completion.format')
 
 if not packer_plugins['lspsaga.nvim'].loaded then
   vim.cmd([[packadd lspsaga.nvim]])
@@ -56,16 +54,8 @@ vim.diagnostic.config({
   },
 })
 
-local enhance_attach = function(client, bufnr)
-  if client.server_capabilities.document_formatting then
-    format.lsp_before_save()
-  end
-  --   api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-end
-
 lspconfig.gopls.setup({
   cmd = { 'gopls', '--remote=auto' },
-  on_attach = enhance_attach,
   capabilities = capabilities,
   init_options = {
     usePlaceholders = true,
@@ -94,7 +84,6 @@ lspconfig.sumneko_lua.setup({
 lspconfig.tsserver.setup({
   on_attach = function(client)
     client.server_capabilities.document_formatting = false
-    enhance_attach(client)
   end,
 })
 
@@ -134,7 +123,5 @@ local servers = {
 }
 
 for _, server in ipairs(servers) do
-  lspconfig[server].setup({
-    on_attach = enhance_attach,
-  })
+  lspconfig[server].setup({})
 end
