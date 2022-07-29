@@ -41,6 +41,7 @@ nmap({
   { 'gs', cmd('Lspsaga signature_help'), opts(noremap, silent) },
   { 'gr', cmd('Lspsaga rename'), opts(noremap, silent) },
   { 'gh', cmd('Lspsaga lsp_finder'), opts(noremap, silent) },
+  { '<Leader>o', cmd('LSoutlineToggle'), opts(noremap, silent) },
   -- Lspsaga floaterminal
   { '<A-d>', cmd('Lspsaga open_floaterm'), opts(noremap, silent) },
   { '<Leader>g', cmd('Lspsaga open_floaterm lazygit'), opts(noremap, silent) },
@@ -51,7 +52,7 @@ nmap({
   -- nvimtree
   { '<Leader>e', cmd('NvimTreeToggle'), opts(noremap, silent) },
   -- dadbodui
-  { '<Leader>od', cmd('DBUIToggle'), opts(noremap, silent) },
+  { '<Leader>d', cmd('DBUIToggle'), opts(noremap, silent) },
   -- Telescope
   { '<Leader>b', cmd('Telescope buffers'), opts(noremap, silent) },
   { '<Leader>fa', cmd('Telescope live_grep'), opts(noremap, silent) },
@@ -63,19 +64,20 @@ nmap({
   { '<Leader>fo', cmd('Telescope oldfiles'), opts(noremap, silent) },
   { '<Leader>gc', cmd('Telescope git_commits'), opts(noremap, silent) },
   { '<Leader>gc', cmd('Telescope dotfiles path' .. home .. '/.dotfiles'), opts(noremap, silent) },
-  -- prodoc
-  { 'gcc', cmd('ProComment'), opts(noremap, silent) },
-  { 'gcj', cmd('ProDoc'), opts(noremap, silent) },
   -- vim-operator-surround
   { 'sa', '<Plug>(operator-surround-append)', opts(noremap, silent) },
   { 'sd', '<Plug>(operator-surround-delete)', opts(noremap, silent) },
   { 'sr', '<Plug>(operator-surround-replace)', opts(noremap, silent) },
 })
 
+nmap({ 'gcc', cmd('ComComment'), opts(noremap, silent) })
+xmap({ 'gcc', ':ComComment<CR>', opts(noremap, silent) })
+nmap({ 'gcj', cmd('ComAnnotation'), opts(noremap, silent) })
+
 tmap({ '<A-d>', [[<C-\><C-n>:Lspsaga close_floaterm<CR>]], opts(noremap, silent) })
 
 xmap({
-  { 'gcc', ':ProComment<CR>', opts(noremap, silent) },
+  --   { 'gcc', ':ProComment<CR>', opts(noremap, silent) },
   { 'ga', cu('Lspsaga code_action'), opts(noremap, silent) },
   -- nice_block
   { 'I', _G.enhance_nice_block('I'), opts(expr, remap) },

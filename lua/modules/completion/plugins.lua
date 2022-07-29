@@ -8,8 +8,7 @@ local enable_lsp_filetype = {
   'rust',
   'c',
   'cpp',
-  'typescript',
-  'typescriptreact',
+  'vue',
 }
 
 package({

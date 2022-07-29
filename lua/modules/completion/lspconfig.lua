@@ -64,9 +64,6 @@ lspconfig.gopls.setup({
 })
 
 lspconfig.sumneko_lua.setup({
-  cmd = {
-    home .. '/Workspace/lua-language-server/bin/lua-language-server',
-  },
   settings = {
     Lua = {
       diagnostics = {
@@ -116,6 +113,8 @@ lspconfig.rust_analyzer.setup({
 })
 
 local servers = {
+  'volar',
+  'cssls',
   'dockerls',
   'pyright',
   'tsserver',

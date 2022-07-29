@@ -13,14 +13,6 @@ package({
   ft = { 'go', 'typescript', 'javascript', 'vim', 'rust', 'zig', 'c', 'cpp' },
 })
 
-package({ 'glepnir/prodoc.nvim', event = 'BufReadPre' })
-
-package({
-  'brooth/far.vim',
-  cmd = { 'Far', 'Farp' },
-  config = function()
-    vim.g['far#source'] = 'rg'
-  end,
-})
+package({ '~/Workspace/coman.nvim' })
 
 package({ '~/Workspace/template.nvim/', config = conf.template_nvim })
