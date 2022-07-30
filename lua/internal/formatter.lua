@@ -42,20 +42,20 @@ function fmt:format_file(err, data)
   assert(not err, err)
   if data then
     local new_lines = vim.split(data, '\n')
+    if string.len(new_lines[#new_lines]) == 0 then
+      table.remove(new_lines, #new_lines)
+    end
 
     if not check_same(self.old_lines, new_lines) then
       api.nvim_buf_set_lines(0, 0, -1, false, new_lines)
       api.nvim_command('write')
-      --       if vim.bo.filetype == 'lua' then
-      --         vim.cmd('edit')
-      --       end
       self.old_lines = new_lines
     end
   end
 end
 
 function fmt:get_current_lines()
-  self.old_lines = api.nvim_buf_get_lines(0, 0, -1, true)
+  self.old_lines = api.nvim_buf_get_lines(0, 0, -1, false)
 end
 
 function fmt:new_spawn(opts)
