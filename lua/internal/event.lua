@@ -42,9 +42,9 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 
 api.nvim_create_autocmd('BufWritePost', {
   group = my_group,
-  pattern = '*.go',
+  pattern = '*.go,*.lua',
   callback = function()
-    require('internal.formatter').formatter()
+    require('internal.formatter'):formatter()
   end,
 })
 

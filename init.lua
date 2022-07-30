@@ -1,2 +1,2 @@
--- Load Modules:
+-- Load Modules
 require('core')

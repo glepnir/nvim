@@ -10,7 +10,7 @@ local function get_format_opts()
     },
     lua = {
       cmd = 'stylua',
-      args = { file_name },
+      args = { '-' },
     },
   }
 
@@ -58,13 +58,13 @@ function fmt:get_current_lines()
   self.old_lines = api.nvim_buf_get_lines(0, 0, -1, true)
 end
 
-function fmt:new_spawn(cmd, args)
+function fmt:new_spawn(opts)
   local stdout = uv.new_pipe(false)
   local stderr = uv.new_pipe(false)
   local stdin = uv.new_pipe(false)
 
-  self.handle, self.pid = uv.spawn(cmd, {
-    args = args,
+  self.handle, self.pid = uv.spawn(opts.cmd, {
+    args = opts.args,
     stdio = { stdin, stdout, stderr },
   }, function(_, _)
     uv.read_stop(stdout)
@@ -85,16 +85,26 @@ function fmt:new_spawn(cmd, args)
     assert(not err, err)
   end)
 
-  uv.shutdown(stdin, function()
-    safe_close(stdin)
-  end)
+  if opts.filetype == 'lua' and opts.contents then
+    uv.write(stdin, opts.contents)
+    uv.shutdown(stdin, function()
+      safe_close(stdin)
+    end)
+  end
 end
 
-function fmt.formatter()
+function fmt:formatter()
+  fmt:get_current_lines()
   local opts = get_format_opts()
+  opts.filetype = vim.bo.filetype
+  if vim.bo.filetype == 'lua' then
+    opts.contents = {}
+    for _, v in pairs(self.old_lines) do
+      table.insert(opts.contents, v .. '\n')
+    end
+  end
   if opts ~= nil then
-    fmt:get_current_lines()
-    fmt:new_spawn(opts.cmd, opts.args)
+    fmt:new_spawn(opts)
   end
 end
 
