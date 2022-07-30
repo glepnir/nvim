@@ -113,7 +113,7 @@ lspconfig.rust_analyzer.setup({
 })
 
 lspconfig.cssls.setup({
-  filetype = {'vue','css','scss'}
+  filetype = { 'vue', 'css', 'scss' },
 })
 
 local servers = {
