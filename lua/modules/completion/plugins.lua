@@ -9,6 +9,7 @@ local enable_lsp_filetype = {
   'c',
   'cpp',
   'vue',
+  'css',
 }
 
 package({

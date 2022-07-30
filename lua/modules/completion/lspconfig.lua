@@ -112,9 +112,12 @@ lspconfig.rust_analyzer.setup({
   },
 })
 
+lspconfig.cssls.setup({
+  filetype = {'vue','css','scss'}
+})
+
 local servers = {
   'volar',
-  'cssls',
   'dockerls',
   'pyright',
   'tsserver',

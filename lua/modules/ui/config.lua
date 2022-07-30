@@ -19,36 +19,42 @@ function config.dashboard()
   db.custom_center = {
     {
       icon = '  ',
+      icon_hl = {fg = '#f7bb3b'},
       desc = 'Update Plugins                          ',
       shortcut = 'SPC p u',
       action = 'PackerUpdate',
     },
     {
       icon = '  ',
+      icon_hl = {fg = '#f7bb3b'},
       desc = 'Recently opened files                   ',
       action = 'Telescope oldfiles',
       shortcut = 'SPC f h',
     },
     {
       icon = '  ',
+      icon_hl = {fg = '#f7bb3b'},
       desc = 'Find  File                              ',
       action = 'Telescope find_files find_command=rg,--hidden,--files',
       shortcut = 'SPC f f',
     },
     {
       icon = '  ',
+      icon_hl = {fg = '#f7bb3b'},
       desc = 'File Browser                            ',
       action = 'Telescope file_browser',
       shortcut = 'SPC f b',
     },
     {
       icon = '  ',
+      icon_hl = {fg = '#f7bb3b'},
       desc = 'Find  word                              ',
       action = 'Telescope live_grep',
       shortcut = 'SPC f b',
     },
     {
       icon = '  ',
+      icon_hl = {fg = '#f7bb3b'},
       desc = 'Open Personal dotfiles                  ',
       action = 'Telescope dotfiles path=' .. home .. '/.dotfiles',
       shortcut = 'SPC f d',
@@ -61,7 +67,7 @@ function config.nvim_tree()
     view = {
       width = 30,
       height = 30,
-      side = 'right',
+      side = 'left',
       preserve_window_proportions = false,
       number = false,
       relativenumber = false,
