@@ -9,6 +9,7 @@ function config.nvim_cmp()
 
   local insert_map = cmp.mapping.preset.insert()
   rawset(insert_map, '<C-e>', nil)
+  rawset(insert_map,'<CR>',cmp.mapping.confirm({ select = true }))
 
   cmp.setup({
     preselect = cmp.PreselectMode.Item,
@@ -96,7 +97,10 @@ function config.auto_pairs()
   end
   cmp = require('cmp')
   local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-  cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done({ map_char = { tex = '' } }))
+  cmp.event:on(
+    'confirm_done',
+    cmp_autopairs.on_confirm_done()
+  )
 end
 
 return config
