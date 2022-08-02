@@ -23,9 +23,7 @@ package({
 
 package({ 'nvim-treesitter/nvim-treesitter-textobjects', after = 'nvim-treesitter' })
 
-package({ '~/Workspace/mcc.nvim',
-ft = {'c','cpp','go','rust'},
-config = conf.mcc_nvim })
+package({ '~/Workspace/mcc.nvim', ft = { 'c', 'cpp', 'go', 'rust' }, config = conf.mcc_nvim })
 
 package({
   'kana/vim-operator-replace',

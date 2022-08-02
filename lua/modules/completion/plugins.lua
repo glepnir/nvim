@@ -9,7 +9,7 @@ local enable_lsp_filetype = {
   'c',
   'cpp',
   'typescript',
-  'typescriptreact'
+  'typescriptreact',
 }
 
 package({

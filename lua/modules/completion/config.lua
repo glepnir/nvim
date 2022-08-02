@@ -8,7 +8,7 @@ function config.nvim_cmp()
   local cmp = require('cmp')
 
   local insert_map = cmp.mapping.preset.insert()
-  rawset(insert_map,"<C-e>",nil)
+  rawset(insert_map, '<C-e>', nil)
 
   cmp.setup({
     preselect = cmp.PreselectMode.Item,
@@ -74,7 +74,6 @@ function config.nvim_cmp()
       { name = 'buffer' },
     },
   })
-
 end
 
 function config.lua_snip()

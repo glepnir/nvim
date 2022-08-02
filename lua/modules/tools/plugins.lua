@@ -13,6 +13,6 @@ package({
   ft = { 'go', 'typescript', 'javascript', 'vim', 'rust', 'zig', 'c', 'cpp' },
 })
 
-package({ '~/Workspace/coman.nvim',event = 'BufRead'})
+package({ '~/Workspace/coman.nvim', event = 'BufRead' })
 
 package({ '~/Workspace/template.nvim/', config = conf.template_nvim })
