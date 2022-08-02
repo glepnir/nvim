@@ -42,8 +42,13 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 
 api.nvim_create_autocmd('BufWritePost', {
   group = my_group,
-  pattern = '*.go,*.lua',
+  pattern = '*.go',
   callback = function()
+    if vim.bo.filetype == 'lua' then
+      if vim.fn.expand('%:t'):find('%pspec') then
+        return
+      end
+    end
     require('internal.formatter'):formatter()
   end,
 })

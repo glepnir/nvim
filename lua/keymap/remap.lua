@@ -1,6 +1,6 @@
 local keymap = require('core.keymap')
 local nmap, imap, cmap = keymap.nmap, keymap.imap, keymap.cmap
-local silent, noremap = keymap.silent, keymap.noremap
+local silent, noremap,remap = keymap.silent, keymap.noremap,keymap.remap
 local expr = keymap.expr
 local opts = keymap.new_opts
 local cmd = keymap.cmd
@@ -43,7 +43,7 @@ imap({
   {
     '<C-e>',
     function()
-      return vim.fn.pumvisible() == 1 and '<C-e>' or '<end>'
+      return vim.fn.pumvisible() == 1 and '<C-e>' or '<End>'
     end,
     opts(expr),
   },

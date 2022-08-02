@@ -45,6 +45,7 @@ function fmt:format_file(err, data)
     if string.len(new_lines[#new_lines]) == 0 then
       table.remove(new_lines, #new_lines)
     end
+    print(#new_lines)
 
     if not check_same(self.old_lines, new_lines) then
       api.nvim_buf_set_lines(0, 0, -1, false, new_lines)
@@ -87,10 +88,10 @@ function fmt:new_spawn(opts)
 
   if opts.filetype == 'lua' and opts.contents then
     uv.write(stdin, opts.contents)
-    uv.shutdown(stdin, function()
-      safe_close(stdin)
-    end)
   end
+  uv.shutdown(stdin, function()
+    safe_close(stdin)
+  end)
 end
 
 function fmt:formatter()

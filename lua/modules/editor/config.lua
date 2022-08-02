@@ -57,8 +57,13 @@ function config.nvim_treesitter()
   })
 end
 
-function config.smart_input()
-  require('smartinput').setup({ ['go'] = { ';', ':=', ';' } })
+function config.mcc_nvim()
+  require('mcc').setup({
+    go = { ';',':=',';'},
+    rust = {';','::',';'},
+    c = {'-','->','-'},
+    cpp = {'-','->','-'},
+  })
 end
 
 return config
