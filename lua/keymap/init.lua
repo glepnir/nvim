@@ -76,11 +76,6 @@ nmap({ 'gcj', cmd('ComAnnotation'), opts(noremap, silent) })
 
 tmap({ '<A-d>', [[<C-\><C-n>:Lspsaga close_floaterm<CR>]], opts(noremap, silent) })
 
-xmap({
-  --   { 'gcc', ':ProComment<CR>', opts(noremap, silent) },
-  { 'ga', cu('Lspsaga code_action'), opts(noremap, silent) },
-  -- nice_block
-  { 'I', _G.enhance_nice_block('I'), opts(expr, remap) },
-  { 'gI', _G.enhance_nice_block('gI'), opts(expr, remap) },
-  { 'A', _G.enhance_nice_block('A'), opts(expr, remap) },
-})
+xmap(
+  { 'ga', cu('Lspsaga code_action'), opts(noremap, silent) }
+)

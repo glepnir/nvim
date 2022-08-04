@@ -44,6 +44,10 @@ function config.template_nvim()
   temp.temp_dir = '~/.config/nvim/template'
   temp.author = 'glepnir'
   temp.email = 'glephunter@gmail.com'
+  if not packer_plugins['telescope.nvim'] then
+    vim.cmd("packadd telescope.nvim")
+    require('telescope').load_extension('find_template')
+  end
 end
 
 return config

@@ -15,4 +15,4 @@ package({
 
 package({ '~/Workspace/coman.nvim', event = 'BufRead' })
 
-package({ '~/Workspace/template.nvim/', config = conf.template_nvim })
+package({ '~/Workspace/template.nvim/', ft = { 'go', 'lua', 'rust' }, config = conf.template_nvim })

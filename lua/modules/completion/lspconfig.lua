@@ -1,4 +1,4 @@
-local home = os.getenv('HOME')
+local api = vim.api
 local lspconfig = require('lspconfig')
 
 if not packer_plugins['lspsaga.nvim'].loaded then
@@ -20,18 +20,12 @@ if not packer_plugins['cmp-nvim-lsp'].loaded then
 end
 capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
-function _G.reload_lsp()
-  vim.lsp.stop_client(vim.lsp.get_active_clients())
-  vim.cmd([[edit]])
-end
-
 function _G.open_lsp_log()
   local path = vim.lsp.get_log_path()
   vim.cmd('edit ' .. path)
 end
 
 vim.cmd('command! -nargs=0 LspLog call v:lua.open_lsp_log()')
-vim.cmd('command! -nargs=0 LspRestart call v:lua.reload_lsp()')
 
 local signs = {
   Error = ' ',
@@ -54,7 +48,22 @@ vim.diagnostic.config({
   },
 })
 
+local on_attach = function(client, bufnr)
+  if client.server_capabilities.documentFormattingProvider then
+    api.nvim_create_autocmd('BufWritePre', {
+      pattern = client.config.filetypes,
+      callback = function()
+        vim.lsp.buf.format({
+          bufnr = bufnr,
+          async = true,
+        })
+      end,
+    })
+  end
+end
+
 lspconfig.gopls.setup({
+  on_attach = on_attach,
   cmd = { 'gopls', '--remote=auto' },
   capabilities = capabilities,
   init_options = {
@@ -64,6 +73,7 @@ lspconfig.gopls.setup({
 })
 
 lspconfig.sumneko_lua.setup({
+  on_attach = on_attach,
   settings = {
     Lua = {
       diagnostics = {
@@ -79,12 +89,11 @@ lspconfig.sumneko_lua.setup({
 })
 
 lspconfig.tsserver.setup({
-  on_attach = function(client)
-    client.server_capabilities.document_formatting = false
-  end,
+  on_attach = on_attach,
 })
 
 lspconfig.clangd.setup({
+  on_attach = on_attach,
   cmd = {
     'clangd',
     '--background-index',
@@ -95,6 +104,7 @@ lspconfig.clangd.setup({
 })
 
 lspconfig.rust_analyzer.setup({
+  on_attach = on_attach,
   capabilities = capabilities,
   settings = {
     ['rust-analyzer'] = {
@@ -112,12 +122,7 @@ lspconfig.rust_analyzer.setup({
   },
 })
 
-lspconfig.cssls.setup({
-  filetype = { 'vue', 'css', 'scss' },
-})
-
 local servers = {
-  'volar',
   'dockerls',
   'pyright',
   'tsserver',
@@ -125,5 +130,7 @@ local servers = {
 }
 
 for _, server in ipairs(servers) do
-  lspconfig[server].setup({})
+  lspconfig[server].setup({
+    on_attach = on_attach,
+  })
 end
