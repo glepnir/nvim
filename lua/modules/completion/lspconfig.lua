@@ -107,17 +107,19 @@ lspconfig.rust_analyzer.setup({
   on_attach = on_attach,
   capabilities = capabilities,
   settings = {
-    ['rust-analyzer'] = {
-      assist = {
-        importGranularity = 'module',
-        importPrefix = 'self',
+    imports = {
+      granularity = {
+        group = 'module',
       },
-      cargo = {
-        loadOutDirsFromCheck = true,
-      },
-      procMacro = {
+      prefix = 'self',
+    },
+    cargo = {
+      buildScripts = {
         enable = true,
       },
+    },
+    procMacro = {
+      enable = true,
     },
   },
 })

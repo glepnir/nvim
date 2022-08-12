@@ -59,7 +59,7 @@ end
 function config.mcc_nvim()
   require('mcc').setup({
     go = { ';', ':=', ';' },
-    rust = { '\\', '::', '\\' },
+    rust = { '88','::','88'},
     c = { '-', '->', '-' },
     cpp = { '-', '->', '-' },
   })

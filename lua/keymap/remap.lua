@@ -1,6 +1,6 @@
 local keymap = require('core.keymap')
 local nmap, imap, cmap = keymap.nmap, keymap.imap, keymap.cmap
-local silent, noremap, remap = keymap.silent, keymap.noremap, keymap.remap
+local silent, noremap = keymap.silent, keymap.noremap
 local expr = keymap.expr
 local opts = keymap.new_opts
 local cmd = keymap.cmd
@@ -14,7 +14,7 @@ nmap({
   -- yank
   { 'Y', 'y$', opts(noremap) },
   -- buffer jump
-  { ']b', cmd('bp'), opts(noremap) },
+  { ']b', cmd('bn'), opts(noremap) },
   { '[b', cmd('bp'), opts(noremap) },
   -- remove trailing white space
   { '<Leader>t', cmd('TrimTrailingWhitespace'), opts(noremap) },

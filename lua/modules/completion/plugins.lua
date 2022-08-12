@@ -8,9 +8,10 @@ local enable_lsp_filetype = {
   'rust',
   'c',
   'cpp',
-  'python',
   'typescript',
   'typescriptreact',
+  'json',
+  'python',
 }
 
 package({
