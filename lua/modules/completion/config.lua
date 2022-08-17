@@ -6,11 +6,6 @@ end
 
 function config.nvim_cmp()
   local cmp = require('cmp')
-
-  local insert_map = cmp.mapping.preset.insert()
-  rawset(insert_map, '<C-e>', nil)
-  rawset(insert_map, '<CR>', cmp.mapping.confirm({ select = true }))
-
   cmp.setup({
     preselect = cmp.PreselectMode.Item,
     window = {
@@ -62,7 +57,10 @@ function config.nvim_cmp()
       end,
     },
     -- You can set mappings if you want
-    mapping = insert_map,
+    mapping = cmp.mapping.preset.insert({
+      ['<C-e>'] = cmp.config.disable,
+      ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    }),
     snippet = {
       expand = function(args)
         require('luasnip').lsp_expand(args.body)

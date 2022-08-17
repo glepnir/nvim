@@ -10,6 +10,7 @@ local enable_lsp_filetype = {
   'cpp',
   'typescript',
   'typescriptreact',
+  'javascript',
   'json',
   'python',
 }

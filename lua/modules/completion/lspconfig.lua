@@ -88,10 +88,6 @@ lspconfig.sumneko_lua.setup({
   },
 })
 
-lspconfig.tsserver.setup({
-  on_attach = on_attach,
-})
-
 lspconfig.clangd.setup({
   on_attach = on_attach,
   cmd = {
@@ -127,9 +123,13 @@ lspconfig.rust_analyzer.setup({
 local servers = {
   'dockerls',
   'pyright',
-  'tsserver',
+  'denols',
   'bashls',
 }
+
+-- lspconfig.tsserver.setup({
+--   on_attach = on_attach,
+-- })
 
 for _, server in ipairs(servers) do
   lspconfig[server].setup({
