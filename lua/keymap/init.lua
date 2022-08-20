@@ -37,7 +37,7 @@ nmap({
   { ']e', cmd('Lspsaga diagnostic_jump_prev'), opts(noremap, silent) },
   { 'K', cmd('Lspsaga hover_doc'), opts(noremap, silent) },
   { 'ga', cmd('Lspsaga code_action'), opts(noremap, silent) },
-  { 'gd', cmd('Lspsaga range_code_action'), opts(noremap, silent) },
+  { 'gd', cmd('Lspsaga preview_definition'), opts(noremap, silent) },
   { 'gs', cmd('Lspsaga signature_help'), opts(noremap, silent) },
   { 'gr', cmd('Lspsaga rename'), opts(noremap, silent) },
   { 'gh', cmd('Lspsaga lsp_finder'), opts(noremap, silent) },

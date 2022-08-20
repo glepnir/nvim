@@ -35,6 +35,7 @@ function Packer:load_packer()
     compile_path = packer_compiled,
     disable_commands = true,
     display = {
+      open_fn = require('packer.util').float,
       working_sym = 'ﰭ',
       error_sym = '',
       done_sym = '',

@@ -123,13 +123,13 @@ lspconfig.rust_analyzer.setup({
 local servers = {
   'dockerls',
   'pyright',
-  'denols',
+  -- 'denols',
   'bashls',
 }
 
--- lspconfig.tsserver.setup({
---   on_attach = on_attach,
--- })
+lspconfig.tsserver.setup({
+  on_attach = on_attach,
+})
 
 for _, server in ipairs(servers) do
   lspconfig[server].setup({

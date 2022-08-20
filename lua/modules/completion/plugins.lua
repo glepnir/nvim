@@ -16,7 +16,7 @@ local enable_lsp_filetype = {
 }
 
 package({
-  'neovim/nvim-lspconfig',
+  '~/Workspace/nvim-lspconfig',
   ft = enable_lsp_filetype,
   config = conf.nvim_lsp,
 })
