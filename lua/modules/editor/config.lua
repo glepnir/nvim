@@ -38,7 +38,7 @@ function config.nvim_treesitter()
   vim.api.nvim_command('set foldexpr=nvim_treesitter#foldexpr()')
   require('nvim-treesitter.configs').setup({
     ensure_installed = 'all',
-    ignore_install = { 'phpdoc' },
+    ignore_install = { 'phpdoc', 'vala', 'tiger', 'slint', 'eex' },
     highlight = {
       enable = true,
     },
@@ -61,7 +61,7 @@ function config.mcc_nvim()
     go = { ';', ':=', ';' },
     rust = { '88', '::', '88' },
     c = { '-', '->', '-' },
-    cpp = { ';', '; ',';<CR>' },
+    cpp = { ';', '; ', ';<CR>' },
   })
 end
 

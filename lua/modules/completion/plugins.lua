@@ -16,12 +16,12 @@ local enable_lsp_filetype = {
 }
 
 package({
-  '~/Workspace/nvim-lspconfig',
+  'neovim/nvim-lspconfig',
   ft = enable_lsp_filetype,
   config = conf.nvim_lsp,
 })
 
-package({ '~/Workspace/lspsaga.nvim', after = 'nvim-lspconfig' })
+package({ '~/Workspace/lspsaga.nvim', after = 'nvim-lspconfig', config = conf.lspsaga })
 
 package({
   'hrsh7th/nvim-cmp',
