@@ -57,6 +57,7 @@ nmap({
   { '<Leader>b', cmd('Telescope buffers'), opts(noremap, silent) },
   { '<Leader>fa', cmd('Telescope live_grep'), opts(noremap, silent) },
   { '<Leader>fb', cmd('Telescope file_browser'), opts(noremap, silent) },
+  { '<Leader>fd', cmd('Telescope dotfiles'), opts(noremap, silent) },
   { '<Leader>ff', cmd('Telescope find_files'), opts(noremap, silent) },
   { '<Leader>fg', cmd('Telescope gif_files'), opts(noremap, silent) },
   { '<Leader>fw', cmd('Telescope grep_string'), opts(noremap, silent) },

@@ -19,7 +19,7 @@ local signs = {
   Error = ' ',
   Warn = ' ',
   Info = ' ',
-  Hint = 'ﴞ ',
+  Hint = ' ',
 }
 for type, icon in pairs(signs) do
   local hl = 'DiagnosticSign' .. type
