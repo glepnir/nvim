@@ -8,13 +8,6 @@ if not packer_plugins['cmp-nvim-lsp'].loaded then
 end
 capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
-function _G.open_lsp_log()
-  local path = vim.lsp.get_log_path()
-  vim.cmd('edit ' .. path)
-end
-
-vim.cmd('command! -nargs=0 LspLog call v:lua.open_lsp_log()')
-
 local signs = {
   Error = ' ',
   Warn = ' ',

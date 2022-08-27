@@ -15,8 +15,8 @@ function config.dashboard()
   db.session_directory = home .. '/.cache/nvim/session'
   db.preview_command = 'cat | lolcat -F 0.3'
   db.preview_file_path = home .. '/.config/nvim/static/neovim.cat'
-  db.preview_file_height = 12
-  db.preview_file_width = 80
+  db.preview_file_height = 11
+  db.preview_file_width = 70
   db.custom_center = {
     {
       icon = '  ',
