@@ -122,7 +122,8 @@ function plugins.load_compile()
   vim.api.nvim_create_autocmd('User', {
     pattern = 'PackerCompileDone',
     callback = function()
-      vim.notify('Compile Done!', vim.log.levels.INFO, { title = 'Packer' })
+      vim.notify('Compile Done Reload Congfig Now!', vim.log.levels.INFO, { title = 'Packer' })
+      dofile(vim.env.MYVIMRC)
     end,
     group = PackerHooks,
   })
