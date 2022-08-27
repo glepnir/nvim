@@ -22,7 +22,7 @@ function config.nvim_cmp()
       -- documentation = cmp.config.window.bordered(),
     },
     formatting = {
-      fields = { 'abbr','kind', 'menu' },
+      fields = { 'abbr', 'kind', 'menu' },
     },
     -- You can set mappings if you want
     mapping = cmp.mapping.preset.insert({
