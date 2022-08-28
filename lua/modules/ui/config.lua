@@ -9,12 +9,11 @@ function config.galaxyline()
 end
 
 function config.dashboard()
-  local home = os.getenv('HOME')
   local db = require('dashboard')
   local z = require('zephyr')
-  db.session_directory = home .. '/.cache/nvim/session'
+  db.session_directory = vim.env.HOME .. '/.cache/nvim/session'
   db.preview_command = 'cat | lolcat -F 0.3'
-  db.preview_file_path = home .. '/.config/nvim/static/neovim.cat'
+  db.preview_file_path = vim.env.HOME .. '/.config/nvim/static/neovim.cat'
   db.preview_file_height = 11
   db.preview_file_width = 70
   db.custom_center = {
@@ -57,7 +56,7 @@ function config.dashboard()
       icon = '  ',
       icon_hl = { fg = z.redwine },
       desc = 'Open Personal dotfiles                  ',
-      action = 'Telescope dotfiles path=' .. home .. '/.dotfiles',
+      action = 'Telescope dotfiles path=' .. vim.env.HOME .. '/.dotfiles',
       shortcut = 'SPC f d',
     },
   }
