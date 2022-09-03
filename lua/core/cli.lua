@@ -4,8 +4,8 @@ local helper = require('core.helper')
 function cli:env_init()
   self.module_path = self.config_path .. '/lua/modules'
   local data_dir = helper.get_data_path()
-  self.start_dir = data_dir .. '/ttt/pack/packer/start/'
-  self.opt_dir = data_dir .. '/ttt/pack/packer/opt/'
+  self.start_dir = data_dir .. '/nvim/pack/packer/start/'
+  self.opt_dir = data_dir .. '/nvim/pack/packer/opt/'
 
   package.path = package.path
     .. ';'

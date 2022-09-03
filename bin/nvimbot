@@ -27,7 +27,7 @@ if argument == 'help' then
     'Neovim bot usage:',
     '  install      install all',
     '  update       update all plugins',
-    '  sync         install/Remove missing plugins',
+    '  sync         Sync configuration',
     '  clean        clean the direcotries',
   }
   for _, msg in pairs(usage) do
