@@ -48,6 +48,14 @@
   
 - Lightweight
 
+- cli bot support
+
+## Neovim Bot usage
+
+```
+~/.config/nvim/nvimbot help
+```
+
 ## 💭 About
 
 Hi there is my personal neovim config with neovim nightly, because i'm neovim member

@@ -3,8 +3,6 @@ local cache_dir = os.getenv('HOME') .. '/.cache/nvim/'
 
 opt.termguicolors = true
 opt.mouse = 'nv'
-opt.errorbells = true
-opt.visualbell = true
 opt.hidden = true
 opt.fileformats = 'unix,mac,dos'
 opt.magic = true
@@ -69,7 +67,7 @@ opt.helpheight = 12
 opt.previewheight = 12
 opt.showcmd = false
 -- just for nightly
-opt.cmdheight = 0
+opt.cmdheight = 1
 opt.cmdwinheight = 5
 opt.equalalways = false
 opt.laststatus = 3
@@ -82,7 +80,7 @@ opt.winblend = 10
 opt.undofile = true
 opt.synmaxcol = 2500
 opt.formatoptions = '1jcroql'
-opt.textwidth = 80
+opt.textwidth = 100
 opt.expandtab = true
 opt.autoindent = true
 opt.tabstop = 2

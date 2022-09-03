@@ -15,4 +15,4 @@ package({
 
 package({ '~/Workspace/coman.nvim', after = 'nvim-treesitter' })
 
-package({ '~/Workspace/template.nvim/', ft = { 'go', 'lua', 'rust' }, config = conf.template_nvim })
+package({ '~/Workspace/template.nvim', ft = { 'go', 'lua', 'rust' }, config = conf.template_nvim })

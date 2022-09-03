@@ -22,28 +22,16 @@ nmap({
   { '<Leader>li', cmd('LspInfo'), opts(noremap, silent) },
   { '<Leader>ll', cmd('LspLog'), opts(noremap, silent) },
   { '<Leader>lr', cmd('LspRestart'), opts(noremap, silent) },
-  {
-    '<C-f>',
-    cmd("lua require('lspsaga.action').smart_scroll_with_saga(1)"),
-    opts(noremap, silent),
-  },
-  {
-    '<C-b>',
-    cmd("lua require('lspsaga.action').smart_scroll_with_saga(-1)"),
-    opts(noremap, silent),
-  },
   -- Lspsaga
   { '[e', cmd('Lspsaga diagnostic_jump_next'), opts(noremap, silent) },
   { ']e', cmd('Lspsaga diagnostic_jump_prev'), opts(noremap, silent) },
-  { 'K', cmd('Lspsaga hover_doc'), opts(noremap, silent) },
+  { 'K', cmd('Lspsaga hover_doc'), opts(silent) },
   { 'ga', cmd('Lspsaga code_action'), opts(noremap, silent) },
   { 'gd', cmd('Lspsaga preview_definition'), opts(noremap, silent) },
   { 'gs', cmd('Lspsaga signature_help'), opts(noremap, silent) },
   { 'gr', cmd('Lspsaga rename'), opts(noremap, silent) },
   { 'gh', cmd('Lspsaga lsp_finder'), opts(noremap, silent) },
   { '<Leader>o', cmd('LSoutlineToggle'), opts(noremap, silent) },
-  -- Lspsaga floaterminal
-  { '<A-d>', cmd('Lspsaga open_floaterm'), opts(noremap, silent) },
   { '<Leader>g', cmd('Lspsaga open_floaterm lazygit'), opts(noremap, silent) },
   -- dashboard create file
   { '<Leader>n', cmd('DashboardNewFile'), opts(noremap, silent) },
@@ -75,6 +63,8 @@ nmap({ 'gcc', cmd('ComComment'), opts(noremap, silent) })
 xmap({ 'gcc', ':ComComment<CR>', opts(noremap, silent) })
 nmap({ 'gcj', cmd('ComAnnotation'), opts(noremap, silent) })
 
+-- Lspsaga floaterminal
+nmap({ '<A-d>', cmd('Lspsaga open_floaterm'), opts(noremap, silent) })
 tmap({ '<A-d>', [[<C-\><C-n>:Lspsaga close_floaterm<CR>]], opts(noremap, silent) })
 
 xmap({ 'ga', cu('Lspsaga code_action'), opts(noremap, silent) })

@@ -1,0 +1,65 @@
+#!/usr/local/bin/lua
+
+local arguments = {
+  install = true,
+  sync = true,
+  update = true,
+  clean = true,
+  help = true,
+}
+local argument
+
+if #arg == 0 then
+  argument = arguments[1]
+else
+  if #arg > 1 then
+    error('you passed multiple arguments.')
+  end
+
+  if not arguments[arg[1]] then
+    error('unknow argumen '..arg[1])
+  end
+  argument = arg[1]
+end
+
+if argument == 'help' then
+  local usage = {
+    'Neovim bot usage:',
+    '  install      install all',
+    '  update       update all plugins',
+    '  sync         install/Remove missing plugins',
+    '  clean        clean the direcotries',
+  }
+  for _, msg in pairs(usage) do
+    print(msg)
+  end
+  os.exit()
+end
+
+local handle
+handle = io.popen([[nvim --clean --headless --cmd 'echo $VIMRUNTIME|q' 2>&1]],"r")
+local rtp = handle:read("*a")
+handle:close()
+
+handle = io.popen([[nvim --clean --headless --cmd 'echo stdpath("config")|q' 2>&1]],"r")
+local config_path = handle:read("*a")
+handle:close()
+
+-- set the poackage path
+package.path = package.path ..';'..rtp ..'/lua/vim/?.lua;'..config_path..'/lua/?.lua'
+
+local cli = require('core.cli')
+local helper = require('core.helper')
+
+if argument ~= 'clean' then
+  helper.test_internet()
+end
+
+cli.config_path = config_path
+cli.rtp = rtp
+-- env init
+cli:env_init()
+
+helper.peach('🤖 Glepnir Neovim Config Bot Running...')
+
+cli:meta(argument)()
