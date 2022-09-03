@@ -70,15 +70,15 @@ local git_type = {
   pull = 'git -C ',
 }
 
-local function git_cmd(param,type)
+local function git_cmd(param, type)
   if type == 'clone' then
-    return git_type[type] ..param
+    return git_type[type] .. param
   end
-  return git_type[type] ..param .. ' pull'
+  return git_type[type] .. param .. ' pull'
 end
 
 function helper.run_git(param, type)
-  local cmd = git_cmd(param,type)
+  local cmd = git_cmd(param, type)
   local handle = io.popen(cmd .. ' 2>&1')
   local name_path = vim.split(param, '%s')
   while true do

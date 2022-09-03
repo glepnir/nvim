@@ -120,12 +120,10 @@ end
 -- mark the dictory which should be remove later
 local function mark_remove_dir(repo_name)
   local name_split = vim.split(repo_name, '/')
-  local name = name_split[#name_split]:len() > 0 and name_split[#name_split] or name_split[#name_split-1]
+  local name = name_split[#name_split]:len() > 0 and name_split[#name_split]
+    or name_split[#name_split - 1]
   for k, dict in pairs(cli.dictories) do
-    if
-      dict == cli.start_dir .. name
-      or dict == cli.opt_dir .. name
-    then
+    if dict == cli.start_dir .. name or dict == cli.opt_dir .. name then
       table.remove(cli.dictories, k)
       break
     end
@@ -155,7 +153,8 @@ end
 
 local function update_all_repos(repo_name, dir)
   local name_split = vim.split(repo_name, '/')
-  local name = name_split[#name_split]:len() > 0 and name_split[#name_split] or name_split[#name_split-1]
+  local name = name_split[#name_split]:len() > 0 and name_split[#name_split]
+    or name_split[#name_split - 1]
   if helper.isdir(dir .. name) and helper.isdir(dir .. name .. '/.git/') then
     helper.run_git(dir .. name, 'pull')
     helper.green('✅ Update ' .. repo_name .. ' success')
