@@ -91,7 +91,9 @@ function helper.run_git(param, type)
       helper.navy(output)
       helper.error('\t ⛔️ download or update ' .. name_path[1] .. ' failed')
       helper.pink('Rollback')
-      require('core.cli').clean()
+      if type == 'clone' then
+        require('core.cli').clean()
+      end
       os.exit()
     end
   end
