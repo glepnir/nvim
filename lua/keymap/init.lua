@@ -67,4 +67,4 @@ nmap({ 'gcj', cmd('ComAnnotation'), opts(noremap, silent) })
 nmap({ '<A-d>', cmd('Lspsaga open_floaterm'), opts(noremap, silent) })
 tmap({ '<A-d>', [[<C-\><C-n>:Lspsaga close_floaterm<CR>]], opts(noremap, silent) })
 
-xmap({ 'ga', cu('Lspsaga code_action'), opts(noremap, silent) })
+xmap({ 'ga', cmd('Lspsaga range_code_action'), opts(noremap, silent) })
