@@ -4,8 +4,8 @@ local helper = require('core.helper')
 function cli:env_init()
   self.module_path = self.config_path .. '/lua/modules'
   local data_dir = helper.get_data_path()
-  self.start_dir = data_dir .. '/nvim/pack/packer/start/'
-  self.opt_dir = data_dir .. '/nvim/pack/packer/opt/'
+  self.start_dir = data_dir .. '/site/pack/packer/start/'
+  self.opt_dir = data_dir .. '/site/pack/packer/opt/'
 
   package.path = package.path
     .. ';'
@@ -133,7 +133,7 @@ end
 -- remove all unisntall plugins dictories
 local function remove_all_marks()
   for _, k in pairs(cli.dictories) do
-    -- os.execute('rm -rf '..k)
+    os.execute('rm -rf ' .. k)
     helper.green('Remove ' .. k .. ' success')
   end
 end
@@ -220,6 +220,7 @@ end
 
 function cli.update()
   local all_repos = cli:get_all_repos()
+  update_all_repos('packer.nvim', cli.opt_dir)
   for _, repo in pairs(all_repos) do
     cli:install_or_update(repo, update_all_repos)
   end
