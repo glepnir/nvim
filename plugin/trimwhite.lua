@@ -58,9 +58,12 @@ local function trim_space(opts, preview_ns, preview_buf)
     return 2
   end
 end
--- Create the user command
-vim.api.nvim_create_user_command(
-  'TrimTrailingWhitespace',
-  trim_space,
-  { nargs = '?', range = '%', addr = 'lines', preview = trim_space }
-)
+
+if vim.fn.has('nvim-0.8') == 1 then
+  -- Create the user command
+  vim.api.nvim_create_user_command(
+    'TrimTrailingWhitespace',
+    trim_space,
+    { nargs = '?', range = '%', addr = 'lines', preview = trim_space }
+  )
+end

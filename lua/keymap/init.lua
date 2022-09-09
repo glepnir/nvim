@@ -3,7 +3,7 @@ local keymap = require('core.keymap')
 local nmap, imap, xmap, tmap = keymap.nmap, keymap.imap, keymap.xmap, keymap.tmap
 local silent, noremap, expr, remap = keymap.silent, keymap.noremap, keymap.expr, keymap.remap
 local opts = keymap.new_opts
-local cmd, cu = keymap.cmd, keymap.cu
+local cmd = keymap.cmd
 local home = os.getenv('HOME')
 require('keymap.config')
 
@@ -27,7 +27,7 @@ nmap({
   { ']e', cmd('Lspsaga diagnostic_jump_prev'), opts(noremap, silent) },
   { 'K', cmd('Lspsaga hover_doc'), opts(silent) },
   { 'ga', cmd('Lspsaga code_action'), opts(noremap, silent) },
-  { 'gd', cmd('Lspsaga preview_definition'), opts(noremap, silent) },
+  { 'gd', cmd('Lspsaga peek_definition'), opts(noremap, silent) },
   { 'gs', cmd('Lspsaga signature_help'), opts(noremap, silent) },
   { 'gr', cmd('Lspsaga rename'), opts(noremap, silent) },
   { 'gh', cmd('Lspsaga lsp_finder'), opts(noremap, silent) },
@@ -67,4 +67,4 @@ nmap({ 'gcj', cmd('ComAnnotation'), opts(noremap, silent) })
 nmap({ '<A-d>', cmd('Lspsaga open_floaterm'), opts(noremap, silent) })
 tmap({ '<A-d>', [[<C-\><C-n>:Lspsaga close_floaterm<CR>]], opts(noremap, silent) })
 
-xmap({ 'ga', cmd('Lspsaga range_code_action'), opts(noremap, silent) })
+xmap({ 'ga', cmd('Lspsaga code_action'), opts(noremap, silent) })

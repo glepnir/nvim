@@ -93,6 +93,7 @@ opt.number = true
 opt.colorcolumn = '100'
 opt.foldenable = true
 opt.signcolumn = 'yes'
+opt.spelloptions = 'camel'
 -- opt.conceallevel = 2
 -- opt.concealcursor = 'niv'
 

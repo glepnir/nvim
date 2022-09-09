@@ -66,7 +66,7 @@ end
 
 -- visual
 function keymap.cu(str)
-  return '<C-u><cmd>' .. str .. '<CR>'
+  return ':<C-u>' .. str .. '<CR>'
 end
 
 --@private
