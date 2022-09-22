@@ -7,6 +7,7 @@ local arguments = {
   clean = true,
   help = true,
 }
+
 local argument
 
 if #arg == 0 then
@@ -27,8 +28,9 @@ if argument == 'help' then
     'Neovim bot usage:',
     '  install      install all',
     '  update       update all plugins',
-    '  sync         Sync configuration',
+    '  sync         Sync configuration and compile',
     '  clean        clean the direcotries',
+    '  help         show the usage of bot',
   }
   for _, msg in pairs(usage) do
     print(msg)

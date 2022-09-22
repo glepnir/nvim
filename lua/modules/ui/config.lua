@@ -43,7 +43,7 @@ function config.dashboard()
       icon_hl = { fg = z.blue },
       desc = 'File Browser                            ',
       action = 'Telescope file_browser',
-      shortcut = 'SPC f b',
+      shortcut = 'SPC f l',
     },
     {
       icon = '  ',

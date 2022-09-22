@@ -32,12 +32,9 @@ vim.diagnostic.config({
 local on_attach = function(client, bufnr)
   if client.server_capabilities.documentFormattingProvider then
     api.nvim_create_autocmd('BufWritePre', {
-      pattern = client.config.filetypes,
+      buffer = bufnr,
       callback = function()
-        vim.lsp.buf.format({
-          bufnr = bufnr,
-          async = true,
-        })
+        -- vim.lsp.buf.format()
       end,
     })
   end
@@ -104,8 +101,8 @@ lspconfig.rust_analyzer.setup({
 local servers = {
   'dockerls',
   'pyright',
-  -- 'denols',
   'bashls',
+  'zls',
 }
 
 lspconfig.tsserver.setup({
