@@ -13,7 +13,7 @@ opt.sessionoptions = 'curdir,help,tabpages,winsize'
 opt.clipboard = 'unnamedplus'
 opt.wildignorecase = true
 opt.wildignore =
-  '.git,.hg,.svn,*.pyc,*.o,*.out,*.jpg,*.jpeg,*.png,*.gif,*.zip,**/tmp/**,*.DS_Store,**/node_modules/**,**/bower_modules/**'
+'.git,.hg,.svn,*.pyc,*.o,*.out,*.jpg,*.jpeg,*.png,*.gif,*.zip,**/tmp/**,*.DS_Store,**/node_modules/**,**/bower_modules/**'
 opt.backup = false
 opt.writebackup = false
 opt.swapfile = false
@@ -67,8 +67,7 @@ opt.helpheight = 12
 opt.previewheight = 12
 opt.showcmd = false
 -- just for nightly
-opt.cmdheight = 1
-opt.cmdwinheight = 5
+opt.cmdheight = 0
 opt.equalalways = false
 opt.laststatus = 3
 opt.display = 'lastline'

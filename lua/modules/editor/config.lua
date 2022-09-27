@@ -57,7 +57,8 @@ function config.nvim_treesitter()
 end
 
 function config.mcc_nvim()
-  require('mcc').setup({
+  local mcc = require('mcc')
+  mcc.setup({
     go = { ';', ':=', ';' },
     rust = { '88', '::', '88' },
     c = { '-', '->', '-' },
