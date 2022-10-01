@@ -34,7 +34,7 @@ local on_attach = function(client, bufnr)
     api.nvim_create_autocmd('BufWritePre', {
       buffer = bufnr,
       callback = function()
-        vim.lsp.buf.format()
+        -- vim.lsp.buf.format()
       end,
     })
   end

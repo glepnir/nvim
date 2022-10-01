@@ -4,16 +4,14 @@ local function highlight_cursorword()
   end
 end
 
+local disable_ft = {
+  ['NvimTree'] = true,
+  ['lspsagafinder'] = true,
+  ['dashboard'] = true,
+}
+
 local function disable_cursorword()
-  local disable_ft = {
-    ['lspsagafinder'] = true,
-    ['NeogitStatus'] = true,
-    ['text'] = true,
-  }
-  if not disable_ft[vim.bo.ft] then
-    return
-  end
-  if vim.w.cursorword_id ~= 0 and vim.w.cursorword_id ~= nil and vim.w.cursorword_match ~= 0 then
+  if vim.w.cursorword_id ~= 0 and vim.w.cursorword_id and vim.w.cursorword_match ~= 0 then
     vim.fn.matchdelete(vim.w.cursorword_id)
     vim.w.cursorword_id = nil
     vim.w.cursorword_match = nil
@@ -22,11 +20,6 @@ local function disable_cursorword()
 end
 
 local function matchadd()
-  local disable_ft = {
-    ['NvimTree'] = true,
-    ['lspsagafinder'] = true,
-    ['dashboard'] = true,
-  }
   if disable_ft[vim.bo.ft] then
     return
   end
