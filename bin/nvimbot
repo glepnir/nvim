@@ -5,6 +5,7 @@ local arguments = {
   sync = true,
   update = true,
   clean = true,
+  doctor = true,
   help = true,
 }
 
@@ -18,7 +19,7 @@ else
   end
 
   if not arguments[arg[1]] then
-    error('unknow argumen '..arg[1])
+    error('unknow argument ' .. arg[1])
   end
   argument = arg[1]
 end
@@ -30,6 +31,7 @@ if argument == 'help' then
     '  update       update all plugins',
     '  sync         Sync configuration and compile',
     '  clean        clean the direcotries',
+    '  doctor       check the plugins info',
     '  help         show the usage of bot',
   }
   for _, msg in pairs(usage) do
@@ -39,21 +41,21 @@ if argument == 'help' then
 end
 
 local handle
-handle = io.popen([[nvim --clean --headless --cmd 'echo $VIMRUNTIME|q' 2>&1]],"r")
+handle = io.popen([[nvim --clean --headless --cmd 'echo $VIMRUNTIME|q' 2>&1]], "r")
 local rtp = handle:read("*a")
 handle:close()
 
-handle = io.popen([[nvim --clean --headless --cmd 'echo stdpath("config")|q' 2>&1]],"r")
+handle = io.popen([[nvim --clean --headless --cmd 'echo stdpath("config")|q' 2>&1]], "r")
 local config_path = handle:read("*a")
 handle:close()
 
 -- set the poackage path
-package.path = package.path ..';'..rtp ..'/lua/vim/?.lua;'..config_path..'/lua/?.lua'
+package.path = package.path .. ';' .. rtp .. '/lua/vim/?.lua;' .. config_path .. '/lua/?.lua'
 
 local cli = require('core.cli')
 local helper = require('core.helper')
 
-if argument ~= 'clean' then
+if argument ~= 'doctor' and argument ~= 'clean' then
   helper.test_internet()
 end
 

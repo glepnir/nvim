@@ -227,6 +227,36 @@ function cli.update()
   helper.green('🎉 Update all plugins success ')
 end
 
+function cli.doctor()
+  local all_repos = cli:get_all_repos()
+  local max_len = 0
+
+  for i = 1, #all_repos do
+    if #all_repos[i][1] > max_len then
+      max_len = #all_repos[i][1]
+    end
+  end
+
+  local lazy_load, is_normal = {}, {}
+  for _, repo in pairs(all_repos) do
+    if is_lazy(repo) then
+      table.insert(lazy_load, repo[1] .. string.rep(' ', max_len - #repo[1]) .. ' lazyload: true')
+    else
+      table.insert(is_normal, repo[1] .. string.rep(' ', max_len - #repo[1]) .. ' lazyload: false')
+    end
+  end
+
+  helper.orange('Total plugins: ' .. #all_repos .. '  lazyload: ' .. #lazy_load)
+
+  for _, msg in pairs(is_normal) do
+    helper.magenta(msg)
+  end
+
+  for _, msg in pairs(lazy_load) do
+    helper.green(msg)
+  end
+end
+
 function cli:meta(arg)
   return function()
     self[arg]()
