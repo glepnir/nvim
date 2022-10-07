@@ -141,13 +141,13 @@ function plugins.load_compile()
     end,
   })
 
-  -- api.nvim_create_autocmd('BufWritePost', {
-  --   pattern = '*.lua',
-  --   callback = function()
-  --     plugins.auto_compile()
-  --   end,
-  --   desc = 'Auto Compile the neovim config which write in lua',
-  -- })
+  api.nvim_create_autocmd('VimLeave', {
+    pattern = '*.lua',
+    callback = function()
+      plugins.auto_compile()
+    end,
+    desc = 'Auto Compile the neovim config which write in lua',
+  })
 end
 
 return plugins

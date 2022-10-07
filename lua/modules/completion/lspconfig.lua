@@ -25,6 +25,7 @@ vim.diagnostic.config({
   underline = true,
   severity_sort = true,
   virtual_text = {
+    prefix = '🔥',
     source = true,
   },
 })
@@ -34,7 +35,11 @@ local on_attach = function(client, bufnr)
     api.nvim_create_autocmd('BufWritePre', {
       buffer = bufnr,
       callback = function()
-        -- vim.lsp.buf.format()
+        local current_path = vim.fn.expand('%:p')
+        if current_path:find('Workspace/neovim') or current_path:find('lspconfig') then
+          return
+        end
+        vim.lsp.buf.format()
       end,
     })
   end
