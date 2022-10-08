@@ -7,8 +7,6 @@ opt.magic = true
 opt.virtualedit = 'block'
 opt.clipboard = 'unnamedplus'
 opt.wildignorecase = true
-opt.backup = false
-opt.writebackup = false
 opt.swapfile = false
 opt.directory = cache_dir .. 'swap/'
 opt.undodir = cache_dir .. 'undo/'
@@ -16,8 +14,6 @@ opt.backupdir = cache_dir .. 'backup/'
 opt.viewdir = cache_dir .. 'view/'
 opt.spellfile = cache_dir .. 'spell/en.uft-8.add'
 opt.history = 2000
-opt.smarttab = true
-opt.shiftround = true
 opt.timeout = true
 opt.ttimeout = true
 opt.timeoutlen = 500
@@ -33,25 +29,25 @@ if vim.fn.executable('rg') == 1 then
   opt.grepprg = 'rg --vimgrep --no-heading --smart-case'
 end
 
-opt.switchbuf = 'useopen'
 opt.completeopt = 'menu,menuone,noselect'
-opt.jumpoptions = 'stack'
 opt.showmode = false
 opt.shortmess = 'aoOTIcF'
 opt.scrolloff = 2
 opt.sidescrolloff = 5
 opt.ruler = false
-opt.list = true
 opt.showtabline = 0
 opt.winwidth = 30
 opt.pumheight = 15
 opt.showcmd = false
 opt.cmdheight = 0
 opt.laststatus = 3
+opt.list = true
 opt.listchars = 'tab:»·,nbsp:+,trail:·,extends:→,precedes:←'
 opt.pumblend = 10
 opt.winblend = 10
 opt.undofile = true
+
+opt.smarttab = true
 opt.expandtab = true
 opt.autoindent = true
 opt.tabstop = 2
@@ -62,6 +58,8 @@ opt.linebreak = true
 opt.whichwrap = 'h,l,<,>,[,],~'
 opt.breakindentopt = 'shift:2,min:20'
 opt.showbreak = '↳  '
+opt.foldlevelstart = 99
+opt.foldmethod = 'marker'
 
 opt.number = true
 opt.signcolumn = 'yes'

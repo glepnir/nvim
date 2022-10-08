@@ -92,4 +92,11 @@ function config.mcc_nvim()
   })
 end
 
+function config.hop()
+  local hop = require('hop')
+  hop.setup({
+    keys = 'etovxqpdygfblzhckisuran',
+  })
+end
+
 return config

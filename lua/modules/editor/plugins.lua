@@ -35,3 +35,5 @@ package({
 })
 
 package({ 'rhysd/vim-operator-surround', event = 'BufRead', requires = 'kana/vim-operator-user' })
+
+package({ 'phaazon/hop.nvim', event = 'BufRead', config = conf.hop })

@@ -1,7 +1,7 @@
 require('keymap.remap')
 local keymap = require('core.keymap')
 local nmap, imap, xmap, tmap = keymap.nmap, keymap.imap, keymap.xmap, keymap.tmap
-local silent, noremap, expr, remap = keymap.silent, keymap.noremap, keymap.expr, keymap.remap
+local expr, remap = keymap.expr, keymap.remap
 local opts = keymap.new_opts
 local cmd = keymap.cmd
 local home = os.getenv('HOME')
@@ -9,62 +9,64 @@ require('keymap.config')
 
 imap({
   -- tab key
-  { '<TAB>', _G.smart_tab, opts(expr, silent, remap) },
-  { '<S-TAB>', _G.smart_shift_tab, opts(expr, silent, remap) },
+  { '<TAB>', _G.smart_tab, opts(expr, remap) },
+  { '<S-TAB>', _G.smart_shift_tab, opts(expr, remap) },
 })
 
 nmap({
   -- packer
-  { '<Leader>pu', cmd('PackerUpdate'), opts(noremap, silent) },
-  { '<Leader>pi', cmd('PackerInstall'), opts(noremap, silent) },
-  { '<Leader>pc', cmd('PackerCompile'), opts(noremap, silent) },
+  { '<Leader>pu', cmd('PackerUpdate') },
+  { '<Leader>pi', cmd('PackerInstall') },
+  { '<Leader>pc', cmd('PackerCompile') },
   -- Lsp
-  { '<Leader>li', cmd('LspInfo'), opts(noremap, silent) },
-  { '<Leader>ll', cmd('LspLog'), opts(noremap, silent) },
-  { '<Leader>lr', cmd('LspRestart'), opts(noremap, silent) },
+  { '<Leader>li', cmd('LspInfo') },
+  { '<Leader>ll', cmd('LspLog') },
+  { '<Leader>lr', cmd('LspRestart') },
   -- Lspsaga
-  { '[e', cmd('Lspsaga diagnostic_jump_next'), opts(noremap, silent) },
-  { ']e', cmd('Lspsaga diagnostic_jump_prev'), opts(noremap, silent) },
-  { 'K', cmd('Lspsaga hover_doc'), opts(silent) },
-  { 'ga', cmd('Lspsaga code_action'), opts(noremap, silent) },
-  { 'gd', cmd('Lspsaga peek_definition'), opts(noremap, silent) },
-  { 'gs', cmd('Lspsaga signature_help'), opts(noremap, silent) },
-  { 'gr', cmd('Lspsaga rename'), opts(noremap, silent) },
-  { 'gh', cmd('Lspsaga lsp_finder'), opts(noremap, silent) },
-  { '<Leader>o', cmd('LSoutlineToggle'), opts(noremap, silent) },
-  { '<Leader>g', cmd('Lspsaga open_floaterm lazygit'), opts(noremap, silent) },
+  { '[e', cmd('Lspsaga diagnostic_jump_next') },
+  { ']e', cmd('Lspsaga diagnostic_jump_prev') },
+  { 'K', cmd('Lspsaga hover_doc') },
+  { 'ga', cmd('Lspsaga code_action') },
+  { 'gd', cmd('Lspsaga peek_definition') },
+  { 'gs', cmd('Lspsaga signature_help') },
+  { 'gr', cmd('Lspsaga rename') },
+  { 'gh', cmd('Lspsaga lsp_finder') },
+  { '<Leader>o', cmd('LSoutlineToggle') },
+  { '<Leader>g', cmd('Lspsaga open_floaterm lazygit') },
   -- dashboard create file
-  { '<Leader>n', cmd('DashboardNewFile'), opts(noremap, silent) },
-  { '<Leader>ss', cmd('SessionSave'), opts(noremap, silent) },
-  { '<Leader>sl', cmd('SessionLoad'), opts(noremap, silent) },
+  { '<Leader>n', cmd('DashboardNewFile') },
+  { '<Leader>ss', cmd('SessionSave') },
+  { '<Leader>sl', cmd('SessionLoad') },
   -- nvimtree
-  { '<Leader>e', cmd('NvimTreeToggle'), opts(noremap, silent) },
+  { '<Leader>e', cmd('NvimTreeToggle') },
   -- dadbodui
-  { '<Leader>d', cmd('DBUIToggle'), opts(noremap, silent) },
+  { '<Leader>d', cmd('DBUIToggle') },
   -- Telescope
-  { '<Leader>b', cmd('Telescope buffers'), opts(noremap, silent) },
-  { '<Leader>fa', cmd('Telescope live_grep'), opts(noremap, silent) },
-  { '<Leader>fl', cmd('Telescope file_browser'), opts(noremap, silent) },
-  { '<Leader>fd', cmd('Telescope dotfiles'), opts(noremap, silent) },
-  { '<Leader>ff', cmd('Telescope find_files'), opts(noremap, silent) },
-  { '<Leader>fg', cmd('Telescope gif_files'), opts(noremap, silent) },
-  { '<Leader>fw', cmd('Telescope grep_string'), opts(noremap, silent) },
-  { '<Leader>fh', cmd('Telescope help_tags'), opts(noremap, silent) },
-  { '<Leader>fo', cmd('Telescope oldfiles'), opts(noremap, silent) },
-  { '<Leader>gc', cmd('Telescope git_commits'), opts(noremap, silent) },
-  { '<Leader>gc', cmd('Telescope dotfiles path' .. home .. '/.dotfiles'), opts(noremap, silent) },
+  { '<Leader>b', cmd('Telescope buffers') },
+  { '<Leader>fa', cmd('Telescope live_grep') },
+  { '<Leader>fl', cmd('Telescope file_browser') },
+  { '<Leader>fd', cmd('Telescope dotfiles') },
+  { '<Leader>ff', cmd('Telescope find_files') },
+  { '<Leader>fg', cmd('Telescope gif_files') },
+  { '<Leader>fw', cmd('Telescope grep_string') },
+  { '<Leader>fh', cmd('Telescope help_tags') },
+  { '<Leader>fo', cmd('Telescope oldfiles') },
+  { '<Leader>gc', cmd('Telescope git_commits') },
+  { '<Leader>gc', cmd('Telescope dotfiles path' .. home .. '/.dotfiles') },
   -- vim-operator-surround
-  { 'sa', '<Plug>(operator-surround-append)', opts(noremap, silent) },
-  { 'sd', '<Plug>(operator-surround-delete)', opts(noremap, silent) },
-  { 'sr', '<Plug>(operator-surround-replace)', opts(noremap, silent) },
+  { 'sa', '<Plug>(operator-surround-append)' },
+  { 'sd', '<Plug>(operator-surround-delete)' },
+  { 'sr', '<Plug>(operator-surround-replace)' },
+  -- hop.nvim
+  { 'f', cmd('HopWordAC') },
+  { 'F', cmd('HopWordBC') },
 })
-
-nmap({ 'gcc', cmd('ComComment'), opts(noremap, silent) })
-xmap({ 'gcc', ':ComComment<CR>', opts(noremap, silent) })
-nmap({ 'gcj', cmd('ComAnnotation'), opts(noremap, silent) })
+nmap({ 'gcc', cmd('ComComment') })
+xmap({ 'gcc', ':ComComment<CR>' })
+nmap({ 'gcj', cmd('ComAnnotation') })
 
 -- Lspsaga floaterminal
-nmap({ '<A-d>', cmd('Lspsaga open_floaterm'), opts(noremap, silent) })
-tmap({ '<A-d>', [[<C-\><C-n>:Lspsaga close_floaterm<CR>]], opts(noremap, silent) })
+nmap({ '<A-d>', cmd('Lspsaga open_floaterm') })
+tmap({ '<A-d>', [[<C-\><C-n>:Lspsaga close_floaterm<CR>]] })
 
-xmap({ 'ga', cmd('Lspsaga code_action'), opts(noremap, silent) })
+xmap({ 'ga', cmd('Lspsaga code_action') })
