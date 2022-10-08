@@ -37,14 +37,12 @@ nmap({
   { '<Leader>n', cmd('DashboardNewFile') },
   { '<Leader>ss', cmd('SessionSave') },
   { '<Leader>sl', cmd('SessionLoad') },
-  -- nvimtree
-  { '<Leader>e', cmd('NvimTreeToggle') },
   -- dadbodui
   { '<Leader>d', cmd('DBUIToggle') },
   -- Telescope
   { '<Leader>b', cmd('Telescope buffers') },
   { '<Leader>fa', cmd('Telescope live_grep') },
-  { '<Leader>fl', cmd('Telescope file_browser') },
+  { '<Leader>e', cmd('Telescope file_browser') },
   { '<Leader>fd', cmd('Telescope dotfiles') },
   { '<Leader>ff', cmd('Telescope find_files') },
   { '<Leader>fg', cmd('Telescope gif_files') },
