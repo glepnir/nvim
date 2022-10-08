@@ -7,7 +7,7 @@ function config.telescope()
     vim.cmd([[packadd telescope-fzy-native.nvim]])
     vim.cmd([[packadd telescope-file-browser.nvim]])
   end
-  local fb_actions = require "telescope".extensions.file_browser.actions
+  local fb_actions = require('telescope').extensions.file_browser.actions
   require('telescope').setup({
     defaults = {
       prompt_prefix = '🔭 ',
@@ -29,15 +29,15 @@ function config.telescope()
       file_browser = {
         theme = 'ivy',
         mappings = {
-          ["i"] = {
-            ["<C-c>c"] = fb_actions.create,
-            ["<C-c>r"] = fb_actions.rename,
-            ["<C-c>d"] = fb_actions.remove,
-            ["<C-c>o"] = fb_actions.open,
-            ["<C-c>u"] = fb_actions.goto_parent_dir,
-          }
-        }
-      }
+          ['i'] = {
+            ['<C-c>c'] = fb_actions.create,
+            ['<C-c>r'] = fb_actions.rename,
+            ['<C-c>d'] = fb_actions.remove,
+            ['<C-c>o'] = fb_actions.open,
+            ['<C-c>u'] = fb_actions.goto_parent_dir,
+          },
+        },
+      },
     },
   })
   require('telescope').load_extension('fzy_native')
