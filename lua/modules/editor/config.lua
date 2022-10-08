@@ -27,14 +27,13 @@ function config.telescope()
         override_file_sorter = true,
       },
       file_browser = {
-        theme = 'ivy',
         mappings = {
           ['i'] = {
-            ['<C-c>c'] = fb_actions.create,
-            ['<C-c>r'] = fb_actions.rename,
-            ['<C-c>d'] = fb_actions.remove,
-            ['<C-c>o'] = fb_actions.open,
-            ['<C-c>u'] = fb_actions.goto_parent_dir,
+            ['<C-m>c'] = fb_actions.create,
+            ['<C-m>r'] = fb_actions.rename,
+            ['<C-m>d'] = fb_actions.remove,
+            ['<C-m>o'] = fb_actions.open,
+            ['<C-m>u'] = fb_actions.goto_parent_dir,
           },
         },
       },

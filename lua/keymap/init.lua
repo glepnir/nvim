@@ -4,7 +4,6 @@ local nmap, imap, xmap, tmap = keymap.nmap, keymap.imap, keymap.xmap, keymap.tma
 local expr, remap = keymap.expr, keymap.remap
 local opts = keymap.new_opts
 local cmd = keymap.cmd
-local home = os.getenv('HOME')
 require('keymap.config')
 
 imap({
@@ -43,14 +42,13 @@ nmap({
   { '<Leader>b', cmd('Telescope buffers') },
   { '<Leader>fa', cmd('Telescope live_grep') },
   { '<Leader>e', cmd('Telescope file_browser') },
-  { '<Leader>fd', cmd('Telescope dotfiles') },
   { '<Leader>ff', cmd('Telescope find_files') },
   { '<Leader>fg', cmd('Telescope gif_files') },
   { '<Leader>fw', cmd('Telescope grep_string') },
   { '<Leader>fh', cmd('Telescope help_tags') },
   { '<Leader>fo', cmd('Telescope oldfiles') },
   { '<Leader>gc', cmd('Telescope git_commits') },
-  { '<Leader>gc', cmd('Telescope dotfiles path' .. home .. '/.dotfiles') },
+  { '<Leader>fd', cmd('Telescope dotfiles') },
   -- vim-operator-surround
   { 'sa', '<Plug>(operator-surround-append)' },
   { 'sd', '<Plug>(operator-surround-delete)' },
@@ -59,6 +57,7 @@ nmap({
   { 'f', cmd('HopWordAC') },
   { 'F', cmd('HopWordBC') },
 })
+
 nmap({ 'gcc', cmd('ComComment') })
 xmap({ 'gcc', ':ComComment<CR>' })
 nmap({ 'gcj', cmd('ComAnnotation') })

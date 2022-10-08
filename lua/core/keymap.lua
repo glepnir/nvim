@@ -91,12 +91,13 @@ local function map(mod)
       tbl = { tbl, 'table' },
     })
 
-    if type(tbl[1]) == 'table' and type(tbl[2]) == 'table' then
-      for _, v in pairs(tbl) do
-        keymap_set(mod, v)
-      end
-    else
+    if type(tbl[1]) == 'string' then
       keymap_set(mod, tbl)
+      return
+    end
+
+    for _, v in pairs(tbl) do
+      keymap_set(mod, v)
     end
   end
 end
