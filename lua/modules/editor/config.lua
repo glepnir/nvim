@@ -34,6 +34,7 @@ function config.telescope()
             ["<C-c>r"] = fb_actions.rename,
             ["<C-c>d"] = fb_actions.remove,
             ["<C-c>o"] = fb_actions.open,
+            ["<C-c>u"] = fb_actions.goto_parent_dir,
           }
         }
       }
