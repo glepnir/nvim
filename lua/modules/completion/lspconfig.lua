@@ -30,6 +30,19 @@ vim.diagnostic.config({
   },
 })
 
+local format_tool_confs = {
+  '.stylua.toml',
+}
+
+local use_format_tool = function(dir)
+  for _, conf in pairs(format_tool_confs) do
+    if vim.fn.filereadable(dir .. '/' .. conf) == 1 then
+      return true
+    end
+  end
+  return false
+end
+
 local on_attach = function(client, bufnr)
   if client.server_capabilities.documentFormattingProvider then
     api.nvim_create_autocmd('BufWritePre', {
@@ -37,6 +50,11 @@ local on_attach = function(client, bufnr)
       callback = function()
         local current_path = vim.fn.expand('%:p')
         if current_path:find('Workspace/neovim') or current_path:find('lspconfig') then
+          return
+        end
+
+        local root_dir = client.config.root_dir
+        if root_dir and use_format_tool(root_dir) then
           return
         end
         vim.lsp.buf.format()
