@@ -93,7 +93,6 @@ function fmt:get_buf_contents()
   for i, text in pairs(contents) do
     contents[i] = text .. '\n'
   end
-  print(vim.inspect(contents))
   return contents
 end
 
