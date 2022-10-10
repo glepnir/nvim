@@ -152,4 +152,72 @@ local mt = {
 
 fmt = setmetatable(fmt, mt)
 
+local get_lsp_client = function()
+  local lsp = vim.lsp
+  local current_buf = api.nvim_get_current_buf()
+  local clients = lsp.get_active_clients({ buffer = current_buf })
+  if next(clients) == nil then
+    return nil
+  end
+
+  for _, client in pairs(clients) do
+    local fts = client.config.filetypes
+    if
+      client.server_capabilities.documentFormattingProvider
+      and vim.tbl_contains(fts, vim.bo.filetype)
+    then
+      return client
+    end
+  end
+end
+
+local format_tool_confs = {
+  '.stylua.toml',
+}
+
+local use_format_tool = function(dir)
+  for _, conf in pairs(format_tool_confs) do
+    if vim.fn.filereadable(dir .. '/' .. conf) == 1 then
+      return true
+    end
+  end
+  return false
+end
+
+function fmt:event(bufnr)
+  api.nvim_create_autocmd('BufWritePre', {
+    group = api.nvim_create_augroup('My format with lsp and third tools', { clear = true }),
+    buffer = bufnr,
+    callback = function()
+      local current_path = vim.fn.expand('%:p')
+      if current_path:find('Workspace/neovim') or current_path:find('lspconfig') then
+        return
+      end
+
+      if vim.bo.filetype == 'lua' then
+        if vim.fn.expand('%:t'):find('%pspec') then
+          return
+        end
+      end
+
+      local client = get_lsp_client()
+      if not client then
+        return
+      end
+
+      if vim.bo.filetype == 'go' then
+        vim.lsp.buf.code_action({ context = { only = { 'source.organizeImports' } }, apply = true })
+      end
+
+      local root_dir = client.config.root_dir
+      if root_dir and use_format_tool(root_dir) then
+        self:formatter()
+        return
+      end
+      vim.lsp.buf.format()
+    end,
+    desc = 'My format',
+  })
+end
+
 return fmt

@@ -30,45 +30,7 @@ vim.diagnostic.config({
   },
 })
 
-local format_tool_confs = {
-  '.stylua.toml',
-}
-
-local use_format_tool = function(dir)
-  for _, conf in pairs(format_tool_confs) do
-    if vim.fn.filereadable(dir .. '/' .. conf) == 1 then
-      return true
-    end
-  end
-  return false
-end
-
-local on_attach = function(client, bufnr)
-  if client.server_capabilities.documentFormattingProvider then
-    api.nvim_create_autocmd('BufWritePre', {
-      buffer = bufnr,
-      callback = function()
-        local current_path = vim.fn.expand('%:p')
-        if current_path:find('Workspace/neovim') or current_path:find('lspconfig') then
-          return
-        end
-
-        if vim.bo.filetype == 'go' then
-          lsp.buf.code_action({ context = { only = { 'source.organizeImports' } }, apply = true })
-        end
-
-        local root_dir = client.config.root_dir
-        if root_dir and use_format_tool(root_dir) then
-          return
-        end
-        vim.lsp.buf.format()
-      end,
-    })
-  end
-end
-
 lspconfig.gopls.setup({
-  on_attach = on_attach,
   cmd = { 'gopls', '--remote=auto' },
   capabilities = capabilities,
   init_options = {
@@ -78,7 +40,6 @@ lspconfig.gopls.setup({
 })
 
 lspconfig.sumneko_lua.setup({
-  on_attach = on_attach,
   settings = {
     Lua = {
       diagnostics = {
@@ -94,7 +55,6 @@ lspconfig.sumneko_lua.setup({
 })
 
 lspconfig.clangd.setup({
-  on_attach = on_attach,
   cmd = {
     'clangd',
     '--background-index',
@@ -105,7 +65,6 @@ lspconfig.clangd.setup({
 })
 
 lspconfig.rust_analyzer.setup({
-  on_attach = on_attach,
   capabilities = capabilities,
   settings = {
     imports = {
@@ -132,12 +91,6 @@ local servers = {
   'zls',
 }
 
-lspconfig.tsserver.setup({
-  on_attach = on_attach,
-})
-
 for _, server in ipairs(servers) do
-  lspconfig[server].setup({
-    on_attach = on_attach,
-  })
+  lspconfig[server].setup({})
 end

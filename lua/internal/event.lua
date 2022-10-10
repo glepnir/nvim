@@ -25,19 +25,6 @@ api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
-api.nvim_create_autocmd('BufWritePre', {
-  group = my_group,
-  pattern = { '*.lua', '*.go' },
-  callback = function()
-    if vim.bo.filetype == 'lua' then
-      if vim.fn.expand('%:t'):find('%pspec') then
-        return
-      end
-    end
-    require('internal.formatter'):formatter()
-  end,
-})
-
 api.nvim_create_autocmd({ 'WinEnter', 'BufEnter', 'InsertLeave' }, {
   group = my_group,
   pattern = '*',
@@ -82,5 +69,12 @@ api.nvim_create_autocmd('Filetype', {
   pattern = '*.c,*.cpp,*.lua,*.go,*.rs,*.py,*.ts,*.tsx',
   callback = function()
     vim.cmd('syntax off')
+  end,
+})
+
+api.nvim_create_autocmd('LspAttach', {
+  group = my_group,
+  callback = function(opt)
+    require('internal.formatter'):event(opt.buf)
   end,
 })
