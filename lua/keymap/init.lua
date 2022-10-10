@@ -42,7 +42,7 @@ nmap({
   { '<Leader>b', cmd('Telescope buffers') },
   { '<Leader>fa', cmd('Telescope live_grep') },
   { '<Leader>e', cmd('Telescope file_browser') },
-  { '<Leader>ff', cmd('Telescope find_files') },
+  { '<Leader>ff', cmd('Telescope find_files find_command=rg,--ignore,--hidden,--files') },
   { '<Leader>fg', cmd('Telescope gif_files') },
   { '<Leader>fw', cmd('Telescope grep_string') },
   { '<Leader>fh', cmd('Telescope help_tags') },

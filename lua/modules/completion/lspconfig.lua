@@ -1,4 +1,4 @@
-local api = vim.api
+local api, lsp = vim.api, vim.lsp
 local lspconfig = require('lspconfig')
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -51,6 +51,10 @@ local on_attach = function(client, bufnr)
         local current_path = vim.fn.expand('%:p')
         if current_path:find('Workspace/neovim') or current_path:find('lspconfig') then
           return
+        end
+
+        if vim.bo.filetype == 'go' then
+          lsp.buf.code_action({ context = { only = { 'source.organizeImports' } }, apply = true })
         end
 
         local root_dir = client.config.root_dir

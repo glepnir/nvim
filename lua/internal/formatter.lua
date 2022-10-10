@@ -38,24 +38,63 @@ local function safe_close(handle)
   end
 end
 
+local temp_data = {}
+
 function fmt:format_file(err, data)
   assert(not err, err)
-  if data then
-    local new_lines = vim.split(data, '\n')
-    if string.len(new_lines[#new_lines]) == 0 then
-      table.remove(new_lines, #new_lines)
+  if data and type(data) == 'string' then
+    local lines = vim.split(data, '\n')
+    if next(temp_data) ~= nil and not temp_data[#temp_data]:find('\n') then
+      temp_data[#temp_data] = temp_data[#temp_data] .. lines[1]
+      table.remove(lines, 1)
     end
 
-    if not check_same(self.old_lines, new_lines) then
-      api.nvim_buf_set_lines(0, 0, -1, false, new_lines)
-      api.nvim_command('write')
-      self.old_lines = new_lines
+    for _, line in pairs(lines) do
+      table.insert(temp_data, line)
     end
+    return
   end
+
+  if next(temp_data) == nil then
+    return
+  end
+
+  if string.len(temp_data[#temp_data]) == 0 then
+    table.remove(temp_data, #temp_data)
+  end
+
+  local current_buf = api.nvim_get_current_buf()
+  if not self[current_buf] then
+    self[current_buf] = {}
+    self[current_buf].old_lines = {}
+  end
+
+  if not check_same(self[current_buf].old_lines, temp_data) then
+    api.nvim_buf_set_lines(current_buf, 0, -1, false, temp_data)
+    self[current_buf].old_lines = temp_data
+  end
+
+  if not self[current_buf].au_id then
+    self[current_buf].au_id = api.nvim_create_autocmd('BufDelete', {
+      buffer = current_buf,
+      callback = function()
+        api.nvim_del_augroup_by_id(self[current_buf].au_id)
+        rawset(self, current_buf, nil)
+      end,
+      desc = 'Format with tools',
+    })
+  end
+
+  temp_data = {}
 end
 
-function fmt:get_current_lines()
-  self.old_lines = api.nvim_buf_get_lines(0, 0, -1, false)
+function fmt:get_buf_contents()
+  local contents = api.nvim_buf_get_lines(0, 0, -1, false)
+  for i, text in pairs(contents) do
+    contents[i] = text .. '\n'
+  end
+  print(vim.inspect(contents))
+  return contents
 end
 
 function fmt:new_spawn(opts)
@@ -85,27 +124,33 @@ function fmt:new_spawn(opts)
     assert(not err, err)
   end)
 
-  if opts.filetype == 'lua' and opts.contents then
+  if opts.contents then
     uv.write(stdin, opts.contents)
   end
+
   uv.shutdown(stdin, function()
     safe_close(stdin)
   end)
 end
 
 function fmt:formatter()
-  fmt:get_current_lines()
   local opts = get_format_opts()
-  opts.filetype = vim.bo.filetype
+  if not opts then
+    return
+  end
+
   if vim.bo.filetype == 'lua' then
-    opts.contents = {}
-    for _, v in pairs(self.old_lines) do
-      table.insert(opts.contents, v .. '\n')
-    end
+    opts.contents = self:get_buf_contents()
   end
-  if opts ~= nil then
-    fmt:new_spawn(opts)
-  end
+  fmt:new_spawn(opts)
 end
+
+local mt = {
+  __newindex = function(t, k, v)
+    rawset(t, k, v)
+  end,
+}
+
+fmt = setmetatable(fmt, mt)
 
 return fmt
