@@ -93,6 +93,11 @@ function fmt:get_buf_contents()
   for i, text in pairs(contents) do
     contents[i] = text .. '\n'
   end
+  local buf = api.nvim_get_current_buf()
+  if not self[buf] then
+    self[buf] = {}
+  end
+  self[buf].old_lines = contents
   return contents
 end
 
