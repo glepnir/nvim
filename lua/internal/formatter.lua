@@ -172,15 +172,18 @@ local get_lsp_client = function()
 end
 
 local format_tool_confs = {
-  '.stylua.toml',
+  ['lua'] = '.stylua.toml',
 }
 
 local use_format_tool = function(dir)
-  for _, conf in pairs(format_tool_confs) do
-    if vim.fn.filereadable(dir .. '/' .. conf) == 1 then
-      return true
-    end
+  if not format_tool_confs[vim.bo.filetype] then
+    return false
   end
+
+  if vim.fn.filereadable(dir .. '/' .. format_tool_confs[vim.bo.filetype]) then
+    return true
+  end
+
   return false
 end
 
@@ -189,15 +192,8 @@ function fmt:event(bufnr)
     group = api.nvim_create_augroup('My format with lsp and third tools', { clear = true }),
     buffer = bufnr,
     callback = function()
-      local current_path = vim.fn.expand('%:p')
-      if current_path:find('Workspace/neovim') or current_path:find('lspconfig') then
+      if vim.bo.filetype == 'lua' and vim.fn.expand('%:t'):find('%pspec') then
         return
-      end
-
-      if vim.bo.filetype == 'lua' then
-        if vim.fn.expand('%:t'):find('%pspec') then
-          return
-        end
       end
 
       local client = get_lsp_client()
@@ -214,6 +210,7 @@ function fmt:event(bufnr)
         self:formatter()
         return
       end
+
       vim.lsp.buf.format()
     end,
     desc = 'My format',
