@@ -41,7 +41,14 @@ nmap({
   -- Telescope
   { '<Leader>b', cmd('Telescope buffers') },
   { '<Leader>fa', cmd('Telescope live_grep') },
-  { '<Leader>e', cmd('Telescope file_browser') },
+  {
+    '<Leader>e',
+    function()
+      vim.cmd('Telescope file_browser')
+      local esc_key = vim.api.nvim_replace_termcodes('<Esc>', true, false, true)
+      vim.api.nvim_feedkeys(esc_key, 'n', false)
+    end,
+  },
   { '<Leader>ff', cmd('Telescope find_files find_command=rg,--ignore,--hidden,--files') },
   { '<Leader>fg', cmd('Telescope gif_files') },
   { '<Leader>fw', cmd('Telescope grep_string') },

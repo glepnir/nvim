@@ -28,12 +28,12 @@ function config.telescope()
       },
       file_browser = {
         mappings = {
-          ['i'] = {
-            ['<C-m>c'] = fb_actions.create,
-            ['<C-m>r'] = fb_actions.rename,
-            ['<C-m>d'] = fb_actions.remove,
-            ['<C-m>o'] = fb_actions.open,
-            ['<C-m>u'] = fb_actions.goto_parent_dir,
+          ['n'] = {
+            ['c'] = fb_actions.create,
+            ['r'] = fb_actions.rename,
+            ['d'] = fb_actions.remove,
+            ['o'] = fb_actions.open,
+            ['u'] = fb_actions.goto_parent_dir,
           },
         },
       },
@@ -99,8 +99,6 @@ function config.mcc_nvim()
   mcc.setup({
     go = { ';', ':=', ';' },
     rust = { '88', '::', '88' },
-    c = { '-', '->', '-' },
-    cpp = { '-', '->', '--' },
   })
 end
 
