@@ -201,6 +201,11 @@ function fmt:event(bufnr)
         return
       end
 
+      local fname = api.nvim_buf_get_name(0)
+      if fname:find('neovim/*') then
+        return
+      end
+
       local client = get_lsp_client()
       if not client then
         return
@@ -216,7 +221,7 @@ function fmt:event(bufnr)
         return
       end
 
-      vim.lsp.buf.format()
+      vim.lsp.buf.format({ async = true })
     end,
     desc = 'My format',
   })
