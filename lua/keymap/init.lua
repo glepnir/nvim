@@ -1,3 +1,4 @@
+local api = vim.api
 require('keymap.remap')
 local keymap = require('core.keymap')
 local nmap, imap, xmap, tmap = keymap.nmap, keymap.imap, keymap.xmap, keymap.tmap
@@ -24,6 +25,7 @@ nmap({
   -- Lspsaga
   { '[e', cmd('Lspsaga diagnostic_jump_next') },
   { ']e', cmd('Lspsaga diagnostic_jump_prev') },
+  { '[c', cmd('Lspsaga show_cursor_diagnostics') },
   { 'K', cmd('Lspsaga hover_doc') },
   { 'ga', cmd('Lspsaga code_action') },
   { 'gd', cmd('Lspsaga peek_definition') },
@@ -45,8 +47,8 @@ nmap({
     '<Leader>e',
     function()
       vim.cmd('Telescope file_browser')
-      local esc_key = vim.api.nvim_replace_termcodes('<Esc>', true, false, true)
-      vim.api.nvim_feedkeys(esc_key, 'n', false)
+      local esc_key = api.nvim_replace_termcodes('<Esc>', true, false, true)
+      api.nvim_feedkeys(esc_key, 'n', false)
     end,
   },
   { '<Leader>ff', cmd('Telescope find_files find_command=rg,--ignore,--hidden,--files') },
