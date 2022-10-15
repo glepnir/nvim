@@ -58,10 +58,6 @@ nmap({
   { '<Leader>fo', cmd('Telescope oldfiles') },
   { '<Leader>gc', cmd('Telescope git_commits') },
   { '<Leader>fd', cmd('Telescope dotfiles') },
-  -- vim-operator-surround
-  { 'sa', '<Plug>(operator-surround-append)' },
-  { 'sd', '<Plug>(operator-surround-delete)' },
-  { 'sr', '<Plug>(operator-surround-replace)' },
   -- hop.nvim
   { 'f', cmd('HopWordAC') },
   { 'F', cmd('HopWordBC') },
