@@ -10,8 +10,6 @@ nmap({
   { '<C-x>k', cmd('bdelete') },
   -- save
   { '<C-s>', cmd('write') },
-  -- yank
-  { 'Y', 'y$' },
   -- buffer jump
   { ']b', cmd('bn') },
   { '[b', cmd('bp') },
