@@ -196,12 +196,12 @@ function fmt:event(bufnr)
   api.nvim_create_autocmd('BufWritePre', {
     group = api.nvim_create_augroup('My format with lsp and third tools', { clear = true }),
     buffer = bufnr,
-    callback = function()
-      if vim.bo.filetype == 'lua' and vim.fn.expand('%:t'):find('%pspec') then
+    callback = function(opt)
+      local fname = opt.match
+      if vim.bo.filetype == 'lua' and fname:find('%pspec') then
         return
       end
 
-      local fname = api.nvim_buf_get_name(0)
       if fname:find('neovim/*') then
         return
       end
