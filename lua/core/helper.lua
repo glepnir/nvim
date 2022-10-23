@@ -1,5 +1,5 @@
 local helper = {}
-local home = vim.env.HOME
+local home = os.getenv("HOME")
 
 function helper.get_config_path()
   local config = os.getenv('XDG_CONFIG_DIR')

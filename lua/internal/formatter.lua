@@ -43,11 +43,7 @@ local temp_data = {}
 function fmt:format_file(err, data)
   assert(not err, err)
   if data and type(data) == 'string' then
-    local lines = vim.split(data, '\n')
-    if next(temp_data) ~= nil and not temp_data[#temp_data]:find('\n') then
-      temp_data[#temp_data] = temp_data[#temp_data] .. lines[1]
-      table.remove(lines, 1)
-    end
+    local lines = vim.split(data, '\n', { trimempty = true })
 
     for _, line in pairs(lines) do
       table.insert(temp_data, line)
