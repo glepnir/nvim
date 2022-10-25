@@ -1,5 +1,5 @@
 local helper = {}
-local home = os.getenv("HOME")
+local home = os.getenv('HOME')
 
 function helper.get_config_path()
   local config = os.getenv('XDG_CONFIG_DIR')
@@ -89,9 +89,11 @@ function helper.run_git(param, type)
     if output:find('fatal') then
       helper.navy(output)
       helper.error('\t ⛔️ download or update ' .. name_path[1] .. ' failed')
-      helper.pink('Rollback')
       if type == 'clone' then
+        helper.pink('Rollback')
         require('core.cli').clean()
+      else
+        helper.error('Update  failed')
       end
       os.exit()
     end
