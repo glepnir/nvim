@@ -43,6 +43,7 @@ nmap({
   -- Telescope
   { '<Leader>j', cmd('Telescope buffers') },
   { '<Leader>fa', cmd('Telescope live_grep') },
+  { '<Leader>fs', cmd('Telescope grep_string') },
   {
     '<Leader>e',
     function()

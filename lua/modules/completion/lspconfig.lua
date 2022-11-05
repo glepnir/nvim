@@ -66,19 +66,21 @@ lspconfig.clangd.setup({
 lspconfig.rust_analyzer.setup({
   capabilities = capabilities,
   settings = {
-    imports = {
-      granularity = {
-        group = 'module',
+    ['rust-analyzer'] = {
+      imports = {
+        granularity = {
+          group = 'module',
+        },
+        prefix = 'self',
       },
-      prefix = 'self',
-    },
-    cargo = {
-      buildScripts = {
+      cargo = {
+        buildScripts = {
+          enable = true,
+        },
+      },
+      procMacro = {
         enable = true,
       },
-    },
-    procMacro = {
-      enable = true,
     },
   },
 })
@@ -88,6 +90,7 @@ local servers = {
   'pyright',
   'bashls',
   'zls',
+  'jsonls',
 }
 
 for _, server in ipairs(servers) do

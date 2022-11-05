@@ -101,20 +101,16 @@ end
 
 function plugins.auto_compile()
   local file = api.nvim_buf_get_name(0)
-  if not file:match(vim_path) then
-    return
-  end
-
   if file:match('plugins.lua') then
     plugins.clean()
   end
   plugins.compile()
-  require('packer_compiled')
 end
 
 function plugins.load_compile()
-  if vim.fn.filereadable(packer_compiled) == 1 then
-    require('packer_compiled')
+  local ok, _ = pcall(require, 'packer_compiled')
+  if not ok then
+    vim.notify('Missing packer compiled file', vim.log.levels.ERROR)
   end
 
   local cmds = {
@@ -131,22 +127,22 @@ function plugins.load_compile()
     end, {})
   end
 
-  local PackerHooks = vim.api.nvim_create_augroup('PackerHooks', { clear = true })
-  vim.api.nvim_create_autocmd('User', {
-    group = PackerHooks,
+  api.nvim_create_autocmd('User', {
+    group = api.nvim_create_augroup('PackerHooks', { clear = true }),
     pattern = 'PackerCompileDone',
     callback = function()
-      vim.notify('Compile Done!', vim.log.levels.INFO, { title = 'Packer' })
-      dofile(vim.env.MYVIMRC)
+      vim.notify('Compile Done!')
+      package.loaded['packer_compiled'] = nil
+      require('packer_compiled')
     end,
   })
 
-  api.nvim_create_autocmd('VimLeave', {
-    pattern = '*.lua',
+  api.nvim_create_autocmd('BufWritePost', {
+    pattern = modules_dir .. '/*',
     callback = function()
       plugins.auto_compile()
     end,
-    desc = 'Auto Compile the neovim config which write in lua',
+    desc = 'Auto recompile the plugins config',
   })
 end
 

@@ -1,7 +1,7 @@
 local config = {}
 
 function config.zephyr()
-  vim.cmd('colorscheme zephyr')
+  vim.cmd.colorscheme('zephyr')
 end
 
 function config.galaxyline()

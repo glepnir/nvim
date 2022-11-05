@@ -53,6 +53,8 @@ opt.autoindent = true
 opt.tabstop = 2
 opt.shiftwidth = 2
 
+opt.diffopt:append('linematch:50')
+
 -- wrap
 opt.linebreak = true
 opt.whichwrap = 'h,l,<,>,[,],~'
