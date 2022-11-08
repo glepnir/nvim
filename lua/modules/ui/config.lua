@@ -73,6 +73,7 @@ function config.gitsigns()
       delete = { hl = 'GitGutterDelete', text = '▋' },
       topdelete = { hl = 'GitGutterDeleteChange', text = '▔' },
       changedelete = { hl = 'GitGutterChange', text = '▎' },
+      untracked = { hl = 'GitGutterAdd', text = '▋' },
     },
     keymaps = {
       -- Default keymap options
