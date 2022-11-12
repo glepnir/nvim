@@ -44,6 +44,7 @@ if argument == 'help' then
     '  sync         Sync configuration and compile',
     '  clean        clean the direcotries',
     '  doctor       check the plugins info',
+    '  debug        dynamic disable modules for debug',
     '  help         show the usage of bot',
   }
   for _, msg in pairs(usage) do
