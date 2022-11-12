@@ -1,4 +1,4 @@
-local uv, api = vim.loop, vim.api
+local uv, api, fn = vim.loop, vim.api, vim.fn
 local helper = require('core.helper')
 local vim_path = helper.get_config_path()
 local data_dir = string.format('%s/site/', helper.get_data_path())
@@ -14,7 +14,7 @@ function Packer:load_plugins()
 
   local get_plugins_list = function()
     local list = {}
-    local tmp = vim.split(vim.fn.globpath(modules_dir, '*/plugins.lua'), '\n')
+    local tmp = vim.split(fn.globpath(modules_dir, '*/plugins.lua'), '\n')
     for _, f in ipairs(tmp) do
       list[#list + 1] = string.match(f, 'lua/(.+).lua$')
     end
@@ -22,8 +22,16 @@ function Packer:load_plugins()
   end
 
   local plugins_file = get_plugins_list()
+  local disable_modules = {}
+
+  if fn.exists('g:disable_modules') == 1 then
+    disable_modules = vim.split(vim.g.disable_modules, ',')
+  end
+
   for _, m in ipairs(plugins_file) do
-    require(m)
+    if not vim.tbl_contains(disable_modules, m) then
+      require(m)
+    end
   end
 end
 
@@ -37,11 +45,11 @@ function Packer:load_packer()
     disable_commands = true,
     display = {
       open_fn = require('packer.util').float,
-      working_sym = 'ﰭ',
-      error_sym = '',
-      done_sym = '',
-      removed_sym = '',
-      moved_sym = 'ﰳ',
+      working_sym = ' ',
+      error_sym = ' ',
+      done_sym = ' ',
+      removed_sym = ' ',
+      moved_sym = ' ',
     },
     git = { clone_timeout = 120 },
   })

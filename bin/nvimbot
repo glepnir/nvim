@@ -6,6 +6,7 @@ local arguments = {
   update = true,
   clean = true,
   doctor = true,
+  debug = true,
   help = true,
 }
 
@@ -14,7 +15,7 @@ local argument
 if #arg == 0 then
   argument = arguments[1]
 else
-  if #arg > 1 then
+  if #arg > 1 and arg[1] ~= 'debug' then
     error('you passed multiple arguments.')
   end
 
@@ -22,6 +23,17 @@ else
     error('unknow argument ' .. arg[1])
   end
   argument = arg[1]
+
+  if arg[1] == 'debug' then
+    local tmp_tbl = {table.unpack(arg,2,#arg)}
+    for i, k in pairs(tmp_tbl) do
+      tmp_tbl[i] = 'modules/'..k ..'/plugins'
+    end
+    local vim_var = 'let g:disable_modules="' .. table.concat(tmp_tbl,',') .. '"'
+    os.execute([[nvim --headless -c ']] .. vim_var ..[[ | lua=require"core.pack".Packer:cli_compile()']])
+    os.execute('nvim')
+    return
+  end
 end
 
 if argument == 'help' then
@@ -41,12 +53,12 @@ if argument == 'help' then
 end
 
 local handle
-handle = io.popen([[nvim --clean --headless --cmd 'echo $VIMRUNTIME|q' 2>&1]], "r")
-local rtp = handle:read("*a")
+handle = io.popen([[nvim --clean --headless --cmd 'echo $VIMRUNTIME|q' 2>&1]], 'r')
+local rtp = handle:read('*a')
 handle:close()
 
-handle = io.popen([[nvim --clean --headless --cmd 'echo stdpath("config")|q' 2>&1]], "r")
-local config_path = handle:read("*a")
+handle = io.popen([[nvim --clean --headless --cmd 'echo stdpath("config")|q' 2>&1]], 'r')
+local config_path = handle:read('*a')
 handle:close()
 
 -- set the poackage path
