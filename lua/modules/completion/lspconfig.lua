@@ -39,6 +39,7 @@ lspconfig.gopls.setup({
 })
 
 lspconfig.sumneko_lua.setup({
+  capabilities = capabilities,
   settings = {
     Lua = {
       diagnostics = {
@@ -54,6 +55,7 @@ lspconfig.sumneko_lua.setup({
 })
 
 lspconfig.clangd.setup({
+  capabilities = capabilities,
   cmd = {
     'clangd',
     '--background-index',
@@ -91,8 +93,11 @@ local servers = {
   'bashls',
   'zls',
   'jsonls',
+  'tsserver',
 }
 
 for _, server in ipairs(servers) do
-  lspconfig[server].setup({})
+  lspconfig[server].setup({
+    capabilities = capabilities,
+  })
 end

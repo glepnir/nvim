@@ -1,4 +1,4 @@
-local uv, api = vim.loop, vim.api
+local uv, api, lsp, fn = vim.loop, vim.api, vim.lsp, vim.fn
 local fmt = {}
 
 local function get_format_opts()
@@ -40,7 +40,7 @@ end
 
 local temp_data = {}
 
-function fmt:format_file(err, data)
+function fmt:format_file(err, data, bufnr)
   assert(not err, err)
   if data and type(data) == 'string' then
     local lines = vim.split(data, '\n')
@@ -63,41 +63,19 @@ function fmt:format_file(err, data)
     table.remove(temp_data, #temp_data)
   end
 
-  local current_buf = api.nvim_get_current_buf()
-  if not self[current_buf] then
-    self[current_buf] = {}
-    self[current_buf].old_lines = {}
-  end
-
-  if not check_same(self[current_buf].old_lines, temp_data) then
-    api.nvim_buf_set_lines(current_buf, 0, -1, false, temp_data)
-    self[current_buf].old_lines = temp_data
-  end
-
-  if not self[current_buf].au_id then
-    self[current_buf].au_id = api.nvim_create_autocmd('BufDelete', {
-      buffer = current_buf,
-      callback = function()
-        api.nvim_del_augroup_by_id(self[current_buf].au_id)
-        rawset(self, current_buf, nil)
-      end,
-      desc = 'Format with tools',
-    })
+  local cur_content = api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  if not check_same(cur_content, temp_data) then
+    api.nvim_buf_set_lines(bufnr, 0, -1, false, temp_data)
   end
 
   temp_data = {}
 end
 
-function fmt:get_buf_contents()
-  local contents = api.nvim_buf_get_lines(0, 0, -1, false)
+function fmt:get_buf_contents(bufnr)
+  local contents = api.nvim_buf_get_lines(bufnr, 0, -1, false)
   for i, text in pairs(contents) do
     contents[i] = text .. '\n'
   end
-  local buf = api.nvim_get_current_buf()
-  if not self[buf] then
-    self[buf] = {}
-  end
-  self[buf].old_lines = contents
   return contents
 end
 
@@ -120,7 +98,7 @@ function fmt:new_spawn(opts)
   uv.read_start(
     stdout,
     vim.schedule_wrap(function(err, data)
-      self:format_file(err, data)
+      self:format_file(err, data, opts.buffer)
     end)
   )
 
@@ -143,8 +121,9 @@ function fmt:formatter()
     return
   end
 
+  opts.buffer = api.nvim_get_current_buf()
   if vim.bo.filetype == 'lua' then
-    opts.contents = self:get_buf_contents()
+    opts.contents = self:get_buf_contents(opts.buffer)
   end
   fmt:new_spawn(opts)
 end
@@ -158,7 +137,6 @@ local mt = {
 fmt = setmetatable(fmt, mt)
 
 local get_lsp_client = function()
-  local lsp = vim.lsp
   local current_buf = api.nvim_get_current_buf()
   local clients = lsp.get_active_clients({ buffer = current_buf })
   if next(clients) == nil then
@@ -185,16 +163,30 @@ local use_format_tool = function(dir)
     return false
   end
 
-  if vim.fn.filereadable(dir .. '/' .. format_tool_confs[vim.bo.filetype]) then
+  if fn.filereadable(dir .. '/' .. format_tool_confs[vim.bo.filetype]) == 1 then
     return true
   end
 
   return false
 end
 
+local group = api.nvim_create_augroup('My format with lsp and third tools', { clear = false })
+
+local function remove_autocmd(bufnr, id)
+  api.nvim_create_autocmd('BufDelete', {
+    group = group,
+    buffer = bufnr,
+    callback = function(opt)
+      pcall(api.nvim_del_autocmd, id)
+      pcall(api.nvim_del_autocmd, opt.id)
+    end,
+    desc = 'clean the format event',
+  })
+end
+
 function fmt:event(bufnr)
-  api.nvim_create_autocmd('BufWritePre', {
-    group = api.nvim_create_augroup('My format with lsp and third tools', { clear = true }),
+  local id = api.nvim_create_autocmd('BufWritePre', {
+    group = group,
     buffer = bufnr,
     callback = function(opt)
       local fname = opt.match
@@ -212,7 +204,7 @@ function fmt:event(bufnr)
       end
 
       if vim.bo.filetype == 'go' then
-        vim.lsp.buf.code_action({ context = { only = { 'source.organizeImports' } }, apply = true })
+        lsp.buf.code_action({ context = { only = { 'source.organizeImports' } }, apply = true })
       end
 
       local root_dir = client.config.root_dir
@@ -221,10 +213,11 @@ function fmt:event(bufnr)
         return
       end
 
-      vim.lsp.buf.format({ async = true })
+      lsp.buf.format({ async = true })
     end,
     desc = 'My format',
   })
+  remove_autocmd(bufnr, id)
 end
 
 return fmt
