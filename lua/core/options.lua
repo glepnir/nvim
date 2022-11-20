@@ -59,7 +59,7 @@ opt.diffopt:append('linematch:50')
 opt.linebreak = true
 opt.whichwrap = 'h,l,<,>,[,],~'
 opt.breakindentopt = 'shift:2,min:20'
-opt.showbreak = '↳  '
+opt.showbreak = '↳ '
 opt.foldlevelstart = 99
 opt.foldmethod = 'marker'
 

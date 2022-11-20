@@ -24,4 +24,12 @@ package({ 'nvim-treesitter/nvim-treesitter-textobjects', after = 'nvim-treesitte
 
 package({ '~/Workspace/mcc.nvim', ft = { 'c', 'cpp', 'go', 'rust' }, config = conf.mcc_nvim })
 
+package({
+  'glepnir/hlsearch.nvim',
+  event = 'BufRead',
+  config = function()
+    require('hlsearch').setup()
+  end,
+})
+
 package({ 'phaazon/hop.nvim', event = 'BufRead', config = conf.hop })
