@@ -38,65 +38,64 @@ local function safe_close(handle)
   end
 end
 
-local temp_data = {}
-
-function fmt:format_file(err, data, opt)
+function fmt:format_file(err, data, buf_data)
   assert(not err, err)
+  local new_content = buf_data.new_content
   if data then
     local lines = vim.split(data, '\n')
-    if next(temp_data) ~= nil and not temp_data[#temp_data]:find('\n') then
-      temp_data[#temp_data] = temp_data[#temp_data] .. lines[1]
+    if next(new_content) ~= nil and not new_content[#new_content]:find('\n') then
+      new_content[#new_content] = new_content[#new_content] .. lines[1]
       table.remove(lines, 1)
     end
 
     for _, line in pairs(lines) do
-      table.insert(temp_data, line)
+      table.insert(new_content, line)
     end
     return
   end
 
-  if next(temp_data) == nil then
+  if next(new_content) == nil then
     return
   end
 
-  if not api.nvim_buf_is_valid(opt.buffer) then
+  if not api.nvim_buf_is_valid(buf_data.buffer) then
     return
   end
 
-  local curr_changedtick = api.nvim_buf_get_changedtick(opt.buffer)
+  local curr_changedtick = api.nvim_buf_get_changedtick(buf_data.buffer)
 
-  if opt.initial_changedtick ~= curr_changedtick then
+  if buf_data.initial_changedtick ~= curr_changedtick then
     return
   end
 
-  if string.len(temp_data[#temp_data]) == 0 then
-    table.remove(temp_data, #temp_data)
+  if string.len(new_content[#new_content]) == 0 then
+    table.remove(new_content,#new_content)
   end
 
-  local cur_content = api.nvim_buf_get_lines(opt.buffer, 0, -1, false)
-  if not check_same(cur_content, temp_data) then
+  if not check_same(buf_data.contents, new_content) then
     local view = fn.winsaveview()
-    api.nvim_buf_set_lines(opt.buffer, 0, -1, false, temp_data)
+    api.nvim_buf_set_lines(buf_data.buffer, 0, -1, false, new_content)
     fn.winrestview(view)
     vim.cmd.write()
   end
-
-  temp_data = {}
+  self[buf_data.buffer] = nil
 end
 
 function fmt:get_buf_contents(bufnr)
   local contents = api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  self[bufnr].contents = contents
+  self[bufnr].contents_with_wrap = {}
   for i, text in pairs(contents) do
-    contents[i] = text .. '\n'
+    self[bufnr].contents_with_wrap[i] = text .. '\n'
   end
-  return contents
 end
 
-function fmt:new_spawn(opt)
+function fmt:new_spawn(buf_data)
   local stdout = uv.new_pipe(false)
   local stderr = uv.new_pipe(false)
   local stdin = uv.new_pipe(false)
 
+  local opt = buf_data.opt
   self.handle, self.pid = uv.spawn(opt.cmd, {
     args = opt.args,
     stdio = { stdin, stdout, stderr },
@@ -111,7 +110,7 @@ function fmt:new_spawn(opt)
   uv.read_start(
     stdout,
     vim.schedule_wrap(function(err, data)
-      self:format_file(err, data, opt)
+      self:format_file(err, data, buf_data)
     end)
   )
 
@@ -119,8 +118,8 @@ function fmt:new_spawn(opt)
     assert(not err, err)
   end)
 
-  if opt.contents then
-    uv.write(stdin, opt.contents)
+  if api.nvim_buf_get_option(buf_data.buffer,'filetype') == 'lua' then
+    uv.write(stdin, buf_data.contents_with_wrap)
   end
 
   uv.shutdown(stdin, function()
@@ -134,12 +133,20 @@ function fmt:formatter()
     return
   end
 
-  opt.buffer = api.nvim_get_current_buf()
-  opt.initial_changedtick = api.nvim_buf_get_changedtick(opt.buffer)
-  if vim.bo.filetype == 'lua' then
-    opt.contents = self:get_buf_contents(opt.buffer)
+  local curr_buf = api.nvim_get_current_buf()
+  local curr_changedtick = api.nvim_buf_get_changedtick(curr_buf)
+  -- this mean there already have a working progress
+  if self[curr_buf] and self[curr_buf].initial_changedtick == curr_changedtick then
+    return
   end
-  fmt:new_spawn(opt)
+
+  self[curr_buf] = {}
+  self[curr_buf].initial_changedtick = curr_changedtick
+  self[curr_buf].buffer = curr_buf
+  self[curr_buf].new_content = {}
+  self:get_buf_contents(curr_buf)
+  self[curr_buf].opt = opt
+  fmt:new_spawn(self[curr_buf])
 end
 
 local mt = {
