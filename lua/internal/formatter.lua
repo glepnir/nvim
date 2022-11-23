@@ -77,7 +77,8 @@ function fmt:format_file(err, data, opt)
   if not check_same(cur_content, temp_data) then
     local view = fn.winsaveview()
     api.nvim_buf_set_lines(opt.buffer, 0, -1, false, temp_data)
-    fn.winresetview(view)
+    fn.winrestview(view)
+    vim.cmd.write()
   end
 
   temp_data = {}
