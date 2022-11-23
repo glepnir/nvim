@@ -1,7 +1,7 @@
 local uv, api, lsp, fn = vim.loop, vim.api, vim.lsp, vim.fn
 local fmt = {}
 
-local function get_format_opts()
+local function get_format_opt()
   local file_name = api.nvim_buf_get_name(0)
   local fmt_tools = {
     go = {
@@ -40,9 +40,9 @@ end
 
 local temp_data = {}
 
-function fmt:format_file(err, data, bufnr)
+function fmt:format_file(err, data, opt)
   assert(not err, err)
-  if data and type(data) == 'string' then
+  if data then
     local lines = vim.split(data, '\n')
     if next(temp_data) ~= nil and not temp_data[#temp_data]:find('\n') then
       temp_data[#temp_data] = temp_data[#temp_data] .. lines[1]
@@ -59,13 +59,25 @@ function fmt:format_file(err, data, bufnr)
     return
   end
 
+  if not api.nvim_buf_is_valid(opt.buffer) then
+    return
+  end
+
+  local curr_changedtick = api.nvim_buf_get_changedtick(opt.buffer)
+
+  if opt.initial_changedtick ~= curr_changedtick then
+    return
+  end
+
   if string.len(temp_data[#temp_data]) == 0 then
     table.remove(temp_data, #temp_data)
   end
 
-  local cur_content = api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  local cur_content = api.nvim_buf_get_lines(opt.buffer, 0, -1, false)
   if not check_same(cur_content, temp_data) then
-    api.nvim_buf_set_lines(bufnr, 0, -1, false, temp_data)
+    local view = fn.winsaveview()
+    api.nvim_buf_set_lines(opt.buffer, 0, -1, false, temp_data)
+    fn.winresetview(view)
   end
 
   temp_data = {}
@@ -79,13 +91,13 @@ function fmt:get_buf_contents(bufnr)
   return contents
 end
 
-function fmt:new_spawn(opts)
+function fmt:new_spawn(opt)
   local stdout = uv.new_pipe(false)
   local stderr = uv.new_pipe(false)
   local stdin = uv.new_pipe(false)
 
-  self.handle, self.pid = uv.spawn(opts.cmd, {
-    args = opts.args,
+  self.handle, self.pid = uv.spawn(opt.cmd, {
+    args = opt.args,
     stdio = { stdin, stdout, stderr },
   }, function(_, _)
     uv.read_stop(stdout)
@@ -98,7 +110,7 @@ function fmt:new_spawn(opts)
   uv.read_start(
     stdout,
     vim.schedule_wrap(function(err, data)
-      self:format_file(err, data, opts.buffer)
+      self:format_file(err, data, opt)
     end)
   )
 
@@ -106,8 +118,8 @@ function fmt:new_spawn(opts)
     assert(not err, err)
   end)
 
-  if opts.contents then
-    uv.write(stdin, opts.contents)
+  if opt.contents then
+    uv.write(stdin, opt.contents)
   end
 
   uv.shutdown(stdin, function()
@@ -116,16 +128,17 @@ function fmt:new_spawn(opts)
 end
 
 function fmt:formatter()
-  local opts = get_format_opts()
-  if not opts then
+  local opt = get_format_opt()
+  if not opt then
     return
   end
 
-  opts.buffer = api.nvim_get_current_buf()
+  opt.buffer = api.nvim_get_current_buf()
+  opt.initial_changedtick = api.nvim_buf_get_changedtick(opt.buffer)
   if vim.bo.filetype == 'lua' then
-    opts.contents = self:get_buf_contents(opts.buffer)
+    opt.contents = self:get_buf_contents(opt.buffer)
   end
-  fmt:new_spawn(opts)
+  fmt:new_spawn(opt)
 end
 
 local mt = {
