@@ -13,6 +13,8 @@ nmap({
   -- buffer jump
   { ']b', cmd('bn') },
   { '[b', cmd('bp') },
+  -- force quit all
+  { '<C-q>', cmd('qa!') },
   -- remove trailing white space
   { '<Leader>t', cmd('TrimTrailingWhitespace') },
   -- window jump

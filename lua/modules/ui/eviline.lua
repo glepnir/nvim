@@ -20,34 +20,9 @@ gls.left[1] = {
 gls.left[2] = {
   ViMode = {
     provider = function()
-      -- auto change color according the vim mode
-      local mode_color = {
-        ['!'] = colors.red,
-        [''] = colors.blue,
-        [''] = colors.orange,
-        ['r?'] = colors.cyan,
-        c = colors.magenta,
-        ce = colors.red,
-        cv = colors.red,
-        i = colors.green,
-        ic = colors.yellow,
-        n = colors.red,
-        no = colors.red,
-        r = colors.cyan,
-        R = colors.violet,
-        rm = colors.cyan,
-        Rv = colors.violet,
-        s = colors.orange,
-        S = colors.orange,
-        t = colors.red,
-        v = colors.blue,
-        V = colors.blue,
-      }
-      vim.api.nvim_command(
-        'hi GalaxyViMode guifg=' .. mode_color[vim.fn.mode()] .. ' guibg=' .. colors.bg
-      )
       return '  '
     end,
+    highlight = { colors.red, colors.bg },
   },
 }
 

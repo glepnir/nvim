@@ -62,6 +62,20 @@ nmap({
   -- hop.nvim
   { 'f', cmd('HopWordAC') },
   { 'F', cmd('HopWordBC') },
+  -- template.nvim
+  {
+    '<Leader>t',
+    function()
+      if vim.bo.filetype == 'lua' then
+        return ':Template var='
+      end
+
+      if vim.bo.filetype == 'rust' then
+        return 'Template main_owner'
+      end
+    end,
+    opts(expr),
+  },
 })
 
 nmap({ 'gcc', cmd('ComComment') })

@@ -7,7 +7,6 @@ package({ '~/Workspace/dashboard-nvim', config = conf.dashboard })
 
 package({
   'glepnir/galaxyline.nvim',
-  branch = 'main',
   config = conf.galaxyline,
   requires = 'kyazdani42/nvim-web-devicons',
 })

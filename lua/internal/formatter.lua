@@ -69,7 +69,7 @@ function fmt:format_file(err, data, buf_data)
   end
 
   if string.len(new_content[#new_content]) == 0 then
-    table.remove(new_content,#new_content)
+    table.remove(new_content, #new_content)
   end
 
   if not check_same(buf_data.contents, new_content) then
@@ -118,7 +118,7 @@ function fmt:new_spawn(buf_data)
     assert(not err, err)
   end)
 
-  if api.nvim_buf_get_option(buf_data.buffer,'filetype') == 'lua' then
+  if api.nvim_buf_get_option(buf_data.buffer, 'filetype') == 'lua' then
     uv.write(stdin, buf_data.contents_with_wrap)
   end
 
