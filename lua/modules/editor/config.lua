@@ -51,10 +51,13 @@ function config.nvim_treesitter()
   local ignored = {
     'phpdoc',
     'astro',
+    'arduino',
     'beancount',
     'bibtex',
     'bluprint',
     'eex',
+    'ecma',
+    'elvish',
     'embedded_template',
     'vala',
     'wgsl',
@@ -64,6 +67,7 @@ function config.nvim_treesitter()
     'm68k',
     'hocon',
     'lalrpop',
+    'ledger',
     'meson',
     'mehir',
     'rasi',
@@ -71,6 +75,13 @@ function config.nvim_treesitter()
     'racket',
     'pug',
     'java',
+    'tlaplus',
+    'supercollider',
+    'slint',
+    'sparql',
+    'rst',
+    'rnoweb',
+    'm68k',
   }
 
   require('nvim-treesitter.configs').setup({
