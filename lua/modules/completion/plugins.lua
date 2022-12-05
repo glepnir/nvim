@@ -21,7 +21,7 @@ package({
   config = conf.nvim_lsp,
 })
 
-package({ '~/Workspace/lspsaga.nvim', after = 'nvim-lspconfig', config = conf.lspsaga })
+package({ 'glepnir/lspsaga.nvim', after = 'nvim-lspconfig', config = conf.lspsaga })
 
 package({
   'hrsh7th/nvim-cmp',
