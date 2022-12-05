@@ -1,9 +1,9 @@
 local package = require('core.pack').package
 local conf = require('modules.ui.config')
 
-package({ '~/Workspace/zephyr-nvim', config = conf.zephyr })
+package({ 'glepnir/zephyr-nvim', config = conf.zephyr })
 
-package({ '~/Workspace/dashboard-nvim', config = conf.dashboard })
+package({ 'glepnir/dashboard-nvim', config = conf.dashboard })
 
 package({
   'glepnir/galaxyline.nvim',
