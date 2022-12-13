@@ -60,7 +60,7 @@
 
 Hi there is my personal neovim config with neovim nightly, because i'm neovim member
 
-If you like my config and want to use it, Please see my anohter project [Cosynvim](https://github.com/glepnir/cosynvim), Cosy based on
+If you like my config and want to use it, Please see my other project [Cosynvim](https://github.com/glepnir/cosynvim), Cosy based on
 
 my config and have a detailed documentation tutorial. I don't like install too many plugins,It will 
 
