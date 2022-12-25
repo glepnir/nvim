@@ -59,7 +59,13 @@ lspconfig.sumneko_lua.setup({
       },
       runtime = { version = 'LuaJIT' },
       workspace = {
-        library = vim.api.nvim_get_runtime_file('', true),
+       library = (function()
+          local lib = {}
+          for _, path in ipairs(vim.api.nvim_get_runtime_file('lua', true)) do
+            lib[#lib+1] = path:sub(1, -5)
+          end
+          return lib
+        end)(),
       },
       telemetry = {
         enable = false,
