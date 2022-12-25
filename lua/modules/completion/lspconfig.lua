@@ -30,15 +30,26 @@ vim.diagnostic.config({
 })
 
 lspconfig.gopls.setup({
-  cmd = { 'gopls', '--remote=auto' },
+  cmd = { 'gopls', 'serve' },
   capabilities = capabilities,
   init_options = {
     usePlaceholders = true,
     completeUnimported = true,
   },
+  settings = {
+    gopls = {
+      analyses = {
+        unusedparams = true,
+      },
+      staticcheck = true,
+    },
+  },
 })
 
 lspconfig.sumneko_lua.setup({
+  on_attach = function(client, _)
+    client.server_capabilities.semanticTokensProvider = nil
+  end,
   capabilities = capabilities,
   settings = {
     Lua = {
@@ -48,7 +59,10 @@ lspconfig.sumneko_lua.setup({
       },
       runtime = { version = 'LuaJIT' },
       workspace = {
-        library = vim.list_extend({ [vim.fn.expand('$VIMRUNTIME/lua')] = true }, {}),
+        library = vim.api.nvim_get_runtime_file('', true),
+      },
+      telemetry = {
+        enable = false,
       },
     },
   },
