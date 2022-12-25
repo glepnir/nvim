@@ -41,6 +41,7 @@ nmap({
   -- dadbodui
   { '<Leader>d', cmd('DBUIToggle') },
   -- Telescope
+  { '<Leader>a', cmd('Telescope app') },
   { '<Leader>j', cmd('Telescope buffers') },
   { '<Leader>fa', cmd('Telescope live_grep') },
   { '<Leader>fs', cmd('Telescope grep_string') },
