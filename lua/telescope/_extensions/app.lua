@@ -28,6 +28,9 @@ local app = function(opts)
         actions.select_default:replace(function()
           actions.close(prompt_bufnr)
           local selection = action_state.get_selected_entry()
+          if selection[1]:find('%s%w+') then
+            selection[1] = selection[1]:gsub('%s', '\\ ')
+          end
           os.execute('open ' .. selection[1])
         end)
         return true
