@@ -59,10 +59,10 @@ lspconfig.sumneko_lua.setup({
       },
       runtime = { version = 'LuaJIT' },
       workspace = {
-       library = (function()
+        library = (function()
           local lib = {}
           for _, path in ipairs(vim.api.nvim_get_runtime_file('lua', true)) do
-            lib[#lib+1] = path:sub(1, -5)
+            lib[#lib + 1] = path:sub(1, -5)
           end
           return lib
         end)(),
@@ -120,4 +120,10 @@ for _, server in ipairs(servers) do
   lspconfig[server].setup({
     capabilities = capabilities,
   })
+end
+
+vim.lsp.handlers['workspace/diagnostic/refresh'] = function(_, _, ctx)
+  local ns = vim.lsp.diagnostic.get_namespace(ctx.client_id)
+  pcall(vim.diagnostic.reset, ns)
+  return true
 end
