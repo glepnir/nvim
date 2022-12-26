@@ -2,9 +2,6 @@ local lspconfig = require('lspconfig')
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 
-if not packer_plugins['cmp-nvim-lsp'].loaded then
-  vim.cmd([[packadd cmp-nvim-lsp]])
-end
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 local signs = {
@@ -55,7 +52,7 @@ lspconfig.sumneko_lua.setup({
     Lua = {
       diagnostics = {
         enable = true,
-        globals = { 'vim', 'packer_plugins' },
+        globals = { 'vim' },
       },
       runtime = { version = 'LuaJIT' },
       workspace = {

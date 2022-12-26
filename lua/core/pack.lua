@@ -1,15 +1,11 @@
 local uv, api, fn = vim.loop, vim.api, vim.fn
 local helper = require('core.helper')
-local vim_path = helper.get_config_path()
-local data_dir = string.format('%s/site/', helper.get_data_path())
-local modules_dir = vim_path .. '/lua/modules'
-local packer_compiled = data_dir .. 'lua/packer_compiled.lua'
-local packer = nil
 
-local Packer = {}
-Packer.__index = Packer
+local pack = {}
+pack.__index = pack
 
-function Packer:load_plugins()
+function pack:load_modules_packages()
+  local modules_dir = helper.get_config_path() .. '/lua/modules'
   self.repos = {}
 
   local get_plugins_list = function()
@@ -35,123 +31,28 @@ function Packer:load_plugins()
   end
 end
 
-function Packer:load_packer()
-  if not packer then
-    api.nvim_command('packadd packer.nvim')
-    packer = require('packer')
-  end
-  packer.init({
-    compile_path = packer_compiled,
-    disable_commands = true,
-    display = {
-      open_fn = require('packer.util').float,
-      working_sym = ' ',
-      error_sym = ' ',
-      done_sym = ' ',
-      removed_sym = ' ',
-      moved_sym = ' ',
-    },
-    git = { clone_timeout = 120 },
-  })
-  packer.reset()
-  local use = packer.use
-  self:load_plugins()
-  use({ 'wbthomason/packer.nvim', opt = true })
-  for _, repo in ipairs(self.repos) do
-    use(repo)
-  end
-end
-
-function Packer:init_ensure_plugins()
-  local packer_dir = data_dir .. 'pack/packer/opt/packer.nvim'
-  local state = uv.fs_stat(packer_dir)
+function pack:boot_strap()
+  local lazy_path = string.format('%s/lazy/lazy.nvim', helper.get_data_path())
+  local state = uv.fs_stat(lazy_path)
   if not state then
-    local cmd = '!git clone https://github.com/wbthomason/packer.nvim ' .. packer_dir
+    local cmd = '!git clone https://github.com/folke/lazy.nvim ' .. lazy_path
     api.nvim_command(cmd)
-    uv.fs_mkdir(data_dir .. 'lua', 511, function()
-      assert('make compile path dir failed')
-    end)
-    self:load_packer()
-    packer.sync()
   end
-end
-
-function Packer:cli_compile()
-  self:load_packer()
-  packer.compile()
-  vim.defer_fn(function()
-    vim.cmd('q')
-  end, 1000)
-end
-
-local plugins = setmetatable({}, {
-  __index = function(_, key)
-    if key == 'Packer' then
-      return Packer
-    end
-    if not packer then
-      Packer:load_packer()
-    end
-    return packer[key]
-  end,
-})
-
-function plugins.ensure_plugins()
-  Packer:init_ensure_plugins()
-end
-
-function plugins.package(repo)
-  if not Packer.repos then
-    Packer.repos = {}
-  end
-  table.insert(Packer.repos, repo)
-end
-
-function plugins.auto_compile()
-  local file = api.nvim_buf_get_name(0)
-  if file:match('plugins.lua') then
-    plugins.clean()
-  end
-  plugins.compile()
-end
-
-function plugins.load_compile()
-  local ok, _ = pcall(require, 'packer_compiled')
-  if not ok then
-    vim.notify('Missing packer compiled file', vim.log.levels.ERROR)
-  end
-
-  local cmds = {
-    'Compile',
-    'Install',
-    'Update',
-    'Sync',
-    'Clean',
-    'Status',
+  vim.opt.runtimepath:prepend(lazy_path)
+  local lazy = require('lazy')
+  local opts = {
+    lockfile = helper.get_data_path() .. '/lazy-lock.json',
+    dev = { path = '~/Workspace' },
   }
-  for _, cmd in ipairs(cmds) do
-    api.nvim_create_user_command('Packer' .. cmd, function()
-      require('core.pack')[string.lower(cmd)]()
-    end, {})
-  end
-
-  api.nvim_create_autocmd('User', {
-    group = api.nvim_create_augroup('PackerHooks', { clear = true }),
-    pattern = 'PackerCompileDone',
-    callback = function()
-      vim.notify('Compile Done!')
-      package.loaded['packer_compiled'] = nil
-      require('packer_compiled')
-    end,
-  })
-
-  api.nvim_create_autocmd('BufWritePost', {
-    pattern = modules_dir .. '/*',
-    callback = function()
-      plugins.auto_compile()
-    end,
-    desc = 'Auto recompile the plugins config',
-  })
+  self:load_modules_packages()
+  lazy.setup(self.repos, opts)
 end
 
-return plugins
+function pack.package(repo)
+  if not pack.repos then
+    pack.repos = {}
+  end
+  table.insert(pack.repos, repo)
+end
+
+return pack

@@ -24,11 +24,8 @@ g.mapleader = ' '
 api.nvim_set_keymap('n', ' ', '', { noremap = true })
 api.nvim_set_keymap('x', ' ', '', { noremap = true })
 
-local pack = require('core.pack')
-
-pack.ensure_plugins()
+require('core.pack'):boot_strap()
 require('core.options')
-pack.load_compile()
 require('keymap')
 require('internal.event')
 -- require('internal.winbar')

@@ -63,9 +63,6 @@ function config.dashboard()
 end
 
 function config.gitsigns()
-  if not packer_plugins['plenary.nvim'].loaded then
-    vim.cmd([[packadd plenary.nvim]])
-  end
   require('gitsigns').setup({
     signs = {
       add = { hl = 'GitGutterAdd', text = '▍' },

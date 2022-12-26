@@ -1,14 +1,14 @@
 local package = require('core.pack').package
 local conf = require('modules.ui.config')
 
-package({ '~/Workspace/zephyr-nvim', config = conf.zephyr })
+package({ 'zephyr-nvim', dev = true, config = conf.zephyr })
 
-package({ '~/Workspace/dashboard-nvim', config = conf.dashboard })
+package({ 'dashboard-nvim', dev = true, config = conf.dashboard })
 
 package({
   'glepnir/galaxyline.nvim',
   config = conf.galaxyline,
-  requires = 'kyazdani42/nvim-web-devicons',
+  dependencies = { 'kyazdani42/nvim-web-devicons' },
 })
 
 local enable_indent_filetype = {
