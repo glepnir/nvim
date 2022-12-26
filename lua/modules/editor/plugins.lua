@@ -5,10 +5,10 @@ package({
   'nvim-telescope/telescope.nvim',
   cmd = 'Telescope',
   config = conf.telescope,
-  requires = {
-    { 'nvim-lua/plenary.nvim', opt = true },
-    { 'nvim-telescope/telescope-fzy-native.nvim', opt = true },
-    { 'nvim-telescope/telescope-file-browser.nvim', opt = true },
+  dependencies = {
+    'nvim-lua/plenary.nvim',
+    'nvim-telescope/telescope-fzy-native.nvim',
+    'nvim-telescope/telescope-file-browser.nvim',
   },
 })
 
@@ -16,13 +16,13 @@ package({
   'nvim-treesitter/nvim-treesitter',
   event = 'BufRead',
   run = ':TSUpdate',
-  after = 'telescope.nvim',
   config = conf.nvim_treesitter,
+  dependencies = {
+    'nvim-treesitter/nvim-treesitter-textobjects',
+  },
 })
 
-package({ 'nvim-treesitter/nvim-treesitter-textobjects', after = 'nvim-treesitter' })
-
-package({ '~/Workspace/mcc.nvim', ft = { 'c', 'cpp', 'go', 'rust' }, config = conf.mcc_nvim })
+package({ dir = '~/Workspace/mcc.nvim', ft = { 'c', 'cpp', 'go', 'rust' }, config = conf.mcc_nvim })
 
 package({
   'glepnir/hlsearch.nvim',

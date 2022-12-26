@@ -28,9 +28,6 @@ local function load_dbs()
 end
 
 function config.vim_dadbod_ui()
-  if packer_plugins['vim-dadbod'] and not packer_plugins['vim-dadbod'].loaded then
-    vim.cmd([[packadd vim-dadbod]])
-  end
   vim.g.db_ui_show_help = 0
   vim.g.db_ui_win_position = 'left'
   vim.g.db_ui_use_nerd_fonts = 1
@@ -44,10 +41,7 @@ function config.template_nvim()
   temp.temp_dir = '~/.config/nvim/template'
   temp.author = 'glepnir'
   temp.email = 'glephunter@gmail.com'
-  if not packer_plugins['telescope.nvim'] then
-    vim.cmd('packadd telescope.nvim')
-    require('telescope').load_extension('find_template')
-  end
+  require('telescope').load_extension('find_template')
 end
 
 return config
