@@ -23,12 +23,12 @@ else
   argument = arg[1]
 
   if arg[1] == 'debug' then
-    local tmp_tbl = {table.unpack(arg,2,#arg)}
+    local tmp_tbl = { table.unpack(arg, 2, #arg) }
     for i, k in pairs(tmp_tbl) do
-      tmp_tbl[i] = 'modules/'..k ..'/plugins'
+      tmp_tbl[i] = 'modules/' .. k .. '/plugins'
     end
-    local vim_var = 'let g:disable_modules="' .. table.concat(tmp_tbl,',') .. '"'
-    os.execute([[nvim --headless -c ']] .. vim_var ..[[ | lua=require"core.pack".Packer:cli_compile()']])
+    local vim_var = 'let g:disable_modules="' .. table.concat(tmp_tbl, ',') .. '"'
+    os.execute([[nvim --headless -c ']] .. vim_var)
     return
   end
 end
