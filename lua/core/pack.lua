@@ -8,25 +8,22 @@ function pack:load_modules_packages()
   local modules_dir = helper.get_config_path() .. '/lua/modules'
   self.repos = {}
 
-  local get_plugins_list = function()
-    local list = {}
-    local tmp = vim.split(fn.globpath(modules_dir, '*/plugins.lua'), '\n')
-    for _, f in ipairs(tmp) do
-      list[#list + 1] = string.match(f, 'lua/(.+).lua$')
-    end
-    return list
+  local list = vim.fs.find('plugins.lua', { path = modules_dir, type = 'file', limit = 10 })
+  if #list == 0 then
+    return
   end
 
-  local plugins_file = get_plugins_list()
   local disable_modules = {}
 
   if fn.exists('g:disable_modules') == 1 then
     disable_modules = vim.split(vim.g.disable_modules, ',')
   end
 
-  for _, m in ipairs(plugins_file) do
-    if not vim.tbl_contains(disable_modules, m) then
-      require(m)
+  for _, f in pairs(list) do
+    local _, pos = f:find(modules_dir)
+    f = f:sub(pos - 6, #f - 4)
+    if not vim.tbl_contains(disable_modules, f) then
+      require(f)
     end
   end
 end

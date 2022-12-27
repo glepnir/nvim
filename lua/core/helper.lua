@@ -1,5 +1,6 @@
 local helper = {}
 local home = os.getenv('HOME')
+helper.path_sep = package.config:sub(1, 1) == '\\' and '\\' or '/'
 
 function helper.get_config_path()
   local config = os.getenv('XDG_CONFIG_DIR')
@@ -40,8 +41,8 @@ local function color_print(color)
   end
 end
 
-function helper.install_success(msg)
-  color_print('green')('\t🍻 Install ' .. msg .. ' Success ‼️ ')
+function helper.success(msg)
+  color_print('green')('\t🍻 ' .. msg .. ' Success ‼️ ')
 end
 
 function helper.error(msg)
@@ -79,7 +80,13 @@ end
 function helper.run_git(param, type)
   local cmd = git_cmd(param, type)
   local handle = io.popen(cmd .. ' 2>&1')
-  local name_path = vim.split(param, '%s')
+  local tbl = vim.split(vim.split(param, '%s')[1], helper.path_sep)
+  local repo_name = tbl[#tbl]
+  local prefix = type == 'clone' and 'Install' or 'Update'
+  if not handle then
+    return
+  end
+
   while true do
     local output = handle:read('*l')
     if not output then
@@ -88,16 +95,15 @@ function helper.run_git(param, type)
     output = string.gsub(string.gsub(string.gsub(output, '^%s+', ''), '%s+$', ''), '[\n\r]+', ' ')
     if output:find('fatal') then
       helper.navy(output)
-      helper.error('\t ⛔️ download or update ' .. name_path[1] .. ' failed')
+      helper.error('\t ⛔️ ' .. prefix .. repo_name .. ' failed')
       if type == 'clone' then
         helper.pink('Rollback')
         require('core.cli').clean()
-      else
-        helper.error('Update  failed')
       end
       os.exit()
     end
   end
+  helper.success(prefix .. ' ' .. repo_name)
   handle:close()
 end
 

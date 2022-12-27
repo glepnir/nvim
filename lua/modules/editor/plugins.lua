@@ -22,7 +22,7 @@ package({
   },
 })
 
-package({ dir = '~/Workspace/mcc.nvim', ft = { 'c', 'cpp', 'go', 'rust' }, config = conf.mcc_nvim })
+package({ 'mcc.nvim', dev = true, ft = { 'c', 'cpp', 'go', 'rust' }, config = conf.mcc_nvim })
 
 package({
   'glepnir/hlsearch.nvim',

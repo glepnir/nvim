@@ -21,7 +21,7 @@ package({
   ft = enable_lsp_filetype,
   config = conf.nvim_lsp,
   dependencies = {
-    { dir = '~/Workspace/lspsaga.nvim', config = conf.lspsaga },
+    { 'lspsaga.nvim', dev = true, config = conf.lspsaga },
   },
 })
 

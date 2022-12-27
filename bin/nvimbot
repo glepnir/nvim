@@ -1,9 +1,7 @@
 #!/usr/local/bin/lua
 
 local arguments = {
-  install = true,
   sync = true,
-  update = true,
   clean = true,
   doctor = true,
   debug = true,
@@ -31,7 +29,6 @@ else
     end
     local vim_var = 'let g:disable_modules="' .. table.concat(tmp_tbl,',') .. '"'
     os.execute([[nvim --headless -c ']] .. vim_var ..[[ | lua=require"core.pack".Packer:cli_compile()']])
-    os.execute('nvim')
     return
   end
 end
@@ -39,9 +36,7 @@ end
 if argument == 'help' then
   local usage = {
     'Neovim bot usage:',
-    '  install      install all',
-    '  update       update all plugins',
-    '  sync         Sync configuration and compile',
+    '  sync         Sync Plugins',
     '  clean        clean the direcotries',
     '  doctor       check the plugins info',
     '  debug        dynamic disable modules for debug',
@@ -55,6 +50,10 @@ end
 
 local handle
 handle = io.popen([[nvim --clean --headless --cmd 'echo $VIMRUNTIME|q' 2>&1]], 'r')
+if not handle then
+  return
+end
+
 local rtp = handle:read('*a')
 handle:close()
 
