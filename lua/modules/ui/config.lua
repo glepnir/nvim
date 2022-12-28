@@ -22,7 +22,7 @@ function config.dashboard()
       icon_hl = { fg = z.red },
       desc = 'Update Plugins                          ',
       shortcut = 'SPC p u',
-      action = 'PackerUpdate',
+      action = 'Lazy update',
     },
     {
       icon = '  ',

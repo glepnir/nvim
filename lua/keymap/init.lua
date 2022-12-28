@@ -15,9 +15,8 @@ imap({
 
 nmap({
   -- packer
-  { '<Leader>pu', cmd('PackerUpdate') },
-  { '<Leader>pi', cmd('PackerInstall') },
-  { '<Leader>pc', cmd('PackerCompile') },
+  { '<Leader>pu', cmd('Lazy update') },
+  { '<Leader>pi', cmd('Lazy install') },
   -- Lsp
   { '<Leader>li', cmd('LspInfo') },
   { '<Leader>ll', cmd('LspLog') },
