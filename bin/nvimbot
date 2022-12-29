@@ -6,6 +6,7 @@ local arguments = {
   doctor = true,
   debug = true,
   help = true,
+  modules = true,
 }
 
 local argument
@@ -67,7 +68,7 @@ package.path = package.path .. ';' .. rtp .. '/lua/vim/?.lua;' .. config_path ..
 local cli = require('core.cli')
 local helper = require('core.helper')
 
-if argument ~= 'doctor' and argument ~= 'clean' then
+if argument ~= 'doctor' and argument ~= 'clean' and argument ~= 'modules' then
   helper.test_internet()
 end
 

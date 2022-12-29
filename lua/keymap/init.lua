@@ -66,18 +66,6 @@ nmap({
   {
     '<Leader>t',
     function()
-      if vim.bo.filetype == 'lua' then
-        return ':Template var='
-      end
-
-      if vim.bo.filetype == 'rust' then
-        return '<Cmd>Template main_owner<CR>'
-      end
-
-      local buf_name = api.nvim_buf_get_name(0)
-      if vim.bo.filetype == 'go' and buf_name:find('main.go') then
-        return '<Cmd>Template main_owner<CR>'
-      end
       return ':Template '
     end,
     opts(expr),

@@ -16,6 +16,17 @@ function cli:env_init()
   _G.vim = shared()
 end
 
+local function get_all_modules()
+  local p = io.popen('find "' .. cli.module_path .. '" -type d')
+  if not p then
+    return
+  end
+
+  for dict in p:lines() do
+    print(dict)
+  end
+end
+
 function cli:get_all_repos()
   local pack = require('core.pack')
   local p = io.popen('find "' .. cli.module_path .. '" -type f')
@@ -144,6 +155,10 @@ function cli.doctor()
     end
     helper.green(msg)
   end
+end
+
+function cli.modules()
+  get_all_modules()
 end
 
 function cli:meta(arg)
