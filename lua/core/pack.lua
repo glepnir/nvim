@@ -16,7 +16,7 @@ function pack:load_modules_packages()
   local disable_modules = {}
 
   if fn.exists('g:disable_modules') == 1 then
-    disable_modules = vim.split(vim.g.disable_modules, ',')
+    disable_modules = vim.split(vim.g.disable_modules, ',', { trimempty = true })
   end
 
   for _, f in pairs(list) do

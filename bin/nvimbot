@@ -23,12 +23,12 @@ else
   argument = arg[1]
 
   if arg[1] == 'debug' then
-    local tmp_tbl = { table.unpack(arg, 2, #arg) }
-    for i, k in pairs(tmp_tbl) do
-      tmp_tbl[i] = 'modules/' .. k .. '/plugins'
+    local modules = [[let g:disable_modules="]]
+    for _, k in pairs({ table.unpack(arg, 2, #arg) } or {}) do
+      modules = modules ..','.. 'modules/' .. k .. '/plugins'
     end
-    local vim_var = 'let g:disable_modules="' .. table.concat(tmp_tbl, ',') .. '"'
-    os.execute([[nvim --headless -c ']] .. vim_var)
+    modules = modules .. '"'
+    os.execute("nvim --cmd '" .. modules .."'")
     return
   end
 end
