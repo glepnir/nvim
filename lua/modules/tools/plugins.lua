@@ -15,4 +15,4 @@ package({
 
 package({ 'coman.nvim', dev = true, event = 'BufRead' })
 
-package({ 'template.nvim', dev = true, ft = {'c', 'lua','go'}, config = conf.template_nvim })
+package({ 'template.nvim', dev = true, ft = { 'c', 'lua', 'go' }, config = conf.template_nvim })
