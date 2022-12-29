@@ -18,7 +18,7 @@ end
 local function load_dbs()
   local env_contents = load_env_file()
   local dbs = {}
-  for key, value in pairs(env_contents) do
+  for key, value in pairs(env_contents or {}) do
     if vim.fn.stridx(key, 'DB_CONNECTION_') >= 0 then
       local db_name = vim.fn.split(key, '_')[3]:lower()
       dbs[db_name] = value
@@ -37,10 +37,11 @@ function config.vim_dadbod_ui()
 end
 
 function config.template_nvim()
-  local temp = require('template')
-  temp.temp_dir = '~/.config/nvim/template'
-  temp.author = 'glepnir'
-  temp.email = 'glephunter@gmail.com'
+  require('template').setup({
+    temp_dir = '~/.config/nvim/template',
+    author = 'glepnir',
+    email = 'glephunter@gmail.com',
+  })
   require('telescope').load_extension('find_template')
 end
 
