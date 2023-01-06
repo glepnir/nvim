@@ -115,6 +115,7 @@ function config.mut_char()
         filters.generic_in_cpp,
         filters.non_space_before,
       },
+      one_to_one = true,
     },
     ['rust'] = {
       rules = {
