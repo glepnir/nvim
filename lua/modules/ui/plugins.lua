@@ -3,7 +3,7 @@ local conf = require('modules.ui.config')
 
 package({ 'zephyr-nvim', dev = true, config = conf.zephyr })
 
-package({ 'dashboard-nvim', dev = true, config = conf.dashboard })
+package({ 'dashboard-nvim', dev = true, event = 'VimEnter', config = conf.dashboard })
 
 package({
   'glepnir/galaxyline.nvim',

@@ -8,11 +8,6 @@ package({
   requires = { { 'tpope/vim-dadbod', opt = true } },
 })
 
-package({
-  'editorconfig/editorconfig-vim',
-  ft = { 'go', 'typescript', 'javascript', 'vim', 'rust', 'zig', 'c', 'cpp' },
-})
-
 package({ 'coman.nvim', dev = true, event = 'BufRead' })
 
 package({ 'template.nvim', dev = true, ft = { 'c', 'lua', 'go' }, config = conf.template_nvim })
