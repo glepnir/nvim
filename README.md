@@ -53,7 +53,7 @@
 ## Neovim Bot usage
 
 ```
-~/.config/nvim/nvimbot help
+~/.config/nvim/dope help
 ```
 
 ## 💭 About

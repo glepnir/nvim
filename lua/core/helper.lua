@@ -1,43 +1,51 @@
 local helper = {}
-local home = os.getenv('HOME')
 helper.path_sep = package.config:sub(1, 1) == '\\' and '\\' or '/'
 
-function helper.get_config_path()
-  local config = os.getenv('XDG_CONFIG_DIR')
-  if not config then
-    return home .. '/.config/nvim'
-  end
-  return config
+function helper.path_join(...)
+  return table.concat({ ... }, helper.path_sep)
 end
 
-function helper.get_data_path()
-  local data = os.getenv('XDG_DATA_DIR')
-  if not data then
-    return home .. '/.local/share/nvim'
+function helper.data_path()
+  local cli = require('core.cli')
+  if cli.config_path then
+    return cli.config_path
   end
-  return data
+  return vim.fn.stdpath('data')
 end
 
-local colors = {
-  red = '\027[31m',
-  green = '\027[32m',
-  orange = '\027[33m',
-  navy = '\027[34m',
-  magenta = '\027[35m',
-  cyan = '\027[36m',
-  grey = '\027[90m',
-  light_grey = '\027[37m',
-  peach = '\027[91m',
-  light_green = '\027[92m',
-  yellow = '\027[93m',
-  blue = '\027[94m',
-  pink = '\027[95m',
-  baby_blue = '\027[96m',
-}
+function helper.config_path()
+  local cli = require('core.cli')
+  if cli.data_path then
+    return cli.data_path
+  end
+  return vim.fn.stdpath('config')
+end
+
+local function get_color(color)
+  local tbl = {
+    black = '\027[90m',
+    red = '\027[91m',
+    green = '\027[92m',
+    yellow = '\027[93m',
+    blue = '\027[94m',
+    purple = '\027[95m',
+    cyan = '\027[96m',
+    white = '\027[97m',
+  }
+  return tbl[color]
+end
 
 local function color_print(color)
+  local rgb = get_color(color)
   return function(text)
-    print(colors[color] .. text .. '\027[m')
+    print(rgb .. text .. '\027[m')
+  end
+end
+
+function helper.write(color)
+  local rgb = get_color(color)
+  return function(text)
+    io.write(rgb .. text .. '\027[m')
   end
 end
 
@@ -49,62 +57,20 @@ function helper.error(msg)
   color_print('red')(msg)
 end
 
-function helper.test_internet()
-  helper.cyan('Waiting for internet test ...')
-  local handle = io.popen('ping github.com -c 4')
-  while true do
-    local output = handle:read('*l')
-    if output == nil then
-      break
+function helper.run_git(name, cmd, type)
+  local pip = assert(io.popen(cmd .. ' 2>&1'))
+  color_print('green')('\t🍻 ' .. type .. ' ' .. name)
+  local failed = false
+  for line in pip:lines() do
+    if line:find('fatal') then
+      failed = true
     end
-    if output:find('Reqeust timeout') then
-      helper.error('Ping github failed check your internet')
-      os.exit()
-    end
-  end
-  handle:close()
-end
-
-local git_type = {
-  clone = 'git clone https://github.com/',
-  pull = 'git -C ',
-}
-
-local function git_cmd(param, type)
-  if type == 'clone' then
-    return git_type[type] .. param
-  end
-  return git_type[type] .. param .. ' pull'
-end
-
-function helper.run_git(param, type)
-  local cmd = git_cmd(param, type)
-  local handle = io.popen(cmd .. ' 2>&1')
-  local tbl = vim.split(vim.split(param, '%s')[1], helper.path_sep)
-  local repo_name = tbl[#tbl]
-  local prefix = type == 'clone' and 'Install' or 'Update'
-  if not handle then
-    return
+    io.write('\t ' .. line)
+    io.write('\n')
   end
 
-  while true do
-    local output = handle:read('*l')
-    if not output then
-      break
-    end
-    output = string.gsub(string.gsub(string.gsub(output, '^%s+', ''), '%s+$', ''), '[\n\r]+', ' ')
-    if output:find('fatal') then
-      helper.navy(output)
-      helper.error('\t ⛔️ ' .. prefix .. repo_name .. ' failed')
-      if type == 'clone' then
-        helper.pink('Rollback')
-        require('core.cli').clean()
-      end
-      os.exit()
-    end
-  end
-  helper.success(prefix .. ' ' .. repo_name)
-  handle:close()
+  pip:close()
+  return failed
 end
 
 local function exists(file)

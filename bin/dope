@@ -1,7 +1,8 @@
 #!/usr/local/bin/lua
 
 local arguments = {
-  sync = true,
+  install = true,
+  update = true,
   clean = true,
   doctor = true,
   debug = true,
@@ -15,7 +16,7 @@ if #arg == 0 then
   argument = arguments[1]
 else
   if #arg > 1 and arg[1] ~= 'debug' then
-    error('you passed multiple arguments.')
+    error('passed multiple arguments.')
   end
 
   if not arguments[arg[1]] then
@@ -25,11 +26,12 @@ else
 
   if arg[1] == 'debug' then
     local modules = [[let g:disable_modules="]]
+    ---@diagnostic disable-next-line: deprecated
     for _, k in pairs({ table.unpack(arg, 2, #arg) } or {}) do
-      modules = modules ..','.. 'modules/' .. k .. '/plugins'
+      modules = modules .. ',' .. 'modules/' .. k .. '/plugins'
     end
     modules = modules .. '"'
-    os.execute("nvim --cmd '" .. modules .."'")
+    os.execute("nvim --cmd '" .. modules .. "'")
     return
   end
 end
@@ -37,7 +39,8 @@ end
 if argument == 'help' then
   local usage = {
     'Neovim bot usage:',
-    '  sync         Sync Plugins',
+    '  Install      Install Plugins',
+    '  Update       Update Plugins',
     '  clean        clean the direcotries',
     '  doctor       check the plugins info',
     '  debug        dynamic disable modules for debug',
@@ -50,7 +53,7 @@ if argument == 'help' then
 end
 
 local handle
-handle = io.popen([[nvim --clean --headless --cmd 'echo $VIMRUNTIME|q' 2>&1]], 'r')
+handle = assert(io.popen([[nvim --clean --headless --cmd 'echo $VIMRUNTIME|q' 2>&1]], 'r'))
 if not handle then
   return
 end
@@ -58,25 +61,26 @@ end
 local rtp = handle:read('*a')
 handle:close()
 
-handle = io.popen([[nvim --clean --headless --cmd 'echo stdpath("config")|q' 2>&1]], 'r')
+-- read config path
+handle = assert(io.popen([[nvim --clean --headless --cmd 'echo stdpath("config")|q' 2>&1]], 'r'))
 local config_path = handle:read('*a')
+handle:close()
+
+-- read data path
+handle = assert(io.popen([[nvim --clean --headless --cmd 'echo stdpath("data")|q' 2>&1]], 'r'))
+local data_path = handle:read('*a')
 handle:close()
 
 -- set the poackage path
 package.path = package.path .. ';' .. rtp .. '/lua/vim/?.lua;' .. config_path .. '/lua/?.lua'
 
 local cli = require('core.cli')
-local helper = require('core.helper')
 
-if argument ~= 'doctor' and argument ~= 'clean' and argument ~= 'modules' then
-  helper.test_internet()
-end
-
-cli.config_path = config_path
 cli.rtp = rtp
+cli.config_path = config_path
+cli.data_path = data_path
+
 -- env init
 cli:env_init()
-
-helper.peach('🤖 Glepnir Neovim Config Bot Running...')
 
 cli:meta(argument)()

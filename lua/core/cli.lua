@@ -2,9 +2,8 @@ local cli = {}
 local helper = require('core.helper')
 
 function cli:env_init()
-  self.module_path = self.config_path .. '/lua/modules'
-  local data_dir = helper.get_data_path()
-  self.lazy_dir = data_dir .. '/lazy'
+  self.module_path = helper.path_join(self.config_path, 'lua', 'modules')
+  self.lazy_dir = helper.path_join(self.data_path, 'lazy')
 
   package.path = package.path
     .. ';'
@@ -12,7 +11,7 @@ function cli:env_init()
     .. '/lua/vim/?.lua;'
     .. self.module_path
     .. '/?.lua;'
-  local shared = assert(loadfile(self.rtp .. '/lua/vim/shared.lua'))
+  local shared = assert(loadfile(helper.path_join(self.rtp, 'lua', 'vim', 'shared.lua')))
   _G.vim = shared()
 end
 
@@ -27,7 +26,7 @@ local function get_all_modules()
   end
 end
 
-function cli:get_all_repos()
+function cli:get_all_packages()
   local pack = require('core.pack')
   local p = io.popen('find "' .. cli.module_path .. '" -type f')
   if not p then
@@ -42,56 +41,6 @@ function cli:get_all_repos()
   end
   p:close()
 
-  return pack.repos
-end
-
-function cli:install_or_update(repo)
-  local repo_name = repo[1]
-  if repo.dev then
-    helper.pink('\t🥯 Skip local plugin ' .. repo_name)
-    return
-  end
-
-  local name = vim.split(repo_name, '/')[2]
-  local target = self.lazy_dir .. helper.path_sep .. name
-  local type = helper.isdir(target) and 'pull' or 'clone'
-  helper.run_git(target, type)
-end
-
-function cli:boot_strap()
-  helper.magenta('🔸 Search plugin management lazy.nvim in local')
-  if helper.isdir(self.lazy_dir) then
-    helper.green('🔸 Found lazy.nvim skip download')
-    return
-  end
-  helper.run_git('folke/lazy.nvim ' .. self.lazy_dir, 'clone')
-  helper.install_success('lazy.nvim')
-end
-
-function cli.sync()
-  cli:boot_strap()
-
-  local all_repos = cli:get_all_repos()
-  helper.magenta('🔸 Sync plugins...')
-  for _, repo in pairs(all_repos or {}) do
-    cli:install_or_update(repo)
-    if repo.dependencies then
-      for _, v in pairs(repo.dependencies) do
-        if type(v) == 'string' then
-          v = { v }
-        end
-        cli:install_or_update(v)
-      end
-    end
-  end
-  helper.pink('🎉 Congratulations All Plugins Installed Success.')
-end
-
-function cli.clean()
-  os.execute('rm -rf ' .. cli.lazy_dir)
-end
-
-function cli.doctor()
   local lazy_keyword = {
     'keys',
     'ft',
@@ -134,26 +83,93 @@ function cli.doctor()
     end
   end
 
-  local all_repos = cli:get_all_repos()
   local list = {}
-  for _, data in pairs(all_repos or {}) do
+  for _, data in pairs(pack.repos or {}) do
     if type(data) == string then
       data = { data }
     end
     generate_node(data, list)
   end
 
-  helper.magenta('Total: ' .. vim.tbl_count(list) .. ' Plugins')
+  return list
+end
+
+function cli:boot_strap()
+  helper.blue('🔸 Search plugin management lazy.nvim in local')
+  if helper.isdir(self.lazy_dir) then
+    helper.green('🔸 Found lazy.nvim skip download')
+    return
+  end
+  helper.run_git('folke/lazy.nvim ' .. self.lazy_dir, 'clone')
+  helper.install_success('lazy.nvim')
+end
+
+function cli:installer(type)
+  cli:boot_strap()
+
+  local packages = cli:get_all_packages()
+  ---@diagnostic disable-next-line: unused-local, param-type-mismatch
+  local res = {}
+  for name, v in pairs(packages or {}) do
+    if v.type:find('Remote') then
+      local non_user_name = vim.split(name, '/')[2]
+      local path = self.lazy_dir .. helper.path_sep .. non_user_name
+      if helper.isdir(path) and type == 'install' then
+        helper.purple('\t🥯 Skip already in plugin ' .. name)
+      else
+        local url = 'git clone https://github.com/'
+        local cmd = type == 'install' and url .. name .. ' ' .. path or 'git -C ' .. path .. ' pull'
+        local failed = helper.run_git(name, cmd, type)
+        table.insert(res, failed)
+      end
+    else
+      helper.purple('\t🥯 Skip local plugin ' .. name)
+    end
+  end
+  if not vim.tbl_contains(res, true) then
+    helper.green('🎉 Congratulations Config install or update success. Enjoy ^^')
+    return
+  end
+  helper.red('Some plugins not install or update success please run install again')
+end
+
+function cli.install()
+  cli:installer('install')
+end
+
+function cli.update()
+  cli:installer('update')
+end
+
+function cli.clean()
+  os.execute('rm -rf ' .. cli.lazy_dir)
+end
+
+function cli.doctor()
+  local list = cli:get_all_packages()
+  if not list then
+    return
+  end
+
+  helper.yellow('🔹 Total: ' .. vim.tbl_count(list) + 1 .. ' Plugins')
   for k, v in pairs(list) do
-    local msg = k .. ' ' .. v.type
+    helper.blue('\t' .. '✨' .. k)
+    if v.type then
+      helper.write('purple')('\tType: ')
+      helper.write('white')(v.type)
+      print()
+    end
     if v.load then
-      msg = msg .. ' Load By: ' .. v.load
+      helper.write('purple')('\tLoad: ')
+      helper.write('white')(v.load)
+      print()
     end
 
     if v.from_depend then
-      msg = msg .. ' Depend on: ' .. v.load_after
+      helper.write('purple')('\tDepend: ')
+      helper.write('white')(v.load_after)
+      print()
     end
-    helper.green(msg)
   end
 end
 
