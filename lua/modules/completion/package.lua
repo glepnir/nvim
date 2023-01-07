@@ -33,10 +33,14 @@ package({
     'hrsh7th/cmp-nvim-lsp',
     'hrsh7th/cmp-path',
     'hrsh7th/cmp-buffer',
-    'saadparwaiz1/cmp_luasnip',
   },
 })
 
-package({ 'L3MON4D3/LuaSnip', event = 'InsertCharPre', config = conf.lua_snip })
+package({
+  'L3MON4D3/LuaSnip',
+  event = 'InsertCharPre',
+  config = conf.lua_snip,
+  dependencies = { 'saadparwaiz1/cmp_luasnip' },
+})
 
 package({ 'windwp/nvim-autopairs', event = 'InsertEnter', config = conf.auto_pairs })
