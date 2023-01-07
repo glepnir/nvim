@@ -34,7 +34,7 @@ function cli:get_all_packages()
   end
 
   for file in p:lines() do
-    if file:find('plugins.lua') then
+    if file:find('package.lua') then
       local module = file:match(cli.module_path .. '/(.+).lua$')
       require(module)
     end

@@ -5,7 +5,7 @@ package({
   'kristijanhusak/vim-dadbod-ui',
   cmd = { 'DBUIToggle', 'DBUIAddConnection', 'DBUI', 'DBUIFindBuffer', 'DBUIRenameBuffer' },
   config = conf.vim_dadbod_ui,
-  requires = { { 'tpope/vim-dadbod', opt = true } },
+  dependencies = { 'tpope/vim-dadbod' },
 })
 
 package({ 'coman.nvim', dev = true, event = 'BufRead' })
