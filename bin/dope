@@ -36,22 +36,6 @@ else
   end
 end
 
-if argument == 'help' then
-  local usage = {
-    'Neovim bot usage:',
-    '  Install      Install Plugins',
-    '  Update       Update Plugins',
-    '  clean        clean the direcotries',
-    '  doctor       check the plugins info',
-    '  debug        dynamic disable modules for debug',
-    '  help         show the usage of bot',
-  }
-  for _, msg in pairs(usage) do
-    print(msg)
-  end
-  os.exit()
-end
-
 local handle
 handle = assert(io.popen([[nvim --clean --headless --cmd 'echo $VIMRUNTIME|q' 2>&1]], 'r'))
 if not handle then
@@ -66,13 +50,33 @@ handle = assert(io.popen([[nvim --clean --headless --cmd 'echo stdpath("config")
 local config_path = handle:read('*a')
 handle:close()
 
+-- set the poackage path
+package.path = package.path .. ';' .. rtp .. '/lua/vim/?.lua;' .. config_path .. '/lua/?.lua'
+
+if argument == 'help' then
+  local helper = require('core.helper')
+  helper.green('Dope usage')
+  local usage = {
+    { '\tInstall', '  Install Plugins' },
+    { '\tUpdate ', '  Update Plugins' },
+    { '\tclean  ', '  clean the direcotries' },
+    { '\tdoctor ', '  check the plugins info' },
+    { '\tmodules', '  Show all modules' },
+    { '\tdebug  ', '  dynamic disable modules for debug' },
+    { '\thelp   ', '  show the usage of bot' },
+  }
+  for _, msg in pairs(usage) do
+    helper.write('blue')(msg[1])
+    helper.write('white')(msg[2])
+    print()
+  end
+  os.exit()
+end
+
 -- read data path
 handle = assert(io.popen([[nvim --clean --headless --cmd 'echo stdpath("data")|q' 2>&1]], 'r'))
 local data_path = handle:read('*a')
 handle:close()
-
--- set the poackage path
-package.path = package.path .. ';' .. rtp .. '/lua/vim/?.lua;' .. config_path .. '/lua/?.lua'
 
 local cli = require('core.cli')
 
