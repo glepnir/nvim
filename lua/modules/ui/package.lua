@@ -8,7 +8,7 @@ package({ 'dashboard-nvim', dev = true, event = 'VimEnter', config = conf.dashbo
 package({
   'glepnir/galaxyline.nvim',
   config = conf.galaxyline,
-  dependencies = { 'kyazdani42/nvim-web-devicons' },
+  dependencies = { 'nvim-tree/nvim-web-devicons' },
 })
 
 local enable_indent_filetype = {

@@ -59,7 +59,7 @@ opt.diffopt:append('linematch:50')
 opt.linebreak = true
 opt.whichwrap = 'h,l,<,>,[,],~'
 opt.breakindentopt = 'shift:2,min:20'
-opt.showbreak = '↳ '
+vim.wo.showbreak = 'NONE'
 
 opt.foldlevelstart = 99
 opt.foldmethod = 'marker'
@@ -72,6 +72,9 @@ opt.textwidth = 100
 opt.colorcolumn = '100'
 -- opt.conceallevel = 2
 -- opt.concealcursor = 'niv'
+if vim.fn.has('nvim-0.9') == 1 then
+  opt.stc = '%{v:wrap ? repeat(" ", float2nr(ceil(log10(v:lnum))))."↳":v:lnum}%=%s%C'
+end
 
 if vim.loop.os_uname().sysname == 'Darwin' then
   vim.g.clipboard = {

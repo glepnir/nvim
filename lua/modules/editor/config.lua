@@ -130,6 +130,10 @@ function config.mut_char()
       },
       one_to_one = true,
     },
+    ['lua'] = {
+      rules = { ';', ':' },
+      filter = filters.semicolon_in_lua,
+    },
     ['go'] = {
       rules = {
         { ';', ' :=' },

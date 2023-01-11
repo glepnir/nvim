@@ -1,5 +1,6 @@
 local helper = {}
-helper.path_sep = package.config:sub(1, 1) == '\\' and '\\' or '/'
+helper.is_win = package.config:sub(1, 1) == '\\' and true or false
+helper.path_sep = helper.is_win and '\\' or '/'
 
 function helper.path_join(...)
   return table.concat({ ... }, helper.path_sep)

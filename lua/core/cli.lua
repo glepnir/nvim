@@ -15,17 +15,6 @@ function cli:env_init()
   _G.vim = shared()
 end
 
-local function get_all_modules()
-  local p = io.popen('find "' .. cli.module_path .. '" -type d')
-  if not p then
-    return
-  end
-
-  for dict in p:lines() do
-    print(dict)
-  end
-end
-
 function cli:get_all_packages()
   local pack = require('core.pack')
   local p = io.popen('find "' .. cli.module_path .. '" -type f')
@@ -174,7 +163,24 @@ function cli.doctor()
 end
 
 function cli.modules()
-  get_all_modules()
+  local p = io.popen('find "' .. cli.module_path .. '" -type d')
+  if not p then
+    return
+  end
+  local res = {}
+
+  for dict in p:lines() do
+    dict = vim.split(dict, helper.path_sep)
+    if dict[#dict] ~= 'modules' then
+      table.insert(res, dict[#dict])
+    end
+  end
+
+  helper.green('Found ' .. #res .. ' Modules in Local')
+  for _, v in pairs(res) do
+    helper.write('yellow')('\t✅ ' .. v)
+    print()
+  end
 end
 
 function cli:meta(arg)

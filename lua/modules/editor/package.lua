@@ -22,7 +22,12 @@ package({
   },
 })
 
-package({ 'mutchar.nvim', dev = true, ft = { 'c', 'cpp', 'go', 'rust' }, config = conf.mut_char })
+package({
+  'mutchar.nvim',
+  dev = true,
+  ft = { 'c', 'cpp', 'go', 'rust', 'lua' },
+  config = conf.mut_char,
+})
 
 package({
   'glepnir/hlsearch.nvim',
