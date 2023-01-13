@@ -54,7 +54,10 @@ lspconfig.sumneko_lua.setup({
         enable = true,
         globals = { 'vim' },
       },
-      runtime = { version = 'LuaJIT' },
+      runtime = {
+        version = 'LuaJIT',
+        path = vim.split(package.path, ';'),
+      },
       workspace = {
         library = (function()
           local lib = {}
