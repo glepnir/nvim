@@ -13,9 +13,9 @@ local arguments = {
 local argument
 
 if #arg == 0 then
-  argument = arguments[1]
+  argument = 'install'
 else
-  if #arg > 1 and arg[1] ~= 'debug' then
+  if #arg > 1 and (arg[1] ~= 'debug' and arg[1] ~= 'doctor') then
     error('passed multiple arguments.')
   end
 
@@ -57,8 +57,8 @@ if argument == 'help' then
   local helper = require('core.helper')
   helper.green('Dope usage')
   local usage = {
-    { '\tInstall', '  Install Plugins' },
-    { '\tUpdate ', '  Update Plugins' },
+    { '\tinstall', '  install Plugins' },
+    { '\tupdate ', '  update Plugins' },
     { '\tclean  ', '  clean the direcotries' },
     { '\tdoctor ', '  check the plugins info' },
     { '\tmodules', '  Show all modules' },
@@ -87,4 +87,4 @@ cli.data_path = data_path
 -- env init
 cli:env_init()
 
-cli:meta(argument)()
+cli:meta(argument)(table.unpack(arg, 2))

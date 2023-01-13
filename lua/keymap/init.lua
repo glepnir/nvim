@@ -32,7 +32,6 @@ nmap({
   { 'gr', cmd('Lspsaga rename') },
   { 'gh', cmd('Lspsaga lsp_finder') },
   { '<Leader>o', cmd('Lspsaga outline') },
-  { '<Leader>g', cmd('Lspsaga open_floaterm lazygit') },
   -- dashboard create file
   { '<Leader>n', cmd('DashboardNewFile') },
   { '<Leader>ss', cmd('SessionSave') },
@@ -77,7 +76,6 @@ xmap({ 'gcc', ':ComComment<CR>' })
 nmap({ 'gcj', cmd('ComAnnotation') })
 
 -- Lspsaga floaterminal
-nmap({ '<A-d>', cmd('Lspsaga open_floaterm') })
-tmap({ '<A-d>', [[<C-\><C-n>:Lspsaga close_floaterm<CR>]] })
+vim.keymap.set({ 'n', 't' }, '<A-d>', cmd('Lspsaga term_toggle'))
 
 xmap({ 'ga', cmd('Lspsaga code_action') })
