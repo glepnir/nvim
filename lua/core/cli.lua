@@ -89,7 +89,7 @@ function cli:boot_strap()
     helper.green('🔸 Found lazy.nvim skip download')
     return
   end
-  helper.run_git('folke/lazy.nvim ' .. self.lazy_dir, 'clone')
+  helper.run_git('lazy.nvim', 'folke/lazy.nvim ' .. self.lazy_dir, 'Install')
   helper.install_success('lazy.nvim')
 end
 
