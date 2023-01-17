@@ -23,7 +23,7 @@ package({
 })
 
 package({
-  'mutchar.nvim',
+  'glepnir/mutchar.nvim',
   dev = true,
   ft = { 'c', 'cpp', 'go', 'rust', 'lua' },
   config = conf.mut_char,

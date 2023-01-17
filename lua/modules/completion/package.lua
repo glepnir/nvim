@@ -16,13 +16,17 @@ local enable_lsp_filetype = {
 }
 
 package({
-  'nvim-lspconfig',
+  'neovim/nvim-lspconfig',
   dev = true,
   ft = enable_lsp_filetype,
   config = conf.nvim_lsp,
-  dependencies = {
-    { 'lspsaga.nvim', dev = true, config = conf.lspsaga },
-  },
+})
+
+package({
+  'glepnir/lspsaga.nvim',
+  ft = enable_lsp_filetype,
+  dev = true,
+  config = conf.lspsaga
 })
 
 package({

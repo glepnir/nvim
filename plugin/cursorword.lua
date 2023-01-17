@@ -52,7 +52,7 @@ local function matchadd()
 end
 
 local function cursor_moved()
-  if api.nvim_get_mode().mode == 'n' then
+  if api.nvim_get_mode().mode == 'n' or vim.bo.filetype ~= 'help' then
     matchadd()
   end
 end
