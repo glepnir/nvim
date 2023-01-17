@@ -59,14 +59,14 @@ lspconfig.sumneko_lua.setup({
         path = vim.split(package.path, ';'),
       },
       workspace = {
-        library = (function()
-          local lib = {}
-          for _, path in ipairs(vim.api.nvim_get_runtime_file('lua', true)) do
-            lib[#lib + 1] = path:sub(1, -5)
-          end
-          return lib
-        end)(),
+        library = {
+          vim.env.VIMRUNTIME,
+        },
         checkThirdParty = false,
+      },
+      completion = {
+        callSnippet = 'Replace',
+        keywordSnippet = 'Disable',
       },
       telemetry = {
         enable = false,

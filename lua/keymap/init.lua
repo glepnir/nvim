@@ -1,7 +1,7 @@
 local api = vim.api
 require('keymap.remap')
 local keymap = require('core.keymap')
-local nmap, imap, xmap, tmap = keymap.nmap, keymap.imap, keymap.xmap, keymap.tmap
+local nmap, imap, xmap = keymap.nmap, keymap.imap, keymap.xmap
 local expr, remap = keymap.expr, keymap.remap
 local opts = keymap.new_opts
 local cmd = keymap.cmd
