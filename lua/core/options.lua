@@ -73,7 +73,32 @@ opt.colorcolumn = '100'
 -- opt.conceallevel = 2
 -- opt.concealcursor = 'niv'
 if vim.fn.has('nvim-0.9') == 1 then
-  opt.stc = '%{v:virtnum ? repeat(" ", float2nr(ceil(log10(v:lnum))))."↳":v:lnum}%=%s%C'
+  local function get_signs()
+    local buf = vim.api.nvim_get_current_buf()
+    return vim.tbl_map(function(sign)
+      return vim.fn.sign_getdefined(sign.name)[1]
+    end, vim.fn.sign_getplaced(buf, { group = '*', lnum = vim.v.lnum })[1].signs)
+  end
+
+  function _G.show_stc()
+    local sign, git_sign
+    for _, s in ipairs(get_signs()) do
+      if s.name:find('GitSign') then
+        git_sign = s
+      else
+        sign = s
+      end
+    end
+    local components = {
+      sign and ('%#' .. sign.texthl .. '#' .. sign.text .. '%*') or ' ',
+      '%=',
+      [[%{v:virtnum ? repeat(" ", float2nr(ceil(log10(v:lnum))))."↳":v:lnum}]],
+      git_sign and ('%#' .. git_sign.texthl .. '#' .. git_sign.text .. '%*') or '  ',
+    }
+    return table.concat(components, '')
+  end
+
+  opt.stc = [[%!v:lua.show_stc()]]
 end
 
 if vim.loop.os_uname().sysname == 'Darwin' then

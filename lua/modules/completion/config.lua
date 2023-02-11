@@ -37,7 +37,7 @@ end
 function config.lua_snip()
   local ls = require('luasnip')
   ls.config.set_config({
-    delete_check_events = 'TextChanged',
+    delete_check_events = 'TextChanged,InsertEnter',
   })
   require('luasnip.loaders.from_vscode').lazy_load({
     paths = { './snippets/' },

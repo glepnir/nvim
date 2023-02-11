@@ -4,7 +4,7 @@ local arguments = {
   install = true,
   update = true,
   clean = true,
-  doctor = true,
+  snapshot = true,
   debug = true,
   help = true,
   modules = true,
@@ -15,7 +15,7 @@ local argument
 if #arg == 0 then
   argument = 'install'
 else
-  if #arg > 1 and (arg[1] ~= 'debug' and arg[1] ~= 'doctor') then
+  if #arg > 1 and (arg[1] ~= 'debug' and arg[1] ~= 'snapshot') then
     error('passed multiple arguments.')
   end
 
@@ -25,13 +25,8 @@ else
   argument = arg[1]
 
   if arg[1] == 'debug' then
-    local modules = [[let g:disable_modules="]]
-    ---@diagnostic disable-next-line: deprecated
-    for _, k in pairs({ table.unpack(arg, 2, #arg) } or {}) do
-      modules = modules .. ',' .. 'modules/' .. k .. '/plugins'
-    end
-    modules = modules .. '"'
-    os.execute("nvim --cmd '" .. modules .. "'")
+    local var = [[let g:disable_modules="]] .. arg[2] .. '"'
+    os.execute("nvim --cmd '" .. var .. "'")
     return
   end
 end
@@ -87,4 +82,5 @@ cli.data_path = data_path
 -- env init
 cli:env_init()
 
+---@diagnostic disable-next-line: deprecated
 cli:meta(argument)(table.unpack(arg, 2))

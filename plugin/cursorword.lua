@@ -52,19 +52,19 @@ local function matchadd()
 end
 
 local function cursor_moved()
-  if api.nvim_get_mode().mode == 'n' or vim.bo.filetype ~= 'help' then
+  if api.nvim_get_mode().mode == 'n' or vim.bo.filetype ~= 'help' or #vim.bo.filetype == 0 then
     matchadd()
   end
 end
 
 highlight_cursorword()
 
-api.nvim_create_autocmd({ 'CursorMoved' }, {
+api.nvim_create_autocmd({ 'CursorHold' }, {
   pattern = '*',
   callback = cursor_moved,
 })
 
-api.nvim_create_autocmd({ 'InsertEnter', 'BufWinEnter' }, {
+api.nvim_create_autocmd({ 'InsertEnter' }, {
   pattern = '*',
   callback = disable_cursorword,
 })

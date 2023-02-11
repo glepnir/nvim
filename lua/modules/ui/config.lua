@@ -1,65 +1,47 @@
 local config = {}
 
-function config.zephyr()
-  vim.cmd.colorscheme('zephyr')
-end
-
-function config.galaxyline()
-  require('modules.ui.eviline')
+function config.whisky()
+  require('whiskyline').setup()
 end
 
 function config.dashboard()
   local db = require('dashboard')
-  local z = require('zephyr')
-  db.session_directory = vim.env.HOME .. '/.cache/nvim/session'
-  db.preview_command = 'cat | lolcat -F 0.3'
-  db.preview_file_path = vim.env.HOME .. '/.config/nvim/static/neovim.cat'
-  db.preview_file_height = 11
-  db.preview_file_width = 70
-  db.custom_center = {
-    {
-      icon = '  ',
-      icon_hl = { fg = z.red },
-      desc = 'Update Plugins                          ',
-      shortcut = 'SPC p u',
-      action = 'Lazy update',
+  db.setup({
+    theme = 'hyper',
+    config = {
+      week_header = {
+        enable = true,
+      },
+      disable_move = true,
+      shortcut = {
+        { desc = ' Update', group = '@property', action = 'Lazy update', key = 'u' },
+        {
+          desc = ' Files',
+          group = 'Label',
+          action = 'Telescope find_files',
+          key = 'f',
+        },
+        {
+          desc = ' Apps',
+          group = 'DiagnosticHint',
+          action = 'Telescope app',
+          key = 'a',
+        },
+        {
+          desc = ' dotfiles',
+          group = 'Number',
+          action = 'Telescope dotfiles',
+          key = 'd',
+        },
+      },
     },
-    {
-      icon = '  ',
-      icon_hl = { fg = z.yellow },
-      desc = 'Recently opened files                   ',
-      action = 'Telescope oldfiles',
-      shortcut = 'SPC f h',
-    },
-    {
-      icon = '  ',
-      icon_hl = { fg = z.cyan },
-      desc = 'Find  File                              ',
-      action = 'Telescope find_files find_command=rg,--hidden,--files',
-      shortcut = 'SPC f f',
-    },
-    {
-      icon = '  ',
-      icon_hl = { fg = z.blue },
-      desc = 'File Browser                            ',
-      action = 'Telescope file_browser',
-      shortcut = 'SPC   e',
-    },
-    {
-      icon = '  ',
-      icon_hl = { fg = z.oragne },
-      desc = 'Find  word                              ',
-      action = 'Telescope live_grep',
-      shortcut = 'SPC f b',
-    },
-    {
-      icon = '  ',
-      icon_hl = { fg = z.redwine },
-      desc = 'Open Personal dotfiles                  ',
-      action = 'Telescope dotfiles path=' .. vim.env.HOME .. '/.dotfiles',
-      shortcut = 'SPC f d',
-    },
-  }
+    -- preivew = {
+    --   command = 'cat | lolcat -F 0.3',
+    --   file_path = vim.env.HOME .. '/.config/nvim/static/neovim.cat',
+    --   file_height = 11,
+    --   file_width = 70,
+    -- },
+  })
 end
 
 function config.gitsigns()
@@ -103,7 +85,6 @@ function config.indent_blankline()
     show_current_context_start_on_current_line = false,
     filetype_exclude = {
       'dashboard',
-      'DogicPrompt',
       'log',
       'fugitive',
       'gitcommit',

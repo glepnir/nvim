@@ -32,9 +32,13 @@ package({
 package({
   'glepnir/hlsearch.nvim',
   event = 'BufRead',
-  config = function()
-    require('hlsearch').setup()
-  end,
+  config = true,
+})
+
+package({
+  'glepnir/dbsession.nvim',
+  cmd = {'SessionSave', 'SessionLoad', 'SessionDelete'},
+  opts = true
 })
 
 package({ 'phaazon/hop.nvim', event = 'BufRead', config = conf.hop })
