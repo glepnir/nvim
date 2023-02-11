@@ -13,7 +13,7 @@ local enable_lsp_filetype = {
   'typescriptreact',
   'json',
   'python',
-  'elixir'
+  'elixir',
 }
 
 package({

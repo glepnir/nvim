@@ -37,8 +37,8 @@ package({
 
 package({
   'glepnir/dbsession.nvim',
-  cmd = {'SessionSave', 'SessionLoad', 'SessionDelete'},
-  opts = true
+  cmd = { 'SessionSave', 'SessionLoad', 'SessionDelete' },
+  opts = true,
 })
 
 package({ 'phaazon/hop.nvim', event = 'BufRead', config = conf.hop })
