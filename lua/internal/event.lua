@@ -62,3 +62,15 @@ api.nvim_create_autocmd('LspAttach', {
     require('internal.formatter'):event(opt.buf)
   end,
 })
+
+api.nvim_create_autocmd({ 'CursorHold' }, {
+  pattern = '*',
+  callback = function(opt)
+    require('internal.cursorword').cursor_moved(opt.buf)
+  end,
+})
+
+api.nvim_create_autocmd({ 'InsertEnter' }, {
+  pattern = '*',
+  callback = require('internal.cursorword').disable_cursorword,
+})

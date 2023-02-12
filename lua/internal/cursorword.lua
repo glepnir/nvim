@@ -16,15 +16,6 @@ local function disable_cursorword()
 end
 
 local function matchadd()
-  local bufname = api.nvim_buf_get_name(0)
-  if vim.bo.buftype == 'prompt' or #bufname == 0 then
-    return
-  end
-
-  if api.nvim_get_mode().mode == 'i' then
-    return
-  end
-
   local column = api.nvim_win_get_cursor(0)[2]
   local line = api.nvim_get_current_line()
   local cursorword = fn.matchstr(line:sub(1, column + 1), [[\k*$]])
@@ -51,20 +42,22 @@ local function matchadd()
   vim.w.cursorword_match = 1
 end
 
-local function cursor_moved()
-  if api.nvim_get_mode().mode == 'n' or vim.bo.filetype ~= 'help' or #vim.bo.filetype == 0 then
-    matchadd()
+local function cursor_moved(buf)
+  local ignored = { 'terminal', 'prompt', 'help' }
+  if
+    vim.tbl_contains(ignored, vim.bo[buf].buftype)
+    or vim.tbl_contains(ignored, vim.bo.filetype)
+    or #vim.bo.filetype == 0
+    or api.nvim_get_mode().mode == 'i'
+  then
+    return
   end
+  matchadd()
 end
 
 highlight_cursorword()
 
-api.nvim_create_autocmd({ 'CursorHold' }, {
-  pattern = '*',
-  callback = cursor_moved,
-})
-
-api.nvim_create_autocmd({ 'InsertEnter' }, {
-  pattern = '*',
-  callback = disable_cursorword,
-})
+return {
+  cursor_moved = cursor_moved,
+  disable_cursorword = disable_cursorword,
+}
