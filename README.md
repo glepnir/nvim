@@ -34,9 +34,9 @@
 </p>
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/41671631/177981299-0e935c5f-545a-4e9c-a3ce-431e3c079b76.png"
-  height = "40%"
-  widht = "40%"
+  <img src="https://user-images.githubusercontent.com/41671631/218395127-f1208a59-0d76-4ab3-9ecc-c2848d44e178.png"
+  height = "60%"
+  widht = "60%"
   />
 </p>
 
