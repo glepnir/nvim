@@ -35,8 +35,8 @@
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/41671631/218395127-f1208a59-0d76-4ab3-9ecc-c2848d44e178.png"
-  height = "60%"
-  widht = "60%"
+  height = "40%"
+  widht = "40%"
   />
 </p>
 
