@@ -28,12 +28,11 @@ nmap({
   { 'K', cmd('Lspsaga hover_doc') },
   { 'ga', cmd('Lspsaga code_action') },
   { 'gd', cmd('Lspsaga peek_definition') },
-  { 'gs', cmd('Lspsaga signature_help') },
+  { 'gD', cmd('lua vim.lsp.buf.definition()') },
   { 'gr', cmd('Lspsaga rename') },
   { 'gh', cmd('Lspsaga lsp_finder') },
   { '<Leader>o', cmd('Lspsaga outline') },
-  -- dashboard create file
-  { '<Leader>n', cmd('DashboardNewFile') },
+  -- dbsession
   { '<Leader>ss', cmd('SessionSave') },
   { '<Leader>sl', cmd('SessionLoad') },
   -- dadbodui
