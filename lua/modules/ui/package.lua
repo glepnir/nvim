@@ -45,6 +45,7 @@ package({
 
 package({
   'lewis6991/gitsigns.nvim',
+  dev = true,
   event = { 'BufRead', 'BufNewFile' },
   config = conf.gitsigns,
 })
