@@ -18,6 +18,13 @@ package({
 })
 
 package({
+  'glepnir/easyformat.nvim',
+  dev = true,
+  ft = { 'c', 'cpp', 'rust', 'lua', 'go', 'typescript' },
+  config = conf.easyformat,
+})
+
+package({
   'norcalli/nvim-colorizer.lua',
   ft = { 'lua', 'css', 'html', 'sass', 'less', 'typescriptreact' },
   config = function()

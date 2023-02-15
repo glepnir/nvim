@@ -56,13 +56,6 @@ api.nvim_create_autocmd('Filetype', {
   end,
 })
 
-api.nvim_create_autocmd('LspAttach', {
-  group = my_group,
-  callback = function(opt)
-    require('internal.formatter'):event(opt.buf)
-  end,
-})
-
 api.nvim_create_autocmd({ 'CursorHold' }, {
   pattern = '*',
   callback = function(opt)

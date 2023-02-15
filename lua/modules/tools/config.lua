@@ -45,4 +45,42 @@ function config.template_nvim()
   require('telescope').load_extension('find_template')
 end
 
+function config.easyformat()
+  require('easyformat').setup({
+    fmt_on_save = true,
+    c = {
+      cmd = 'clang-format',
+      args = { '-style=file', vim.api.nvim_buf_get_name(0) },
+      pattern = { 'neovim/*' },
+      find = '.clang-format',
+      stdin = false,
+      lsp = false,
+    },
+    cpp = {
+      cmd = 'clang-format',
+      args = { '-style=file', vim.api.nvim_buf_get_name(0) },
+      find = '.clang-format',
+      stdin = false,
+      lsp = false,
+    },
+    go = {
+      cmd = 'golines',
+      args = { '--max-len=80', vim.api.nvim_buf_get_name(0) },
+      stdin = false,
+      hook = function()
+        vim.lsp.buf.code_action({ context = { only = { 'source.organizeImports' } }, apply = true })
+      end,
+      lsp = true,
+    },
+    lua = {
+      cmd = 'stylua',
+      ignore_patterns = { '%pspec', 'neovim/*' },
+      find = '.stylua.toml',
+      args = { '-' },
+      stdin = true,
+      lsp = false,
+    },
+  })
+end
+
 return config
