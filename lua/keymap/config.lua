@@ -1,39 +1,42 @@
-local has_words_before = function()
-  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0
-    and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
+local api = vim.api
+
+local function before_words()
+  local line = api.nvim_get_current_line()
+  local col = api.nvim_win_get_cursor(0)[2]
+  return line:sub(0, col)
 end
 
---- move to prev/next item in completion menuone
---- jump to prev/next snippet's placeholder
-_G.smart_tab = function()
-  local cmp = require('cmp')
+local function luasnip_status()
   local ok, luasnip = pcall(require, 'luasnip')
-  local luasnip_status = false
-  if ok then
-    luasnip_status = luasnip.expand_or_jumpable()
+  if not ok then
+    return false
   end
-
-  if cmp.visible() and not luasnip_status then
-    return '<C-n>'
-  elseif luasnip_status then
-    return '<Plug>luasnip-expand-or-jump'
-  elseif has_words_before() then
-    return '<Tab>'
-  else
-    return '<Tab>'
-  end
+  return luasnip.expand_or_jumpable()
 end
 
-_G.smart_shift_tab = function()
-  local cmp = require('cmp')
-  local _, luasnip = pcall(require, 'luasnip')
+_G.smart_tab = function()
+  local words = before_words()
 
-  if cmp.visible() then
-    return '<C-p>'
-  elseif luasnip.jumpable(-1) then
-    return "<cmd>lua require'luasnip'.jump(-1)<CR>"
+  if not words:match('%S') then
+    return '<TAB>'
+  end
+
+  if luasnip_status() then
+    return '<Plug>luasnip-expand-or-jump'
+  end
+
+  if vim.fn.pumvisible() == 1 then
+    return '<C-n>'
+  end
+
+  local has_period = words:match('.')
+  local has_slash = words:match('/')
+  print(has_period, has_slash)
+  if not has_period and not has_slash then
+    return '<C-X><C-P>'
+  elseif has_slash then
+    return '<C-X><C-F>'
   else
-    return '<S-Tab>'
+    return '<C-X><C-O>'
   end
 end

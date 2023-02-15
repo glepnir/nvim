@@ -1,9 +1,5 @@
 local lspconfig = require('lspconfig')
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-
-capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-
 local signs = {
   Error = ' ',
   Warn = ' ',
@@ -32,7 +28,6 @@ end
 lspconfig.gopls.setup({
   cmd = { 'gopls', 'serve' },
   on_attach = _attach,
-  capabilities = capabilities,
   init_options = {
     usePlaceholders = true,
     completeUnimported = true,
@@ -49,7 +44,6 @@ lspconfig.gopls.setup({
 
 lspconfig.lua_ls.setup({
   on_attach = _attach,
-  capabilities = capabilities,
   settings = {
     Lua = {
       diagnostics = {
@@ -75,7 +69,6 @@ lspconfig.lua_ls.setup({
 
 lspconfig.clangd.setup({
   on_attach = _attach,
-  capabilities = capabilities,
   cmd = {
     'clangd',
     '--background-index',
@@ -87,7 +80,6 @@ lspconfig.clangd.setup({
 
 lspconfig.rust_analyzer.setup({
   on_attach = _attach,
-  capabilities = capabilities,
   settings = {
     ['rust-analyzer'] = {
       imports = {
@@ -118,9 +110,7 @@ local servers = {
 }
 
 for _, server in ipairs(servers) do
-  lspconfig[server].setup({
-    capabilities = capabilities,
-  })
+  lspconfig[server].setup({})
 end
 
 vim.lsp.handlers['workspace/diagnostic/refresh'] = function(_, _, ctx)

@@ -10,7 +10,6 @@ require('keymap.config')
 imap({
   -- tab key
   { '<TAB>', _G.smart_tab, opts(expr, remap) },
-  { '<S-TAB>', _G.smart_shift_tab, opts(expr, remap) },
 })
 
 nmap({
