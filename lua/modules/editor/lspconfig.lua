@@ -57,6 +57,7 @@ lspconfig.lua_ls.setup({
       workspace = {
         library = {
           vim.env.VIMRUNTIME,
+          vim.env.HOME .. '/.local/share/nvim/lazy/emmylua-nvim',
         },
         checkThirdParty = false,
       },

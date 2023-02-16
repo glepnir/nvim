@@ -64,7 +64,7 @@ local function insert_bracket()
   end
 
   local item = vim.v.completed_item
-  if item.kind == 'Function' or lua_func(item) then
+  if (item.kind == 'Function' or lua_func(item)) and not item.word:find('%(') then
     feedkeys('()', 't')
     feedkeys('<Left>', 'n')
   end

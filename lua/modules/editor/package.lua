@@ -64,3 +64,8 @@ package({
     'nvim-treesitter/nvim-treesitter-textobjects',
   },
 })
+
+package({
+  'ii14/emmylua-nvim',
+  ft = 'lua',
+})
