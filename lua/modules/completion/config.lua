@@ -19,7 +19,9 @@ function config.lua_snip()
 end
 
 function config.auto_pairs()
-  require('nvim-autopairs').setup({})
+  require('nvim-autopairs').setup({
+    map_cr = false,
+  })
 end
 
 return config

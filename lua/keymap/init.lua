@@ -1,16 +1,10 @@
 local api = vim.api
 require('keymap.remap')
 local keymap = require('core.keymap')
-local nmap, imap, xmap = keymap.nmap, keymap.imap, keymap.xmap
-local expr, remap = keymap.expr, keymap.remap
+local nmap, xmap = keymap.nmap, keymap.xmap
+local expr = keymap.expr
 local opts = keymap.new_opts
 local cmd = keymap.cmd
-require('keymap.config')
-
-imap({
-  -- tab key
-  { '<TAB>', _G.smart_tab, opts(expr, remap) },
-})
 
 nmap({
   -- packer

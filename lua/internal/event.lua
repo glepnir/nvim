@@ -65,5 +65,8 @@ api.nvim_create_autocmd({ 'CursorHold' }, {
 
 api.nvim_create_autocmd({ 'InsertEnter' }, {
   pattern = '*',
-  callback = require('internal.cursorword').disable_cursorword,
+  callback = function()
+    require('internal.cursorword').disable_cursorword()
+    require('internal.epoch').epoch()
+  end,
 })
