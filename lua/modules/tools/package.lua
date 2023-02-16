@@ -31,3 +31,24 @@ package({
     require('colorizer').setup()
   end,
 })
+
+package({
+  'glepnir/mutchar.nvim',
+  dev = true,
+  ft = { 'c', 'cpp', 'go', 'rust', 'lua' },
+  config = conf.mut_char,
+})
+
+package({
+  'glepnir/hlsearch.nvim',
+  event = 'BufRead',
+  config = true,
+})
+
+package({
+  'glepnir/dbsession.nvim',
+  cmd = { 'SessionSave', 'SessionLoad', 'SessionDelete' },
+  opts = true,
+})
+
+package({ 'phaazon/hop.nvim', event = 'BufRead', config = conf.hop })
