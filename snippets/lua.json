@@ -78,7 +78,7 @@
         "scope": "source.lua"
     },
     "fn": {
-        "body": "function ${1:function_name}( ${2:...} )\n\t${0:-- body}\nend",
+        "body": "function ${1:function_name}(${2:...})\n\t${0:-- body}\nend",
         "description": "function",
         "prefix": "fn",
         "scope": "source.lua"
