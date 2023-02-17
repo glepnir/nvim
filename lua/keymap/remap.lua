@@ -1,61 +1,45 @@
-local keymap = require('core.keymap')
-local nmap, imap, cmap, tmap = keymap.nmap, keymap.imap, keymap.cmap, keymap.tmap
-local expr = keymap.expr
-local opts = keymap.new_opts
-local cmd = keymap.cmd
+local map = require('core.keymap')
+local cmd = map.cmd
 
--- noremal remap
-nmap({
-  -- close buffer
-  { '<C-x>k', cmd('bdelete') },
-  -- save
-  { '<C-s>', cmd('write') },
-  -- buffer jump
-  { ']b', cmd('bn') },
-  { '[b', cmd('bp') },
-  -- force quit all
-  { '<C-q>', cmd('qa!') },
-  -- remove trailing white space
-  { '<Leader>t', cmd('TrimTrailingWhitespace') },
-  -- window jump
-  { '<C-h>', '<C-w>h' },
-  { '<C-l>', '<C-w>l' },
-  { '<C-j>', '<C-w>j' },
-  { '<C-k>', '<C-w>k' },
-  -- resize window
-  { '<A-[>', cmd('vertical resize -5') },
-  { '<A-]>', cmd('vertical resize +5') },
+map.n({
+  ['<C-s>'] = cmd('write'),
+  ['<C-x>k'] = cmd('bdelete'),
+  ['<C-n'] = cmd('bn'),
+  ['<C-p'] = cmd('bp'),
+  ['<C-q>'] = cmd('qa!'),
+  --window
+  ['<C-h>'] = cmd('<C-w>h'),
+  ['<C-l>'] = cmd('<C-w>l'),
+  ['<C-j>'] = cmd('<C-w>j'),
+  ['<C-k>'] = cmd('<C-w>k'),
+  ['<A-[>'] = cmd('vertical resize -5'),
+  ['<A-]>'] = cmd('vertical resize +5'),
 })
 
--- insertmode remap
-imap({
-  { '<C-w>', '<C-[>diwa' },
-  { '<C-h>', '<Bs>' },
-  { '<C-d>', '<Del>' },
-  { '<C-u>', '<C-G>u<C-u>' },
-  { '<C-b>', '<Left>' },
-  { '<C-f>', '<Right>' },
-  { '<C-a>', '<Esc>^i' },
-  { '<C-j>', '<Esc>o' },
-  { '<C-k>', '<Esc>O' },
-  { '<C-s>', '<ESC>:w<CR>' },
-  {
-    '<C-e>',
-    function()
-      return vim.fn.pumvisible() == 1 and '<C-e>' or '<End>'
-    end,
-    opts(expr),
-  },
+map.i({
+  ['<C-w>'] = cmd('<C-[>diwa'),
+  ['<C-h>'] = cmd('<Bs>'),
+  ['<C-d>'] = cmd('<Del>'),
+  ['<C-u>'] = cmd('<C-G>u<C-u>'),
+  ['<C-b>'] = cmd('<Left>'),
+  ['<C-f>'] = cmd('<Right>'),
+  ['<C-a>'] = cmd('<Esc>^i'),
+  ['<C-j>'] = cmd('<Esc>o'),
+  ['<C-k>'] = cmd('<Esc>O'),
+  ['<C-s>'] = cmd('<ESC>:w<CR>'),
 })
 
--- commandline remap
-cmap({
-  { '<C-b>', '<Left>' },
-  { '<C-f>', '<Right>' },
-  { '<C-a>', '<Home>' },
-  { '<C-e>', '<End>' },
-  { '<C-d>', '<Del>' },
-  { '<C-h>', '<BS>' },
+map.i('<c-e>', function()
+  return vim.fn.pumvisible() == 1 and '<C-e>' or '<End>'
+end, { expr = true })
+
+map.c({
+  ['<C-b>'] = cmd('<Left>'),
+  ['<C-f>'] = cmd('<Right>'),
+  ['<C-a>'] = cmd('<Home>'),
+  ['<C-e>'] = cmd('<End>'),
+  ['<C-d>'] = cmd('<Del>'),
+  ['<C-h>'] = cmd('<BS>'),
 })
 
-tmap({ '<Esc>', [[<C-\><C-n>]] })
+map.t('<Esc>', [[<C-\><C-n>]])
