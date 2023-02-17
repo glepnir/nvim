@@ -85,10 +85,7 @@ local function epoch()
   local map = require('core.keymap')
 
   local opt = { expr = true, remap = true }
-  map.i({
-    { '<TAB>', map_tab, opt },
-    { '<CR>', map_cr, opt },
-  })
+  map.i({ ['<TAB>'] = map_tab, ['<CR>'] = map_cr }, opt)
 end
 
 return {
