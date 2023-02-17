@@ -82,16 +82,13 @@ local function map_cr()
 end
 
 local function epoch()
-  local keymap = require('core.keymap')
-  -- local imap = keymap.imap
-  -- local expr, remap = keymap.expr, keymap.remap
-  -- local opts = keymap.new_opts
+  local map = require('core.keymap')
 
-  -- imap({
-  -- tab key
-  --   { '<TAB>', map_tab, opts(expr, remap) },
-  --   { '<CR>', map_cr, opts(expr, remap) },
-  -- })
+  local opt = { expr = true, remap = true }
+  map.i({
+    { '<TAB>', map_tab, opt },
+    { '<CR>', map_cr, opt },
+  })
 end
 
 return {
