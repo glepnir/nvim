@@ -81,7 +81,11 @@ local function map_cr()
   end
 end
 
+local mapped = false
 local function epoch()
+  if mapped then
+    return
+  end
   local map = require('core.keymap')
 
   local opt = { expr = true, remap = true }

@@ -13,7 +13,6 @@ end
 
 vim.diagnostic.config({
   signs = true,
-  update_in_insert = true,
   severity_sort = true,
   virtual_text = {
     prefix = '🔥',
@@ -22,6 +21,7 @@ vim.diagnostic.config({
 })
 
 local function _attach(client, _)
+  vim.opt.omnifunc = 'v:lua.vim.lsp.omnifunc'
   client.server_capabilities.semanticTokensProvider = nil
 end
 
