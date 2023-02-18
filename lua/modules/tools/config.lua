@@ -59,6 +59,7 @@ function config.easyformat()
     cpp = {
       cmd = 'clang-format',
       args = { '-style=file', vim.api.nvim_buf_get_name(0) },
+      ignore_patterns = { 'neovim/*' },
       find = '.clang-format',
       stdin = false,
       lsp = false,
