@@ -1,3 +1,4 @@
+--based on @ii14 version
 local set_keymap = vim.api.nvim_set_keymap
 local buf_set_keymap = vim.api.nvim_buf_set_keymap
 
