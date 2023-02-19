@@ -50,25 +50,13 @@
 
 - cli bot support
 
-## Neovim Bot usage
+## Usage
+
+check out the cli tool `dope`
 
 ```
 ~/.config/nvim/dope help
 ```
-
-## 💭 About
-
-Hi there is my personal neovim config with neovim nightly, because i'm neovim member
-
-If you like my config and want to use it, Please see my other project [Cosynvim](https://github.com/glepnir/cosynvim), Cosy based on
-
-my config and have a detailed documentation tutorial. I don't like install too many plugins,It will 
-
-make my neovim very slow and wired. so I prefer to write it by my self.
-
-Don't limit yourself.
-
-&nbsp;
 
 
 ## Donate
