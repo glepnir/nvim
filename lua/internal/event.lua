@@ -70,3 +70,14 @@ api.nvim_create_autocmd({ 'InsertEnter' }, {
     require('internal.epoch').epoch()
   end,
 })
+
+--disable diagnostic in neovim test file *_spec.lua
+api.nvim_create_autocmd('FileType', {
+  pattern = 'lua',
+  callback = function(opt)
+    local fname = api.nvim_buf_get_name(opt.buf)
+    if fname:find('%w_spec%.lua') then
+      vim.diagnostic.disable(opt.buf)
+    end
+  end,
+})

@@ -1,11 +1,5 @@
 local api, fn = vim.api, vim.fn
 
-local function highlight_cursorword()
-  if vim.g.cursorword_highlight ~= false then
-    api.nvim_set_hl(0, 'CursorWord', { underline = true })
-  end
-end
-
 local function disable_cursorword()
   if vim.w.cursorword_id ~= 0 and vim.w.cursorword_id and vim.w.cursorword_match ~= 0 then
     fn.matchdelete(vim.w.cursorword_id)
@@ -54,8 +48,6 @@ local function cursor_moved(buf)
   end
   matchadd()
 end
-
-highlight_cursorword()
 
 return {
   cursor_moved = cursor_moved,

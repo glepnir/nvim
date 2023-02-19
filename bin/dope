@@ -5,7 +5,7 @@ local arguments = {
   update = true,
   clean = true,
   snapshot = true,
-  debug = true,
+  dmodule = true,
   help = true,
   modules = true,
 }
@@ -24,7 +24,7 @@ else
   end
   argument = arg[1]
 
-  if arg[1] == 'debug' then
+  if arg[1] == 'dmodule' then
     local var = [[let g:disable_modules="]] .. arg[2] .. '"'
     os.execute("nvim --cmd '" .. var .. "'")
     return
