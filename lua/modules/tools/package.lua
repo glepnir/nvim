@@ -1,13 +1,6 @@
 local package = require('core.pack').package
 local conf = require('modules.tools.config')
 
-package({
-  'kristijanhusak/vim-dadbod-ui',
-  cmd = { 'DBUIToggle', 'DBUIAddConnection', 'DBUI' },
-  config = conf.vim_dadbod_ui,
-  dependencies = { 'tpope/vim-dadbod' },
-})
-
 package({ 'glepnir/coman.nvim', dev = true, event = 'BufRead' })
 
 package({
