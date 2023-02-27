@@ -12,6 +12,9 @@ function config.dashboard()
       week_header = {
         enable = true,
       },
+      project = {
+        enable = true,
+      },
       disable_move = true,
       shortcut = {
         { desc = 'Update', icon = ' ', group = '@variable', action = 'Lazy update', key = 'u' },
@@ -38,7 +41,7 @@ function config.dashboard()
         },
       },
     },
-    -- preivew = {
+    -- preview = {
     --   command = 'cat | lolcat -F 0.3',
     --   file_path = vim.env.HOME .. '/.config/nvim/static/neovim.cat',
     --   file_height = 11,

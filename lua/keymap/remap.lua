@@ -12,8 +12,8 @@ map.n({
   ['<C-l>'] = '<C-w>l',
   ['<C-j>'] = '<C-w>j',
   ['<C-k>'] = '<C-w>k',
-  ['<A-[>'] = 'vertical resize -5',
-  ['<A-]>'] = 'vertical resize +5',
+  ['<A-[>'] = cmd('vertical resize -5'),
+  ['<A-]>'] = cmd('vertical resize +5'),
 })
 
 map.i({

@@ -10,6 +10,11 @@ function config.template_nvim()
 end
 
 function config.easyformat()
+  local prettier = {
+    cmd = 'prettier',
+    args = { '--stdin-filepath', vim.api.nvim_buf_get_name(0) },
+    stdin = true,
+  }
   require('easyformat').setup({
     fmt_on_save = true,
     c = {
@@ -26,6 +31,12 @@ function config.easyformat()
       ignore_patterns = { 'neovim/*' },
       find = '.clang-format',
       stdin = false,
+      lsp = false,
+    },
+    rust = {
+      cmd = 'rustfmt',
+      args = {},
+      stdin = true,
       lsp = false,
     },
     go = {
@@ -45,6 +56,8 @@ function config.easyformat()
       stdin = true,
       lsp = false,
     },
+    typescript = prettier,
+    vue = prettier,
   })
 end
 
