@@ -24,24 +24,18 @@ package({
   dependencies = { 'nvim-tree/nvim-web-devicons' },
 })
 
-local enable_indent_filetype = {
-  'go',
-  'lua',
-  'sh',
-  'rust',
-  'cpp',
-  'typescript',
-  'typescriptreact',
-  'javascript',
-  'json',
-  'python',
-}
-
-package({
-  'lukas-reineke/indent-blankline.nvim',
-  ft = enable_indent_filetype,
-  config = conf.indent_blankline,
-})
+-- local enable_indent_filetype = {
+--   'go',
+--   'lua',
+--   'sh',
+--   'rust',
+--   'cpp',
+--   'typescript',
+--   'typescriptreact',
+--   'javascript',
+--   'json',
+--   'python',
+-- }
 
 package({
   'lewis6991/gitsigns.nvim',

@@ -17,7 +17,7 @@ map.n({
   ['K'] = cmd('Lspsaga hover_doc'),
   ['ga'] = cmd('Lspsaga code_action'),
   ['gd'] = cmd('Lspsaga peek_definition'),
-  ['gD'] = cmd('lua vim.lsp.buf.definition()'),
+  ['gD'] = cmd('Lspsaga goto_definition'),
   ['gr'] = cmd('Lspsaga rename'),
   ['gh'] = cmd('Lspsaga lsp_finder'),
   ['<Leader>o'] = cmd('Lspsaga outline'),
