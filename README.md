@@ -74,7 +74,6 @@ check out the cli tool `dope`
 [neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)  
 [nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)  
 [nvim-treesitter/nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)  
-[lukas-reineke/indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim)  
 [nvim-telescope/telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)  
 [nvim-telescope/telescope-file-browser.nvim](https://github.com/nvim-telescope/telescope-file-browser.nvim)  
 [nvim-telescope/telescope-fzy-native.nvim](https://github.com/nvim-telescope/telescope-fzy-native.nvim)  
