@@ -2,6 +2,8 @@ local map = require('core.keymap')
 local cmd = map.cmd
 
 map.n({
+  ['j'] = cmd('gj'),
+  ['k'] = cmd('gk'),
   ['<C-s>'] = cmd('write'),
   ['<C-x>k'] = cmd('bdelete'),
   ['<C-n>'] = cmd('bn'),
