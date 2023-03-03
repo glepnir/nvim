@@ -60,43 +60,38 @@ check out the cli tool `dope`
 
 ## List
 
-[glepnir/dashboard-nvim](https://github.com/glepnir/dashboard-nvim)   Fancy Start Screen
-[glepnir/flipped.nvim](https://github.com/glepnir/flipped.nvim)       Colorscheme
-[glepnir/whiskyline.nvim](https://github.com/glepnir/whiskyline.nvim) Async and blazying fast than
-any statusline
-[glepnir/template.nvim](https://github.com/glepnir/template.nvim)     Fast insert template to file
-[glepnir/lspsaga.nvim](https://github.com/glepnir/lspsaga.nvim)       Enhance built-in lsp
-[glepnir/easyformat.nvim](https://github.com/glepnir/easyformat.nvim) Async Format
-[glepnir/dbsession.nvim](https://github.com/glepnir/dbsession.nvim)   Simple session plugin
-[glepnir/coman.nvim](https://github.com/glepnir/coman.nvim)           Comment and generate Annoation
-[glepnir/hlsearch.nvim](https://github.com/glepnir/hlsearch.nvim)     Auto hide the search highlight
-[glepnir/mutchar.nvim](https://github.com/glepnir/muchar.nvim)        Character change
-[glepnir/gitsigns.nvim](https://github.com/glepnir/gitsigns.nvim)     Show git info
-[neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)     Built-in lsp
-[nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)  Highlight
-[nvim-treesitter/nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)  highlight object
-[nvim-telescope/telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)  Fuzzy search
-[nvim-telescope/telescope-file-browser.nvim](https://github.com/nvim-telescope/telescope-file-browser.nvim)  File management
-[nvim-telescope/telescope-fzy-native.nvim](https://github.com/nvim-telescope/telescope-fzy-native.nvim)  Fuzzy search algothrim
-[nvim-lua/plenary.nvim](https://github.com/nvim-lua/plenary.nvim)      Telescope depend
-[nvim-tree/nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons)  Icon
-[L3MON4D3/LuaSnip](https;//github.com/L3MON4D3/LuaSnip)                Snippet
-[ii14/emmylua-nvim](https://github.com/ii14/emmylua-nvim)              Neovim api doc
-[windwp/nvim-autopairs](https://github.com/windwp/nvim-autopairs)      Auto pairs
-[phazzon/hop.nvim](https://github.com/phazzon/hop.nvim)                Fast Move
-[norcalli/nvim-colorizer.lua](https://github.com/norcalli/nvim-colorizer.lua) Show color in color
-hex code
+| plugin | introduce|
+| --     |    --    |
+| [glepnir/dashboard-nvim](https://github.com/glepnir/dashboard-nvim) |  Fancy Start Screen |
+| [glepnir/flipped.nvim](https://github.com/glepnir/flipped.nvim)      | Colorscheme  |
+| [glepnir/whiskyline.nvim](https://github.com/glepnir/whiskyline.nvim) | Async and blazying fast than any statusline |
+| [glepnir/template.nvim](https://github.com/glepnir/template.nvim) |    Fast insert template to file|
+| [glepnir/lspsaga.nvim](https://github.com/glepnir/lspsaga.nvim)  |     Enhance built-in lsp |
+| [glepnir/easyformat.nvim](https://github.com/glepnir/easyformat.nvim) | Async Format |
+| [glepnir/dbsession.nvim](https://github.com/glepnir/dbsession.nvim)|   Simple session plugin|
+| [glepnir/coman.nvim](https://github.com/glepnir/coman.nvim)         |  Comment and generate Annoation |
+| [glepnir/hlsearch.nvim](https://github.com/glepnir/hlsearch.nvim)   |  Auto hide the search highlight |
+| [glepnir/mutchar.nvim](https://github.com/glepnir/muchar.nvim) |        Character change |
+| [glepnir/gitsigns.nvim](https://github.com/glepnir/gitsigns.nvim) |    Show git info |
+| [neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) |    Built-in lsp |
+| [nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) |  Highlight
+| [nvim-treesitter/nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)  | highlight object |
+| [nvim-telescope/telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) |  Fuzzy search |
+| [nvim-telescope/telescope-file-browser.nvim](https://github.com/nvim-telescope/telescope-file-browser.nvim) |  File management |
+| [nvim-telescope/telescope-fzy-native.nvim](https://github.com/nvim-telescope/telescope-fzy-native.nvim)  | Fuzzy search algothrim |
+| [nvim-lua/plenary.nvim](https://github.com/nvim-lua/plenary.nvim) |      Telescope depend|
+| [nvim-tree/nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) |  Icon |
+| [L3MON4D3/LuaSnip](https;//github.com/L3MON4D3/LuaSnip)        |      Snippet |
+| [ii14/emmylua-nvim](https://github.com/ii14/emmylua-nvim)        | Neovim api doc|
+| [windwp/nvim-autopairs](https://github.com/windwp/nvim-autopairs) |    Auto pairs|
+| [phazzon/hop.nvim](https://github.com/phazzon/hop.nvim)   |         Fast Move |
+| [norcalli/nvim-colorizer.lua](https://github.com/norcalli/nvim-colorizer.lua) | Show color in color hex code|
 
 ## Donate
 [![](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/bobbyhub)
 
 If you'd like to support my work financially, buy me a drink through [paypal](https://paypal.me/bobbyhub)
 
-<p align="center">
-  <img
-    src="https://raw.githubusercontent.com/catppuccin/catppuccin/dev/assets/footers/gray0_ctp_on_line.svg?sanitize=true"
-  />
-</p>
 <p align="center">
   Copyright &copy; 2020-present
   <a href="https://github.com/glepnir" target="_blank">Raphael</a>
