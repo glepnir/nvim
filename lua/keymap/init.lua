@@ -49,6 +49,14 @@ end)
 
 --template.nvim
 map.n('<Leader>t', function()
+  local tmp_name
+  if vim.bo.filetype == 'lua' then
+    tmp_name = 'nvim_temp'
+  end
+  if tmp_name then
+    vim.cmd('Template ' .. tmp_name)
+    return
+  end
   return ':Template '
 end, { expr = true })
 
