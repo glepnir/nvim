@@ -19,7 +19,7 @@ package({
 
 package({
   'norcalli/nvim-colorizer.lua',
-  ft = { 'lua', 'css', 'html', 'sass', 'less', 'typescriptreact' },
+  ft = { 'lua', 'css', 'html', 'sass', 'less', 'typescriptreact', 'conf' },
   config = function()
     require('colorizer').setup()
   end,
