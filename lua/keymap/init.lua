@@ -26,7 +26,6 @@ map.n({
   ['<Leader>sl'] = cmd('SessionLoad'),
   -- Telescope
   ['<Leader>a'] = cmd('Telescope app'),
-  ['<Leader>j'] = cmd('Telescope buffers'),
   ['<Leader>fa'] = cmd('Telescope live_grep'),
   ['<Leader>fs'] = cmd('Telescope grep_string'),
   ['<Leader>ff'] = cmd('Telescope find_files find_command=rg,--ignore,--hidden,--files'),
@@ -39,6 +38,8 @@ map.n({
   -- hop.nvim
   ['f'] = cmd('HopWordAC'),
   ['F'] = cmd('HopWordBC'),
+  -- flybuf.nvim
+  ['<Leader>j'] = cmd('FlyBuf'),
 })
 
 map.n('<Leader>e', function()

@@ -1,6 +1,15 @@
 local package = require('core.pack').package
 local conf = require('modules.tools.config')
 
+package({
+  'glepnir/flybuf.nvim',
+  dev = true,
+  cmd = 'FlyBuf',
+  config = function()
+    require('flybuf').setup({})
+  end,
+})
+
 package({ 'glepnir/coman.nvim', dev = true, event = 'BufRead' })
 
 package({
