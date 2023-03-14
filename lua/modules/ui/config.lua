@@ -17,25 +17,31 @@ function config.dashboard()
       },
       disable_move = true,
       shortcut = {
-        { desc = 'Update', icon = ' ', group = '@variable', action = 'Lazy update', key = 'u' },
+        {
+          desc = 'Update',
+          icon = ' ',
+          group = '@variable.builtin',
+          action = 'Lazy update',
+          key = 'u',
+        },
         {
           icon = ' ',
           desc = 'Files',
-          group = '@variable',
+          group = '@number',
           action = 'Telescope find_files',
           key = 'f',
         },
         {
           icon = ' ',
           desc = 'Apps',
-          group = '@variable',
+          group = 'String',
           action = 'Telescope app',
           key = 'a',
         },
         {
           icon = ' ',
           desc = 'dotfiles',
-          group = '@variable',
+          group = 'Constant',
           action = 'Telescope dotfiles',
           key = 'd',
         },
@@ -47,6 +53,11 @@ function config.dashboard()
     --   file_height = 11,
     --   file_width = 70,
     -- },
+  })
+  vim.api.nvim_create_autocmd('TabNewEntered', {
+    callback = function()
+      vim.cmd('Dashboard')
+    end,
   })
 end
 
