@@ -1,5 +1,3 @@
-local package = require('core.pack').package
-
 local function lsp_fts(type)
   type = type or nil
   local fts = {}
@@ -50,7 +48,7 @@ local function diag_config()
   })
 end
 
-package({
+packadd({
   'neovim/nvim-lspconfig',
   dev = true,
   ft = lsp_fts(),
@@ -60,22 +58,11 @@ package({
       loaded = true
     end
     require('modules.lsp.backend')
-
-    -- only load frontend when I write frontend project
-    vim.api.nvim_create_autocmd('FileType', {
-      pattern = lsp_fts('frontend'),
-      callback = function(opt)
-        if not package.loaded['modules.lsp.frontend'] then
-          require('modules.lsp.frontend')
-          vim.api.nvim_del_autocmd(opt.id)
-        end
-      end,
-      desc = 'Load frontend servers by filetype',
-    })
+    require('modules.lsp.frontend')
   end,
 })
 
-package({
+packadd({
   'glepnir/lspsaga.nvim',
   event = 'LspAttach',
   cmd = 'Lspsaga term_toggle',

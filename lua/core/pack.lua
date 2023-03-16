@@ -56,7 +56,7 @@ function pack:boot_strap()
   end
 end
 
-function pack.package(repo)
+_G.packadd = function(repo)
   if not pack.repos then
     pack.repos = {}
   end

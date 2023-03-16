@@ -1,7 +1,6 @@
-local package = require('core.pack').package
 local conf = require('modules.ui.config')
 
-package({
+packadd({
   'glepnir/porcelain.nvim',
   dev = true,
   config = function()
@@ -9,7 +8,7 @@ package({
   end,
 })
 
-package({
+packadd({
   'glepnir/dashboard-nvim',
   dev = true,
   event = 'VimEnter',
@@ -17,27 +16,14 @@ package({
   dependencies = { 'nvim-tree/nvim-web-devicons' },
 })
 
-package({
+packadd({
   'glepnir/whiskyline.nvim',
   dev = true,
   config = conf.whisky,
   dependencies = { 'nvim-tree/nvim-web-devicons' },
 })
 
--- local enable_indent_filetype = {
---   'go',
---   'lua',
---   'sh',
---   'rust',
---   'cpp',
---   'typescript',
---   'typescriptreact',
---   'javascript',
---   'json',
---   'python',
--- }
-
-package({
+packadd({
   'lewis6991/gitsigns.nvim',
   dev = true,
   event = { 'BufRead', 'BufNewFile' },

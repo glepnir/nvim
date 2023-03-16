@@ -1,7 +1,6 @@
-local package = require('core.pack').package
 local conf = require('modules.tools.config')
 
-package({
+packadd({
   'glepnir/flybuf.nvim',
   dev = true,
   cmd = 'FlyBuf',
@@ -10,23 +9,23 @@ package({
   end,
 })
 
-package({ 'glepnir/coman.nvim', dev = true, event = 'BufRead' })
+packadd({ 'glepnir/coman.nvim', dev = true, event = 'BufRead' })
 
-package({
+packadd({
   'glepnir/template.nvim',
   dev = true,
   ft = { 'c', 'cpp', 'rust', 'lua', 'go' },
   config = conf.template_nvim,
 })
 
-package({
+packadd({
   'glepnir/easyformat.nvim',
   dev = true,
   ft = { 'c', 'cpp', 'rust', 'lua', 'go', 'typescript' },
   config = conf.easyformat,
 })
 
-package({
+packadd({
   'norcalli/nvim-colorizer.lua',
   ft = { 'lua', 'css', 'html', 'sass', 'less', 'typescriptreact', 'conf' },
   config = function()
@@ -34,23 +33,23 @@ package({
   end,
 })
 
-package({
+packadd({
   'glepnir/mutchar.nvim',
   dev = true,
   ft = { 'c', 'cpp', 'go', 'rust', 'lua' },
   config = conf.mut_char,
 })
 
-package({
+packadd({
   'glepnir/hlsearch.nvim',
   event = 'BufRead',
   config = true,
 })
 
-package({
+packadd({
   'glepnir/dbsession.nvim',
   cmd = { 'SessionSave', 'SessionLoad', 'SessionDelete' },
   opts = true,
 })
 
-package({ 'phaazon/hop.nvim', event = 'BufRead', config = conf.hop })
+packadd({ 'phaazon/hop.nvim', event = 'BufRead', config = conf.hop })

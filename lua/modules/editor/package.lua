@@ -1,19 +1,18 @@
-local package = require('core.pack').package
 local conf = require('modules.editor.config')
 
-package({
+packadd({
   'L3MON4D3/LuaSnip',
   event = 'InsertCharPre',
   config = conf.lua_snip,
 })
 
-package({
+packadd({
   'windwp/nvim-autopairs',
   event = 'InsertEnter',
   config = conf.auto_pairs,
 })
 
-package({
+packadd({
   'nvim-telescope/telescope.nvim',
   cmd = 'Telescope',
   config = conf.telescope,
@@ -24,7 +23,7 @@ package({
   },
 })
 
-package({
+packadd({
   'nvim-treesitter/nvim-treesitter',
   event = 'BufRead',
   run = ':TSUpdate',
@@ -34,7 +33,7 @@ package({
   },
 })
 
-package({
+packadd({
   'ii14/emmylua-nvim',
   ft = 'lua',
 })
