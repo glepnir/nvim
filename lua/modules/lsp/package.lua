@@ -63,10 +63,11 @@ package({
 
     -- only load frontend when I write frontend project
     vim.api.nvim_create_autocmd('FileType', {
-      patterns = lsp_fts('frontend'),
-      callback = function()
+      pattern = lsp_fts('frontend'),
+      callback = function(opt)
         if not package.loaded['modules.lsp.frontend'] then
           require('modules.lsp.frontend')
+          vim.api.nvim_del_autocmd(opt.id)
         end
       end,
       desc = 'Load frontend servers by filetype',
