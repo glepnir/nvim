@@ -21,7 +21,7 @@ packadd({
 packadd({
   'glepnir/easyformat.nvim',
   dev = true,
-  ft = { 'c', 'cpp', 'rust', 'lua', 'go', 'typescript' },
+  ft = { 'c', 'cpp', 'rust', 'lua', 'go', 'typescript', 'javascrip', 'javascriptreact' },
   config = conf.easyformat,
 })
 

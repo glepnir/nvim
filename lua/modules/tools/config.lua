@@ -57,7 +57,9 @@ function config.easyformat()
       lsp = false,
     },
     typescript = prettier,
-    vue = prettier,
+    typescriptreact = prettier,
+    javascript = prettier,
+    javascriptreact = prettier,
   })
 end
 
