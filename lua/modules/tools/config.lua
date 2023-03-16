@@ -10,57 +10,13 @@ function config.template_nvim()
 end
 
 function config.easyformat()
-  local prettier = {
-    cmd = 'prettier',
-    args = { '--stdin-filepath', vim.api.nvim_buf_get_name(0) },
-    stdin = true,
-  }
-  require('easyformat').setup({
+  local get_config = require('easyformat.config').get_config
+  local configs =
+    get_config({ 'c', 'cpp', 'lua', 'rust', 'go', 'javascriptreact', 'typescriptreact' })
+  local params = vim.tbl_extend('keep', {
     fmt_on_save = true,
-    c = {
-      cmd = 'clang-format',
-      args = { '-style=file', vim.api.nvim_buf_get_name(0) },
-      ignore_patterns = { 'neovim/*' },
-      find = '.clang-format',
-      stdin = false,
-      lsp = false,
-    },
-    cpp = {
-      cmd = 'clang-format',
-      args = { '-style=file', vim.api.nvim_buf_get_name(0) },
-      ignore_patterns = { 'neovim/*' },
-      find = '.clang-format',
-      stdin = false,
-      lsp = false,
-    },
-    rust = {
-      cmd = 'rustfmt',
-      args = {},
-      stdin = true,
-      lsp = false,
-    },
-    go = {
-      cmd = 'golines',
-      args = { '--max-len=80', vim.api.nvim_buf_get_name(0) },
-      stdin = false,
-      hook = function()
-        vim.lsp.buf.code_action({ context = { only = { 'source.organizeImports' } }, apply = true })
-      end,
-      lsp = true,
-    },
-    lua = {
-      cmd = 'stylua',
-      ignore_patterns = { '%pspec', 'neovim/*' },
-      find = '.stylua.toml',
-      args = { '-' },
-      stdin = true,
-      lsp = false,
-    },
-    typescript = prettier,
-    typescriptreact = prettier,
-    javascript = prettier,
-    javascriptreact = prettier,
-  })
+  }, configs)
+  require('easyformat').setup(params)
 end
 
 function config.mut_char()
