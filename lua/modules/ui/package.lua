@@ -2,10 +2,10 @@ local package = require('core.pack').package
 local conf = require('modules.ui.config')
 
 package({
-  'glepnir/flipped.nvim',
+  'glepnir/porcelain.nvim',
   dev = true,
   config = function()
-    vim.cmd.colorscheme('flipped')
+    vim.cmd.colorscheme('porcelain')
   end,
 })
 

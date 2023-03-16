@@ -1,33 +1,26 @@
+local M = {}
 local lspconfig = require('lspconfig')
 
-local signs = {
-  Error = ' ',
-  Warn = ' ',
-  Info = ' ',
-  Hint = ' ',
-}
-for type, icon in pairs(signs) do
-  local hl = 'DiagnosticSign' .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
-
-vim.diagnostic.config({
-  signs = true,
-  severity_sort = true,
-  virtual_text = {
-    prefix = '🔥',
-    source = true,
-  },
-})
-
-local function _attach(client, _)
+---@diagnostic disable-next-line: unused-local
+function M._attach(client, bufnr)
   vim.opt.omnifunc = 'v:lua.vim.lsp.omnifunc'
   client.server_capabilities.semanticTokensProvider = nil
 end
 
 lspconfig.gopls.setup({
   cmd = { 'gopls', 'serve' },
-  on_attach = _attach,
+  on_attach = function(client, _)
+    local orignal = vim.notify
+    local mynotify = function(msg, level, opts)
+      if msg == 'No code actions available' then
+        return
+      end
+      orignal(msg, level, opts)
+    end
+
+    vim.notify = mynotify
+    M._attach(client)
+  end,
   init_options = {
     usePlaceholders = true,
     completeUnimported = true,
@@ -43,7 +36,7 @@ lspconfig.gopls.setup({
 })
 
 lspconfig.lua_ls.setup({
-  on_attach = _attach,
+  on_attach = M._attach,
   settings = {
     Lua = {
       diagnostics = {
@@ -69,7 +62,7 @@ lspconfig.lua_ls.setup({
 })
 
 lspconfig.clangd.setup({
-  on_attach = _attach,
+  on_attach = M._attach,
   cmd = {
     'clangd',
     '--background-index',
@@ -80,7 +73,7 @@ lspconfig.clangd.setup({
 })
 
 lspconfig.rust_analyzer.setup({
-  on_attach = _attach,
+  on_attach = M._attach,
   settings = {
     ['rust-analyzer'] = {
       imports = {
@@ -106,12 +99,12 @@ local servers = {
   'pyright',
   'bashls',
   'zls',
-  'jsonls',
-  'tsserver',
 }
 
 for _, server in ipairs(servers) do
-  lspconfig[server].setup({})
+  lspconfig[server].setup({
+    on_attach = M._attach,
+  })
 end
 
 vim.lsp.handlers['workspace/diagnostic/refresh'] = function(_, _, ctx)
@@ -120,3 +113,5 @@ vim.lsp.handlers['workspace/diagnostic/refresh'] = function(_, _, ctx)
   vim.diagnostic.reset(ns, bufnr)
   return true
 end
+
+return M

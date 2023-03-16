@@ -1,37 +1,6 @@
 local package = require('core.pack').package
 local conf = require('modules.editor.config')
 
-local enable_lsp_filetype = {
-  'go',
-  'lua',
-  'sh',
-  'rust',
-  'c',
-  'cpp',
-  'zig',
-  'typescript',
-  'typescriptreact',
-  'json',
-  'python',
-  'elixir',
-}
-
-package({
-  'neovim/nvim-lspconfig',
-  dev = true,
-  ft = enable_lsp_filetype,
-  config = function()
-    require('modules.editor.lspconfig')
-  end,
-})
-
-package({
-  'glepnir/lspsaga.nvim',
-  event = 'LspAttach',
-  dev = true,
-  config = conf.lspsaga,
-})
-
 package({
   'L3MON4D3/LuaSnip',
   event = 'InsertCharPre',

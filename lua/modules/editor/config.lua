@@ -1,13 +1,5 @@
 local config = {}
 
-function config.lspsaga()
-  require('lspsaga').setup({
-    symbol_in_winbar = {
-      ignore_patterns = { '%w_spec' },
-    },
-  })
-end
-
 function config.lua_snip()
   local ls = require('luasnip')
   ls.config.set_config({
