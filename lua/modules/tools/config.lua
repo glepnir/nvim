@@ -13,6 +13,7 @@ function config.easyformat()
   local configs = require('easyformat.config')
   configs.lua = {
     ignore_patterns = { '%pspec', 'neovim/*' },
+    find = nil,
   }
   configs.c = {
     ignore_patterns = { 'neovim/*' },
