@@ -10,13 +10,22 @@ function config.template_nvim()
 end
 
 function config.easyformat()
-  local get_config = require('easyformat.config').get_config
-  local configs =
-    get_config({ 'c', 'cpp', 'lua', 'rust', 'go', 'javascriptreact', 'typescriptreact' })
-  local params = vim.tbl_extend('keep', {
+  local configs = require('easyformat.config')
+  configs.lua = {
+    ignore_patterns = { '%pspec', 'neovim/*' },
+  }
+  configs.c = {
+    ignore_patterns = { 'neovim/*' },
+  }
+  configs.use_default({
+    'cpp',
+    'go',
+    'rust',
+    'javascriptreact',
+  })
+  require('easyformat').setup({
     fmt_on_save = true,
-  }, configs)
-  require('easyformat').setup(params)
+  })
 end
 
 function config.mut_char()
