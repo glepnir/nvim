@@ -20,14 +20,14 @@ function config.dashboard()
         {
           desc = 'Update',
           icon = ' ',
-          group = '@variable.builtin',
+          group = 'Operator',
           action = 'Lazy update',
           key = 'u',
         },
         {
           icon = ' ',
           desc = 'Files',
-          group = '@number',
+          group = 'Function',
           action = 'Telescope find_files',
           key = 'f',
         },
