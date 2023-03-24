@@ -20,6 +20,15 @@ lspconfig.gopls.setup({
 
     vim.notify = mynotify
     M._attach(client)
+    -- vim.opt.omnifunc = "v:lua.vim.lsp.omnifunc"
+    -- if client.name == "gopls" and not client.server_capabilities.semanticTokensProvider then
+    -- 	local semantic = client.config.capabilities.textDocument.semanticTokens
+    -- 	client.server_capabilities.semanticTokensProvider = {
+    -- 		full = true,
+    -- 		legend = { tokenModifiers = semantic.tokenModifiers, tokenTypes = semantic.tokenTypes },
+    -- 		range = true,
+    -- 	}
+    -- end
   end,
   init_options = {
     usePlaceholders = true,
@@ -30,6 +39,7 @@ lspconfig.gopls.setup({
       analyses = {
         unusedparams = true,
       },
+      -- semanticTokens = true,
       staticcheck = true,
     },
   },

@@ -13,6 +13,7 @@ lspconfig.tsserver.setup({
 
 -- npm i -g vscode-langservers-extracted
 lspconfig.eslint.setup({
+  filetypes = { 'javascriptreact', 'typescriptreact' },
   on_attach = function(client, bufnr)
     _attach(client, bufnr)
     vim.api.nvim_create_autocmd('BufWritePre', {

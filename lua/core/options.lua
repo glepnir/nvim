@@ -44,7 +44,7 @@ opt.showcmd = false
 opt.cmdheight = 0
 opt.laststatus = 3
 opt.list = true
---eol:↲
+
 opt.listchars = 'tab:»·,nbsp:+,trail:·,extends:→,precedes:←'
 opt.pumblend = 10
 opt.winblend = 10
@@ -71,8 +71,7 @@ opt.spelloptions = 'camel'
 
 opt.textwidth = 100
 opt.colorcolumn = '100'
--- opt.conceallevel = 2
--- opt.concealcursor = 'niv'
+
 if vim.fn.has('nvim-0.9') == 1 then
   local function get_signs()
     local buf = vim.api.nvim_get_current_buf()
@@ -90,13 +89,20 @@ if vim.fn.has('nvim-0.9') == 1 then
         sign = s
       end
     end
-    local components = {
-      sign and ('%#' .. sign.texthl .. '#' .. sign.text .. '%*') or ' ',
-      '%=',
-      [[%{v:virtnum ? repeat(" ", float2nr(ceil(log10(v:lnum))))."↳":v:lnum}]],
-      git_sign and ('%#' .. git_sign.texthl .. '#' .. git_sign.text .. '%*') or '  ',
-    }
-    return table.concat(components, '')
+    if not sign then
+      sign = {
+        text = ' ',
+        texthl = 'StcFill',
+      }
+    end
+
+    return '%#'
+      .. sign.texthl
+      .. '#'
+      .. sign.text
+      .. '%*%='
+      .. [[%{v:virtnum ? repeat(" ", float2nr(ceil(log10(v:lnum))))."↳":v:lnum}]]
+      .. (git_sign and ('%#' .. git_sign.texthl .. '#' .. git_sign.text .. '%*') or ' ')
   end
 
   opt.stc = [[%!v:lua.show_stc()]]

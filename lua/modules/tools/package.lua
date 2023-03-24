@@ -53,3 +53,10 @@ packadd({
 })
 
 packadd({ 'phaazon/hop.nvim', event = 'BufRead', config = conf.hop })
+
+packadd({
+  'glepnir/nerdicons.nvim',
+  dev = true,
+  cmd = 'NerdIcons',
+  opts = true,
+})
