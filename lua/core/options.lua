@@ -80,29 +80,32 @@ if vim.fn.has('nvim-0.9') == 1 then
     end, vim.fn.sign_getplaced(buf, { group = '*', lnum = vim.v.lnum })[1].signs)
   end
 
+  local function fill_space(count)
+    return '%#StcFill#' .. (' '):rep(count) .. '%*'
+  end
+
   function _G.show_stc()
-    local sign, git_sign
+    local sign, gitsign
     for _, s in ipairs(get_signs()) do
       if s.name:find('GitSign') then
-        git_sign = s
+        gitsign = '%#' .. s.texthl .. '#' .. s.text .. '%*'
       else
-        sign = s
+        sign = '%#' .. s.texthl .. '#' .. s.text .. '%*'
       end
     end
-    if not sign then
-      sign = {
-        text = ' ',
-        texthl = 'StcFill',
-      }
+
+    local function show_break()
+      if vim.v.virtnum > 0 then
+        return (' '):rep(math.floor(math.ceil(math.log10(vim.v.lnum))) - 1) .. '↳'
+      else
+        return vim.v.lnum
+      end
     end
 
-    return '%#'
-      .. sign.texthl
-      .. '#'
-      .. sign.text
-      .. '%*%='
-      .. [[%{v:virtnum ? repeat(" ", float2nr(ceil(log10(v:lnum))))."↳":v:lnum}]]
-      .. (git_sign and ('%#' .. git_sign.texthl .. '#' .. git_sign.text .. '%*') or ' ')
+    return (sign and sign or fill_space(2))
+      .. '%='
+      .. show_break()
+      .. (gitsign and gitsign or fill_space(2))
   end
 
   opt.stc = [[%!v:lua.show_stc()]]

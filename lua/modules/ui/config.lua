@@ -54,11 +54,6 @@ function config.dashboard()
     --   file_width = 70,
     -- },
   })
-  vim.api.nvim_create_autocmd('TabNewEntered', {
-    callback = function()
-      vim.cmd('Dashboard')
-    end,
-  })
 end
 
 function config.gitsigns()
