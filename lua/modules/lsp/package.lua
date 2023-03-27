@@ -41,10 +41,7 @@ local function diag_config()
   vim.diagnostic.config({
     signs = true,
     severity_sort = true,
-    virtual_text = {
-      prefix = '🔥',
-      source = true,
-    },
+    virtual_text = false,
   })
 end
 
@@ -69,6 +66,11 @@ packadd({
   dev = true,
   config = function()
     require('lspsaga').setup({
+      diagnostic = {
+        on_insert = true,
+        on_insert_follow = true,
+        insert_winblend = 60,
+      },
       symbol_in_winbar = {
         ignore_patterns = { '%w_spec' },
       },
