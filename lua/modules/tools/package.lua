@@ -48,6 +48,7 @@ packadd({
 
 packadd({
   'glepnir/dbsession.nvim',
+  dev = true,
   cmd = { 'SessionSave', 'SessionLoad', 'SessionDelete' },
   opts = true,
 })

@@ -1,14 +1,6 @@
 local conf = require('modules.ui.config')
 
 packadd({
-  'glepnir/porcelain.nvim',
-  dev = true,
-  config = function()
-    vim.cmd.colorscheme('porcelain')
-  end,
-})
-
-packadd({
   'glepnir/dashboard-nvim',
   dev = true,
   event = 'VimEnter',
@@ -24,7 +16,7 @@ packadd({
 })
 
 packadd({
-  'lewis6991/gitsigns.nvim',
+  'glepnir/gitsigns.nvim',
   dev = true,
   event = { 'BufRead', 'BufNewFile' },
   config = conf.gitsigns,

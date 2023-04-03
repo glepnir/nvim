@@ -47,12 +47,6 @@ function config.dashboard()
         },
       },
     },
-    -- preview = {
-    --   command = 'cat | lolcat -F 0.3',
-    --   file_path = vim.env.HOME .. '/.config/nvim/static/neovim.cat',
-    --   file_height = 11,
-    --   file_width = 70,
-    -- },
   })
 end
 
