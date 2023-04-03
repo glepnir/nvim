@@ -20,7 +20,7 @@ function config.dashboard()
         {
           desc = 'Update',
           icon = ' ',
-          group = 'Operator',
+          group = 'Include',
           action = 'Lazy update',
           key = 'u',
         },
