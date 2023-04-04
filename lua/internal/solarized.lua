@@ -1,7 +1,5 @@
 local function palette()
   return {
-    base04 = '#1d1f21',
-    -- base03 = '#081d29',
     base03 = '#002b36',
     base02 = '#073642',
     base01 = '#586e75',
@@ -10,9 +8,10 @@ local function palette()
     base1 = '#93a1a1',
     base2 = '#eee8d5',
     base3 = '#fdf6e3',
-    red = '#cb4b16',
-    yellow = '#b58900',
+    red = '#dc322f',
+    dorange = '#cb4b16',
     orange = '#d1702a',
+    yellow = '#b58900',
     magenta = '#d33682',
     violet = '#957FB8',
     blue = '#268bd2',
@@ -55,11 +54,11 @@ local function colorscheme()
   --orange yellow yellowgreen green greencyan cyan
   --blue deepblue voilet deepvoilet red dred
   local p = palette()
-  local lianzibai = '#e5d3aa'
+  -- local lianzibai = '#e5d3aa'
 
   local groups = {
     --Neovim Relate
-    { 'Normal', { fg = p.base1, bg = p.base03 } },
+    { 'Normal', { fg = p.base0, bg = p.base03 } },
     --signcolumn
     { 'SignColumn', { bg = p.base03 } },
     --buffer
@@ -71,16 +70,16 @@ local function colorscheme()
     { 'Whitespace', { fg = p.base02 } },
     --window
     { 'VertSplit', { fg = p.base02 } },
-    { 'Title', { fg = p.yellow } },
+    { 'Title', { fg = p.orange, bold = true } },
     --cursorline
     { 'Cursorline', { bg = p.base02 } },
     { 'CursorLineNr', { fg = p.base2 } },
     --pmenu
     { 'Pmenu', { bg = p.base02, fg = p.base1 } },
-    { 'PmenuSel', { bg = p.base2, fg = p.base00 } },
+    { 'PmenuSel', { fg = p.base2, bg = p.base00 } },
     { 'PmenuSbar', { bg = '#586e75' } },
     { 'PmenuThumb', { bg = p.base0 } },
-    { 'PmenuKind', { bg = p.base01, fg = p.blue } },
+    { 'PmenuKind', { bg = p.base02, fg = p.green } },
     { 'PmenuKindSel', { link = 'PmenuSel' } },
     { 'PmenuExtra', { link = 'Pmenu' } },
     { 'PmenuExtraSel', { link = 'PmenuSel' } },
@@ -93,7 +92,7 @@ local function colorscheme()
     --Error
     { 'ErrorMsg', { link = 'Error' } },
     --Markup
-    { 'TODO', { bg = p.blue, fg = p.base02 } },
+    { 'TODO', { bg = p.blue, fg = p.magenta } },
     { 'Conceal', { fg = p.green } },
     { 'Error', { fg = p.red } },
     { 'NonText', { link = 'Comment' } },
@@ -102,7 +101,7 @@ local function colorscheme()
     { 'FloatNormal', { link = 'Normal' } },
     { 'FloatShadow', { bg = p.base06 } },
     --Fold
-    { 'Folded', { fg = p.yjvoilet } },
+    { 'Folded', { fg = p.base0, bold = true } },
     { 'FoldColumn', { link = 'SignColumn' } },
     --Spell
     { 'SpellBad', { fg = p.magenta } },
@@ -113,16 +112,16 @@ local function colorscheme()
     { 'WarningMsg', { fg = p.magenta } },
     { 'MoreMsg', { fg = p.green } },
     --Internal
-    { 'NvimInternalError', { fg = p.notify_red } },
+    { 'NvimInternalError', { fg = p.red } },
     { 'Directory', { fg = p.blue } },
     --------------------------------------------------------
     ---@Langauge Relate
     ---@Identifier
-    { 'Identifier', { fg = lianzibai } },
+    { 'Identifier', { fg = p.blue } },
     -- various variable names
-    { '@variable', { link = 'Identifier' } },
+    { '@variable', { fg = p.base0 } },
     --built-in variable names (e.g. `this`)
-    { '@variable.builtin', { fg = p.green, italic = true } },
+    { '@variable.builtin', { fg = p.green } },
     { 'Constant', { fg = p.orange } },
     { '@constant.builtin', { link = 'Constant' } },
     -- constants defined by the preprocessor
@@ -134,21 +133,21 @@ local function colorscheme()
     --------------------------------------------------------
     ---@Keywords
     { 'Keyword', { fg = p.green } },
-    { '@keyword.function', { fg = p.red } },
-    { '@keyword.return', { fg = p.violet, italic = true } },
+    { '@keyword.function', { fg = p.dorange } },
+    { '@keyword.return', { fg = p.green, italic = true } },
     { '@keyword.operator', { link = 'Operator' } },
     --if else
     { 'Conditional', { link = 'Keyword' } },
     --for while
     { 'Repeat', { link = 'Conditional' } },
 
-    { 'Debug', { fg = p.red } },
+    { 'Debug', { fg = p.dorange } },
     { 'Label', { fg = p.violet } },
-    { 'PreProc', { fg = p.red } },
+    { 'PreProc', { fg = p.dorange } },
     { 'Include', { link = 'PreProc' } },
     { 'Exception', { fg = p.violet } },
-    { 'Statement', { fg = p.violet } },
-    { 'Special', { fg = p.yellow } },
+    { 'Statement', { fg = p.green } },
+    { 'Special', { fg = p.dorange } },
     --------------------------------------------------------
     ---@Types
     { 'Type', { fg = p.yellow } },
@@ -177,9 +176,9 @@ local function colorscheme()
     --------------------------------------------------------
     ---@Literals
     { 'String', { fg = p.cyan } },
-    { 'Number', { fg = p.magenta } },
-    { 'Boolean', { fg = p.orange } },
+    { 'Number', { fg = p.violet } },
     { 'Float', { link = 'Number' } },
+    { 'Boolean', { fg = p.orange } },
     --
     { 'Define', { link = 'PreProc' } },
     { 'Operator', { fg = '#938056' } },
@@ -190,7 +189,7 @@ local function colorscheme()
     { '@punctuation.delimiter', { link = '@punctuation.bracket' } },
     --------------------------------------------------------
     ---@Tag
-    { '@tag.html', { fg = p.blue } },
+    { '@tag.html', { fg = p.orange } },
     { '@tag.attribute.html', { link = '@property' } },
     { '@tag.delimiter.html', { link = '@punctuation.delimiter' } },
     { '@tag.javascript', { link = '@tag.html' } },
@@ -206,10 +205,10 @@ local function colorscheme()
     ---@Diff
     { 'DiffAdd', { fg = p.green } },
     { 'DiffChange', { fg = p.blue } },
-    { 'DiffDelete', { fg = p.red } },
-    { 'DiffText', { fg = p.red, bold = true } },
+    { 'DiffDelete', { fg = p.dorange } },
+    { 'DiffText', { fg = p.dorange, bold = true } },
     { 'diffAdded', { fg = p.green } },
-    { 'diffRemoved', { fg = p.red } },
+    { 'diffRemoved', { fg = p.dorange } },
     { 'diffChanged', { fg = p.blue } },
     { 'diffOldFile', { fg = p.yellow } },
     { 'diffNewFile', { fg = p.orange } },
@@ -219,7 +218,7 @@ local function colorscheme()
     { 'DiagnosticError', { link = 'Error' } },
     { 'DiagnosticWarn', { fg = p.yellow } },
     { 'DiagnosticInfo', { fg = p.blue } },
-    { 'DiagnosticHint', { fg = p.cyan } },
+    { 'DiagnosticHint', { fg = p.aqua } },
     { 'DiagnosticSignError', { link = 'DiagnosticError' } },
     { 'DiagnosticSignWarn', { link = 'DiagnosticWarn' } },
     { 'DiagnosticSignInfo', { link = 'DiagnosticInfo' } },
@@ -231,25 +230,25 @@ local function colorscheme()
     ---@plugin
     { 'GitGutterAdd', { fg = p.green } },
     { 'GitGutterChange', { fg = p.blue } },
-    { 'GitGutterDelete', { fg = p.red } },
-    { 'GitGutterChangeDelete', { fg = p.red } },
+    { 'GitGutterDelete', { fg = p.dorange } },
+    { 'GitGutterChangeDelete', { fg = p.dorange } },
     --dashboard
     { 'DashboardHeader', { fg = p.violet } },
     { 'DashboardFooter', { link = 'Comment' } },
     { 'DashboardProjectTitle', { fg = p.yellow, bold = true } },
     { 'DashboardProjectTitleIcon', { fg = p.violet } },
-    { 'DashboardProjectIcon', { fg = p.cyan } },
+    { 'DashboardProjectIcon', { fg = p.blue } },
     { 'DashboardMruTitle', { link = 'DashboardProjectTitle' } },
     { 'DashboardMruIcon', { link = 'DashboardProjectTitleIcon' } },
     { 'DashboardFiles', { fg = p.base0 } },
     { 'DashboardShortCut', { link = 'Comment' } },
     { 'DashboardShortCutIcon', { link = '@field' } },
     --Telescope
-    { 'TelescopePromptBorder', { bg = p.base04, fg = p.base04 } },
-    { 'TelescopePromptNormal', { bg = p.base04, fg = p.red } },
-    { 'TelescopeResultsBorder', { bg = p.base04, fg = p.base04 } },
+    { 'TelescopePromptBorder', { bg = p.base02, fg = p.base02 } },
+    { 'TelescopePromptNormal', { bg = p.base02, fg = p.dorange } },
+    { 'TelescopeResultsBorder', { bg = p.base02, fg = p.base02 } },
+    { 'TelescopePreviewBorder', { bg = p.base02, fg = p.base02 } },
     { 'TelescopeResultsNormal', { fg = p.base0 } },
-    { 'TelescopePreviewBorder', { bg = p.base04, fg = p.base04 } },
     { 'TelescopeSelectionCaret', { fg = p.yellow } },
     { 'TelescopeMatching', { fg = p.yellow } },
     --CursorWord

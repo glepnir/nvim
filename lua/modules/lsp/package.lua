@@ -41,9 +41,7 @@ local function diag_config()
   vim.diagnostic.config({
     signs = true,
     severity_sort = true,
-    virtual_text = {
-      prefix = '󰶺 ',
-    },
+    virtual_text = true,
   })
 end
 
