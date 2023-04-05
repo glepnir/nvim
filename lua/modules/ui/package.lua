@@ -16,8 +16,7 @@ packadd({
 })
 
 packadd({
-  'glepnir/gitsigns.nvim',
-  dev = true,
+  'lewis6991/gitsigns.nvim',
   event = { 'BufRead', 'BufNewFile' },
   config = conf.gitsigns,
 })

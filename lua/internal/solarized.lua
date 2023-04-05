@@ -51,10 +51,7 @@ local function in_vim(groups, p)
 end
 
 local function colorscheme()
-  --orange yellow yellowgreen green greencyan cyan
-  --blue deepblue voilet deepvoilet red dred
   local p = palette()
-  -- local lianzibai = '#e5d3aa'
 
   local groups = {
     --Neovim Relate
@@ -73,13 +70,13 @@ local function colorscheme()
     { 'Title', { fg = p.orange, bold = true } },
     --cursorline
     { 'Cursorline', { bg = p.base02 } },
-    { 'CursorLineNr', { fg = p.base2 } },
+    { 'CursorLineNr', { fg = p.base0 } },
     --pmenu
     { 'Pmenu', { bg = p.base02, fg = p.base1 } },
     { 'PmenuSel', { fg = p.base2, bg = p.base00 } },
     { 'PmenuSbar', { bg = '#586e75' } },
     { 'PmenuThumb', { bg = p.base0 } },
-    { 'PmenuKind', { bg = p.base02, fg = p.green } },
+    { 'PmenuKind', { bg = p.base02, fg = p.yellow } },
     { 'PmenuKindSel', { link = 'PmenuSel' } },
     { 'PmenuExtra', { link = 'Pmenu' } },
     { 'PmenuExtraSel', { link = 'PmenuSel' } },
@@ -178,14 +175,14 @@ local function colorscheme()
     { 'String', { fg = p.cyan } },
     { 'Number', { fg = p.violet } },
     { 'Float', { link = 'Number' } },
-    { 'Boolean', { fg = p.orange } },
+    { 'Boolean', { link = 'Number' } },
     --
     { 'Define', { link = 'PreProc' } },
     { 'Operator', { fg = '#948929' } },
     { 'Comment', { fg = p.base01 } },
     --------------------------------------------------------
     ---@punctuation
-    { '@punctuation.bracket', { fg = p.base0 } },
+    { '@punctuation.bracket', { fg = p.base00 } },
     { '@punctuation.delimiter', { link = '@punctuation.bracket' } },
     --------------------------------------------------------
     ---@Tag
@@ -230,8 +227,8 @@ local function colorscheme()
     ---@plugin
     { 'GitGutterAdd', { fg = p.green } },
     { 'GitGutterChange', { fg = p.blue } },
-    { 'GitGutterDelete', { fg = p.dorange } },
-    { 'GitGutterChangeDelete', { fg = p.dorange } },
+    { 'GitGutterDelete', { fg = p.red } },
+    { 'GitGutterChangeDelete', { fg = p.red } },
     --dashboard
     { 'DashboardHeader', { fg = p.violet } },
     { 'DashboardFooter', { link = 'Comment' } },
