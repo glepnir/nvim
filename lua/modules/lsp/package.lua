@@ -66,11 +66,6 @@ packadd({
   dev = true,
   config = function()
     require('lspsaga').setup({
-      diagnostic = {
-        on_insert = true,
-        on_insert_follow = true,
-        insert_winblend = 60,
-      },
       symbol_in_winbar = {
         ignore_patterns = { '%w_spec' },
       },

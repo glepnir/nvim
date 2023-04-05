@@ -121,7 +121,7 @@ local function colorscheme()
     -- various variable names
     { '@variable', { fg = p.base0 } },
     --built-in variable names (e.g. `this`)
-    { '@variable.builtin', { fg = p.green } },
+    { '@variable.builtin', { fg = p.green, bold = true } },
     { 'Constant', { fg = p.orange } },
     { '@constant.builtin', { link = 'Constant' } },
     -- constants defined by the preprocessor
@@ -134,7 +134,7 @@ local function colorscheme()
     ---@Keywords
     { 'Keyword', { fg = p.green } },
     { '@keyword.function', { fg = p.dorange } },
-    { '@keyword.return', { fg = p.green, italic = true } },
+    { '@keyword.return', { fg = p.green } },
     { '@keyword.operator', { link = 'Operator' } },
     --if else
     { 'Conditional', { link = 'Keyword' } },
@@ -155,7 +155,7 @@ local function colorscheme()
     --type definitions (e.g. `typedef` in C)
     { '@type.definition', { link = 'Type' } },
     --type qualifiers (e.g. `const`)
-    { '@type.qualifier', { fg = p.violet, italic = true } },
+    { '@type.qualifier', { fg = p.green } },
     --modifiers that affect storage in memory or life-time like C `static`
     { '@storageclass', { link = 'Keyword' } },
     { '@field', { fg = '#52b6bf' } },
@@ -181,7 +181,7 @@ local function colorscheme()
     { 'Boolean', { fg = p.orange } },
     --
     { 'Define', { link = 'PreProc' } },
-    { 'Operator', { fg = '#938056' } },
+    { 'Operator', { fg = '#948929' } },
     { 'Comment', { fg = p.base01 } },
     --------------------------------------------------------
     ---@punctuation
