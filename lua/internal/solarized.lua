@@ -4,7 +4,10 @@ local function palette()
     base02 = '#073642',
     base01 = '#586e75',
     base00 = '#657b83',
-    base0 = '#839496',
+    --new foreground based on old #839496
+    --changed the old foreground v value in hsv old is 0.59
+    --new is 0.60
+    base0 = '#859799',
     base1 = '#93a1a1',
     base2 = '#eee8d5',
     base3 = '#fdf6e3',
