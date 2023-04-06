@@ -107,9 +107,9 @@ local function colorscheme()
     --Error
     { 'ErrorMsg', { link = 'Error' } },
     --Markup
-    { 'TODO', { bg = p.blue, fg = p.magenta } },
+    { 'TODO', { fg = p.magenta } },
     { 'Conceal', { fg = p.green } },
-    { 'Error', { fg = p.red } },
+    { 'Error', { fg = p.red, bold = true } },
     { 'NonText', { link = 'Comment' } },
     --Float
     { 'FloatBorder', { fg = p.blue } },
@@ -162,7 +162,8 @@ local function colorscheme()
     { 'Include', { link = 'PreProc' } },
     { 'Exception', { fg = p.violet } },
     { 'Statement', { fg = p.green } },
-    { 'Special', { fg = p.dorange } },
+    { 'SpecialKey', { fg = p.dorange } },
+    { 'Special', { fg = p.red } },
     --------------------------------------------------------
     ---@Types
     { 'Type', { fg = p.yellow } },
@@ -221,7 +222,7 @@ local function colorscheme()
     { 'DiffAdd', { fg = p.green } },
     { 'DiffChange', { fg = p.blue } },
     { 'DiffDelete', { fg = p.dorange } },
-    { 'DiffText', { fg = p.dorange, bold = true } },
+    { 'DiffText', { fg = p.dorange } },
     { 'diffAdded', { fg = p.green } },
     { 'diffRemoved', { fg = p.dorange } },
     { 'diffChanged', { fg = p.blue } },
@@ -230,7 +231,7 @@ local function colorscheme()
     { 'diffFile', { fg = p.cyan } },
     --------------------------------------------------------
     ---@Diagnostic
-    { 'DiagnosticError', { fg = p.red } },
+    { 'DiagnosticError', { link = 'Error' } },
     { 'DiagnosticWarn', { fg = p.yellow } },
     { 'DiagnosticInfo', { fg = p.blue } },
     { 'DiagnosticHint', { fg = '#4eacb5' } },
