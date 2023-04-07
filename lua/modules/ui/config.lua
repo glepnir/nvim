@@ -28,7 +28,7 @@ function config.dashboard()
           icon = ' ',
           desc = 'Files',
           group = 'Function',
-          action = 'Telescope find_files',
+          action = 'Telescope find_files find_command=rg,--ignore,--hidden,--files',
           key = 'f',
         },
         {

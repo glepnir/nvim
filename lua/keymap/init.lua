@@ -13,14 +13,14 @@ map.n({
   -- Lspsaga
   ['[e'] = cmd('Lspsaga diagnostic_jump_next'),
   [']e'] = cmd('Lspsaga diagnostic_jump_prev'),
-  ['[c'] = cmd('Lspsaga show_cursor_diagnostics'),
   ['K'] = cmd('Lspsaga hover_doc'),
   ['ga'] = cmd('Lspsaga code_action'),
   ['gd'] = cmd('Lspsaga peek_definition'),
-  ['gD'] = cmd('Lspsaga goto_definition'),
   ['gr'] = cmd('Lspsaga rename'),
   ['gh'] = cmd('Lspsaga lsp_finder'),
   ['<Leader>o'] = cmd('Lspsaga outline'),
+  ['<Leader>dw'] = cmd('Lspsaga show_workspace_diagnostics'),
+  ['<Leader>db'] = cmd('Lspsaga show_buf_diagnostics'),
   -- dbsession
   ['<Leader>ss'] = cmd('SessionSave'),
   ['<Leader>sl'] = cmd('SessionLoad'),
