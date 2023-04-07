@@ -27,7 +27,7 @@ local function map_tab()
   end
 
   if vim.fn.pumvisible() == 1 then
-    return '<C-n>'
+    return '<Down>'
   end
 
   local has_period = words:match('.')

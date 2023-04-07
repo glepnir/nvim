@@ -16,6 +16,7 @@
 --blue      #268bd2  4/4 blue      33 #0087ff 55 -10 -45  38 139 210 205  82  82
 --cyan      #2aa198  6/6 cyan      37 #00afaf 60 -35 -05  42 161 152 175  74  63
 --green     #859900  2/2 green     64 #5f8700 60 -20  65 133 153   0  68 100  60
+
 local function palette()
   return {
     base03 = '#002b36',
@@ -23,6 +24,7 @@ local function palette()
     base01 = '#586e75',
     base00 = '#657b83',
     --#839496 hsv(186°, 13%, 59%)
+    --#86999c is hsv(186°, 14%, 61%)
     base0 = '#839496',
     base1 = '#93a1a1',
     base2 = '#eee8d5',
@@ -35,6 +37,8 @@ local function palette()
     violet = '#957FB8',
     blue = '#268bd2',
     cyan = '#2aa198',
+    --based on base0 hsv(188°, 68%, 68%)
+    dcyan = '#379ead',
     green = '#859900',
     non = 'NONE',
   }
@@ -163,7 +167,7 @@ local function colorscheme()
     { 'Exception', { fg = p.violet } },
     { 'Statement', { fg = p.green } },
     { 'SpecialKey', { fg = p.dorange } },
-    { 'Special', { fg = p.red } },
+    { 'Special', { fg = p.dorange } },
     --------------------------------------------------------
     ---@Types
     { 'Type', { fg = p.yellow } },
@@ -174,7 +178,7 @@ local function colorscheme()
     { '@type.qualifier', { fg = p.green } },
     --modifiers that affect storage in memory or life-time like C `static`
     { '@storageclass', { link = 'Keyword' } },
-    { '@field', { fg = '#4ba5ad' } },
+    { '@field', { fg = p.dcyan } },
     { '@property', { link = '@field' } },
     --------------------------------------------------------
     ---@Functions
