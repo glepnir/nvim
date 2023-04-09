@@ -60,7 +60,7 @@ nvim_create_autocmd({ 'InsertEnter' }, {
 
 nvim_create_autocmd('BufEnter', {
   group = my_group,
-  callback = function()
-    require('internal.mini').indentline()
+  callback = function(arg)
+    require('internal.mini').indentline(arg.buf)
   end,
 })

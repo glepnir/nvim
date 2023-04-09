@@ -33,7 +33,7 @@ local function indentline()
       end
     end
 
-    for i = 1, indent - 1, 2 do
+    for i = 1, indent - 1, vim.bo[bufnr].sw do
       local pos = 'overlay'
       local symbol = '│'
       if #text == 0 and i - 1 > 0 then
@@ -55,7 +55,7 @@ local function indentline()
 
   local function on_start(_, _)
     local bufnr = api.nvim_get_current_buf()
-    if vim.tbl_contains(exclude, vim.bo[bufnr].ft) then
+    if not vim.bo[bufnr].expandtab or vim.tbl_contains(exclude, vim.bo[bufnr].ft) then
       return false
     end
   end
