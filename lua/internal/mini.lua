@@ -7,7 +7,7 @@ local function indentline()
 
   local function on_win(_, _, bufnr, _)
     if bufnr ~= vim.api.nvim_get_current_buf() then
-      return false -- FAIL
+      return false
     end
   end
 
@@ -20,11 +20,11 @@ local function indentline()
       if prev > 0 then
         indent = prev
         if not ctx[bufnr] then
-          ctx[tostring(bufnr)] = {}
+          ctx[bufnr] = {}
         end
-        ctx[tostring(bufnr)][tostring(row + 1)] = indent
-      elseif ctx[tostring(bufnr)][tostring(row)] then
-        indent = ctx[tostring(bufnr)][tostring(row)]
+        ctx[bufnr][row + 1] = indent
+      elseif ctx[bufnr] and ctx[bufnr][row] then
+        indent = ctx[bufnr][row]
       end
     end
 
@@ -38,7 +38,7 @@ local function indentline()
     end
 
     if row + 1 == api.nvim_buf_line_count(bufnr) then
-      ctx[tostring(bufnr)] = nil
+      ctx[bufnr] = nil
     end
   end
 
