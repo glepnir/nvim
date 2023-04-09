@@ -16,6 +16,7 @@ map.n({
   ['K'] = cmd('Lspsaga hover_doc'),
   ['ga'] = cmd('Lspsaga code_action'),
   ['gd'] = cmd('Lspsaga peek_definition'),
+  ['gp'] = cmd('Lspsaga goto_definition'),
   ['gr'] = cmd('Lspsaga rename'),
   ['gh'] = cmd('Lspsaga lsp_finder'),
   ['<Leader>o'] = cmd('Lspsaga outline'),
