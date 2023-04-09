@@ -3,7 +3,7 @@ local ctx = {}
 
 local function indentline()
   local ns = api.nvim_create_namespace('IndentLine')
-  local exclude = { 'dashboard', 'help' }
+  local exclude = { 'dashboard', 'lazy', 'help' }
 
   local function on_win(_, _, bufnr, _)
     if bufnr ~= vim.api.nvim_get_current_buf() then
@@ -42,7 +42,6 @@ local function indentline()
       end
 
       api.nvim_buf_set_extmark(bufnr, ns, row, i - 1, {
-        id = row,
         virt_text = { { symbol, 'IndentLine' } },
         virt_text_pos = pos,
         ephemeral = true,
