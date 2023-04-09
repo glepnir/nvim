@@ -273,6 +273,7 @@ local function colorscheme()
     { 'TelescopeMatching', { fg = p.yellow } },
     --CursorWord
     { 'CursorWord', { bg = p.base02 } },
+    { 'IndentLine', { link = 'Comment' } },
   }
 
   in_vim(groups, p)
