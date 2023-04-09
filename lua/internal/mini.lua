@@ -18,7 +18,12 @@ local function indentline()
     if indent == 0 and #text == 0 then
       local prev = vim.fn.indent(row)
       if prev > 0 then
-        indent = prev
+        local p_prev = vim.fn.indent(row - 1)
+        --this for some wrap indent like
+        --int xxx = xxxxxxxxxxxxxxxxxxxxxxxx ? xxx
+        --                                   : xxx
+        --in this situation use pprev indent
+        indent = prev - p_prev > 4 and 4 or prev
         if not ctx[bufnr] then
           ctx[bufnr] = {}
         end
@@ -29,10 +34,17 @@ local function indentline()
     end
 
     for i = 1, indent - 1, 2 do
+      local pos = 'overlay'
+      local symbol = '│'
+      if #text == 0 and i - 1 > 0 then
+        pos = 'eol'
+        symbol = (bit.band((i - 1) * 0.5, 1) == 1 and ' ' or '') .. '│'
+      end
+
       api.nvim_buf_set_extmark(bufnr, ns, row, i - 1, {
         id = row,
-        virt_text = { { '│', 'IndentLine' } },
-        virt_text_pos = 'overlay',
+        virt_text = { { symbol, 'IndentLine' } },
+        virt_text_pos = pos,
         ephemeral = true,
       })
     end
