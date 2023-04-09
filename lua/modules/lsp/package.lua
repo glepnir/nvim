@@ -43,6 +43,17 @@ local function diag_config()
     severity_sort = true,
     virtual_text = true,
   })
+
+  --disable diagnostic in neovim test file *_spec.lua
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'lua',
+    callback = function(opt)
+      local fname = vim.api.nvim_buf_get_name(opt.buf)
+      if fname:find('%w_spec%.lua') then
+        vim.diagnostic.disable(opt.buf)
+      end
+    end,
+  })
 end
 
 packadd({

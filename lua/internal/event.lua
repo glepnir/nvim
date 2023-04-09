@@ -42,6 +42,7 @@ nvim_create_autocmd('Filetype', {
 })
 
 nvim_create_autocmd({ 'CursorHold' }, {
+  group = my_group,
   pattern = '*',
   callback = function(opt)
     require('internal.cursorword').cursor_moved(opt.buf)
@@ -49,6 +50,7 @@ nvim_create_autocmd({ 'CursorHold' }, {
 })
 
 nvim_create_autocmd({ 'InsertEnter' }, {
+  group = my_group,
   pattern = '*',
   callback = function()
     require('internal.cursorword').disable_cursorword()
@@ -56,13 +58,9 @@ nvim_create_autocmd({ 'InsertEnter' }, {
   end,
 })
 
---disable diagnostic in neovim test file *_spec.lua
-nvim_create_autocmd('FileType', {
-  pattern = 'lua',
-  callback = function(opt)
-    local fname = api.nvim_buf_get_name(opt.buf)
-    if fname:find('%w_spec%.lua') then
-      vim.diagnostic.disable(opt.buf)
-    end
+nvim_create_autocmd('BufEnter', {
+  group = my_group,
+  callback = function()
+    require('internal.mini').indentline()
   end,
 })
