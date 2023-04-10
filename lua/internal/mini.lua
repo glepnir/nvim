@@ -1,5 +1,24 @@
 local api = vim.api
+local treesitter = vim.treesitter
 local ctx = {}
+
+local function check_inblock()
+  local type = {
+    'block',
+    'compound_statement',
+    'preproc_def',
+    'case_statement',
+    'if_statement',
+    'while_statement',
+  }
+  return function(bufnr, row)
+    local node = treesitter.get_node({ bufnr = bufnr, pos = { row, 0 } })
+    if node and vim.tbl_contains(type, node:type()) then
+      return true
+    end
+    return false
+  end
+end
 
 local function indentline()
   local ns = api.nvim_create_namespace('IndentLine')
@@ -14,22 +33,29 @@ local function indentline()
   local function on_line(_, _, bufnr, row)
     local indent = vim.fn.indent(row + 1)
     local text = api.nvim_buf_get_text(bufnr, row, 0, row, -1, {})[1]
+    local inblock = check_inblock()
+    ctx[#ctx + 1] = indent
 
-    if indent == 0 and #text == 0 then
-      local prev = vim.fn.indent(row)
-      if prev > 0 then
-        local p_prev = vim.fn.indent(row - 1)
+    if indent == 0 and #text == 0 and inblock(bufnr, row) then
+      local prev, pprev
+      for i = 1, 4 do
+        if #ctx - i > 0 and ctx[#ctx - i] > 0 then
+          prev = ctx[#ctx - i]
+          ctx[#ctx] = prev
+          if i - 1 >= 0 then
+            pprev = ctx[#ctx - i - 1]
+          end
+          break
+        end
+      end
+      if not prev then
+        indent = 0
+      else
         --this for some wrap indent like
         --int xxx = xxxxxxxxxxxxxxxxxxxxxxxx ? xxx
         --                                   : xxx
         --in this situation use pprev indent
-        indent = prev - p_prev > 4 and 4 or prev
-        if not ctx[bufnr] then
-          ctx[bufnr] = {}
-        end
-        ctx[bufnr][row + 1] = indent
-      elseif ctx[bufnr] and ctx[bufnr][row] then
-        indent = ctx[bufnr][row]
+        indent = prev - pprev > 4 and 4 or prev
       end
     end
 
@@ -49,7 +75,7 @@ local function indentline()
     end
 
     if row + 1 == api.nvim_buf_line_count(bufnr) then
-      ctx[bufnr] = nil
+      ctx = {}
     end
   end
 
