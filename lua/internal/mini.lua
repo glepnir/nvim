@@ -10,6 +10,7 @@ local function check_inblock()
     'case_statement',
     'if_statement',
     'while_statement',
+    'argument_list',
   }
   return function(bufnr, row)
     local node = treesitter.get_node({ bufnr = bufnr, pos = { row, 0 } })
@@ -37,25 +38,19 @@ local function indentline()
     ctx[#ctx + 1] = indent
 
     if indent == 0 and #text == 0 and inblock(bufnr, row) then
-      local prev, pprev
+      local prev
       for i = 1, 4 do
         if #ctx - i > 0 and ctx[#ctx - i] > 0 then
           prev = ctx[#ctx - i]
           ctx[#ctx] = prev
-          if i - 1 >= 0 then
-            pprev = ctx[#ctx - i - 1]
-          end
           break
         end
       end
+
       if not prev then
         indent = 0
       else
-        --this for some wrap indent like
-        --int xxx = xxxxxxxxxxxxxxxxxxxxxxxx ? xxx
-        --                                   : xxx
-        --in this situation use pprev indent
-        indent = prev - pprev > 4 and 4 or prev
+        indent = prev > 20 and 4 or prev
       end
     end
 
@@ -64,7 +59,7 @@ local function indentline()
       local symbol = '│'
       if #text == 0 and i - 1 > 0 then
         pos = 'eol'
-        symbol = (bit.band((i - 1) * 0.5, 1) == 1 and ' ' or '') .. '│'
+        symbol = (i == 3 and ' ' or '') .. '│'
       end
 
       api.nvim_buf_set_extmark(bufnr, ns, row, i - 1, {
@@ -74,7 +69,7 @@ local function indentline()
       })
     end
 
-    if row + 1 == api.nvim_buf_line_count(bufnr) then
+    if row + 1 == vim.fn.line('w$') then
       ctx = {}
     end
   end
