@@ -71,7 +71,7 @@ packadd({
 })
 
 packadd({
-  'glepnir/lspsaga.nvim',
+  'nvimdev/lspsaga.nvim',
   event = 'LspAttach',
   cmd = 'Lspsaga term_toggle',
   dev = true,

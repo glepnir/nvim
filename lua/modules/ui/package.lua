@@ -1,7 +1,7 @@
 local conf = require('modules.ui.config')
 
 packadd({
-  'glepnir/dashboard-nvim',
+  'nvimdev/dashboard-nvim',
   dev = true,
   event = 'VimEnter',
   config = conf.dashboard,
@@ -9,7 +9,7 @@ packadd({
 })
 
 packadd({
-  'glepnir/whiskyline.nvim',
+  'nvimdev/whiskyline.nvim',
   dev = true,
   config = conf.whisky,
   dependencies = { 'nvim-tree/nvim-web-devicons' },

@@ -1,7 +1,7 @@
 local conf = require('modules.tools.config')
 
 packadd({
-  'glepnir/flybuf.nvim',
+  'nvimdev/flybuf.nvim',
   dev = true,
   cmd = 'FlyBuf',
   config = function()
@@ -9,17 +9,17 @@ packadd({
   end,
 })
 
-packadd({ 'glepnir/coman.nvim', dev = true, event = 'BufRead' })
+packadd({ 'nvimdev/coman.nvim', dev = true, event = 'BufRead' })
 
 packadd({
-  'glepnir/template.nvim',
+  'nvimdev/template.nvim',
   dev = true,
   ft = { 'c', 'cpp', 'rust', 'lua', 'go' },
   config = conf.template_nvim,
 })
 
 packadd({
-  'glepnir/easyformat.nvim',
+  'nvimdev/easyformat.nvim',
   dev = true,
   ft = { 'c', 'cpp', 'rust', 'lua', 'go', 'typescript', 'javascrip', 'javascriptreact' },
   config = conf.easyformat,
@@ -34,20 +34,20 @@ packadd({
 })
 
 packadd({
-  'glepnir/mutchar.nvim',
+  'nvimdev/mutchar.nvim',
   dev = true,
   ft = { 'c', 'cpp', 'go', 'rust', 'lua' },
   config = conf.mut_char,
 })
 
 packadd({
-  'glepnir/hlsearch.nvim',
+  'nvimdev/hlsearch.nvim',
   event = 'BufRead',
   config = true,
 })
 
 packadd({
-  'glepnir/dbsession.nvim',
+  'nvimdev/dbsession.nvim',
   dev = true,
   cmd = { 'SessionSave', 'SessionLoad', 'SessionDelete' },
   opts = true,
@@ -56,7 +56,7 @@ packadd({
 packadd({ 'phaazon/hop.nvim', event = 'BufRead', config = conf.hop })
 
 packadd({
-  'glepnir/nerdicons.nvim',
+  'nvimdev/nerdicons.nvim',
   dev = true,
   cmd = 'NerdIcons',
   opts = true,

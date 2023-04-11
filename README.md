@@ -62,17 +62,17 @@ check out the cli tool `dope`
 
 | plugin | introduce|
 | --     |    --    |
-| [glepnir/dashboard-nvim](https://github.com/glepnir/dashboard-nvim) |  Fancy Start Screen |
-| [glepnir/flipped.nvim](https://github.com/glepnir/flipped.nvim)      | Colorscheme  |
-| [glepnir/whiskyline.nvim](https://github.com/glepnir/whiskyline.nvim) | Async and blazying fast than any statusline |
-| [glepnir/template.nvim](https://github.com/glepnir/template.nvim) |    Fast insert template to file|
-| [glepnir/lspsaga.nvim](https://github.com/glepnir/lspsaga.nvim)  |     Enhance built-in lsp |
-| [glepnir/easyformat.nvim](https://github.com/glepnir/easyformat.nvim) | Async Format |
-| [glepnir/dbsession.nvim](https://github.com/glepnir/dbsession.nvim)|   Simple session plugin|
-| [glepnir/coman.nvim](https://github.com/glepnir/coman.nvim)         |  Comment and generate Annoation |
-| [glepnir/hlsearch.nvim](https://github.com/glepnir/hlsearch.nvim)   |  Auto hide the search highlight |
-| [glepnir/mutchar.nvim](https://github.com/glepnir/muchar.nvim) |        Character change |
-| [glepnir/gitsigns.nvim](https://github.com/glepnir/gitsigns.nvim) |    Show git info |
+| [nvimdev/dashboard-nvim](https://github.com/nvimdev/dashboard-nvim) |  Fancy Start Screen |
+| [nvimdev/flipped.nvim](https://github.com/nvimdev/flipped.nvim)      | Colorscheme  |
+| [nvimdev/whiskyline.nvim](https://github.com/nvimdev/whiskyline.nvim) | Async and blazying fast than any statusline |
+| [nvimdev/template.nvim](https://github.com/nvimdev/template.nvim) |    Fast insert template to file|
+| [nvimdev/lspsaga.nvim](https://github.com/nvimdev/lspsaga.nvim)  |     Enhance built-in lsp |
+| [nvimdev/easyformat.nvim](https://github.com/nvimdev/easyformat.nvim) | Async Format |
+| [nvimdev/dbsession.nvim](https://github.com/nvimdev/dbsession.nvim)|   Simple session plugin|
+| [nvimdev/coman.nvim](https://github.com/nvimdev/coman.nvim)         |  Comment and generate Annoation |
+| [nvimdev/hlsearch.nvim](https://github.com/nvimdev/hlsearch.nvim)   |  Auto hide the search highlight |
+| [nvimdev/mutchar.nvim](https://github.com/nvimdev/muchar.nvim) |        Character change |
+| [nvimdev/gitsigns.nvim](https://github.com/nvimdev/gitsigns.nvim) |    Show git info |
 | [neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) |    Built-in lsp |
 | [nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) |  Highlight
 | [nvim-treesitter/nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)  | highlight object |

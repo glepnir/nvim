@@ -22,7 +22,7 @@ end
 
 local function indentline()
   local ns = api.nvim_create_namespace('IndentLine')
-  local exclude = { 'dashboard', 'lazy', 'help' }
+  local exclude = { 'dashboard', 'lazy', 'help', 'markdown' }
 
   local function on_win(_, _, bufnr, _)
     if bufnr ~= vim.api.nvim_get_current_buf() then
