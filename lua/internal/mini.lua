@@ -59,7 +59,7 @@ local function indentline()
       local symbol = '│'
       if #text == 0 and i - 1 > 0 then
         pos = 'eol'
-        symbol = (i == 3 and ' ' or '') .. '│'
+        symbol = (i == 1 + vim.bo[bufnr].sw and (' '):rep(vim.bo[bufnr].sw - 1) or '') .. '│'
       end
 
       api.nvim_buf_set_extmark(bufnr, ns, row, i - 1, {
