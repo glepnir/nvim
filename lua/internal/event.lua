@@ -57,10 +57,3 @@ nvim_create_autocmd({ 'InsertEnter' }, {
     require('internal.epoch').epoch()
   end,
 })
-
-nvim_create_autocmd('BufEnter', {
-  group = my_group,
-  callback = function(arg)
-    require('internal.mini').indentline(arg.buf)
-  end,
-})

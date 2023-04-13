@@ -20,3 +20,13 @@ packadd({
   event = { 'BufRead', 'BufNewFile' },
   config = conf.gitsigns,
 })
+
+packadd({
+  'nvimdev/indentmini.nvim',
+  dev = true,
+  event = { 'BufEnter' },
+  config = function()
+    require('indentmini').setup({})
+  end,
+  dependencies = { 'nvim-treesitter/nvim-treesitter' },
+})

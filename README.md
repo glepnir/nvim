@@ -63,10 +63,10 @@ check out the cli tool `dope`
 | plugin | introduce|
 | --     |    --    |
 | [nvimdev/dashboard-nvim](https://github.com/nvimdev/dashboard-nvim) |  Fancy Start Screen |
-| [nvimdev/flipped.nvim](https://github.com/nvimdev/flipped.nvim)      | Colorscheme  |
 | [nvimdev/whiskyline.nvim](https://github.com/nvimdev/whiskyline.nvim) | Async and blazying fast than any statusline |
 | [nvimdev/template.nvim](https://github.com/nvimdev/template.nvim) |    Fast insert template to file|
 | [nvimdev/lspsaga.nvim](https://github.com/nvimdev/lspsaga.nvim)  |     Enhance built-in lsp |
+| [nvimdev/dashboard-nvim](https://github.com/nvimdev/indentmini.nvim) |  Balzing fast indentline |
 | [nvimdev/easyformat.nvim](https://github.com/nvimdev/easyformat.nvim) | Async Format |
 | [nvimdev/dbsession.nvim](https://github.com/nvimdev/dbsession.nvim)|   Simple session plugin|
 | [nvimdev/coman.nvim](https://github.com/nvimdev/coman.nvim)         |  Comment and generate Annoation |
