@@ -4,17 +4,19 @@ local ctx = {}
 
 local function check_inblock()
   local type = {
-    'block',
-    'compound_statement',
-    'preproc_def',
-    'case_statement',
+    'function_definition',
+    'for_statement',
     'if_statement',
     'while_statement',
-    'argument_list',
+    'call_expression',
   }
   return function(bufnr, row)
     local node = treesitter.get_node({ bufnr = bufnr, pos = { row, 0 } })
-    if node and vim.tbl_contains(type, node:type()) then
+    if not node then
+      return false
+    end
+    local parent = node:parent()
+    if parent and vim.tbl_contains(type, parent:type()) then
       return true
     end
     return false
@@ -35,24 +37,12 @@ local function indentline()
     local indent = vim.fn.indent(row + 1)
     local text = api.nvim_buf_get_text(bufnr, row, 0, row, -1, {})[1]
     local inblock = check_inblock()
-    ctx[#ctx + 1] = indent
-
-    if indent == 0 and #text == 0 and inblock(bufnr, row) then
-      local prev
-      for i = 1, 4 do
-        if #ctx - i > 0 and ctx[#ctx - i] > 0 then
-          prev = ctx[#ctx - i]
-          ctx[#ctx] = prev
-          break
-        end
-      end
-
-      if not prev then
-        indent = 0
-      else
-        indent = prev > 20 and 4 or prev
-      end
+    local prev = ctx[#ctx] or 0
+    if indent == 0 and #text == 0 and (prev > 0 or inblock(bufnr, row)) then
+      indent = prev > 20 and 4 or prev
     end
+
+    ctx[#ctx + 1] = indent
 
     for i = 1, indent - 1, vim.bo[bufnr].sw do
       local pos = 'overlay'

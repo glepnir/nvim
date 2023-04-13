@@ -274,6 +274,8 @@ local function colorscheme()
     --CursorWord
     { 'CursorWord', { bg = p.base02 } },
     { 'IndentLine', { link = 'Comment' } },
+    --Lspsaga
+    { 'SagaWinbarVariable', { fg = p.green } },
   }
 
   in_vim(groups, p)
