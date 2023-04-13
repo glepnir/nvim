@@ -112,7 +112,7 @@ local function colorscheme()
     { 'ErrorMsg', { link = 'Error' } },
     --Markup
     { 'TODO', { fg = p.magenta } },
-    { 'Conceal', { fg = p.green } },
+    { 'Conceal', { fg = p.blue } },
     { 'Error', { fg = p.red, bold = true } },
     { 'NonText', { link = 'Comment' } },
     --Float
