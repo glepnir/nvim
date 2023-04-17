@@ -84,7 +84,7 @@ check out the cli tool `dope`
 | [L3MON4D3/LuaSnip](https;//github.com/L3MON4D3/LuaSnip)        |      Snippet |
 | [ii14/emmylua-nvim](https://github.com/ii14/emmylua-nvim)        | Neovim api doc|
 | [windwp/nvim-autopairs](https://github.com/windwp/nvim-autopairs) |    Auto pairs|
-| [phazzon/hop.nvim](https://github.com/phazzon/hop.nvim)   |         Fast Move |
+| [phaazon/hop.nvim](https://github.com/phaazon/hop.nvim)   |         Fast Move |
 | [norcalli/nvim-colorizer.lua](https://github.com/norcalli/nvim-colorizer.lua) | Show color in color hex code|
 
 ## Donate
