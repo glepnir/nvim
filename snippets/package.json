@@ -20,6 +20,10 @@
       {
         "language": "zig",
         "path": "./zig.json"
+      },
+      {
+        "language": "javascriptreact",
+        "path": "./javascriptreact.json"
       }
     ]
   }
