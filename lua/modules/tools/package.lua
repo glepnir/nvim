@@ -14,7 +14,7 @@ packadd({ 'nvimdev/coman.nvim', dev = true, event = 'BufRead' })
 packadd({
   'nvimdev/template.nvim',
   dev = true,
-  ft = { 'c', 'cpp', 'rust', 'lua', 'go' },
+  cmd = 'Template',
   config = conf.template_nvim,
 })
 

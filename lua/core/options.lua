@@ -72,44 +72,42 @@ opt.spelloptions = 'camel'
 opt.textwidth = 100
 opt.colorcolumn = '100'
 
-if vim.fn.has('nvim-0.9') == 1 then
-  local function get_signs()
-    local buf = vim.api.nvim_get_current_buf()
-    return vim.tbl_map(function(sign)
-      return vim.fn.sign_getdefined(sign.name)[1]
-    end, vim.fn.sign_getplaced(buf, { group = '*', lnum = vim.v.lnum })[1].signs)
-  end
-
-  local function fill_space(count)
-    return '%#StcFill#' .. (' '):rep(count) .. '%*'
-  end
-
-  function _G.show_stc()
-    local sign, gitsign
-    for _, s in ipairs(get_signs()) do
-      if s.name:find('GitSign') then
-        gitsign = '%#' .. s.texthl .. '#' .. s.text .. '%*'
-      else
-        sign = '%#' .. s.texthl .. '#' .. s.text .. '%*'
-      end
-    end
-
-    local function show_break()
-      if vim.v.virtnum > 0 then
-        return (' '):rep(math.floor(math.ceil(math.log10(vim.v.lnum))) - 1) .. '↳'
-      else
-        return vim.v.lnum
-      end
-    end
-
-    return (sign and sign or fill_space(2))
-      .. '%='
-      .. show_break()
-      .. (gitsign and gitsign or fill_space(2))
-  end
-
-  opt.stc = [[%!v:lua.show_stc()]]
+local function get_signs()
+  local buf = vim.api.nvim_get_current_buf()
+  return vim.tbl_map(function(sign)
+    return vim.fn.sign_getdefined(sign.name)[1]
+  end, vim.fn.sign_getplaced(buf, { group = '*', lnum = vim.v.lnum })[1].signs)
 end
+
+local function fill_space(count)
+  return '%#StcFill#' .. (' '):rep(count) .. '%*'
+end
+
+function _G.show_stc()
+  local sign, gitsign
+  for _, s in ipairs(get_signs()) do
+    if s.name:find('GitSign') then
+      gitsign = '%#' .. s.texthl .. '#' .. s.text .. '%*'
+    else
+      sign = '%#' .. s.texthl .. '#' .. s.text .. '%*'
+    end
+  end
+
+  local function show_break()
+    if vim.v.virtnum > 0 then
+      return (' '):rep(math.floor(math.ceil(math.log10(vim.v.lnum))) - 1) .. '↳'
+    else
+      return vim.v.lnum
+    end
+  end
+
+  return (sign and sign or fill_space(2))
+    .. '%='
+    .. show_break()
+    .. (gitsign and gitsign or fill_space(2))
+end
+
+opt.stc = [[%!v:lua.show_stc()]]
 
 if vim.loop.os_uname().sysname == 'Darwin' then
   vim.g.clipboard = {
