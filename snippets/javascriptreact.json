@@ -1,14 +1,7 @@
 {
-  "Import React": {
-    "prefix": "imr",
-    "body": ["import * as React from 'react';\n"],
-    "description": "Import React"
-  },
-
   "Import React and Component": {
     "prefix": "imrc",
     "body": [
-      "import * as React from 'react';",
       "import { Component } from 'react';\n"
     ],
     "description": "Import React, { Component }"
@@ -23,7 +16,6 @@
   "Import React, { useState }": {
     "prefix": "imrs",
     "body": [
-      "import * as React from 'react';",
       "import { useState } from 'react';\n"
     ],
     "description": "Import React, { useState }"
@@ -32,7 +24,6 @@
   "Import React, { useState, useEffect }": {
     "prefix": "imrse",
     "body": [
-      "import * as React from 'react';",
       "import { useState, useEffect } from 'react';\n"
     ],
     "description": "Import React, { useState, useEffect }"
