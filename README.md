@@ -72,7 +72,7 @@ check out the cli tool `dope`
 | [nvimdev/coman.nvim](https://github.com/nvimdev/coman.nvim)         |  Comment and generate Annoation |
 | [nvimdev/hlsearch.nvim](https://github.com/nvimdev/hlsearch.nvim)   |  Auto hide the search highlight |
 | [nvimdev/mutchar.nvim](https://github.com/nvimdev/muchar.nvim) |        Character change |
-| [nvimdev/gitsigns.nvim](https://github.com/nvimdev/gitsigns.nvim) |    Show git info |
+| [lewis6991/gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) |    Show git info |
 | [neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) |    Built-in lsp |
 | [nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) |  Highlight
 | [nvim-treesitter/nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)  | highlight object |
