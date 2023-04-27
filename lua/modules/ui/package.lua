@@ -28,5 +28,4 @@ packadd({
   config = function()
     require('indentmini').setup({})
   end,
-  dependencies = { 'nvim-treesitter/nvim-treesitter' },
 })
