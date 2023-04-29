@@ -21,6 +21,7 @@ function config.easyformat()
     'cpp',
     'go',
     'rust',
+    'javascript',
     'javascriptreact',
   })
   require('easyformat').setup({

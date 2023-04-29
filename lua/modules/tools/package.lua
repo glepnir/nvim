@@ -21,7 +21,7 @@ packadd({
 packadd({
   'nvimdev/easyformat.nvim',
   dev = true,
-  ft = { 'c', 'cpp', 'rust', 'lua', 'go', 'typescript', 'javascrip', 'javascriptreact' },
+  ft = { 'c', 'cpp', 'rust', 'lua', 'go', 'typescript', 'javascript', 'javascriptreact' },
   config = conf.easyformat,
 })
 
