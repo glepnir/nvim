@@ -51,6 +51,7 @@ function config.telescope()
   })
   require('telescope').load_extension('fzy_native')
   require('telescope').load_extension('dotfiles')
+  require('telescope').load_extension('gosource')
   require('telescope').load_extension('file_browser')
   require('telescope').load_extension('app')
 end
@@ -61,11 +62,22 @@ function config.nvim_treesitter()
 
   local ignored = {
     'phpdoc',
+    'ada',
     'astro',
     'arduino',
+    'bicep',
+    'blueprint',
     'beancount',
     'bibtex',
     'bluprint',
+    'cpon',
+    'cooklang',
+    'cuda',
+    'd',
+    'dhall',
+    'elm',
+    'elsa',
+    'firttl',
     'eex',
     'ecma',
     'elvish',
@@ -93,10 +105,14 @@ function config.nvim_treesitter()
     'rst',
     'rnoweb',
     'm68k',
+    'yang',
+    'nickel',
+    'cue',
   }
 
   require('nvim-treesitter.configs').setup({
     ignore_install = ignored,
+    ensure_installed = 'all',
     highlight = {
       enable = true,
     },
