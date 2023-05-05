@@ -67,6 +67,7 @@ packadd({
     end
     require('modules.lsp.backend')
     require('modules.lsp.frontend')
+    exec_filetype('lspconfig')
   end,
 })
 

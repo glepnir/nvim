@@ -27,55 +27,32 @@ function config.easyformat()
   require('easyformat').setup({
     fmt_on_save = true,
   })
+  exec_filetype('EasyFormat')
 end
 
 function config.mut_char()
-  local filters = require('mutchar.filters')
+  local ctx = require('mutchar.context')
   require('mutchar').setup({
-    ['c'] = {
-      rules = { '-', '->' },
-      filter = filters.non_space_before,
+    c = {
+      ['-'] = { '->', ctx.non_space_before },
     },
-    ['cpp'] = {
-      rules = {
-        { ',', ' <!>' },
-        { '-', '->' },
-      },
-      filter = {
-        filters.generic_in_cpp,
-        filters.non_space_before,
-      },
-      one_to_one = true,
+    cpp = {
+      [','] = { ' <!>', ctx.generic_in_cpp },
+      ['-'] = { '->', ctx.non_space_before },
     },
-    ['rust'] = {
-      rules = {
-        { ';', ': ' },
-        { '-', '->' },
-        { ',', '<!>' },
-      },
-      filter = {
-        filters.semicolon_in_rust,
-        filters.minus_in_rust,
-        filters.generic_in_rust,
-      },
-      one_to_one = true,
+    rust = {
+      [','] = { '<!>', ctx.generic_in_rust },
+      ['-'] = { '->', ctx.ret_arrow },
     },
-    ['lua'] = {
-      rules = { ';', ':' },
-      filter = filters.semicolon_in_lua,
+    lua = {
+      [';'] = { ':', ctx.semicolon_in_lua },
     },
-    ['go'] = {
-      rules = {
-        { ';', ' :=' },
-        { ',', ' <-' },
-      },
-      filter = {
-        filters.find_diagnostic_msg({ 'initial', 'undeclare' }),
-        filters.go_arrow_symbol,
-      },
-      one_to_one = true,
+    go = {
+      [';'] = { ' := ', ctx.diagnostic_match('undefine') },
     },
   })
+
+  exec_filetype('MutChar')
 end
 
 function config.hop()

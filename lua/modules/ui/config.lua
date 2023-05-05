@@ -19,7 +19,7 @@ function config.dashboard()
       shortcut = {
         {
           desc = 'Update',
-          icon = ' ',
+          icon = ' ',
           group = 'Include',
           action = 'Lazy update',
           key = 'u',

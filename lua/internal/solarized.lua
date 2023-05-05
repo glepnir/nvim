@@ -18,7 +18,7 @@
 --green     #859900  2/2 green     64 #5f8700 60 -20  65 133 153   0  68 100  60
 
 --new
---dcyan     #379ead  6/6 dcyan    LAB(69.54，-26.16，-25.02) hsv(188°, 68%, 68%)
+--dcyan     #379ead  6/6 dcyan    LAB(69.54，-26，-25) HSV(188°, 68%, 68%)
 
 local function palette()
   return {
