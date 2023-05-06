@@ -16,9 +16,7 @@
 --blue      #268bd2  4/4 blue      33 #0087ff 55 -10 -45  38 139 210 205  82  82
 --cyan      #2aa198  6/6 cyan      37 #00afaf 60 -35 -05  42 161 152 175  74  63
 --green     #859900  2/2 green     64 #5f8700 60 -20  65 133 153   0  68 100  60
-
---new
---dcyan     #379ead  6/6 dcyan    LAB(69.54，-26，-25) HSV(188°, 68%, 68%)
+--
 
 local function palette()
   return {
@@ -32,7 +30,7 @@ local function palette()
     base1 = '#93a1a1',
     base2 = '#eee8d5',
     base3 = '#fdf6e3',
-    red = '#dc322f',
+    red = '#BE3455',
     dorange = '#cb4b16',
     orange = '#d1702a',
     yellow = '#b58900',
@@ -41,7 +39,7 @@ local function palette()
     blue = '#268bd2',
     cyan = '#2aa198',
     --based on base0 hsv(188°, 68%, 68%)
-    dcyan = '#379ead',
+    dcyan = '#3ca9ba',
     green = '#859900',
     non = 'NONE',
   }

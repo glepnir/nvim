@@ -28,7 +28,7 @@ end
 local loaded = false
 local function diag_config()
   local signs = {
-    Error = ' ',
+    Error = ' ',
     Warn = ' ',
     Info = ' ',
     Hint = ' ',
