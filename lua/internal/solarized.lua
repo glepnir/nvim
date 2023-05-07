@@ -154,7 +154,7 @@ local function colorscheme()
     ---@Keywords
     { 'Keyword', { fg = p.green } },
     { '@keyword.function', { fg = p.dorange } },
-    { '@keyword.return', { fg = p.green } },
+    { '@keyword.return', { fg = p.red } },
     { '@keyword.operator', { link = 'Operator' } },
     --if else
     { 'Conditional', { link = 'Keyword' } },
