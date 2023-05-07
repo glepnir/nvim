@@ -51,14 +51,15 @@ function config.dashboard()
 end
 
 function config.gitsigns()
+  local char = '┃'
   require('gitsigns').setup({
     signs = {
-      add = { hl = 'GitGutterAdd', text = '▍' },
-      change = { hl = 'GitGutterChange', text = '▍' },
-      delete = { hl = 'GitGutterDelete', text = '▍' },
+      add = { hl = 'GitGutterAdd', text = char },
+      change = { hl = 'GitGutterChange', text = char },
+      delete = { hl = 'GitGutterDelete', text = char },
       topdelete = { hl = 'GitGutterDeleteChange', text = '▔' },
-      changedelete = { hl = 'GitGutterChange', text = '▍' },
-      untracked = { hl = 'GitGutterAdd', text = '▍' },
+      changedelete = { hl = 'GitGutterChange', text = char },
+      untracked = { hl = 'GitGutterAdd', text = char },
     },
     keymaps = {
       -- Default keymap options
