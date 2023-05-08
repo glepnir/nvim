@@ -274,7 +274,7 @@ local function colorscheme()
     { 'TelescopeMatching', { fg = p.yellow } },
     --CursorWord
     { 'CursorWord', { bg = p.base02 } },
-    { 'IndentLine', { link = 'Comment' } },
+    { 'IndentLine', { fg = '#1f5866' } },
     --Lspsaga
     { 'SagaWinbarVariable', { fg = p.green } },
   }
