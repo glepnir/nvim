@@ -64,8 +64,11 @@ _G.packadd = function(repo)
 end
 
 _G.exec_filetype = function(group)
+  group = type(group) == 'string' and { group } or group
   local curbuf = api.nvim_get_current_buf()
-  api.nvim_exec_autocmds('FileType', { group = group, pattern = vim.bo[curbuf].filetype })
+  for _, g in ipairs(group) do
+    api.nvim_exec_autocmds('FileType', { group = g, pattern = vim.bo[curbuf].filetype })
+  end
 end
 
 return pack

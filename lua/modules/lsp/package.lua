@@ -25,7 +25,6 @@ local function lsp_fts(type)
   return fts[type]
 end
 
-local loaded = false
 local function diag_config()
   local signs = {
     Error = ' ',
@@ -46,6 +45,7 @@ local function diag_config()
 
   --disable diagnostic in neovim test file *_spec.lua
   vim.api.nvim_create_autocmd('FileType', {
+    group = vim.api.nvim_create_augroup('DisableInSpec', { clear = true }),
     pattern = 'lua',
     callback = function(opt)
       local fname = vim.api.nvim_buf_get_name(opt.buf)
@@ -61,13 +61,10 @@ packadd({
   dev = true,
   ft = lsp_fts(),
   config = function()
-    if not loaded then
-      diag_config()
-      loaded = true
-    end
+    diag_config()
     require('modules.lsp.backend')
     require('modules.lsp.frontend')
-    exec_filetype('lspconfig')
+    exec_filetype({ 'lspconfig', 'DisableInSpec' })
   end,
 })
 
