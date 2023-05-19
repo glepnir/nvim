@@ -32,10 +32,10 @@ local function palette()
     base3 = '#fdf6e3',
     red = '#BE3455',
     dorange = '#cb4b16',
-    orange = '#d1702a',
+    orange = '#cc7529',
     yellow = '#b58900',
     magenta = '#d33682',
-    violet = '#957FB8',
+    violet = '#9977d9',
     blue = '#268bd2',
     cyan = '#2aa198',
     --based on base0 hsv(188°, 68%, 68%)
@@ -153,8 +153,8 @@ local function colorscheme()
     --------------------------------------------------------
     ---@Keywords
     { 'Keyword', { fg = p.green } },
-    { '@keyword.function', { fg = p.dorange } },
-    { '@keyword.return', { fg = p.red } },
+    { '@keyword.function', { link = 'Keyword' } },
+    { '@keyword.return', { fg = p.dred } },
     { '@keyword.operator', { link = 'Operator' } },
     --if else
     { 'Conditional', { link = 'Keyword' } },
@@ -220,7 +220,6 @@ local function colorscheme()
     { '@tag.attribute.typescript', { link = '@tag.attribute.html' } },
     { '@tag.delimiter.typescript', { link = '@tag.delimiter.html' } },
     --------------------------------------------------------
-    --------------------------------------------------------
     ---@Markdown
     { '@text.reference.markdown_inline', { fg = p.blue } },
     ---@Diff
@@ -228,12 +227,6 @@ local function colorscheme()
     { 'DiffChange', { fg = p.blue } },
     { 'DiffDelete', { fg = p.dorange } },
     { 'DiffText', { fg = p.dorange } },
-    { 'diffAdded', { fg = p.green } },
-    { 'diffRemoved', { fg = p.dorange } },
-    { 'diffChanged', { fg = p.blue } },
-    { 'diffOldFile', { fg = p.yellow } },
-    { 'diffNewFile', { fg = p.orange } },
-    { 'diffFile', { fg = p.cyan } },
     --------------------------------------------------------
     ---@Diagnostic
     { 'DiagnosticError', { link = 'Error' } },

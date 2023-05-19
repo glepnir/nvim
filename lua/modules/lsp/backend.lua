@@ -1,26 +1,24 @@
 local M = {}
 local lspconfig = require('lspconfig')
 
----@diagnostic disable-next-line: unused-local
-function M._attach(client, bufnr)
+function M._attach(client)
   vim.opt.omnifunc = 'v:lua.vim.lsp.omnifunc'
   client.server_capabilities.semanticTokensProvider = nil
+  local orignal = vim.notify
+  local mynotify = function(msg, level, opts)
+    if msg == 'No code actions available' or msg:find('overly') then
+      return
+    end
+    orignal(msg, level, opts)
+  end
+
+  vim.notify = mynotify
 end
 
 lspconfig.gopls.setup({
   cmd = { 'gopls', 'serve' },
   on_attach = function(client, _)
-    local orignal = vim.notify
-    local mynotify = function(msg, level, opts)
-      if msg == 'No code actions available' then
-        return
-      end
-      orignal(msg, level, opts)
-    end
-
-    vim.notify = mynotify
     M._attach(client)
-    -- vim.opt.omnifunc = "v:lua.vim.lsp.omnifunc"
     -- if client.name == "gopls" and not client.server_capabilities.semanticTokensProvider then
     -- 	local semantic = client.config.capabilities.textDocument.semanticTokens
     -- 	client.server_capabilities.semanticTokensProvider = {
@@ -76,7 +74,6 @@ lspconfig.clangd.setup({
   cmd = {
     'clangd',
     '--background-index',
-    '--suggest-missing-includes',
     '--clang-tidy',
     '--header-insertion=iwyu',
   },

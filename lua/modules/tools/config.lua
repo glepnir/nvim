@@ -41,8 +41,13 @@ function config.mut_char()
       ['-'] = { '->', ctx.non_space_before },
     },
     rust = {
-      [','] = { '<!>', ctx.generic_in_rust },
-      ['-'] = { '->', ctx.ret_arrow },
+      [';'] = {
+        { '::', ctx.rust_double_colon },
+        { ': ', ctx.rust_single_colon },
+      },
+      ['='] = { ' => ', ctx.rust_fat_arrow },
+      ['-'] = { ' -> ', ctx.rust_thin_arrow },
+      [','] = { '<!>', ctx.rust_generic },
     },
     lua = {
       [';'] = { ':', ctx.semicolon_in_lua },

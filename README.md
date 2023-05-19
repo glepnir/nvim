@@ -54,7 +54,7 @@
 
 check out the cli tool `dope`
 
-```
+```lua
 ~/.config/nvim/dope help
 ```
 
