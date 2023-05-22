@@ -56,6 +56,8 @@ opt.autoindent = true
 opt.tabstop = 2
 opt.shiftwidth = 2
 
+opt.splitright = true
+
 -- wrap
 opt.linebreak = true
 opt.whichwrap = 'h,l,<,>,[,],~'

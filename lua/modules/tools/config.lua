@@ -47,7 +47,6 @@ function config.mut_char()
       },
       ['='] = { ' => ', ctx.rust_fat_arrow },
       ['-'] = { ' -> ', ctx.rust_thin_arrow },
-      [','] = { '<!>', ctx.rust_generic },
     },
     lua = {
       [';'] = { ':', ctx.semicolon_in_lua },

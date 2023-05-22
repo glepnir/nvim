@@ -141,7 +141,7 @@ local function colorscheme()
     -- various variable names
     { '@variable', { fg = p.base0 } },
     --built-in variable names (e.g. `this`)
-    { '@variable.builtin', { fg = p.cyan, bold = true } },
+    { '@variable.builtin', { fg = p.magenta, bold = true } },
     { 'Constant', { fg = p.orange } },
     { '@constant.builtin', { link = 'Constant' } },
     -- constants defined by the preprocessor
@@ -154,7 +154,7 @@ local function colorscheme()
     ---@Keywords
     { 'Keyword', { fg = p.green } },
     { '@keyword.function', { link = 'Keyword' } },
-    { '@keyword.return', { fg = p.dred } },
+    { '@keyword.return', { fg = p.red } },
     { '@keyword.operator', { link = 'Operator' } },
     --if else
     { 'Conditional', { link = 'Keyword' } },
