@@ -1,12 +1,11 @@
 local conf = require('modules.ui.config')
 
--- packadd({
---   'nvimdev/dashboard-nvim',
---   dev = true,
---   event = 'VimEnter',
---   config = conf.dashboard,
---   dependencies = { 'nvim-tree/nvim-web-devicons' },
--- })
+packadd({
+  'nvimdev/dashboard-nvim',
+  event = 'VimEnter',
+  config = conf.dashboard,
+  dependencies = { 'nvim-tree/nvim-web-devicons' },
+})
 
 packadd({
   'nvimdev/whiskyline.nvim',
