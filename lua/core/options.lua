@@ -59,10 +59,7 @@ opt.shiftwidth = 2
 opt.splitright = true
 
 -- wrap
-opt.linebreak = true
-opt.whichwrap = 'h,l,<,>,[,],~'
-opt.breakindentopt = 'shift:2,min:20'
-vim.wo.showbreak = 'NONE'
+opt.wrap = false
 
 opt.foldlevelstart = 99
 opt.foldmethod = 'marker'
