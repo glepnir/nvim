@@ -31,17 +31,19 @@ local function palette()
     base2 = '#eee8d5',
     base3 = '#fdf6e3',
     red = '#BE3455',
-    dorange = '#cb4b16',
-    orange = '#cc7529',
+    orange = '#cb4b16',
     yellow = '#b58900',
     magenta = '#d33682',
-    violet = '#9977d9',
+    violet = '#6c71c4',
     blue = '#268bd2',
     cyan = '#2aa198',
-    --based on base0 hsv(188°, 68%, 68%)
-    dcyan = '#3ca9ba',
     green = '#859900',
     non = 'NONE',
+    --new
+    n_violet = '#9977d9',
+    --based on base0 hsv(188°, 68%, 68%)
+    n_cyan = '#3ca9ba',
+    n_orange = '#cc6b16',
   }
 end
 
@@ -90,7 +92,7 @@ local function colorscheme()
     { 'Whitespace', { fg = p.base02 } },
     --window
     { 'VertSplit', { fg = p.base02 } },
-    { 'Title', { fg = p.orange, bold = true } },
+    { 'Title', { fg = p.n_orange, bold = true } },
     --cursorline
     { 'Cursorline', { bg = p.base02 } },
     { 'CursorLineNr', { fg = p.base0 } },
@@ -126,7 +128,7 @@ local function colorscheme()
     --Spell
     { 'SpellBad', { fg = p.magenta } },
     { 'SpellCap', { undercurl = true, fg = p.magenta } },
-    { 'SpellRare', { undercurl = true, sp = p.violet } },
+    { 'SpellRare', { undercurl = true, sp = p.n_violet } },
     { 'SpellLocal', { undercurl = true } },
     --Msg
     { 'WarningMsg', { fg = p.magenta } },
@@ -141,13 +143,13 @@ local function colorscheme()
     -- various variable names
     { '@variable', { fg = p.base0 } },
     --built-in variable names (e.g. `this`)
-    { '@variable.builtin', { fg = p.magenta, bold = true } },
-    { 'Constant', { fg = p.orange } },
+    { '@variable.builtin', { fg = p.magenta } },
+    { 'Constant', { fg = p.n_orange } },
     { '@constant.builtin', { link = 'Constant' } },
     -- constants defined by the preprocessor
     { '@constant.macro', {} },
     --modules or namespaces
-    { '@namespace', { link = 'Include' } },
+    { '@namespace', { fg = p.cyan } },
     --symbols or atoms
     -- ['@symbol'] = {},
     --------------------------------------------------------
@@ -161,14 +163,14 @@ local function colorscheme()
     --for while
     { 'Repeat', { link = 'Conditional' } },
 
-    { 'Debug', { fg = p.dorange } },
-    { 'Label', { fg = p.violet } },
-    { 'PreProc', { fg = p.dorange } },
+    { 'Debug', { fg = p.orange } },
+    { 'Label', { fg = p.n_violet } },
+    { 'PreProc', { fg = p.orange } },
     { 'Include', { link = 'PreProc' } },
-    { 'Exception', { fg = p.violet } },
+    { 'Exception', { fg = p.n_violet } },
     { 'Statement', { fg = p.green } },
-    { 'SpecialKey', { fg = p.dorange } },
-    { 'Special', { fg = p.dorange } },
+    { 'SpecialKey', { fg = p.orange } },
+    { 'Special', { fg = p.orange } },
     --------------------------------------------------------
     ---@Types
     { 'Type', { fg = p.yellow } },
@@ -179,7 +181,7 @@ local function colorscheme()
     { '@type.qualifier', { fg = p.green } },
     --modifiers that affect storage in memory or life-time like C `static`
     { '@storageclass', { link = 'Keyword' } },
-    { '@field', { fg = p.dcyan } },
+    { '@field', { fg = p.n_cyan } },
     { '@property', { link = '@field' } },
     --------------------------------------------------------
     ---@Functions
@@ -192,12 +194,12 @@ local function colorscheme()
     { '@function.macro', { link = 'Function' } },
     { '@method', { link = 'Function' } },
     { '@method.call', { link = 'Function' } },
-    { '@constructor', { fg = p.violet } },
+    { '@constructor', { fg = p.n_violet } },
     { '@parameter', { link = '@variable' } },
     --------------------------------------------------------
     ---@Literals
     { 'String', { fg = p.cyan } },
-    { 'Number', { fg = p.violet } },
+    { 'Number', { fg = p.n_violet } },
     { 'Float', { link = 'Number' } },
     { 'Boolean', { link = 'Number' } },
     --
@@ -207,10 +209,10 @@ local function colorscheme()
     --------------------------------------------------------
     ---@punctuation
     { '@punctuation.bracket', { fg = p.base00 } },
-    { '@punctuation.delimiter', { link = '@punctuation.bracket' } },
+    { '@punctuation.delimiter', { link = 'Operator' } },
     --------------------------------------------------------
     ---@Tag
-    { '@tag.html', { fg = p.orange } },
+    { '@tag.html', { fg = p.n_orange } },
     { '@tag.attribute.html', { link = '@property' } },
     { '@tag.delimiter.html', { link = '@punctuation.delimiter' } },
     { '@tag.javascript', { link = '@tag.html' } },
@@ -225,8 +227,8 @@ local function colorscheme()
     ---@Diff
     { 'DiffAdd', { fg = p.green } },
     { 'DiffChange', { fg = p.blue } },
-    { 'DiffDelete', { fg = p.dorange } },
-    { 'DiffText', { fg = p.dorange } },
+    { 'DiffDelete', { fg = p.orange } },
+    { 'DiffText', { fg = p.orange } },
     --------------------------------------------------------
     ---@Diagnostic
     { 'DiagnosticError', { link = 'Error' } },
@@ -247,7 +249,7 @@ local function colorscheme()
     { 'GitGutterDelete', { fg = p.red } },
     { 'GitGutterChangeDelete', { fg = p.red } },
     --dashboard
-    { 'DashboardHeader', { fg = p.violet } },
+    { 'DashboardHeader', { fg = p.green } },
     { 'DashboardFooter', { link = 'Comment' } },
     { 'DashboardProjectTitle', { fg = p.yellow, bold = true } },
     { 'DashboardProjectTitleIcon', { fg = p.violet } },
@@ -259,7 +261,7 @@ local function colorscheme()
     { 'DashboardShortCutIcon', { link = '@field' } },
     --Telescope
     { 'TelescopePromptBorder', { bg = p.base02, fg = p.base02 } },
-    { 'TelescopePromptNormal', { bg = p.base02, fg = p.dorange } },
+    { 'TelescopePromptNormal', { bg = p.base02, fg = p.orange } },
     { 'TelescopeResultsBorder', { bg = p.base02, fg = p.base02 } },
     { 'TelescopePreviewBorder', { bg = p.base02, fg = p.base02 } },
     { 'TelescopeResultsNormal', { fg = p.base0 } },
