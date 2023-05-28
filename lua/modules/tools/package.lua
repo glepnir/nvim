@@ -35,10 +35,10 @@ packadd({
 })
 
 packadd({
-  'nvimdev/mutchar.nvim',
+  'nvimdev/dynchar.nvim',
   dev = true,
   ft = { 'c', 'cpp', 'go', 'rust', 'lua' },
-  config = conf.mut_char,
+  config = conf.dynchar,
 })
 
 packadd({

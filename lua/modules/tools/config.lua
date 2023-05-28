@@ -30,9 +30,9 @@ function config.easyformat()
   exec_filetype('EasyFormat')
 end
 
-function config.mut_char()
-  local ctx = require('mutchar.context')
-  require('mutchar').setup({
+function config.dynchar()
+  local ctx = require('dynchar.context')
+  require('dynchar').setup({
     c = {
       ['-'] = { '->', ctx.non_space_before },
     },
@@ -56,7 +56,7 @@ function config.mut_char()
     },
   })
 
-  exec_filetype('MutChar')
+  exec_filetype('Dynchar')
 end
 
 function config.hop()

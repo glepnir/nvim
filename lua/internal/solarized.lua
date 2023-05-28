@@ -194,7 +194,7 @@ local function colorscheme()
     { '@function.macro', { link = 'Function' } },
     { '@method', { link = 'Function' } },
     { '@method.call', { link = 'Function' } },
-    { '@constructor', { fg = p.n_violet } },
+    { '@constructor', { fg = p.n_orange } },
     { '@parameter', { link = '@variable' } },
     --------------------------------------------------------
     ---@Literals
