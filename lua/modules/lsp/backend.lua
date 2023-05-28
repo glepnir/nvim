@@ -19,13 +19,13 @@ lspconfig.gopls.setup({
   cmd = { 'gopls', 'serve' },
   on_attach = function(client, _)
     M._attach(client)
-    -- if client.name == "gopls" and not client.server_capabilities.semanticTokensProvider then
-    -- 	local semantic = client.config.capabilities.textDocument.semanticTokens
-    -- 	client.server_capabilities.semanticTokensProvider = {
-    -- 		full = true,
-    -- 		legend = { tokenModifiers = semantic.tokenModifiers, tokenTypes = semantic.tokenTypes },
-    -- 		range = true,
-    -- 	}
+    -- if client.name == 'gopls' and not client.server_capabilities.semanticTokensProvider then
+    --   local semantic = client.config.capabilities.textDocument.semanticTokens
+    --   client.server_capabilities.semanticTokensProvider = {
+    --     full = true,
+    --     legend = { tokenModifiers = semantic.tokenModifiers, tokenTypes = semantic.tokenTypes },
+    --     range = true,
+    --   }
     -- end
   end,
   init_options = {
@@ -93,6 +93,7 @@ lspconfig.rust_analyzer.setup({
         buildScripts = {
           enable = true,
         },
+        sysroot = '/Users/mathew/.rustup/toolchains/stable-x86_64-apple-darwin',
       },
       procMacro = {
         enable = false,
