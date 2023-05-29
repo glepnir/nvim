@@ -15,10 +15,12 @@ function config.easyformat()
     ignore_patterns = { '%pspec', 'neovim/*' },
   }
   configs.c = {
-    ignore_patterns = { 'neovim/*' },
+    ignore_patterns = { 'neovim' },
+  }
+  configs.cpp = {
+    ignore_patterns = { 'neovim' },
   }
   configs.use_default({
-    'cpp',
     'go',
     'rust',
     'javascript',
@@ -30,9 +32,9 @@ function config.easyformat()
   exec_filetype('EasyFormat')
 end
 
-function config.dynchar()
-  local ctx = require('dynchar.context')
-  require('dynchar').setup({
+function config.dyninput()
+  local ctx = require('dyninput.context')
+  require('dyninput').setup({
     c = {
       ['-'] = { '->', ctx.non_space_before },
     },
@@ -56,7 +58,7 @@ function config.dynchar()
     },
   })
 
-  exec_filetype('Dynchar')
+  exec_filetype('dyninput')
 end
 
 function config.hop()

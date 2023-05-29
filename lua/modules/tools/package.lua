@@ -35,10 +35,10 @@ packadd({
 })
 
 packadd({
-  'nvimdev/dynchar.nvim',
+  'nvimdev/dyninput.nvim',
   dev = true,
   ft = { 'c', 'cpp', 'go', 'rust', 'lua' },
-  config = conf.dynchar,
+  config = conf.dyninput,
 })
 
 packadd({

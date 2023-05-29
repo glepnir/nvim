@@ -30,10 +30,10 @@ local function palette()
     base1 = '#93a1a1',
     base2 = '#eee8d5',
     base3 = '#fdf6e3',
-    red = '#BE3455',
+    red = '#e95678',
     orange = '#cb4b16',
     yellow = '#b58900',
-    magenta = '#d33682',
+    magenta = '#BE3455',
     violet = '#6c71c4',
     blue = '#268bd2',
     cyan = '#2aa198',
@@ -137,13 +137,14 @@ local function colorscheme()
     { 'NvimInternalError', { fg = p.red } },
     { 'Directory', { fg = p.blue } },
     --------------------------------------------------------
+    ---
     ---@Langauge Relate
     ---@Identifier
     { 'Identifier', { fg = p.blue } },
     -- various variable names
     { '@variable', { fg = p.base0 } },
     --built-in variable names (e.g. `this`)
-    { '@variable.builtin', { fg = p.n_orange } },
+    { '@variable.builtin', { fg = p.red } },
     { 'Constant', { fg = p.n_orange } },
     { '@constant.builtin', { link = 'Constant' } },
     -- constants defined by the preprocessor
@@ -156,7 +157,7 @@ local function colorscheme()
     ---@Keywords
     { 'Keyword', { fg = p.green } },
     { '@keyword.function', { link = 'Keyword' } },
-    { '@keyword.return', { fg = p.red } },
+    { '@keyword.return', { fg = p.magenta } },
     { '@keyword.operator', { link = 'Operator' } },
     --if else
     { 'Conditional', { link = 'Keyword' } },
