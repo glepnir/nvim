@@ -144,7 +144,7 @@ local function colorscheme()
     -- various variable names
     { '@variable', { fg = p.base0 } },
     --built-in variable names (e.g. `this`)
-    { '@variable.builtin', { fg = p.red } },
+    { '@variable.builtin', { fg = p.orange } },
     { 'Constant', { fg = p.n_orange } },
     { '@constant.builtin', { link = 'Constant' } },
     -- constants defined by the preprocessor

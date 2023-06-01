@@ -72,7 +72,7 @@ packadd({
 
 packadd({
   'nvimdev/lspsaga.nvim',
-  event = 'LspAttach',
+  ft = lsp_fts(),
   cmd = 'Lspsaga term_toggle',
   dev = true,
   config = function()

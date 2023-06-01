@@ -93,10 +93,9 @@ lspconfig.rust_analyzer.setup({
         buildScripts = {
           enable = true,
         },
-        sysroot = '/Users/mathew/.rustup/toolchains/stable-x86_64-apple-darwin',
       },
       procMacro = {
-        enable = false,
+        enable = true,
       },
     },
   },

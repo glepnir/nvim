@@ -90,6 +90,8 @@ function _G.show_stc()
   local function show_break()
     if vim.v.virtnum > 0 then
       return (' '):rep(math.floor(math.ceil(math.log10(vim.v.lnum))) - 1) .. '↳'
+    elseif vim.v.virtnum < 0 then
+      return ''
     else
       return vim.v.lnum
     end
