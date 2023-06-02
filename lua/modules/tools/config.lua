@@ -33,28 +33,33 @@ function config.easyformat()
 end
 
 function config.dyninput()
-  local ctx = require('dyninput.context')
+  local rs = require('dyninput.lang.rust')
+  local ms = require('dyninput.lang.misc')
   require('dyninput').setup({
     c = {
-      ['-'] = { '->', ctx.non_space_before },
+      ['-'] = { '->', ms.c_struct_pointer },
     },
     cpp = {
-      [','] = { ' <!>', ctx.generic_in_cpp },
-      ['-'] = { '->', ctx.non_space_before },
+      [','] = { ' <!>', ms.generic_in_cpp },
+      ['-'] = { '->', ms.c_struct_pointer },
     },
     rust = {
       [';'] = {
-        { '::', ctx.rust_double_colon },
-        { ': ', ctx.rust_single_colon },
+        { '::', rs.double_colon },
+        { ': ', rs.single_colon },
       },
-      ['='] = { ' => ', ctx.rust_fat_arrow },
-      ['-'] = { ' -> ', ctx.rust_thin_arrow },
+      ['='] = { ' => ', rs.fat_arrow },
+      ['-'] = { ' -> ', rs.thin_arrow },
+      ['\\'] = { '|!| {}', rs.closure_fn },
     },
     lua = {
-      [';'] = { ':', ctx.semicolon_in_lua },
+      [';'] = { ':', ms.semicolon_in_lua },
     },
     go = {
-      [';'] = { ' := ', ctx.diagnostic_match('undefine') },
+      [';'] = {
+        { ' := ', ms.go_variable_define },
+        { ': ', ms.go_struct_field },
+      },
     },
   })
 
