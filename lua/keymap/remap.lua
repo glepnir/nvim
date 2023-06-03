@@ -19,7 +19,6 @@ map.n({
 })
 
 map.i({
-  ['<C-d>'] = '<Del>',
   ['<C-b>'] = '<Left>',
   ['<C-f>'] = '<Right>',
   ['<C-a>'] = '<Esc>^i',
@@ -27,9 +26,18 @@ map.i({
   ['<C-s>'] = '<ESC>:w<CR>',
   ['<C-n>'] = '<Down>',
   ['<C-p>'] = '<Up>',
-  ['<A-j>'] = '<C-o>o',
+  ['<C-j>'] = '<C-o>o',
   ['<A-k>'] = '<C-o>O',
+  ['<A-d>'] = '<C-o>diw',
 })
+
+map.i('<C-h>', function()
+  local ok, pairs = pcall(require, 'nvim-autopairs')
+  if ok then
+    return pairs.autopairs_bs()
+  end
+  return '<C-h>'
+end, { expr = true, replace_keycodes = false })
 
 map.i('<c-e>', function()
   return vim.fn.pumvisible() == 1 and '<C-e>' or '<End>'
