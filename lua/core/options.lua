@@ -105,7 +105,7 @@ end
 
 opt.stc = [[%!v:lua.show_stc()]]
 
-if vim.loop.os_uname().sysname == 'Darwin' then
+if vim.uv.os_uname().sysname == 'Darwin' then
   vim.g.clipboard = {
     name = 'macOS-clipboard',
     copy = {
