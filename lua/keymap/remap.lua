@@ -29,6 +29,8 @@ map.i({
   ['<C-p>'] = '<Up>',
   ['<C-j>'] = '<C-o>o',
   ['<A-k>'] = '<C-o>O',
+  --@see https://github.com/neovim/neovim/issues/16416
+  ['<C-C>'] = '<C-C>',
 })
 
 map.i('<C-h>', function()
