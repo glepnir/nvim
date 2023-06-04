@@ -19,6 +19,7 @@ map.n({
 })
 
 map.i({
+  ['<C-d>'] = '<C-o>diW',
   ['<C-b>'] = '<Left>',
   ['<C-f>'] = '<Right>',
   ['<C-a>'] = '<Esc>^i',
@@ -28,7 +29,6 @@ map.i({
   ['<C-p>'] = '<Up>',
   ['<C-j>'] = '<C-o>o',
   ['<A-k>'] = '<C-o>O',
-  ['<A-d>'] = '<C-o>diw',
 })
 
 map.i('<C-h>', function()
@@ -40,7 +40,7 @@ map.i('<C-h>', function()
 end, { expr = true, replace_keycodes = false })
 
 map.i('<c-e>', function()
-  return vim.fn.pumvisible() == 1 and '<C-e>' or '<End>'
+  return vim.fn.pumvisible() == 1 and '<C-e>' or '<Esc>g_a'
 end, { expr = true })
 
 map.c({
