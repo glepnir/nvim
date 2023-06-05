@@ -19,7 +19,7 @@ map.n({
 })
 
 map.i({
-  ['<C-d>'] = '<C-o>diW',
+  ['<C-d>'] = '<C-o>diw',
   ['<C-b>'] = '<Left>',
   ['<C-f>'] = '<Right>',
   ['<C-a>'] = '<Esc>^i',

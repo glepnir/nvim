@@ -51,13 +51,11 @@ opt.autoindent = true
 opt.tabstop = 2
 opt.shiftwidth = 2
 
-opt.splitright = true
-
--- wrap
-opt.wrap = false
-
 opt.foldlevelstart = 99
 opt.foldmethod = 'marker'
+
+opt.splitright = true
+opt.wrap = false
 
 opt.number = true
 opt.signcolumn = 'yes'
