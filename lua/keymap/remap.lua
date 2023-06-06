@@ -28,9 +28,11 @@ map.i({
   ['<C-n>'] = '<Down>',
   ['<C-p>'] = '<Up>',
   ['<C-j>'] = '<C-o>o',
-  ['<A-k>'] = '<C-o>O',
   --@see https://github.com/neovim/neovim/issues/16416
   ['<C-C>'] = '<C-C>',
+  --@see https://vim.fandom.com/wiki/Moving_lines_up_or_down
+  ['<A-j>'] = '<Esc>:m .+1<CR>==gi',
+  ['<A-k>'] = '<Esc>:m .-2<CR>==gi',
 })
 
 map.i('<C-h>', function()
