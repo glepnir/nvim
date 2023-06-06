@@ -27,7 +27,9 @@ map.i({
   ['<C-s>'] = '<ESC>:w<CR>',
   ['<C-n>'] = '<Down>',
   ['<C-p>'] = '<Up>',
+  --down/up
   ['<C-j>'] = '<C-o>o',
+  ['<C-l>'] = '<C-o>O',
   --@see https://github.com/neovim/neovim/issues/16416
   ['<C-C>'] = '<C-C>',
   --@see https://vim.fandom.com/wiki/Moving_lines_up_or_down
