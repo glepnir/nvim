@@ -2,17 +2,7 @@ local api = vim.api
 local nvim_create_autocmd = api.nvim_create_autocmd
 local my_group = vim.api.nvim_create_augroup('GlepnirGroup', {})
 
-nvim_create_autocmd('VimEnter', {
-  group = my_group,
-  callback = function()
-    vim.defer_fn(function()
-      require('keymap')
-    end, 5)
-  end,
-  desc = 'Load my keymap',
-})
-
-nvim_create_autocmd({ 'BufWritePre' }, {
+nvim_create_autocmd('BufWritePre', {
   group = my_group,
   pattern = { '/tmp/*', 'COMMIT_EDITMSG', 'MERGE_MSG', '*.tmp', '*.bak' },
   command = 'setlocal noundofile',
@@ -26,7 +16,6 @@ nvim_create_autocmd('BufRead', {
 
 nvim_create_autocmd('TextYankPost', {
   group = my_group,
-  pattern = '*',
   callback = function()
     vim.highlight.on_yank({ higroup = 'IncSearch', timeout = 400 })
   end,
@@ -41,19 +30,27 @@ nvim_create_autocmd('Filetype', {
   command = 'syntax off',
 })
 
-nvim_create_autocmd({ 'CursorHold' }, {
+nvim_create_autocmd('CursorHold', {
   group = my_group,
-  pattern = '*',
   callback = function(opt)
     require('internal.cursorword').cursor_moved(opt.buf)
   end,
 })
 
-nvim_create_autocmd({ 'InsertEnter' }, {
+nvim_create_autocmd('InsertEnter', {
   group = my_group,
-  pattern = '*',
+  once = true,
   callback = function()
     require('internal.cursorword').disable_cursorword()
     require('internal.epoch').epoch()
+  end,
+})
+
+nvim_create_autocmd('BufEnter', {
+  group = my_group,
+  once = true,
+  callback = function()
+    require('keymap')
+    require('internal.track').setup()
   end,
 })

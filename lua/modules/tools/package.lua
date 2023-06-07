@@ -9,8 +9,6 @@ packadd({
   end,
 })
 
-packadd({ 'nvimdev/coman.nvim', dev = true, event = 'BufRead' })
-
 packadd({
   'nvimdev/template.nvim',
   dev = true,

@@ -62,10 +62,6 @@ map.n('<Leader>t', function()
   return ':Template '
 end, { expr = true })
 
-map.n('gcc', cmd('ComComment'))
-map.x('gcc', ':ComComment<CR>')
-map.n('gcj', cmd('ComAnnotation'))
-
 -- Lspsaga floaterminal
 map.nt('<A-d>', cmd('Lspsaga term_toggle'))
 
