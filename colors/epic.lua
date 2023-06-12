@@ -3,20 +3,13 @@ local g, api, opt = vim.g, vim.api, vim.opt
 
 local function palette()
   return {
-    bg = '#0F1014',
+    bg = '#1D1D1D',
     bg_dim = '#303030',
     fg = '#cccccc',
     fg_dim = '#989898',
     fg_alt = '#75715E',
-    red = '#ff5f5f',
-    pink = '#ff7f9f',
-    orange = '#ff8f40',
-    yellow_warmer = '#cca329',
-    yellow_cooler = '#dfaf7a',
-    --H 70 S 80 V 80
+    orange = '#FFA348',
     green = '#b1cc29',
-    green_cooler = '#6ae4b9',
-    magenta_cooler = '#a88ae6',
     --H 190 S 60 V 90
     cyan = '#5ccfe6',
     blue = '#59c2ff',
