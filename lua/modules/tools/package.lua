@@ -17,10 +17,10 @@ packadd({
 })
 
 packadd({
-  'nvimdev/easyformat.nvim',
+  'nvimdev/guard.nvim',
   dev = true,
   ft = { 'c', 'cpp', 'rust', 'lua', 'go', 'typescript', 'javascript', 'javascriptreact' },
-  config = conf.easyformat,
+  config = conf.guard,
 })
 
 packadd({

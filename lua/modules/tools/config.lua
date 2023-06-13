@@ -9,27 +9,19 @@ function config.template_nvim()
   require('telescope').load_extension('find_template')
 end
 
-function config.easyformat()
-  local configs = require('easyformat.config')
-  configs.lua = {
-    ignore_patterns = { '%pspec', 'neovim/*' },
-  }
-  configs.c = {
-    ignore_patterns = { 'neovim' },
-  }
-  configs.cpp = {
-    ignore_patterns = { 'neovim' },
-  }
-  configs.use_default({
-    'go',
-    'rust',
-    'javascript',
-    'javascriptreact',
-  })
-  require('easyformat').setup({
-    fmt_on_save = true,
-  })
-  exec_filetype('EasyFormat')
+function config.guard()
+  local ft = require('guard.filetype')
+  local c = ft('c')
+  c:fmt('clang-format')
+  ft('lua'):fmt('stylua')
+  ft('go'):fmt('lsp'):append('golines')
+
+  for _, item in ipairs({'typescript', 'javascript', 'typescriptreact', 'javascriptreact'}) do
+    ft(item):fmt('prettier')
+  end
+
+  require('guard').setup()
+  exec_filetype('Guard')
 end
 
 function config.dyninput()
@@ -37,17 +29,11 @@ function config.dyninput()
   local ms = require('dyninput.lang.misc')
   require('dyninput').setup({
     c = {
-      ['-'] = {
-        { '->', ms.c_struct_pointer },
-        { '_', ms.snake_case },
-      },
+      ['-'] = { '->', ms.c_struct_pointer }
     },
     cpp = {
       [','] = { ' <!>', ms.generic_in_cpp },
-      ['-'] = {
-        { '->', ms.c_struct_pointer },
-        { '_', ms.snake_case },
-      },
+      ['-'] = { '->', ms.c_struct_pointer },
     },
     rust = {
       [';'] = {
@@ -55,22 +41,17 @@ function config.dyninput()
         { ': ', rs.single_colon },
       },
       ['='] = { ' => ', rs.fat_arrow },
-      ['-'] = {
-        { ' -> ', rs.thin_arrow },
-        { '_', ms.snake_case },
-      },
+      ['-'] = { ' -> ', rs.thin_arrow },
       ['\\'] = { '|!| {}', rs.closure_fn },
     },
     lua = {
       [';'] = { ':', ms.semicolon_in_lua },
-      ['-'] = { '_', ms.snake_case },
     },
     go = {
       [';'] = {
         { ' := ', ms.go_variable_define },
         { ': ', ms.go_struct_field },
       },
-      ['-'] = { '_', ms.snake_case },
     },
   })
 
