@@ -15,8 +15,9 @@ function config.guard()
   c:fmt('clang-format')
   ft('lua'):fmt('stylua')
   ft('go'):fmt('lsp'):append('golines')
+  ft('rust'):fmt('rustfmt')
 
-  for _, item in ipairs({'typescript', 'javascript', 'typescriptreact', 'javascriptreact'}) do
+  for _, item in ipairs({ 'typescript', 'javascript', 'typescriptreact', 'javascriptreact' }) do
     ft(item):fmt('prettier')
   end
 
@@ -29,7 +30,7 @@ function config.dyninput()
   local ms = require('dyninput.lang.misc')
   require('dyninput').setup({
     c = {
-      ['-'] = { '->', ms.c_struct_pointer }
+      ['-'] = { '->', ms.c_struct_pointer },
     },
     cpp = {
       [','] = { ' <!>', ms.generic_in_cpp },
