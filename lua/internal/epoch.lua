@@ -81,6 +81,22 @@ local function map_cr()
   end
 end
 
+api.nvim_create_autocmd('CompleteDonePre', {
+  callback = function(args)
+    local textedits = vim.tbl_get(
+      vim.v.completed_item,
+      'user_data',
+      'nvim',
+      'lsp',
+      'completion_item',
+      'additionalTextEdits'
+    )
+    if textedits then
+      vim.lsp.util.apply_text_edits(textedits, args.buf, 'utf-16')
+    end
+  end,
+})
+
 local mapped = false
 local function epoch()
   if mapped then
