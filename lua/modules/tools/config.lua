@@ -11,8 +11,7 @@ end
 
 function config.guard()
   local ft = require('guard.filetype')
-  local c = ft('c')
-  c:fmt('clang-format')
+  ft('c'):fmt('clang-format')
   ft('lua'):fmt('stylua')
   ft('go'):fmt('lsp'):append('golines')
   ft('rust'):fmt('rustfmt')
