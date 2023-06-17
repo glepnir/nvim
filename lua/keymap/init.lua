@@ -41,6 +41,9 @@ map.n({
   ['F'] = cmd('HopWordBC'),
   -- flybuf.nvim
   ['<Leader>j'] = cmd('FlyBuf'),
+  --gitsign
+  [']g'] = cmd('lua require"gitsigns".next_hunk()<CR>'),
+  ['[g'] = cmd('lua require"gitsigns".prev_hunk()<CR>'),
 })
 
 map.n('<Leader>e', function()
