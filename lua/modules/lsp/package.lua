@@ -75,10 +75,6 @@ packadd({
   ft = lsp_fts(),
   dev = true,
   config = function()
-    require('lspsaga').setup({
-      symbol_in_winbar = {
-        ignore_patterns = { '%w_spec' },
-      },
-    })
+    require('lspsaga').setup({})
   end,
 })
