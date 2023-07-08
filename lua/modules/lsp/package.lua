@@ -73,7 +73,6 @@ packadd({
 packadd({
   'nvimdev/lspsaga.nvim',
   ft = lsp_fts(),
-  cmd = 'Lspsaga term_toggle',
   dev = true,
   config = function()
     require('lspsaga').setup({

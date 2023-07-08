@@ -230,6 +230,8 @@ local function colorscheme()
     { 'DiffChange', { fg = p.blue } },
     { 'DiffDelete', { fg = p.orange } },
     { 'DiffText', { fg = p.orange } },
+    { '@text.diff.add', { link = 'DiffAdd' } },
+    { '@text.diff.delete', { link = 'DiffDelete' } },
     --------------------------------------------------------
     ---@Diagnostic
     { 'DiagnosticError', { link = 'Error' } },
@@ -272,7 +274,7 @@ local function colorscheme()
     { 'CursorWord', { bg = p.base02 } },
     { 'IndentLine', { fg = '#1f5866' } },
     --Lspsaga
-    { 'SagaWinbarVariable', { fg = p.green } },
+    { 'SagaVariable', { fg = p.green } },
   }
 
   in_vim(groups, p)
