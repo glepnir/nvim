@@ -75,6 +75,10 @@ packadd({
   ft = lsp_fts(),
   dev = true,
   config = function()
-    require('lspsaga').setup({})
+    require('lspsaga').setup({
+      symbols_in_winbar = {
+        hide_keyword = true,
+      },
+    })
   end,
 })
