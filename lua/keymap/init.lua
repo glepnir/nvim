@@ -18,7 +18,7 @@ map.n({
   ['gd'] = cmd('Lspsaga peek_definition'),
   ['gp'] = cmd('Lspsaga goto_definition'),
   ['gr'] = cmd('Lspsaga rename'),
-  ['gh'] = cmd('Lspsaga lsp_finder'),
+  ['gh'] = cmd('Lspsaga finder'),
   ['<Leader>o'] = cmd('Lspsaga outline'),
   ['<Leader>dw'] = cmd('Lspsaga show_workspace_diagnostics'),
   ['<Leader>db'] = cmd('Lspsaga show_buf_diagnostics'),

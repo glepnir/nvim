@@ -76,7 +76,7 @@ packadd({
   dev = true,
   config = function()
     require('lspsaga').setup({
-      symbols_in_winbar = {
+      symbol_in_winbar = {
         hide_keyword = true,
       },
     })

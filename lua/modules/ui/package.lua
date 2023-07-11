@@ -23,6 +23,7 @@ packadd({
 packadd({
   'nvimdev/indentmini.nvim',
   event = { 'BufEnter' },
+  dev = true,
   config = function()
     require('indentmini').setup({})
   end,
