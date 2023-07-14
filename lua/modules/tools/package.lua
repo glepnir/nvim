@@ -52,8 +52,6 @@ packadd({
   opts = true,
 })
 
-packadd({ 'phaazon/hop.nvim', event = 'BufRead', config = conf.hop })
-
 packadd({
   'nvimdev/nerdicons.nvim',
   dev = true,

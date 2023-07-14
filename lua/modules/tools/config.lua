@@ -58,11 +58,4 @@ function config.dyninput()
   exec_filetype('dyninput')
 end
 
-function config.hop()
-  local hop = require('hop')
-  hop.setup({
-    keys = 'asdghklqwertyuiopzxcvbnmfj',
-  })
-end
-
 return config

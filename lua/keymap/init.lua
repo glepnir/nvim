@@ -4,12 +4,6 @@ local map = require('core.keymap')
 local cmd = map.cmd
 
 map.n({
-  ['<Leader>pu'] = cmd('Lazy update'),
-  ['<Leader>pi'] = cmd('Lazy install'),
-  -- Lsp
-  ['<Leader>li'] = cmd('LspInfo'),
-  ['<Leader>ll'] = cmd('LspLog'),
-  ['<Leader>lr'] = cmd('LspRestart'),
   -- Lspsaga
   ['[e'] = cmd('Lspsaga diagnostic_jump_next'),
   [']e'] = cmd('Lspsaga diagnostic_jump_prev'),
@@ -36,9 +30,6 @@ map.n({
   ['<Leader>fo'] = cmd('Telescope oldfiles'),
   ['<Leader>gc'] = cmd('Telescope git_commits'),
   ['<Leader>fd'] = cmd('Telescope dotfiles'),
-  -- hop.nvim
-  ['f'] = cmd('HopWordAC'),
-  ['F'] = cmd('HopWordBC'),
   -- flybuf.nvim
   ['<Leader>j'] = cmd('FlyBuf'),
   --gitsign
