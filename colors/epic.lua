@@ -1,18 +1,23 @@
 local g, api, opt = vim.g, vim.api, vim.opt
---HSV S: %80 V: 80%-90%
 
 local function palette()
   return {
-    bg = '#1D1D1D',
+    bg = '#0a0a0a',
     bg_dim = '#303030',
     fg = '#cccccc',
     fg_dim = '#989898',
     fg_alt = '#75715E',
-    orange = '#FFA348',
+    red = '#ff5f59',
+    --H 30  S 80 V 90
+    orange = '#cc7a29',
+    yellow = '#cccc29',
+    --H 70  S 80 V 80
     green = '#b1cc29',
-    --H 190 S 60 V 90
-    cyan = '#5ccfe6',
-    blue = '#59c2ff',
+    --H 190 S 60 V 80
+    cyan = '#52b8cc',
+    blue = '#396ad4',
+    --H 260 S 40 V 80
+    purple = '#957acc',
   }
 end
 
@@ -52,12 +57,12 @@ local function colorscheme()
     { 'Whitespace', { fg = p.base02 } },
     --window
     { 'VertSplit', { fg = p.base02 } },
-    { 'Title', { fg = p.n_orange, bold = true } },
+    { 'Title', { fg = p.orange, bold = true } },
     --cursorline
     { 'Cursorline', { bg = p.base02 } },
-    { 'CursorLineNr', { fg = p.base0 } },
+    { 'CursorLineNr', { fg = p.fg_dim } },
     --pmenu
-    { 'Pmenu', { bg = p.base02, fg = p.base1 } },
+    { 'Pmenu', { bg = p.bg_dim, fg = p.fg_dim } },
     { 'PmenuSel', { fg = p.base2, bg = p.base00 } },
     { 'PmenuSbar', { bg = '#586e75' } },
     { 'PmenuThumb', { bg = p.base0 } },
@@ -110,7 +115,7 @@ local function colorscheme()
     -- ['@symbol'] = {},
     --------------------------------------------------------
     ---@Keywords
-    { 'Keyword', { fg = p.magenta_cooler } },
+    { 'Keyword', { fg = p.purple } },
     { '@keyword.function', { link = 'Keyword' } },
     { '@keyword.return', { link = 'Keyword' } },
     { '@keyword.operator', { link = 'Operator' } },
@@ -129,7 +134,7 @@ local function colorscheme()
     { 'Special', { fg = p.orange } },
     --------------------------------------------------------
     ---@Types
-    { 'Type', { fg = p.green_cooler } },
+    { 'Type', { fg = p.cyan } },
     { '@type.builtin', { link = 'Type' } },
     --type definitions (e.g. `typedef` in C)
     { '@type.definition', { link = 'Type' } },
@@ -141,7 +146,7 @@ local function colorscheme()
     { '@property', { link = '@field' } },
     --------------------------------------------------------
     ---@Functions
-    { 'Function', { fg = p.cyan } },
+    { 'Function', { fg = p.green } },
     --built-in functions
     { '@function.builtin', { link = 'Function' } },
     --function calls
@@ -154,8 +159,8 @@ local function colorscheme()
     { '@parameter', { link = '@variable' } },
     --------------------------------------------------------
     ---@Literals
-    { 'String', { fg = p.green } },
-    { 'Number', { fg = p.pink } },
+    { 'String', { link = 'Constant' } },
+    { 'Number', { fg = p.purple } },
     { 'Float', { link = 'Number' } },
     { 'Boolean', { link = 'Constant' } },
     --
