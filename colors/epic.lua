@@ -2,42 +2,44 @@ local g, api, opt = vim.g, vim.api, vim.opt
 
 local function palette()
   return {
-    bg = '#0a0a0a',
-    bg_dim = '#303030',
+    bg = '#1d1d1d',
+    bg_alt = '#303030',
     fg = '#cccccc',
     fg_dim = '#989898',
     fg_alt = '#75715E',
     red = '#ff5f59',
     --H 30  S 80 V 90
     orange = '#cc7a29',
-    yellow = '#cccc29',
+    yellow = '#e6b045',
     --H 70  S 80 V 80
     green = '#b1cc29',
     --H 190 S 60 V 80
     cyan = '#52b8cc',
-    blue = '#396ad4',
+    --H 210 S 60 V 90
+    blue = '#5ca1e6',
     --H 260 S 40 V 80
     purple = '#957acc',
+    teal = '#52ccb0',
   }
 end
 
 local function in_vim(groups, p)
-  -- g.terminal_color_0 = p.base05
-  -- g.terminal_color_1 = p.red
-  -- g.terminal_color_2 = p.green
-  -- g.terminal_color_3 = p.yellow
-  -- g.terminal_color_4 = p.blue
-  -- g.terminal_color_5 = p.magenta
-  -- g.terminal_color_6 = p.cyan
-  -- g.terminal_color_7 = p.base3
-  -- g.terminal_color_8 = p.base01
-  -- g.terminal_color_9 = p.orange
-  -- g.terminal_color_10 = p.base00
-  -- g.terminal_color_11 = p.base0
-  -- g.terminal_color_12 = p.base1
-  -- g.terminal_color_13 = p.violet
-  -- g.terminal_color_14 = p.base2
-  -- g.terminal_color_15 = p.base3
+  g.terminal_color_0 = p.bg_alt
+  g.terminal_color_1 = p.red
+  g.terminal_color_2 = p.green
+  g.terminal_color_3 = p.yellow
+  g.terminal_color_4 = p.blue
+  g.terminal_color_5 = p.purple
+  g.terminal_color_6 = p.cyan
+  g.terminal_color_7 = p.bg
+  g.terminal_color_8 = p.base01
+  g.terminal_color_9 = p.orange
+  g.terminal_color_10 = p.base00
+  g.terminal_color_11 = p.base0
+  g.terminal_color_12 = p.base1
+  g.terminal_color_13 = p.violet
+  g.terminal_color_14 = p.base2
+  g.terminal_color_15 = p.base3
 end
 
 local function colorscheme()
@@ -49,24 +51,24 @@ local function colorscheme()
     --signcolumn
     { 'SignColumn', { bg = p.bg } },
     --buffer
-    { 'LineNr', { fg = p.bg_dim } },
+    { 'LineNr', { fg = p.bg_alt } },
     { 'EndOfBuffer', { bg = p.non, fg = p.bg } },
-    { 'Search', { fg = p.yellow_cooler, reverse = true } },
-    { 'Visual', { bg = p.base02 } },
-    { 'ColorColumn', { bg = p.base02 } },
-    { 'Whitespace', { fg = p.base02 } },
+    { 'Search', { fg = p.yellow, reverse = true } },
+    { 'Visual', { bg = p.bg_dim } },
+    { 'ColorColumn', { bg = p.bg_dim } },
+    { 'Whitespace', { fg = p.bg_alt } },
     --window
-    { 'VertSplit', { fg = p.base02 } },
+    { 'VertSplit', { fg = p.bg_dim } },
     { 'Title', { fg = p.orange, bold = true } },
     --cursorline
-    { 'Cursorline', { bg = p.base02 } },
-    { 'CursorLineNr', { fg = p.fg_dim } },
+    { 'Cursorline', { bg = p.bg_alt } },
+    { 'CursorLineNr', { fg = p.fg_alt } },
     --pmenu
-    { 'Pmenu', { bg = p.bg_dim, fg = p.fg_dim } },
-    { 'PmenuSel', { fg = p.base2, bg = p.base00 } },
+    { 'Pmenu', { bg = p.bg_alt, fg = p.fg_dim } },
+    { 'PmenuSel', { fg = p.bg_alt, bg = p.bg } },
     { 'PmenuSbar', { bg = '#586e75' } },
-    { 'PmenuThumb', { bg = p.base0 } },
-    { 'PmenuKind', { bg = p.base02, fg = p.yellow } },
+    { 'PmenuThumb', { bg = p.bg } },
+    { 'PmenuKind', { bg = p.bg_alt, fg = p.yellow } },
     { 'PmenuKindSel', { link = 'PmenuSel' } },
     { 'PmenuExtra', { link = 'Pmenu' } },
     { 'PmenuExtraSel', { link = 'PmenuSel' } },
@@ -74,7 +76,7 @@ local function colorscheme()
     --Error
     { 'ErrorMsg', { link = 'Error' } },
     --Markup
-    { 'TODO', { fg = p.magenta } },
+    { 'TODO', { fg = p.red } },
     { 'Conceal', { fg = p.blue } },
     { 'Error', { fg = p.red, bold = true } },
     { 'NonText', { link = 'Comment' } },
@@ -83,15 +85,15 @@ local function colorscheme()
     { 'FloatNormal', { link = 'Normal' } },
     { 'FloatShadow', { bg = p.base06 } },
     --Fold
-    { 'Folded', { fg = p.base0, bold = true } },
+    { 'Folded', { fg = p.bg, bold = true } },
     { 'FoldColumn', { link = 'SignColumn' } },
     --Spell
-    { 'SpellBad', { fg = p.magenta } },
-    { 'SpellCap', { undercurl = true, fg = p.magenta } },
+    { 'SpellBad', { fg = p.red } },
+    { 'SpellCap', { undercurl = true, fg = p.red } },
     { 'SpellRare', { undercurl = true, sp = p.n_violet } },
     { 'SpellLocal', { undercurl = true } },
     --Msg
-    { 'WarningMsg', { fg = p.magenta } },
+    { 'WarningMsg', { fg = p.red } },
     { 'MoreMsg', { fg = p.green } },
     --Internal
     { 'NvimInternalError', { fg = p.red } },
@@ -102,7 +104,7 @@ local function colorscheme()
     ---@Identifier
     { 'Identifier', { fg = p.blue } },
     -- various variable names
-    { '@variable', { fg = p.base0 } },
+    { '@variable', { fg = p.fg } },
     --built-in variable names (e.g. `this`)
     { '@variable.builtin', { fg = p.orange } },
     { 'Constant', { fg = p.orange } },
@@ -115,7 +117,7 @@ local function colorscheme()
     -- ['@symbol'] = {},
     --------------------------------------------------------
     ---@Keywords
-    { 'Keyword', { fg = p.purple } },
+    { 'Keyword', { fg = p.green } },
     { '@keyword.function', { link = 'Keyword' } },
     { '@keyword.return', { link = 'Keyword' } },
     { '@keyword.operator', { link = 'Operator' } },
@@ -125,11 +127,11 @@ local function colorscheme()
     { 'Repeat', { link = 'Conditional' } },
 
     { 'Debug', { fg = p.orange } },
-    { 'Label', { fg = p.magenta_cooler } },
-    { 'PreProc', { fg = p.magenta_cooler } },
+    { 'Label', { fg = p.purple } },
+    { 'PreProc', { fg = p.purple } },
     { 'Include', { link = 'PreProc' } },
     { 'Exception', { fg = p.n_violet } },
-    { 'Statement', { fg = p.magenta_cooler } },
+    { 'Statement', { fg = p.purple } },
     { 'SpecialKey', { fg = p.orange } },
     { 'Special', { fg = p.orange } },
     --------------------------------------------------------
@@ -142,11 +144,11 @@ local function colorscheme()
     { '@type.qualifier', { link = 'KeyWord' } },
     --modifiers that affect storage in memory or life-time like C `static`
     { '@storageclass', { link = 'Keyword' } },
-    { '@field', { fg = p.yellow_warmer } },
+    { '@field', { fg = p.teal } },
     { '@property', { link = '@field' } },
     --------------------------------------------------------
     ---@Functions
-    { 'Function', { fg = p.green } },
+    { 'Function', { fg = p.blue } },
     --built-in functions
     { '@function.builtin', { link = 'Function' } },
     --function calls
@@ -159,21 +161,21 @@ local function colorscheme()
     { '@parameter', { link = '@variable' } },
     --------------------------------------------------------
     ---@Literals
-    { 'String', { link = 'Constant' } },
+    { 'String', { fg = p.yellow } },
     { 'Number', { fg = p.purple } },
     { 'Float', { link = 'Number' } },
     { 'Boolean', { link = 'Constant' } },
     --
     { 'Define', { link = 'PreProc' } },
-    { 'Operator', { fg = p.yellow_cooler } },
+    { 'Operator', { fg = p.fg_dim } },
     { 'Comment', { fg = p.fg_alt } },
     --------------------------------------------------------
     ---@punctuation
-    { '@punctuation.bracket', { fg = p.base00 } },
-    { '@punctuation.delimiter', { link = 'Operator' } },
+    { '@punctuation.bracket', { fg = p.fg_dim } },
+    { '@punctuation.delimiter', { fg = p.fg_dim } },
     --------------------------------------------------------
     ---@Tag
-    { '@tag.html', { fg = p.n_orange } },
+    { '@tag.html', { fg = p.orange } },
     { '@tag.attribute.html', { link = '@property' } },
     { '@tag.delimiter.html', { link = '@punctuation.delimiter' } },
     { '@tag.javascript', { link = '@tag.html' } },
@@ -195,7 +197,7 @@ local function colorscheme()
     { 'DiagnosticError', { link = 'Error' } },
     { 'DiagnosticWarn', { fg = p.yellow } },
     { 'DiagnosticInfo', { fg = p.blue } },
-    { 'DiagnosticHint', { fg = '#4eacb5' } },
+    { 'DiagnosticHint', { fg = p.cyan } },
     { 'DiagnosticSignError', { link = 'DiagnosticError' } },
     { 'DiagnosticSignWarn', { link = 'DiagnosticWarn' } },
     { 'DiagnosticSignInfo', { link = 'DiagnosticInfo' } },
@@ -217,22 +219,22 @@ local function colorscheme()
     { 'DashboardProjectIcon', { fg = p.blue } },
     { 'DashboardMruTitle', { link = 'DashboardProjectTitle' } },
     { 'DashboardMruIcon', { link = 'DashboardProjectTitleIcon' } },
-    { 'DashboardFiles', { fg = p.base0 } },
+    { 'DashboardFiles', { fg = p.fg_alt } },
     { 'DashboardShortCut', { link = 'Comment' } },
     { 'DashboardShortCutIcon', { link = '@field' } },
     --Telescope
-    { 'TelescopePromptBorder', { bg = p.base02, fg = p.base02 } },
-    { 'TelescopePromptNormal', { bg = p.base02, fg = p.orange } },
-    { 'TelescopeResultsBorder', { bg = p.base02, fg = p.base02 } },
-    { 'TelescopePreviewBorder', { bg = p.base02, fg = p.base02 } },
-    { 'TelescopeResultsNormal', { fg = p.base0 } },
+    { 'TelescopePromptBorder', { bg = p.bg_alt, fg = p.fg_alt } },
+    { 'TelescopePromptNormal', { bg = p.bg_alt, fg = p.orange } },
+    { 'TelescopeResultsBorder', { bg = p.bg_alt, fg = p.fg_alt } },
+    { 'TelescopePreviewBorder', { bg = p.bg_alt, fg = p.fg_alt } },
+    { 'TelescopeResultsNormal', { fg = p.fg } },
     { 'TelescopeSelectionCaret', { fg = p.yellow } },
     { 'TelescopeMatching', { fg = p.yellow } },
     --CursorWord
-    { 'CursorWord', { bg = p.base02 } },
+    { 'CursorWord', { bg = p.bg_alt } },
     { 'IndentLine', { link = 'LineNr' } },
     --Lspsaga
-    { 'SagaWinbarVariable', { fg = p.green } },
+    { 'SagaVariable', { fg = p.green } },
   }
 
   vim.cmd.hi('clear')
