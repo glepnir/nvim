@@ -13,33 +13,34 @@ local function palette()
     yellow = '#e6b045',
     --H 70  S 80 V 80
     green = '#b1cc29',
-    --H 190 S 60 V 80
-    cyan = '#52b8cc',
-    --H 210 S 60 V 90
-    blue = '#5ca1e6',
+    --H 180 S 50 V 80
+    cyan = '#66cccc',
+    --H 215 S 60 V 90
+    blue = '#5c95e6',
     --H 260 S 40 V 80
     purple = '#957acc',
-    teal = '#52ccb0',
+    --H 155 S 50 V 80
+    teal = '#66cca2',
   }
 end
 
 local function in_vim(groups, p)
-  g.terminal_color_0 = p.bg_alt
+  g.terminal_color_0 = p.bg
   g.terminal_color_1 = p.red
   g.terminal_color_2 = p.green
   g.terminal_color_3 = p.yellow
   g.terminal_color_4 = p.blue
   g.terminal_color_5 = p.purple
   g.terminal_color_6 = p.cyan
-  g.terminal_color_7 = p.bg
-  g.terminal_color_8 = p.base01
-  g.terminal_color_9 = p.orange
-  g.terminal_color_10 = p.base00
-  g.terminal_color_11 = p.base0
-  g.terminal_color_12 = p.base1
-  g.terminal_color_13 = p.violet
-  g.terminal_color_14 = p.base2
-  g.terminal_color_15 = p.base3
+  g.terminal_color_7 = p.fg
+  g.terminal_color_8 = p.fg_dim
+  g.terminal_color_9 = p.red
+  g.terminal_color_10 = p.green
+  g.terminal_color_11 = p.yellow
+  g.terminal_color_12 = p.blue
+  g.terminal_color_13 = p.purple
+  g.terminal_color_14 = p.cyan
+  g.terminal_color_15 = p.fg
 end
 
 local function colorscheme()
@@ -54,7 +55,7 @@ local function colorscheme()
     { 'LineNr', { fg = p.bg_alt } },
     { 'EndOfBuffer', { bg = p.non, fg = p.bg } },
     { 'Search', { fg = p.yellow, reverse = true } },
-    { 'Visual', { bg = p.bg_dim } },
+    { 'Visual', { bg = p.bg_alt } },
     { 'ColorColumn', { bg = p.bg_dim } },
     { 'Whitespace', { fg = p.bg_alt } },
     --window
@@ -62,7 +63,7 @@ local function colorscheme()
     { 'Title', { fg = p.orange, bold = true } },
     --cursorline
     { 'Cursorline', { bg = p.bg_alt } },
-    { 'CursorLineNr', { fg = p.fg_alt } },
+    { 'CursorLineNr', { fg = p.fg } },
     --pmenu
     { 'Pmenu', { bg = p.bg_alt, fg = p.fg_dim } },
     { 'PmenuSel', { fg = p.bg_alt, bg = p.bg } },
@@ -106,7 +107,7 @@ local function colorscheme()
     -- various variable names
     { '@variable', { fg = p.fg } },
     --built-in variable names (e.g. `this`)
-    { '@variable.builtin', { fg = p.orange } },
+    { '@variable.builtin', { fg = p.purple } },
     { 'Constant', { fg = p.orange } },
     { '@constant.builtin', { link = 'Constant' } },
     -- constants defined by the preprocessor
@@ -136,7 +137,7 @@ local function colorscheme()
     { 'Special', { fg = p.orange } },
     --------------------------------------------------------
     ---@Types
-    { 'Type', { fg = p.cyan } },
+    { 'Type', { fg = p.yellow } },
     { '@type.builtin', { link = 'Type' } },
     --type definitions (e.g. `typedef` in C)
     { '@type.definition', { link = 'Type' } },
@@ -144,7 +145,7 @@ local function colorscheme()
     { '@type.qualifier', { link = 'KeyWord' } },
     --modifiers that affect storage in memory or life-time like C `static`
     { '@storageclass', { link = 'Keyword' } },
-    { '@field', { fg = p.teal } },
+    { '@field', { fg = p.cyan } },
     { '@property', { link = '@field' } },
     --------------------------------------------------------
     ---@Functions
@@ -161,7 +162,7 @@ local function colorscheme()
     { '@parameter', { link = '@variable' } },
     --------------------------------------------------------
     ---@Literals
-    { 'String', { fg = p.yellow } },
+    { 'String', { fg = p.teal } },
     { 'Number', { fg = p.purple } },
     { 'Float', { link = 'Number' } },
     { 'Boolean', { link = 'Constant' } },
@@ -215,7 +216,7 @@ local function colorscheme()
     { 'DashboardHeader', { fg = p.green } },
     { 'DashboardFooter', { link = 'Comment' } },
     { 'DashboardProjectTitle', { fg = p.yellow, bold = true } },
-    { 'DashboardProjectTitleIcon', { fg = p.violet } },
+    { 'DashboardProjectTitleIcon', { fg = p.purple } },
     { 'DashboardProjectIcon', { fg = p.blue } },
     { 'DashboardMruTitle', { link = 'DashboardProjectTitle' } },
     { 'DashboardMruIcon', { link = 'DashboardProjectTitleIcon' } },
@@ -223,10 +224,10 @@ local function colorscheme()
     { 'DashboardShortCut', { link = 'Comment' } },
     { 'DashboardShortCutIcon', { link = '@field' } },
     --Telescope
-    { 'TelescopePromptBorder', { bg = p.bg_alt, fg = p.fg_alt } },
+    { 'TelescopePromptBorder', { bg = p.bg_alt, fg = p.bg_alt } },
     { 'TelescopePromptNormal', { bg = p.bg_alt, fg = p.orange } },
-    { 'TelescopeResultsBorder', { bg = p.bg_alt, fg = p.fg_alt } },
-    { 'TelescopePreviewBorder', { bg = p.bg_alt, fg = p.fg_alt } },
+    { 'TelescopeResultsBorder', { bg = p.bg_alt, fg = p.bg_alt } },
+    { 'TelescopePreviewBorder', { bg = p.bg_alt, fg = p.bg_alt } },
     { 'TelescopeResultsNormal', { fg = p.fg } },
     { 'TelescopeSelectionCaret', { fg = p.yellow } },
     { 'TelescopeMatching', { fg = p.yellow } },

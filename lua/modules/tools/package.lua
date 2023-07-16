@@ -25,7 +25,7 @@ packadd({
 
 packadd({
   'norcalli/nvim-colorizer.lua',
-  ft = { 'lua', 'css', 'html', 'sass', 'less', 'typescriptreact', 'conf' },
+  ft = { 'lua', 'css', 'html', 'sass', 'less', 'typescriptreact', 'conf', 'vim' },
   config = function()
     require('colorizer').setup()
     exec_filetype('ColorizerSetup')
