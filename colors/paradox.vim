@@ -1,27 +1,28 @@
-highlight clear
-let g:colors_name = 'vert'
+hi clear
 
+let g:colors_name = 'paradox'
 set background=dark
+let s:background = &background
 
 if !(has('termguicolors') && &termguicolors)
   finish
 endif
 
-let s:p = {
-      \  'bg' : '#1d1d1d',
-      \  'bg_alt' : '#303030' ,
-      \  'fg' : '#cccccc',
-      \  'fg_dim' : '#989898',
-      \  'fg_alt' : '#75715E',
-      \  'red' : '#ff5f59' ,
-      \  'orange' : '#cc7a29' ,
-      \  'yellow' : '#e6b045' ,
-      \  'green' : '#b1cc29' ,
-      \  'cyan' : '#66cccc' ,
-      \  'blue' : '#5c95e6' ,
-      \  'purple' : '#957acc' ,
-      \  'teal' : '#66cca2' ,
-      \ 'none': 'NONE' ,
+let s:p = #{
+      \  bg : '#181c27',
+      \  bg_alt : '#303030' ,
+      \  fg : '#cccccc',
+      \  fg_dim : '#989898',
+      \  fg_alt : '#75715E',
+      \  red :    '#ff5f59' ,
+      \  orange : '#cc7a29' ,
+      \  yellow : '#cca352' ,
+      \  green : '#9eb336' ,
+      \  cyan : '#4db0bf' ,
+      \  blue : '#5c95e6' ,
+      \  purple : '#957acc' ,
+      \  teal : '#59b38d' ,
+      \  none: 'NONE' ,
       \}
 
 let g:terminal_color_0 = s:p.bg
@@ -42,7 +43,7 @@ let g:terminal_color_14 = s:p.cyan
 let g:terminal_color_15 = s:p.fg
 
 for key in keys(s:p)
-  let {'s:fg_' . key} = ' guifg='.s:p[key]
+  let {'s:fg_' . key} = ' guifg='.s:p[key] .' gui=NONE '
   let {'s:bg_' . key} = ' guibg='.s:p[key]
 endfor
 
@@ -78,11 +79,11 @@ exe 'hi StatusLineNC' . s:fg_fg_dim .s:bg_bg_alt
 exe 'hi WinBar' .s:bg_none
 exe 'hi WinBarNC' . s:bg_none
 "Error
+exe 'hi Error' . s:fg_red . 'gui=bold guibg=NONE'
 hi! link ErrorMsg Error
 "Markup
-exe 'hi TODO' . s:fg_red
+exe 'hi TODO' . s:fg_cyan
 exe 'hi Conceal' . s:fg_blue
-exe 'hi Error' . s:fg_red . 'gui=bold'
 hi! link  NonText Comment
 "Float
 exe 'hi FloatBorder' . s:fg_blue
@@ -140,7 +141,7 @@ exe 'hi SpecialKey' . s:fg_orange
 exe 'hi Special' . s:fg_orange 
 "------------------------------------------------------
 "-@Types
-exe 'hi Type' . s:fg_yellow 
+exe 'hi Type' . s:fg_yellow
 hi! link @type.builtin Type 
 "type definitions (e.g. `typedef` in C)
 hi! link @type.definition Type 
@@ -211,10 +212,10 @@ exe 'hi DiagnosticUnderlineWarn' .  ' gui=undercurl'
 exe 'hi DiagnosticUnderlineInfo' .  ' gui=undercurl'
 exe 'hi DiagnosticUnderlineHint' .  ' gui=undercurl'
 "-@plugin
-exe 'hi GitGutterAdd' . s:fg_green 
-exe 'hi GitGutterChange' . s:fg_blue 
-exe 'hi GitGutterDelete' . s:fg_red 
-exe 'hi GitGutterChangeDelete' . s:fg_red 
+exe 'hi GitGutterAdd' . s:fg_teal
+exe 'hi GitGutterChange' . s:fg_blue
+exe 'hi GitGutterDelete' . s:fg_red
+exe 'hi GitGutterChangeDelete' . s:fg_red
 "dashboard
 exe 'hi DashboardHeader' . s:fg_green
 hi! link DashboardFooter Comment 
