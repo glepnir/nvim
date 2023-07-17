@@ -21,7 +21,7 @@ let s:p = #{
       \  cyan : '#4db0bf' ,
       \  blue : '#5c95e6' ,
       \  purple : '#957acc' ,
-      \  teal : '#59b38d' ,
+      \  teal : '#47b38f' ,
       \  none: 'NONE' ,
       \}
 
