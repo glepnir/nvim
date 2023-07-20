@@ -1,6 +1,14 @@
 local conf = require('modules.ui.config')
 
 packadd({
+  'nvimdev/paradox.vim',
+  dev = true,
+  config = function()
+    vim.cmd('colorscheme paradox')
+  end,
+})
+
+packadd({
   'nvimdev/dashboard-nvim',
   event = 'VimEnter',
   config = conf.dashboard,
