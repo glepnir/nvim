@@ -8,6 +8,7 @@ if !(has('termguicolors') && &termguicolors)
   finish
 endif
 
+" #0d1925
 let s:p = #{
       \  bg : '#181c27',
       \  bg_alt : '#303030' ,
@@ -122,7 +123,7 @@ exe 'hi @namespace' . s:fg_cyan
 " ['@symbol'] = exe},
 "------------------------------------------------------
 "-@Keywords
-exe 'hi Keyword' . s:fg_green 
+exe 'hi Keyword' . s:fg_green
 hi! link  @keyword.function Keyword
 hi! link  @keyword.return   Keyword
 hi! link  @keyword.operator Operator
@@ -149,8 +150,8 @@ hi! link @type.definition Type
 hi! link @type.qualifier KeyWord 
 "modifiers that affect storage in memory or life-time like C `static`
 hi! link @storageclass Keyword 
-exe 'hi @field' . s:fg_cyan 
-hi! link @property @field 
+exe 'hi @field' . s:fg_cyan
+hi! link @property @field
 "------------------------------------------------------
 "-@Functions
 exe 'hi Function' . s:fg_blue 
@@ -197,6 +198,9 @@ exe 'hi DiffAdd' . s:fg_green
 exe 'hi DiffChange' . s:fg_blue 
 exe 'hi DiffDelete' . s:fg_orange 
 exe 'hi DiffText' . s:fg_orange 
+hi! link @text.diff.add.diff DiffAdd
+hi! link @text.diff.delete.diff DiffDelete
+hi! link @text.diff.change.diff DiffChange
 "------------------------------------------------------
 "-@Diagnostic
 hi! link  DiagnosticError Error

@@ -2,7 +2,6 @@ local conf = require('modules.tools.config')
 
 packadd({
   'nvimdev/flybuf.nvim',
-  dev = true,
   cmd = 'FlyBuf',
   config = function()
     require('flybuf').setup({})
