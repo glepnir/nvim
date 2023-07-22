@@ -18,6 +18,7 @@ packadd({
 packadd({
   'nvimdev/whiskyline.nvim',
   dev = true,
+  event = 'BufEnter',
   config = conf.whisky,
   dependencies = { 'nvim-tree/nvim-web-devicons' },
 })
