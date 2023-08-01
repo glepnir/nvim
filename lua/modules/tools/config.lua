@@ -29,11 +29,11 @@ function config.dyninput()
   local ms = require('dyninput.lang.misc')
   require('dyninput').setup({
     c = {
-      ['-'] = { '->', ms.c_struct_pointer },
+      ['-'] = { '->', ms.is_pointer },
     },
     cpp = {
       [','] = { ' <!>', ms.generic_in_cpp },
-      ['-'] = { '->', ms.c_struct_pointer },
+      ['-'] = { '->', ms.is_pointer },
     },
     rust = {
       [';'] = {
