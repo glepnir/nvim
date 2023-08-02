@@ -15,10 +15,7 @@ function config.guard()
   ft('lua'):fmt('stylua')
   ft('go'):fmt('lsp'):append('golines')
   ft('rust'):fmt('rustfmt')
-
-  for _, item in ipairs({ 'typescript', 'javascript', 'typescriptreact', 'javascriptreact' }) do
-    ft(item):fmt('prettier')
-  end
+  ft('typescript', 'javascript', 'typescriptreact', 'javascriptreact'):fmt('prettier')
 
   require('guard').setup()
   exec_filetype('Guard')
