@@ -80,7 +80,7 @@ lspconfig.clangd.setup({
 })
 
 lspconfig.rust_analyzer.setup({
-  on_attach = M._attach,
+  on_attach = function(client, bufnr) end,
   settings = {
     ['rust-analyzer'] = {
       imports = {

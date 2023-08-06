@@ -52,8 +52,10 @@ packadd({
 })
 
 packadd({
-  'nvimdev/nerdicons.nvim',
+  'nvimdev/rapid.nvim',
   dev = true,
-  cmd = 'NerdIcons',
-  opts = true,
+  command = 'Rapid',
+  config = function()
+    require('rapid').setup()
+  end,
 })

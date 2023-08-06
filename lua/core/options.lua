@@ -101,7 +101,7 @@ function _G.show_stc()
     .. (gitsign and gitsign or fill_space(2))
 end
 
-opt.stc = [[%!v:lua.show_stc()]]
+vim.opt_local.stc = [[%!v:lua.show_stc()]]
 
 if vim.uv.os_uname().sysname == 'Darwin' then
   vim.g.clipboard = {
