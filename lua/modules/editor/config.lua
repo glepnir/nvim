@@ -70,7 +70,6 @@ function config.nvim_treesitter()
       'proto',
       'typescript',
       'javascript',
-      'jsx',
       'tsx',
       'bash',
       'css',
