@@ -50,6 +50,9 @@ lspconfig.lua_ls.setup({
       diagnostics = {
         enable = true,
         globals = { 'vim' },
+        disable = {
+          'missing-fields',
+        },
       },
       runtime = {
         version = 'LuaJIT',
