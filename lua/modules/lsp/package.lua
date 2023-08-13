@@ -26,15 +26,15 @@ local function lsp_fts(type)
 end
 
 local function diag_config()
-  local signs = {
-    Error = ' ',
-    Warn = ' ',
-    Info = ' ',
-    Hint = ' ',
+  local t = {
+    'Error',
+    'Warn',
+    'Info',
+    'Hint',
   }
-  for type, icon in pairs(signs) do
+  for _, type in ipairs(t) do
     local hl = 'DiagnosticSign' .. type
-    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+    vim.fn.sign_define(hl, { text = '⧓', texthl = hl, numhl = hl })
   end
 
   vim.diagnostic.config({
