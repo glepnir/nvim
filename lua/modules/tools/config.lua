@@ -11,7 +11,12 @@ end
 
 function config.guard()
   local ft = require('guard.filetype')
-  ft('c'):fmt('clang-format')
+  ft('c'):fmt({
+    cmd = 'clang-format',
+    stdin = true,
+    ignore_patterns = 'neovim',
+  })
+
   ft('lua'):fmt('stylua')
   ft('go'):fmt('lsp'):append('golines')
   ft('rust'):fmt('rustfmt')

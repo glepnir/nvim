@@ -52,6 +52,7 @@ lspconfig.lua_ls.setup({
         globals = { 'vim' },
         disable = {
           'missing-fields',
+          'no-unknown',
         },
       },
       runtime = {
