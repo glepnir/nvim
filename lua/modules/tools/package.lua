@@ -46,15 +46,13 @@ packadd({
 
 packadd({
   'nvimdev/dbsession.nvim',
-  dev = true,
   cmd = { 'SessionSave', 'SessionLoad', 'SessionDelete' },
   opts = true,
 })
 
 packadd({
   'nvimdev/rapid.nvim',
-  dev = true,
-  command = 'Rapid',
+  cmd = 'Rapid',
   config = function()
     require('rapid').setup()
   end,
