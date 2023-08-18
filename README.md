@@ -58,35 +58,6 @@ check out the cli tool `dope`
 ~/.config/nvim/dope help
 ```
 
-## List
-
-| plugin | introduce|
-| --     |    --    |
-| [nvimdev/dashboard-nvim](https://github.com/nvimdev/dashboard-nvim) |  Fancy Start Screen |
-| [nvimdev/whiskyline.nvim](https://github.com/nvimdev/whiskyline.nvim) | Async and blazying fast than any statusline |
-| [nvimdev/template.nvim](https://github.com/nvimdev/template.nvim) |    Fast insert template to file|
-| [nvimdev/lspsaga.nvim](https://github.com/nvimdev/lspsaga.nvim)  |     Enhance built-in lsp |
-| [nvimdev/indentmini.nvim](https://github.com/nvimdev/indentmini.nvim) |  Balzing fast indentline |
-| [nvimdev/easyformat.nvim](https://github.com/nvimdev/easyformat.nvim) | Async Format |
-| [nvimdev/dbsession.nvim](https://github.com/nvimdev/dbsession.nvim)|   Simple session plugin|
-| [nvimdev/coman.nvim](https://github.com/nvimdev/coman.nvim)         |  Comment and generate Annoation |
-| [nvimdev/hlsearch.nvim](https://github.com/nvimdev/hlsearch.nvim)   |  Auto hide the search highlight |
-| [nvimdev/mutchar.nvim](https://github.com/nvimdev/muchar.nvim) |        Character change |
-| [lewis6991/gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) |    Show git info |
-| [neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) |    Built-in lsp |
-| [nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) |  Highlight
-| [nvim-treesitter/nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)  | highlight object |
-| [nvim-telescope/telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) |  Fuzzy search |
-| [nvim-telescope/telescope-file-browser.nvim](https://github.com/nvim-telescope/telescope-file-browser.nvim) |  File management |
-| [nvim-telescope/telescope-fzy-native.nvim](https://github.com/nvim-telescope/telescope-fzy-native.nvim)  | Fuzzy search algothrim |
-| [nvim-lua/plenary.nvim](https://github.com/nvim-lua/plenary.nvim) |      Telescope depend|
-| [nvim-tree/nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) |  Icon |
-| [L3MON4D3/LuaSnip](https;//github.com/L3MON4D3/LuaSnip)        |      Snippet |
-| [ii14/emmylua-nvim](https://github.com/ii14/emmylua-nvim)        | Neovim api doc|
-| [windwp/nvim-autopairs](https://github.com/windwp/nvim-autopairs) |    Auto pairs|
-| [phaazon/hop.nvim](https://github.com/phaazon/hop.nvim)   |         Fast Move |
-| [norcalli/nvim-colorizer.lua](https://github.com/norcalli/nvim-colorizer.lua) | Show color in color hex code|
-
 ## Donate
 [![](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/bobbyhub)
 
