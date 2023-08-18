@@ -33,30 +33,7 @@
   </a>
 </p>
 
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/41671631/224962028-bceeedbd-e541-461a-b9b6-6a78398bcacc.png"
-  height = "40%"
-  widht = "40%"
-  />
-</p>
-
-## 🎁 Features
-
-- Fastest startup time in 20-35ms.
-
-- Modern structure
-
-- Lightweight
-
-- cli bot support
-
-## Usage
-
-check out the cli tool `dope`
-
-```lua
-~/.config/nvim/dope help
-```
+![Screenshot 2023-08-18 at 9 30 29 PM](https://github.com/glepnir/nvim/assets/41671631/cd08ada4-4b42-41e8-a608-8d7962d437ec)
 
 ## Donate
 [![](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/bobbyhub)
