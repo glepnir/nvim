@@ -14,10 +14,15 @@ function config.guard()
   ft('c'):fmt({
     cmd = 'clang-format',
     stdin = true,
-    ignore_patterns = 'neovim',
+    ignore_patterns = { 'neovim', 'vim' },
   })
 
-  ft('lua'):fmt('stylua')
+  ft('lua'):fmt({
+    cmd = 'stylua',
+    args = { '-' },
+    stdin = true,
+    ignore_patterns = '%w_spec%.lua',
+  })
   ft('go'):fmt('lsp'):append('golines')
   ft('rust'):fmt('rustfmt')
   ft('typescript', 'javascript', 'typescriptreact', 'javascriptreact'):fmt('prettier')

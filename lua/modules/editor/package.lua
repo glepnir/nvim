@@ -32,8 +32,3 @@ packadd({
     'nvim-treesitter/nvim-treesitter-textobjects',
   },
 })
-
-packadd({
-  'ii14/emmylua-nvim',
-  ft = 'lua',
-})
