@@ -2,7 +2,6 @@ local conf = require('modules.ui.config')
 
 packadd({
   'nvimdev/paradox.vim',
-  dev = true,
   config = function()
     vim.cmd('colorscheme paradox')
   end,
@@ -17,7 +16,6 @@ packadd({
 
 packadd({
   'nvimdev/whiskyline.nvim',
-  dev = true,
   event = 'BufEnter',
   config = conf.whisky,
   dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -32,7 +30,6 @@ packadd({
 packadd({
   'nvimdev/indentmini.nvim',
   event = { 'BufEnter' },
-  dev = true,
   config = function()
     require('indentmini').setup({})
   end,
