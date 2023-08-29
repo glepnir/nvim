@@ -34,7 +34,7 @@ local function diag_config()
   }
   for _, type in ipairs(t) do
     local hl = 'DiagnosticSign' .. type
-    vim.fn.sign_define(hl, { text = '⮞', texthl = hl, numhl = hl })
+    vim.fn.sign_define(hl, { text = '⯈', texthl = hl, numhl = hl })
   end
 
   vim.diagnostic.config({
