@@ -39,10 +39,17 @@ map.n({
   ['<leader>c'] = cmd('Rapid'),
 })
 
-map.n('<Leader>e', function()
-  vim.cmd('Telescope file_browser')
-  local esc_key = api.nvim_replace_termcodes('<Esc>', true, false, true)
-  api.nvim_feedkeys(esc_key, 'n', false)
+--Netrw lazyload
+local loaded_netrw = false
+map.n('<C-x>d', function()
+  if not loaded_netrw then
+    vim.g.loaded_netrwPlugin = nil
+    vim.cmd.source(vim.env.VIMRUNTIME .. '/plugin/netrwPlugin.vim')
+    vim.cmd('Explore')
+    loaded_netrw = true
+    return
+  end
+  vim.cmd('Explore')
 end)
 
 --template.nvim
