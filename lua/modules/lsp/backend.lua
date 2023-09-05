@@ -11,23 +11,12 @@ function M._attach(client)
     end
     orignal(msg, level, opts)
   end
-
   vim.notify = mynotify
 end
 
 lspconfig.gopls.setup({
   cmd = { 'gopls', 'serve' },
-  on_attach = function(client, _)
-    M._attach(client)
-    -- if client.name == 'gopls' and not client.server_capabilities.semanticTokensProvider then
-    --   local semantic = client.config.capabilities.textDocument.semanticTokens
-    --   client.server_capabilities.semanticTokensProvider = {
-    --     full = true,
-    --     legend = { tokenModifiers = semantic.tokenModifiers, tokenTypes = semantic.tokenTypes },
-    --     range = true,
-    --   }
-    -- end
-  end,
+  on_attach = M._attach,
   init_options = {
     usePlaceholders = true,
     completeUnimported = true,
@@ -62,7 +51,6 @@ lspconfig.lua_ls.setup({
       workspace = {
         library = {
           vim.env.VIMRUNTIME,
-          vim.env.HOME .. '/.local/share/nvim/lazy/emmylua-nvim',
         },
         checkThirdParty = false,
       },
@@ -78,8 +66,6 @@ lspconfig.clangd.setup({
   cmd = {
     'clangd',
     '--background-index',
-    '--clang-tidy',
-    '--header-insertion=iwyu',
   },
 })
 
@@ -106,7 +92,6 @@ lspconfig.rust_analyzer.setup({
 })
 
 local servers = {
-  'dockerls',
   'pyright',
   'bashls',
   'zls',
