@@ -79,6 +79,9 @@ packadd({
       symbol_in_winbar = {
         hide_keyword = true,
       },
+      outline = {
+        layout = 'float',
+      },
     })
   end,
 })

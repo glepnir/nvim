@@ -16,20 +16,20 @@ packadd({
 
 packadd({
   'nvimdev/whiskyline.nvim',
-  event = 'BufEnter',
+  event = 'User DashboardLoaded',
   config = conf.whisky,
   dependencies = { 'nvim-tree/nvim-web-devicons' },
 })
 
 packadd({
   'lewis6991/gitsigns.nvim',
-  event = { 'BufRead', 'BufNewFile' },
+  event = 'User DashboardLoaded',
   config = conf.gitsigns,
 })
 
 packadd({
   'nvimdev/indentmini.nvim',
-  event = { 'BufEnter' },
+  event = 'User DashboardLoaded',
   config = function()
     require('indentmini').setup({})
   end,
