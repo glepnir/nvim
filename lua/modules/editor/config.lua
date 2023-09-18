@@ -76,6 +76,11 @@ function config.nvim_treesitter()
     },
     highlight = {
       enable = true,
+      disable = function(lang, buf)
+        if vim.api.nvim_buf_line_count(buf) > 5000 then
+          return true
+        end
+      end,
     },
     textobjects = {
       select = {

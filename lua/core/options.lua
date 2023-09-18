@@ -42,7 +42,7 @@ opt.list = true
 
 opt.listchars = 'tab:»·,nbsp:+,trail:·,extends:→,precedes:←'
 opt.pumblend = 10
-opt.winblend = 10
+opt.winblend = 0
 opt.undofile = true
 
 opt.smarttab = true
