@@ -76,22 +76,9 @@ function config.nvim_treesitter()
     },
     highlight = {
       enable = true,
-      disable = function(lang, buf)
-        if vim.api.nvim_buf_line_count(buf) > 5000 then
-          return true
-        end
+      disable = function(_, buf)
+        return vim.api.nvim_buf_line_count(buf) > 5000
       end,
-    },
-    textobjects = {
-      select = {
-        enable = true,
-        keymaps = {
-          ['af'] = '@function.outer',
-          ['if'] = '@function.inner',
-          ['ac'] = '@class.outer',
-          ['ic'] = '@class.inner',
-        },
-      },
     },
   })
 
