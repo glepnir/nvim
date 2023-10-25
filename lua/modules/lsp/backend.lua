@@ -1,7 +1,13 @@
 local M = {}
 local lspconfig = require('lspconfig')
 
-function M._attach(client)
+M.capabilities = vim.tbl_deep_extend(
+  'force',
+  vim.lsp.protocol.make_client_capabilities(),
+  require('epo').register_cap()
+)
+
+function M._attach(client, _)
   vim.opt.omnifunc = 'v:lua.vim.lsp.omnifunc'
   client.server_capabilities.semanticTokensProvider = nil
   local orignal = vim.notify
@@ -17,6 +23,7 @@ end
 lspconfig.gopls.setup({
   cmd = { 'gopls', 'serve' },
   on_attach = M._attach,
+  capabilities = M.capabilities,
   init_options = {
     usePlaceholders = true,
     completeUnimported = true,
@@ -34,6 +41,7 @@ lspconfig.gopls.setup({
 
 lspconfig.lua_ls.setup({
   on_attach = M._attach,
+  capabilities = M.capabilities,
   settings = {
     Lua = {
       diagnostics = {
@@ -63,6 +71,7 @@ lspconfig.lua_ls.setup({
 
 lspconfig.clangd.setup({
   on_attach = M._attach,
+  capabilities = M.capabilities,
   cmd = {
     'clangd',
     '--background-index',
@@ -71,6 +80,7 @@ lspconfig.clangd.setup({
 
 lspconfig.rust_analyzer.setup({
   on_attach = M._attach,
+  capabilities = M.capabilities,
   settings = {
     ['rust-analyzer'] = {
       imports = {
@@ -100,6 +110,7 @@ local servers = {
 for _, server in ipairs(servers) do
   lspconfig[server].setup({
     on_attach = M._attach,
+    capabilities = M.capabilities,
   })
 end
 

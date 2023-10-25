@@ -25,7 +25,7 @@ if vim.fn.executable('rg') == 1 then
   opt.grepprg = 'rg --vimgrep --no-heading --smart-case'
 end
 
-opt.completeopt = 'menu,menuone,noselect'
+opt.completeopt = 'menu,menuone,noinsert'
 opt.showmode = false
 opt.shortmess = 'aoOTIcF'
 opt.scrolloff = 2

@@ -28,7 +28,6 @@ function config.guard()
   ft('typescript', 'javascript', 'typescriptreact', 'javascriptreact'):fmt('prettier')
 
   require('guard').setup()
-  exec_filetype('Guard')
 end
 
 function config.dyninput()

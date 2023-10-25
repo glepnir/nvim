@@ -10,12 +10,6 @@ function config.lua_snip()
   })
 end
 
-function config.auto_pairs()
-  require('nvim-autopairs').setup({
-    map_cr = false,
-  })
-end
-
 function config.telescope()
   require('telescope').setup({
     defaults = {
@@ -80,6 +74,17 @@ function config.nvim_treesitter()
         return vim.api.nvim_buf_line_count(buf) > 5000
       end,
     },
+    -- textobjects = {
+    --   select = {
+    --     enable = true,
+    --     keymaps = {
+    --       ['af'] = '@function.outer',
+    --       ['if'] = '@function.inner',
+    --       ['ac'] = '@class.outer',
+    --       ['ic'] = '@class.inner',
+    --     },
+    --   },
+    -- },
   })
 
   --set indent for jsx tsx

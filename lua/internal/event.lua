@@ -42,7 +42,6 @@ nvim_create_autocmd('InsertEnter', {
   once = true,
   callback = function()
     require('internal.cursorword').disable_cursorword()
-    require('internal.epoch').epoch()
   end,
 })
 

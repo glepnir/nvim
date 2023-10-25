@@ -7,9 +7,11 @@ packadd({
 })
 
 packadd({
-  'windwp/nvim-autopairs',
+  'echasnovski/mini.pairs',
   event = 'InsertEnter',
-  config = conf.auto_pairs,
+  config = function()
+    require('mini.pairs').setup({})
+  end,
 })
 
 packadd({
@@ -27,7 +29,9 @@ packadd({
   event = 'BufRead',
   build = ':TSUpdate',
   config = conf.nvim_treesitter,
-  dependencies = {
-    'nvim-treesitter/nvim-treesitter-textobjects',
-  },
+  -- disable it until https://github.com/nvim-treesitter/nvim-treesitter-textobjects/issues/507
+  -- solved
+  -- dependencies = {
+  --   'nvim-treesitter/nvim-treesitter-textobjects',
+  -- },
 })

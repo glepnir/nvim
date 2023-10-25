@@ -66,7 +66,6 @@ packadd({
     diag_config()
     require('modules.lsp.backend')
     require('modules.lsp.frontend')
-    exec_filetype({ 'lspconfig', 'DisableInSpec' })
   end,
 })
 
@@ -79,9 +78,18 @@ packadd({
       symbol_in_winbar = {
         hide_keyword = true,
       },
-      outline = {
-        layout = 'float',
-      },
+      -- outline = {
+      --   layout = 'float',
+      -- },
     })
+  end,
+})
+
+packadd({
+  'nvimdev/epo.nvim',
+  event = 'LspAttach',
+  dev = true,
+  config = function()
+    require('epo').setup({})
   end,
 })
