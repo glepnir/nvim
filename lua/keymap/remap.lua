@@ -38,34 +38,34 @@ map.i({
 })
 
 map.i('<TAB>', function()
-  if vim.snippet.jumpable(1) then
-    return '<cmd>lua vim.snippet.jump(1)<cr>'
-  elseif vim.fn.pumvisible() == 1 then
+  if vim.fn.pumvisible() == 1 then
     return '<C-n>'
+  elseif vim.snippet.jumpable(1) then
+    return '<cmd>lua vim.snippet.jump(1)<cr>'
   else
     return '<TAB>'
   end
 end, { expr = true })
 
 map.i('<S-TAB>', function()
-  if vim.snippet.jumpable(-1) then
-    return '<cmd>lua vim.snippet.jump(-1)<CR>'
-  elseif vim.fn.pumvisible() == 1 then
+  if vim.fn.pumvisible() == 1 then
     return '<C-p>'
+  elseif vim.snippet.jumpable(-1) then
+    return '<cmd>lua vim.snippet.jump(-1)<CR>'
   else
     return '<S-TAB>'
   end
 end, { expr = true })
 
-local function feedkeys(key, mode)
-  local keycode = vim.api.nvim_replace_termcodes(key, true, false, true)
-  vim.api.nvim_feedkeys(keycode, mode, false)
-end
-
+-- local function feedkeys(key, mode)
+--   local keycode = vim.api.nvim_replace_termcodes(key, true, false, true)
+--   vim.api.nvim_feedkeys(keycode, mode, false)
+-- end
+--
 map.i('<CR>', function()
   local p = require('mini.pairs')
   if vim.fn.pumvisible() == 1 then
-    feedkeys('<C-y>', 'n')
+    return '<C-y>'
   else
     p.cr()
   end
