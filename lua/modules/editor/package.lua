@@ -7,11 +7,8 @@ packadd({
 })
 
 packadd({
-  'echasnovski/mini.pairs',
+  'cohama/lexima.vim',
   event = 'InsertEnter',
-  config = function()
-    require('mini.pairs').setup({})
-  end,
 })
 
 packadd({

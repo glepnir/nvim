@@ -57,18 +57,8 @@ map.i('<S-TAB>', function()
   end
 end, { expr = true })
 
--- local function feedkeys(key, mode)
---   local keycode = vim.api.nvim_replace_termcodes(key, true, false, true)
---   vim.api.nvim_feedkeys(keycode, mode, false)
--- end
---
 map.i('<CR>', function()
-  local p = require('mini.pairs')
-  if vim.fn.pumvisible() == 1 then
-    return '<C-y>'
-  else
-    p.cr()
-  end
+  return vim.fn.pumvisible() == 1 and '<C-y>' or vim.fn.lexima['expand']('<LT>CR>', 'i')
 end, { expr = true })
 
 map.i('<c-e>', function()
