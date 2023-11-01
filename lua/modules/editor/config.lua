@@ -1,15 +1,5 @@
 local config = {}
 
-function config.lua_snip()
-  local ls = require('luasnip')
-  ls.config.set_config({
-    delete_check_events = 'TextChanged,InsertEnter',
-  })
-  require('luasnip.loaders.from_vscode').lazy_load({
-    paths = { './snippets/' },
-  })
-end
-
 function config.telescope()
   require('telescope').setup({
     defaults = {
@@ -69,30 +59,23 @@ function config.nvim_treesitter()
       'jsonc',
     },
     highlight = {
-      enable = false,
+      enable = true,
       disable = function(_, buf)
         return vim.api.nvim_buf_line_count(buf) > 5000
       end,
     },
-    textobjects = {
-      select = {
-        enable = true,
-        keymaps = {
-          ['af'] = '@function.outer',
-          ['if'] = '@function.inner',
-          ['ac'] = '@class.outer',
-          ['ic'] = '@class.inner',
-        },
-      },
-    },
+    -- textobjects = {
+    --   select = {
+    --     enable = true,
+    --     keymaps = {
+    --       ['af'] = '@function.outer',
+    --       ['if'] = '@function.inner',
+    --       ['ac'] = '@class.outer',
+    --       ['ic'] = '@class.inner',
+    --     },
+    --   },
+    -- },
   })
-
-  -- why open cpp hang a while ?
-  -- becasue of my computer too old?
-  -- hack it..
-  vim.defer_fn(function()
-    vim.cmd('TSBufEnable highlight')
-  end, 0)
 
   --set indent for jsx tsx
   vim.api.nvim_create_autocmd('FileType', {
