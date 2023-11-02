@@ -20,9 +20,25 @@ packadd({
   event = 'BufRead',
   build = ':TSUpdate',
   config = conf.nvim_treesitter,
-  -- disable it until https://github.com/nvim-treesitter/nvim-treesitter-textobjects/issues/507
-  -- solved
-  -- dependencies = {
-  --   'nvim-treesitter/nvim-treesitter-textobjects',
-  -- },
+})
+
+packadd({
+  'nvim-treesitter/nvim-treesitter-textobjects',
+  --@see https://github.com/nvim-treesitter/nvim-treesitter-textobjects/issues/507
+  event = 'CursorHold',
+  config = function()
+    require('nvim-treesitter.configs').setup({
+      textobjects = {
+        select = {
+          enable = true,
+          keymaps = {
+            ['af'] = '@function.outer',
+            ['if'] = '@function.inner',
+            ['ac'] = '@class.outer',
+            ['ic'] = { query = '@class.inner' },
+          },
+        },
+      },
+    })
+  end,
 })

@@ -61,20 +61,9 @@ function config.nvim_treesitter()
     highlight = {
       enable = true,
       disable = function(_, buf)
-        return vim.api.nvim_buf_line_count(buf) > 5000
+        return vim.api.nvim_buf_line_count(buf) > 3000
       end,
     },
-    -- textobjects = {
-    --   select = {
-    --     enable = true,
-    --     keymaps = {
-    --       ['af'] = '@function.outer',
-    --       ['if'] = '@function.inner',
-    --       ['ac'] = '@class.outer',
-    --       ['ic'] = '@class.inner',
-    --     },
-    --   },
-    -- },
   })
 
   --set indent for jsx tsx

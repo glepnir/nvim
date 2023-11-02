@@ -1,30 +1,3 @@
-local function lsp_fts(type)
-  type = type or nil
-  local fts = {}
-  fts.backend = {
-    'go',
-    'lua',
-    'sh',
-    'rust',
-    'c',
-    'cpp',
-    'zig',
-    'python',
-  }
-
-  fts.frontend = {
-    'javascript',
-    'javascriptreact',
-    'typescript',
-    'typescriptreact',
-    'json',
-  }
-  if not type then
-    return vim.list_extend(fts.backend, fts.frontend)
-  end
-  return fts[type]
-end
-
 local function diag_config()
   local t = {
     'Error',
@@ -61,7 +34,21 @@ end
 packadd({
   'neovim/nvim-lspconfig',
   dev = true,
-  ft = lsp_fts(),
+  ft = {
+    'go',
+    'lua',
+    'sh',
+    'rust',
+    'c',
+    'cpp',
+    'zig',
+    'python',
+    'javascript',
+    'javascriptreact',
+    'typescript',
+    'typescriptreact',
+    'json',
+  },
   config = function()
     diag_config()
     require('modules.lsp.backend')
@@ -71,7 +58,7 @@ packadd({
 
 packadd({
   'nvimdev/lspsaga.nvim',
-  ft = lsp_fts(),
+  event = 'LspAttach',
   dev = true,
   config = function()
     require('lspsaga').setup({

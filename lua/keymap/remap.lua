@@ -62,7 +62,12 @@ map.i('<CR>', function()
 end, { expr = true })
 
 map.i('<c-e>', function()
-  return vim.fn.pumvisible() == 1 and '<C-e>' or '<Esc>g_a'
+  if vim.fn.pumvisible() == 1 then
+    require('epo').disable_trigger()
+    return '<c-e>'
+  else
+    return '<Esc>g_a'
+  end
 end, { expr = true })
 
 map.c({
