@@ -30,7 +30,7 @@ packadd({
   ft = { 'lua', 'css', 'html', 'sass', 'less', 'typescriptreact', 'conf', 'vim' },
   config = function()
     require('colorizer').setup()
-    exec_filetype('ColorizerSetup')
+    -- exec_filetype('ColorizerSetup')
   end,
 })
 
