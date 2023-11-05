@@ -41,14 +41,16 @@ map.n({
 --Netrw lazyload
 local loaded_netrw = false
 map.n('<C-x>d', function()
+  vim.g.netrw_winsize = 30
+  vim.g.netrw_banner = 0
   if not loaded_netrw then
     vim.g.loaded_netrwPlugin = nil
     vim.cmd.source(vim.env.VIMRUNTIME .. '/plugin/netrwPlugin.vim')
-    vim.cmd('Explore')
+    vim.cmd('Vexplore')
     loaded_netrw = true
     return
   end
-  vim.cmd('Explore')
+  vim.cmd('Vexplore')
 end)
 
 --template.nvim

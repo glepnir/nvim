@@ -22,23 +22,25 @@ packadd({
   config = conf.nvim_treesitter,
 })
 
+--@see https://github.com/nvim-treesitter/nvim-treesitter-textobjects/issues/507
 packadd({
   'nvim-treesitter/nvim-treesitter-textobjects',
-  --@see https://github.com/nvim-treesitter/nvim-treesitter-textobjects/issues/507
-  event = 'CursorHold',
+  ft = { 'c', 'rust', 'go', 'lua' },
   config = function()
-    require('nvim-treesitter.configs').setup({
-      textobjects = {
-        select = {
-          enable = true,
-          keymaps = {
-            ['af'] = '@function.outer',
-            ['if'] = '@function.inner',
-            ['ac'] = '@class.outer',
-            ['ic'] = { query = '@class.inner' },
+    vim.defer_fn(function()
+      require('nvim-treesitter.configs').setup({
+        textobjects = {
+          select = {
+            enable = true,
+            keymaps = {
+              ['af'] = '@function.outer',
+              ['if'] = '@function.inner',
+              ['ac'] = '@class.outer',
+              ['ic'] = { query = '@class.inner' },
+            },
           },
         },
-      },
-    })
+      })
+    end, 0)
   end,
 })
