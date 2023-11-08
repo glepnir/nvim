@@ -1,4 +1,4 @@
-**Text Editor just text editor Dont't do no more**
+**Text Editor just text editor Please dont't do no more**
 
 ![Screenshot 2023-08-18 at 9 30 29 PM](https://github.com/glepnir/nvim/assets/41671631/cd08ada4-4b42-41e8-a608-8d7962d437ec)
 
