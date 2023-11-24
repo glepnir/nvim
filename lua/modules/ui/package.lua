@@ -10,6 +10,7 @@ packadd({
 packadd({
   'nvimdev/dashboard-nvim',
   event = 'VimEnter',
+  dev = true,
   config = conf.dashboard,
   dependencies = { 'nvim-tree/nvim-web-devicons' },
 })

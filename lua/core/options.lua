@@ -1,3 +1,4 @@
+local api = vim.api
 local opt = vim.opt
 
 opt.termguicolors = true
@@ -65,23 +66,26 @@ opt.textwidth = 100
 opt.colorcolumn = '100'
 
 local function get_signs()
-  local buf = vim.api.nvim_get_current_buf()
-  return vim.tbl_map(function(sign)
-    return vim.fn.sign_getdefined(sign.name)[1]
-  end, vim.fn.sign_getplaced(buf, { group = '*', lnum = vim.v.lnum })[1].signs)
-end
-
-local function fill_space(count)
-  return '%#StcFill#' .. (' '):rep(count) .. '%*'
+  local buf = api.nvim_get_current_buf()
+  return vim
+    .iter(api.nvim_buf_get_extmarks(buf, -1, 0, -1, { details = true, type = 'sign' }))
+    :filter(function(item)
+      return item[1] == vim.v.lnum
+    end)
+    :map(function(item)
+      return item[4]
+    end)
+    :totable()
 end
 
 function _G.show_stc()
-  local sign, gitsign
+  local sign = '  '
+  local gitsign = '  '
   for _, s in ipairs(get_signs()) do
-    if s.name:find('GitSign') then
-      gitsign = '%#' .. s.texthl .. '#' .. s.text .. '%*'
+    if s.sign_hl_group:find('GitSign') then
+      gitsign = '%#' .. s.sign_hl_group .. '#' .. s.sign_text .. '%*'
     else
-      sign = '%#' .. s.texthl .. '#' .. s.text .. '%*'
+      sign = '%#' .. s.sign_hl_group .. '#' .. s.sign_text .. '%*'
     end
   end
 
@@ -95,10 +99,7 @@ function _G.show_stc()
     end
   end
 
-  return (sign and sign or fill_space(2))
-    .. '%='
-    .. show_break()
-    .. (gitsign and gitsign or fill_space(2))
+  return sign .. '%=' .. show_break() .. gitsign
 end
 
 vim.opt_local.stc = [[%!v:lua.show_stc()]]
