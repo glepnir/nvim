@@ -30,6 +30,31 @@ nvim_create_autocmd('BufEnter', {
   end,
 })
 
+-- local orig_color
+-- vim.api.nvim_create_autocmd({ 'CmdlineEnter', 'CmdLineChanged', 'CmdlineLeave' }, {
+--   group = vim.api.nvim_create_augroup('colorscheme preview', {}),
+--   desc = 'colorscheme preview when using :colorscheme command',
+--   callback = function(data)
+--     if vim.fn.getcmdtype() ~= ':' then
+--       return
+--     end
+--     local cmd, arg = unpack(vim.split(vim.fn.getcmdline(), '%s+'))
+--     if not vim.startswith(cmd, 'color') or not arg then
+--       return
+--     end
+--     if data.event == 'CmdlineEnter' then
+--       orig_color = vim.g.colors_name
+--     elseif data.event == 'CmdlineLeave' then
+--       vim.cmd.color(orig_color)
+--     else
+--       if not pcall(vim.cmd.color, { arg, mods = { noautocmd = true } }) then
+--         vim.cmd.color(orig_color)
+--       end
+--       vim.cmd.redraw()
+--     end
+--   end,
+-- })
+
 -- actually I don't notice the cursor word
 -- nvim_create_autocmd('CursorHold', {
 --   group = my_group,

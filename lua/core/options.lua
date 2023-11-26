@@ -70,7 +70,7 @@ local function get_signs()
   return vim
     .iter(api.nvim_buf_get_extmarks(buf, -1, 0, -1, { details = true, type = 'sign' }))
     :filter(function(item)
-      return item[1] == vim.v.lnum
+      return item[2] == vim.v.lnum - 1
     end)
     :map(function(item)
       return item[4]
@@ -102,7 +102,11 @@ function _G.show_stc()
   return sign .. '%=' .. show_break() .. gitsign
 end
 
-vim.opt_local.stc = [[%!v:lua.show_stc()]]
+vim.api.nvim_create_autocmd('BufWinEnter', {
+  callback = function(data)
+    vim.wo[vim.api.nvim_get_current_win()].stc = [[%!v:lua.show_stc()]]
+  end,
+})
 
 if vim.uv.os_uname().sysname == 'Darwin' then
   vim.g.clipboard = {
