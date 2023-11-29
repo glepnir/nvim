@@ -103,7 +103,7 @@ function _G.show_stc()
 end
 
 vim.api.nvim_create_autocmd('BufWinEnter', {
-  callback = function(data)
+  callback = function()
     vim.wo[vim.api.nvim_get_current_win()].stc = [[%!v:lua.show_stc()]]
   end,
 })
