@@ -39,7 +39,7 @@ nvim_create_autocmd('BufRead', {
 
     vim.defer_fn(function()
       local fname = api.nvim_buf_get_name(data.buf)
-      fname = fname:sub(#vim.env.HOME + 2)
+      fname = fname:sub(#vim.env.HOME + (fname:find('workspace') and 12 or 2))
       vim.system({ 'tmux', 'set', '@path', fname }, { text = true }, function(obj)
         if obj.stderr then
           print(obj.stderr)
@@ -49,7 +49,7 @@ nvim_create_autocmd('BufRead', {
 
     nvim_create_autocmd('VimLeave', {
       callback = function()
-        vim.system({ 'tmux', 'set', '@path', 0 }, { text = true }, function(obj)
+        vim.system({ 'tmux', 'set', '@path', '0' }, { text = true }, function(obj)
           if obj.stderr then
             print(obj.stderr)
           end
