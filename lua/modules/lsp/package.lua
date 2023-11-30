@@ -11,7 +11,9 @@ local function diag_config()
   -- end
 
   vim.diagnostic.config({
-    signs = true,
+    signs = {
+      text = { [1] = 'e', ['WARN'] = 'w', ['HINT'] = 'h' },
+    },
     severity_sort = true,
     virtual_text = true,
   })

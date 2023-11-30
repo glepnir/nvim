@@ -30,30 +30,34 @@ nvim_create_autocmd('BufEnter', {
   end,
 })
 
--- local orig_color
--- vim.api.nvim_create_autocmd({ 'CmdlineEnter', 'CmdLineChanged', 'CmdlineLeave' }, {
---   group = vim.api.nvim_create_augroup('colorscheme preview', {}),
---   desc = 'colorscheme preview when using :colorscheme command',
---   callback = function(data)
---     if vim.fn.getcmdtype() ~= ':' then
---       return
---     end
---     local cmd, arg = unpack(vim.split(vim.fn.getcmdline(), '%s+'))
---     if not vim.startswith(cmd, 'color') or not arg then
---       return
---     end
---     if data.event == 'CmdlineEnter' then
---       orig_color = vim.g.colors_name
---     elseif data.event == 'CmdlineLeave' then
---       vim.cmd.color(orig_color)
---     else
---       if not pcall(vim.cmd.color, { arg, mods = { noautocmd = true } }) then
---         vim.cmd.color(orig_color)
---       end
---       vim.cmd.redraw()
---     end
---   end,
--- })
+-- hack with my tmux config
+nvim_create_autocmd('BufRead', {
+  callback = function(data)
+    if vim.fn.getenv('TMUX') == 1 then
+      return
+    end
+
+    vim.defer_fn(function()
+      local fname = api.nvim_buf_get_name(data.buf)
+      fname = fname:sub(#vim.env.HOME + 2)
+      vim.system({ 'tmux', 'set', '@path', fname }, { text = true }, function(obj)
+        if obj.stderr then
+          print(obj.stderr)
+        end
+      end)
+    end, 0)
+
+    nvim_create_autocmd('VimLeave', {
+      callback = function()
+        vim.system({ 'tmux', 'set', '@path', 0 }, { text = true }, function(obj)
+          if obj.stderr then
+            print(obj.stderr)
+          end
+        end)
+      end,
+    })
+  end,
+})
 
 -- actually I don't notice the cursor word
 -- nvim_create_autocmd('CursorHold', {
