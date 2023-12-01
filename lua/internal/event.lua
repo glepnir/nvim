@@ -46,6 +46,13 @@ local function set_tmux_bar()
 end
 
 -- hack with my tmux config
+au('VimLeave', {
+  group = my_group,
+  callback = function()
+    vim.system({ 'tmux', 'set', '@path', '0' }, { text = true }, function() end)
+  end,
+})
+
 au('BufEnter', {
   group = my_group,
   callback = function()
@@ -54,15 +61,14 @@ au('BufEnter', {
     end
     set_tmux_bar()
 
-    au('VimLeave', {
-      callback = function()
-        vim.system({ 'tmux', 'set', '@path', '0' }, { text = true }, function(obj)
-          if obj.stderr then
-            print(obj.stderr)
-          end
-        end)
-      end,
-    })
+    if #api.nvim_get_autocmds({ group = my_group, event = { 'FocusGained' } }) == 0 then
+      au('FocusGained', {
+        group = my_group,
+        callback = function()
+          set_tmux_bar()
+        end,
+      })
+    end
   end,
 })
 
