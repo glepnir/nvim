@@ -1,27 +1,27 @@
 local api = vim.api
-local nvim_create_autocmd = api.nvim_create_autocmd
+local au = api.nvim_create_autocmd
 local my_group = vim.api.nvim_create_augroup('GlepnirGroup', {})
 
-nvim_create_autocmd('BufWritePre', {
+au('BufWritePre', {
   group = my_group,
   pattern = { '/tmp/*', 'COMMIT_EDITMSG', 'MERGE_MSG', '*.tmp', '*.bak' },
   command = 'setlocal noundofile',
 })
 
-nvim_create_autocmd('BufRead', {
+au('BufRead', {
   group = my_group,
   pattern = '*.conf',
   command = 'setlocal filetype=conf',
 })
 
-nvim_create_autocmd('TextYankPost', {
+au('TextYankPost', {
   group = my_group,
   callback = function()
     vim.highlight.on_yank({ higroup = 'IncSearch', timeout = 400 })
   end,
 })
 
-nvim_create_autocmd('BufEnter', {
+au('BufEnter', {
   group = my_group,
   once = true,
   callback = function()
@@ -30,24 +30,31 @@ nvim_create_autocmd('BufEnter', {
   end,
 })
 
+local function set_tmux_bar()
+  vim.defer_fn(function()
+    local fname = api.nvim_buf_get_name(0)
+    fname = fname:sub(#vim.env.HOME + (fname:find('workspace') and 12 or 2))
+    if #fname == 0 then
+      return
+    end
+    vim.system({ 'tmux', 'set', '@path', fname }, { text = true }, function(obj)
+      if obj.stderr then
+        print(obj.stderr)
+      end
+    end)
+  end, 0)
+end
+
 -- hack with my tmux config
-nvim_create_autocmd('BufRead', {
-  callback = function(data)
+au('BufEnter', {
+  group = my_group,
+  callback = function()
     if vim.fn.getenv('TMUX') == 1 then
       return
     end
+    set_tmux_bar()
 
-    vim.defer_fn(function()
-      local fname = api.nvim_buf_get_name(data.buf)
-      fname = fname:sub(#vim.env.HOME + (fname:find('workspace') and 12 or 2))
-      vim.system({ 'tmux', 'set', '@path', fname }, { text = true }, function(obj)
-        if obj.stderr then
-          print(obj.stderr)
-        end
-      end)
-    end, 0)
-
-    nvim_create_autocmd('VimLeave', {
+    au('VimLeave', {
       callback = function()
         vim.system({ 'tmux', 'set', '@path', '0' }, { text = true }, function(obj)
           if obj.stderr then
