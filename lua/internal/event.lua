@@ -33,10 +33,14 @@ au('BufEnter', {
 local function set_tmux_bar()
   vim.defer_fn(function()
     local fname = api.nvim_buf_get_name(0)
-    fname = fname:sub(#vim.env.HOME + (fname:find('workspace') and 12 or 2))
     if #fname == 0 then
       return
     end
+    local parts = vim.split(fname, '/', { trimempty = true })
+    -- remove /home/xx/workspace and folder/filename
+    -- because i set winbar to show file name and up folder in winbar
+    parts = { unpack(parts, (parts[3] == 'workspace' and 4 or 3), #parts - 1) }
+    fname = table.concat(parts, '/')
     vim.system({ 'tmux', 'set', '@path', fname }, { text = true }, function(obj)
       if obj.stderr then
         print(obj.stderr)
