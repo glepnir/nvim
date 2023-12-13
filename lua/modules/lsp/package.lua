@@ -1,23 +1,4 @@
 local function diag_config()
-  local t = {
-    'Error',
-    'Warn',
-    'Info',
-    'Hint',
-  }
-  -- for _, type in ipairs(t) do
-  --   local hl = 'DiagnosticSign' .. type
-  --   vim.fn.sign_define(hl, { text = '◆', texthl = hl, numhl = hl })
-  -- end
-
-  vim.diagnostic.config({
-    signs = {
-      text = { [1] = 'e', ['WARN'] = 'w', ['HINT'] = 'h' },
-    },
-    severity_sort = true,
-    virtual_text = true,
-  })
-
   vim.lsp.set_log_level('OFF')
 
   --disable diagnostic in neovim test file *_spec.lua

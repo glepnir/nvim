@@ -1,9 +1,9 @@
 local conf = require('modules.ui.config')
 
 packadd({
-  'nvimdev/paradox.vim',
+  'nvimdev/nightsky.vim',
   config = function()
-    vim.cmd('colorscheme paradox')
+    vim.cmd('colorscheme nightsky')
   end,
 })
 
