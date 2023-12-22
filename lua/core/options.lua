@@ -1,7 +1,6 @@
 local api = vim.api
 local opt = vim.opt
 
-opt.termguicolors = true
 opt.hidden = true
 opt.magic = true
 opt.virtualedit = 'block'
