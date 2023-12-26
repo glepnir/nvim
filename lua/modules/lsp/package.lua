@@ -1,6 +1,4 @@
 local function diag_config()
-  vim.lsp.set_log_level('OFF')
-
   --disable diagnostic in neovim test file *_spec.lua
   vim.api.nvim_create_autocmd('FileType', {
     group = vim.api.nvim_create_augroup('DisableInSpec', { clear = true }),

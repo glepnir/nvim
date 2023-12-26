@@ -40,7 +40,8 @@ opt.cmdheight = 0
 opt.laststatus = 3
 opt.list = true
 
-opt.listchars = 'tab:»·,nbsp:+,trail:·,extends:→,precedes:←'
+--eol:¬
+opt.listchars = 'tab:»·,nbsp:+,trail:·,extends:→,precedes:←,'
 opt.pumblend = 10
 opt.winblend = 0
 opt.undofile = true
