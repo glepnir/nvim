@@ -1,4 +1,10 @@
 local function diag_config()
+  vim.diagnostic.config({
+    signs = {
+      text = { '', '', '' },
+    },
+  })
+
   --disable diagnostic in neovim test file *_spec.lua
   vim.api.nvim_create_autocmd('FileType', {
     group = vim.api.nvim_create_augroup('DisableInSpec', { clear = true }),
@@ -46,6 +52,9 @@ packadd({
       symbol_in_winbar = {
         hide_keyword = true,
         folder_level = 0,
+      },
+      lightbulb = {
+        sign = false,
       },
       outline = {
         layout = 'float',
