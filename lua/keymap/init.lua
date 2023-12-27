@@ -42,15 +42,31 @@ map.n({
 local loaded_netrw = false
 map.n('<leader>n', function()
   vim.g.netrw_banner = 0
+  vim.g.netrw_winsize = 30
+  vim.g.netrw_keepdir = 0
+  vim.g.netrw_liststyle = 3
   if not loaded_netrw then
     vim.g.loaded_netrwPlugin = nil
     vim.cmd.source(vim.env.VIMRUNTIME .. '/plugin/netrwPlugin.vim')
-    vim.cmd('Explore')
+    vim.cmd('Lexplore')
     loaded_netrw = true
     return
   end
-  vim.cmd('Explore')
+  vim.cmd('Lexplore %:p%:h')
 end)
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'netrw',
+  callback = function(args)
+    vim.opt_local.stc = ''
+    map.n({
+      ['h'] = '<Plug>NetrwBrowseUpDir',
+      ['l'] = '<Plug>NetrwLocalBrowseCheck',
+      ['c'] = '<Plug>NetrwOpenFile',
+    }, { buf = 0, remap = true })
+    vim.keymap.set('n', 'r', 'R', { remap = true, buffer = 0 })
+  end,
+})
 
 --template.nvim
 map.n('<Leader>t', function()

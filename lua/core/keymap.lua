@@ -1,4 +1,3 @@
---based on @ii14 version
 local set_keymap = vim.api.nvim_set_keymap
 local buf_set_keymap = vim.api.nvim_buf_set_keymap
 
@@ -162,6 +161,7 @@ local function index(self, key)
         end
 
         for mode in pairs(modes) do
+          -- print(vim.inspect(opts))
           map(mode, lhs, rhs, opts)
         end
       end
@@ -201,7 +201,7 @@ end
 ---```
 ---- Attributes
 ---```lua
----  map.n('e', ':e<CR>', { buffer=0, remap=true })
+---  map.n('e', ':e<CR>', { buf=0, remap=true })
 ---```
 ---- Lua function
 ---```lua
