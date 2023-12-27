@@ -40,7 +40,7 @@ map.n({
 
 --Netrw lazyload
 local loaded_netrw = false
-map.n('<C-x>d', function()
+map.n('<leader>n', function()
   vim.g.netrw_banner = 0
   if not loaded_netrw then
     vim.g.loaded_netrwPlugin = nil
