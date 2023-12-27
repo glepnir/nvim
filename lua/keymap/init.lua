@@ -42,7 +42,7 @@ map.n({
 local loaded_netrw = false
 map.n('<leader>n', function()
   vim.g.netrw_banner = 0
-  vim.g.netrw_winsize = 30
+  vim.g.netrw_winsize = math.floor((30 / vim.o.columns) * 100)
   vim.g.netrw_keepdir = 0
   vim.g.netrw_liststyle = 3
   if not loaded_netrw then
@@ -63,8 +63,9 @@ vim.api.nvim_create_autocmd('FileType', {
       ['h'] = '<Plug>NetrwBrowseUpDir',
       ['l'] = '<Plug>NetrwLocalBrowseCheck',
       ['c'] = '<Plug>NetrwOpenFile',
-    }, { buf = 0, remap = true })
+    }, { buf = args.buf, remap = true })
     vim.keymap.set('n', 'r', 'R', { remap = true, buffer = 0 })
+    vim.keymap.set('n', '.', 'gh', { remap = true, buffer = 0 })
   end,
 })
 
