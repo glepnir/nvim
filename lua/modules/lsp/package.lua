@@ -1,23 +1,3 @@
-local function diag_config()
-  vim.diagnostic.config({
-    signs = {
-      text = { '', '', '' },
-    },
-  })
-
-  --disable diagnostic in neovim test file *_spec.lua
-  vim.api.nvim_create_autocmd('FileType', {
-    group = vim.api.nvim_create_augroup('DisableInSpec', { clear = true }),
-    pattern = 'lua',
-    callback = function(opt)
-      local fname = vim.api.nvim_buf_get_name(opt.buf)
-      if fname:find('%w_spec%.lua') then
-        vim.diagnostic.disable(opt.buf)
-      end
-    end,
-  })
-end
-
 packadd({
   'neovim/nvim-lspconfig',
   dev = true,
@@ -37,7 +17,11 @@ packadd({
     'json',
   },
   config = function()
-    diag_config()
+    vim.diagnostic.config({
+      signs = {
+        text = { '', '', '' },
+      },
+    })
     require('modules.lsp.backend')
     require('modules.lsp.frontend')
   end,

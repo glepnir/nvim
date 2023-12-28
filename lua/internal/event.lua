@@ -8,12 +8,6 @@ au('BufWritePre', {
   command = 'setlocal noundofile',
 })
 
-au('BufRead', {
-  group = my_group,
-  pattern = '*.conf',
-  command = 'setlocal filetype=conf',
-})
-
 au('TextYankPost', {
   group = my_group,
   callback = function()
@@ -27,5 +21,17 @@ au('BufEnter', {
   callback = function()
     require('keymap')
     require('internal.track').setup()
+  end,
+})
+
+--disable diagnostic in neovim test file *_spec.lua
+au('FileType', {
+  group = group,
+  pattern = 'lua',
+  callback = function(opt)
+    local fname = vim.api.nvim_buf_get_name(opt.buf)
+    if fname:find('%w_spec%.lua') then
+      vim.diagnostic.disable(opt.buf)
+    end
   end,
 })
