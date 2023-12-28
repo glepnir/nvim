@@ -17,11 +17,8 @@ packadd({
     'json',
   },
   config = function()
-    vim.diagnostic.config({
-      signs = {
-        text = { '', '', '' },
-      },
-    })
+    local i = ''
+    vim.diagnostic.config({ signs = { text = { i, i, i } } })
     require('modules.lsp.backend')
     require('modules.lsp.frontend')
   end,
