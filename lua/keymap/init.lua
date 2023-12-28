@@ -38,21 +38,8 @@ map.n({
   ['<leader>c'] = cmd('Rapid'),
 })
 
---Netrw lazyload
-local loaded_netrw = false
 map.n('<leader>n', function()
-  vim.g.netrw_banner = 0
-  vim.g.netrw_winsize = math.floor((30 / vim.o.columns) * 100)
-  vim.g.netrw_keepdir = 0
-  vim.g.netrw_liststyle = 3
-  if not loaded_netrw then
-    vim.g.loaded_netrwPlugin = nil
-    vim.cmd.source(vim.env.VIMRUNTIME .. '/plugin/netrwPlugin.vim')
-    vim.cmd('Lexplore')
-    loaded_netrw = true
-    return
-  end
-  vim.cmd('Lexplore %:p%:h')
+  vim.cmd('Lexplore')
 end)
 
 vim.api.nvim_create_autocmd('FileType', {
