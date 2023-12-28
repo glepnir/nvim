@@ -79,7 +79,7 @@ local function get_signs()
 end
 
 function _G.show_stc()
-  local sign = ' '
+  local sign = '  '
   local gitsign = '  '
   for _, s in ipairs(get_signs()) do
     if s.sign_hl_group:find('GitSign') then

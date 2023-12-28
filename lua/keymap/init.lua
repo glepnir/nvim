@@ -42,20 +42,6 @@ map.n('<leader>n', function()
   vim.cmd('Lexplore')
 end)
 
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'netrw',
-  callback = function(args)
-    vim.opt_local.stc = ''
-    map.n({
-      ['h'] = '<Plug>NetrwBrowseUpDir',
-      ['l'] = '<Plug>NetrwLocalBrowseCheck',
-      ['c'] = '<Plug>NetrwOpenFile',
-    }, { buf = args.buf, remap = true })
-    vim.keymap.set('n', 'r', 'R', { remap = true, buffer = 0 })
-    vim.keymap.set('n', '.', 'gh', { remap = true, buffer = 0 })
-  end,
-})
-
 --template.nvim
 map.n('<Leader>t', function()
   local tmp_name
