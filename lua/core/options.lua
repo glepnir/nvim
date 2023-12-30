@@ -102,11 +102,7 @@ function _G.show_stc()
   return sign .. '%=' .. show_break() .. gitsign
 end
 
-vim.api.nvim_create_autocmd('BufWinEnter', {
-  callback = function()
-    vim.wo[vim.api.nvim_get_current_win()].stc = [[%!v:lua.show_stc()]]
-  end,
-})
+vim.opt.stc = '%!v:lua.show_stc()'
 
 if vim.uv.os_uname().sysname == 'Darwin' then
   vim.g.clipboard = {

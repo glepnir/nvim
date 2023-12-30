@@ -17,7 +17,7 @@ packadd({
 
 packadd({
   'nvimdev/whiskyline.nvim',
-  event = 'BufEnter */*',
+  event = 'BufEnter',
   config = conf.whisky,
 })
 
