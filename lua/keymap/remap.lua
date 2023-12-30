@@ -34,8 +34,14 @@ map.i({
   ['<C-C>'] = '<C-C>',
   --@see https://vim.fandom.com/wiki/Moving_lines_up_or_down
   ['<A-j>'] = '<Esc>:m .+1<CR>==gi',
-  ['<A-k>'] = '<Esc>:m .-2<CR>==gi',
 })
+
+-- move line down
+map.i('<A-k>', function()
+  local lnum = vim.api.nvim_win_get_cursor(0)[1]
+  local line = vim.api.nvim_buf_get_lines(0, lnum - 3, lnum - 2, false)[1]
+  return #line > 0 and '<Esc>:m .-2<CR>==gi' or '<Esc>kkddj:m .-2<CR>==gi'
+end, { expr = true })
 
 map.i('<TAB>', function()
   if vim.fn.pumvisible() == 1 then
