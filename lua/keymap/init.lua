@@ -36,6 +36,7 @@ map.n({
   ['[g'] = cmd('lua require"gitsigns".prev_hunk()<CR>'),
   --rapid
   ['<leader>c'] = cmd('Rapid'),
+  ['[t'] = cmd('vs new | terminal'),
 })
 
 map.n('<leader>n', function()

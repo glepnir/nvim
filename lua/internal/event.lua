@@ -48,5 +48,6 @@ au('TermOpen', {
   callback = function()
     vim.opt_local.stc = ''
     vim.wo.number = false
+    vim.cmd.startinsert()
   end,
 })

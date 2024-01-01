@@ -5,7 +5,7 @@ map.n({
   ['j'] = 'gj',
   ['k'] = 'gk',
   ['<C-s>'] = cmd('write'),
-  ['<C-x>k'] = cmd('bdelete'),
+  ['<C-x>k'] = cmd(vim.bo.buftype == 'terminal' and 'q' or 'bdelete'),
   ['<C-n>'] = cmd('bn'),
   ['<C-p>'] = cmd('bp'),
   ['<C-q>'] = cmd('qa!'),
@@ -85,4 +85,7 @@ map.c({
   ['<C-h>'] = '<BS>',
 })
 
-map.t('<Esc>', [[<C-\><C-n>]])
+map.t({
+  ['<Esc>'] = [[<C-\><C-n>]],
+  ['<C-x>k'] = cmd('quit'),
+})
