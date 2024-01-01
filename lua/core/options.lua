@@ -8,7 +8,7 @@ opt.clipboard = 'unnamedplus'
 opt.wildignorecase = true
 opt.swapfile = false
 
-opt.history = 2000
+opt.history = 1000
 opt.timeout = true
 opt.ttimeout = true
 opt.timeoutlen = 500
