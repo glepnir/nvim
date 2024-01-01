@@ -45,22 +45,23 @@ lspconfig.lua_ls.setup({
   settings = {
     Lua = {
       diagnostics = {
-        enable = true,
+        unusedLocalExclude = { '_*' },
         globals = { 'vim' },
         disable = {
-          'missing-fields',
-          'no-unknown',
+          'luadoc-miss-see-name',
         },
       },
       runtime = {
         version = 'LuaJIT',
-        path = vim.split(package.path, ';'),
+        -- path = vim.split(package.path, ';'),
       },
       workspace = {
         library = {
-          vim.env.VIMRUNTIME,
+          vim.env.VIMRUNTIME .. '/lua',
+          '${3rd}/busted/library',
+          '${3rd}/luv/library',
         },
-        checkThirdParty = false,
+        checkThirdParty = 'Disable',
       },
       completion = {
         callSnippet = 'Replace',
