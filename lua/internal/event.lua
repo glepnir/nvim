@@ -1,22 +1,22 @@
 local api = vim.api
 local au = api.nvim_create_autocmd
-local my_group = vim.api.nvim_create_augroup('GlepnirGroup', {})
+local group = vim.api.nvim_create_augroup('GlepnirGroup', {})
 
 au('BufWritePre', {
-  group = my_group,
+  group = group,
   pattern = { '/tmp/*', 'COMMIT_EDITMSG', 'MERGE_MSG', '*.tmp', '*.bak' },
   command = 'setlocal noundofile',
 })
 
 au('TextYankPost', {
-  group = my_group,
+  group = group,
   callback = function()
     vim.highlight.on_yank({ higroup = 'IncSearch', timeout = 400 })
   end,
 })
 
 au('BufEnter', {
-  group = my_group,
+  group = group,
   once = true,
   callback = function()
     require('keymap')
@@ -38,7 +38,15 @@ au('FileType', {
 
 --for alacritty only
 au('ExitPre', {
-  group = vim.api.nvim_create_augroup('Exit', { clear = true }),
+  group = group,
   command = 'set guicursor=a:ver90',
   desc = 'Set cursor back to beam when leaving Neovim.',
+})
+
+au('TermOpen', {
+  group = group,
+  callback = function()
+    vim.opt_local.stc = ''
+    vim.wo.number = false
+  end,
 })
