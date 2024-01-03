@@ -17,6 +17,7 @@ map.n({
   ['<A-[>'] = cmd('vertical resize -5'),
   ['<A-]>'] = cmd('vertical resize +5'),
   ['[t'] = cmd('vs new | terminal'),
+  [']t'] = cmd('sp new | terminal'),
   ['<C-x>t'] = cmd('tabnew | terminal'),
 })
 
