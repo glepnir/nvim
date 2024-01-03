@@ -5,7 +5,7 @@ map.n({
   ['j'] = 'gj',
   ['k'] = 'gk',
   ['<C-s>'] = cmd('write'),
-  ['<C-x>k'] = cmd(vim.bo.buftype == 'terminal' and 'q' or 'bdelete'),
+  ['<C-x>k'] = cmd(vim.bo.buftype == 'terminal' and 'q!' or 'bdelete'),
   ['<C-n>'] = cmd('bn'),
   ['<C-p>'] = cmd('bp'),
   ['<C-q>'] = cmd('qa!'),
@@ -16,6 +16,8 @@ map.n({
   ['<C-k>'] = '<C-w>k',
   ['<A-[>'] = cmd('vertical resize -5'),
   ['<A-]>'] = cmd('vertical resize +5'),
+  ['[t'] = cmd('vs new | terminal'),
+  ['<C-x>t'] = cmd('tabnew | terminal'),
 })
 
 map.i({
@@ -34,6 +36,20 @@ map.i({
   ['<C-C>'] = '<C-C>',
   --@see https://vim.fandom.com/wiki/Moving_lines_up_or_down
   ['<A-j>'] = '<Esc>:m .+1<CR>==gi',
+})
+
+map.c({
+  ['<C-b>'] = '<Left>',
+  ['<C-f>'] = '<Right>',
+  ['<C-a>'] = '<Home>',
+  ['<C-e>'] = '<End>',
+  ['<C-d>'] = '<Del>',
+  ['<C-h>'] = '<BS>',
+})
+
+map.t({
+  ['<Esc>'] = [[<C-\><C-n>]],
+  ['<C-x>k'] = cmd('quit'),
 })
 
 -- move line down
@@ -75,17 +91,3 @@ map.i('<c-e>', function()
     return '<Esc>g_a'
   end
 end, { expr = true })
-
-map.c({
-  ['<C-b>'] = '<Left>',
-  ['<C-f>'] = '<Right>',
-  ['<C-a>'] = '<Home>',
-  ['<C-e>'] = '<End>',
-  ['<C-d>'] = '<Del>',
-  ['<C-h>'] = '<BS>',
-})
-
-map.t({
-  ['<Esc>'] = [[<C-\><C-n>]],
-  ['<C-x>k'] = cmd('quit'),
-})
