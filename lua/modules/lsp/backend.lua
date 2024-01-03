@@ -49,6 +49,7 @@ lspconfig.lua_ls.setup({
         globals = { 'vim' },
         disable = {
           'luadoc-miss-see-name',
+          'undefined-field',
         },
       },
       runtime = {
