@@ -66,7 +66,6 @@ opt.textwidth = 100
 opt.colorcolumn = '100'
 
 local function get_signs(name)
-  local default = name == 'GitSign' and '  ' or ' '
   return function()
     local bufnr = vim.api.nvim_win_get_buf(vim.g.statusline_winid)
     local it = vim
@@ -74,7 +73,7 @@ local function get_signs(name)
       :find(function(item)
         return item[2] == vim.v.lnum - 1 and item[4].sign_hl_group:find(name)
       end)
-    return not it and default or '%#' .. it[4].sign_hl_group .. '#' .. it[4].sign_text .. '%*'
+    return not it and '  ' or '%#' .. it[4].sign_hl_group .. '#' .. it[4].sign_text .. '%*'
   end
 end
 
