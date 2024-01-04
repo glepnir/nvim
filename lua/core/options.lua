@@ -72,7 +72,6 @@ local function get_signs(name)
     local it = vim
       .iter(api.nvim_buf_get_extmarks(bufnr, -1, 0, -1, { details = true, type = 'sign' }))
       :find(function(item)
-        print(item[4].sign_hl_group, vim.v.lnum, item[2], name)
         return item[2] == vim.v.lnum - 1 and item[4].sign_hl_group:find(name)
       end)
     return not it and default or '%#' .. it[4].sign_hl_group .. '#' .. it[4].sign_text .. '%*'
