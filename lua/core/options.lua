@@ -59,35 +59,29 @@ opt.splitright = true
 opt.wrap = false
 
 opt.number = true
-opt.signcolumn = 'yes'
+opt.signcolumn = 'no'
 opt.spelloptions = 'camel'
 
 opt.textwidth = 100
 opt.colorcolumn = '100'
 
-local function get_signs()
-  local buf = api.nvim_get_current_buf()
-  return vim
-    .iter(api.nvim_buf_get_extmarks(buf, -1, 0, -1, { details = true, type = 'sign' }))
-    :filter(function(item)
-      return item[2] == vim.v.lnum - 1
-    end)
-    :map(function(item)
-      return item[4]
-    end)
-    :totable()
+local function get_signs(name)
+  local default = name == 'GitSign' and '  ' or ' '
+  return function()
+    local bufnr = vim.api.nvim_win_get_buf(vim.g.statusline_winid)
+    local it = vim
+      .iter(api.nvim_buf_get_extmarks(bufnr, -1, 0, -1, { details = true, type = 'sign' }))
+      :find(function(item)
+        print(item[4].sign_hl_group, vim.v.lnum, item[2], name)
+        return item[2] == vim.v.lnum - 1 and item[4].sign_hl_group:find(name)
+      end)
+    return not it and default or '%#' .. it[4].sign_hl_group .. '#' .. it[4].sign_text .. '%*'
+  end
 end
 
 function _G.show_stc()
-  local sign = '  '
-  local gitsign = '  '
-  for _, s in ipairs(get_signs()) do
-    if s.sign_hl_group:find('GitSign') then
-      gitsign = '%#' .. s.sign_hl_group .. '#' .. s.sign_text .. '%*'
-    else
-      sign = '%#' .. s.sign_hl_group .. '#' .. s.sign_text .. '%*'
-    end
-  end
+  local stc_diagnostic = get_signs('Diagnostic')
+  local stc_gitsign = get_signs('GitSign')
 
   local function show_break()
     if vim.v.virtnum > 0 then
@@ -98,8 +92,7 @@ function _G.show_stc()
       return vim.v.lnum
     end
   end
-
-  return sign .. '%=' .. show_break() .. gitsign
+  return stc_diagnostic() .. '%=' .. show_break() .. stc_gitsign()
 end
 
 vim.opt.stc = '%!v:lua.show_stc()'
