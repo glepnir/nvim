@@ -17,7 +17,6 @@ packadd({
 
 packadd({
   'nvimdev/guard.nvim',
-  dev = true,
   ft = { 'c', 'cpp', 'rust', 'lua', 'go', 'typescript', 'javascript', 'javascriptreact' },
   config = conf.guard,
   dependencies = {
@@ -35,7 +34,6 @@ packadd({
 
 packadd({
   'nvimdev/dyninput.nvim',
-  dev = true,
   ft = { 'c', 'cpp', 'go', 'rust', 'lua' },
   config = conf.dyninput,
 })
