@@ -3,14 +3,13 @@ local conf = require('modules.ui.config')
 packadd({
   'nvimdev/nightsky.vim',
   config = function()
-    vim.cmd('colorscheme nightsky')
+    vim.cmd.colorscheme('nightsky')
   end,
 })
 
 packadd({
   'nvimdev/dashboard-nvim',
   event = 'VimEnter',
-  dev = true,
   config = conf.dashboard,
   dependencies = { 'nvim-tree/nvim-web-devicons' },
 })

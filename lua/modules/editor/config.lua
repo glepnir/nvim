@@ -57,7 +57,6 @@ function config.nvim_treesitter()
       'markdown_inline',
       'json',
       'jsonc',
-      'vimdoc',
     },
     highlight = {
       enable = true,
