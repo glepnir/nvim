@@ -61,7 +61,7 @@ function config.nvim_treesitter()
     highlight = {
       enable = true,
       disable = function(_, buf)
-        return vim.api.nvim_buf_line_count(buf) > 8000
+        return vim.api.nvim_buf_line_count(buf) > 5000
       end,
     },
   })
