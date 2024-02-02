@@ -28,6 +28,7 @@ packadd({
   'norcalli/nvim-colorizer.lua',
   ft = { 'css', 'html', 'sass', 'less', 'typescriptreact', 'conf', 'vim' },
   config = function()
+    vim.opt.termguicolors = true
     require('colorizer').setup()
   end,
 })
