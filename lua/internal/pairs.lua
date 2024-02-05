@@ -139,7 +139,7 @@ end
 
 H.default_config = vim.deepcopy(M.config)
 
-H.default_pair_info = { neigh_pattern = '..', register = { bs = true, cr = true } }
+H.default_pair_info = { neigh_pattern = '..', register = { bs = true, cr = false } }
 
 H.registered_pairs = {
   i = { all = { bs = {}, cr = {} } },
