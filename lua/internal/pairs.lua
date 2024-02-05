@@ -139,7 +139,7 @@ end
 
 H.default_config = vim.deepcopy(M.config)
 
-H.default_pair_info = { neigh_pattern = '..', register = { bs = true, cr = false } }
+H.default_pair_info = { neigh_pattern = '..', register = { bs = true, cr = true } }
 
 H.registered_pairs = {
   i = { all = { bs = {}, cr = {} } },
@@ -303,9 +303,10 @@ H.ensure_cr_bs = function(mode)
     H.map(mode, '<BS>', 'v:lua.PairMate.bs()', opts)
   end
 
+  --Dont'map CR default
   if mode == 'i' and has_any_cr_pair then
     local opts = { expr = true, replace_keycodes = false, desc = 'PairMate <CR>' }
-    H.map(mode, '<CR>', 'v:lua.PairMate.cr()', opts)
+    -- H.map(mode, '<CR>', 'v:lua.PairMate.cr()', opts)
   end
 end
 
