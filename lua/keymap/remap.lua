@@ -81,7 +81,7 @@ map.i('<S-TAB>', function()
 end, { expr = true })
 
 map.i('<CR>', function()
-  return vim.fn.pumvisible() == 1 and '<C-y>' or vim.fn.lexima['expand']('<LT>CR>', 'i')
+  return vim.fn.pumvisible() == 1 and '<C-y>' or _G.PairMate.cr()
 end, { expr = true })
 
 map.i('<c-e>', function()

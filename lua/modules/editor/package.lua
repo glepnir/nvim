@@ -1,11 +1,6 @@
 local conf = require('modules.editor.config')
 
 packadd({
-  'cohama/lexima.vim',
-  event = 'InsertEnter',
-})
-
-packadd({
   'nvim-telescope/telescope.nvim',
   cmd = 'Telescope',
   config = conf.telescope,

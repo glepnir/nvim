@@ -51,3 +51,10 @@ au('TermOpen', {
     vim.cmd.startinsert()
   end,
 })
+
+au('InsertEnter', {
+  group = group,
+  callback = function()
+    require('internal.pairs').setup({})
+  end,
+})
