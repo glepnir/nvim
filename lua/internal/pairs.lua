@@ -302,10 +302,10 @@ H.ensure_cr_bs = function(mode)
   end
 
   --Dont'map CR default
-  if mode == 'i' and has_any_cr_pair then
-    local opts = { expr = true, replace_keycodes = false, desc = 'PairMate <CR>' }
-    -- H.map(mode, '<CR>', 'v:lua.PairMate.cr()', opts)
-  end
+  -- if mode == 'i' and has_any_cr_pair then
+  --   local opts = { expr = true, replace_keycodes = false, desc = 'PairMate <CR>' }
+  --   H.map(mode, '<CR>', 'v:lua.PairMate.cr()', opts)
+  -- end
 end
 
 H.validate_pair_info = function(pair_info, prefix)
