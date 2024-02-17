@@ -1,13 +1,11 @@
+local api = vim.api
 local M = {}
 local H = {}
 
 M.setup = function(config)
   _G.PairMate = M
-
   config = H.setup_config(config)
-
   H.apply_config(config)
-
   H.create_autocommands()
 end
 
@@ -49,7 +47,7 @@ M.map = function(mode, lhs, pair_info, opts)
   opts = vim.tbl_deep_extend('force', opts or {}, { expr = true, noremap = true })
   opts.desc = H.infer_mapping_description(pair_info)
 
-  vim.api.nvim_set_keymap(mode, lhs, H.pair_info_to_map_rhs(pair_info), opts)
+  api.nvim_set_keymap(mode, lhs, H.pair_info_to_map_rhs(pair_info), opts)
   H.register_pair(pair_info, mode, 'all')
 
   H.ensure_cr_bs(mode)
@@ -60,8 +58,8 @@ M.map_buf = function(buffer, mode, lhs, pair_info, opts)
   opts = vim.tbl_deep_extend('force', opts or {}, { expr = true, noremap = true })
   opts.desc = H.infer_mapping_description(pair_info)
 
-  vim.api.nvim_buf_set_keymap(buffer, mode, lhs, H.pair_info_to_map_rhs(pair_info), opts)
-  H.register_pair(pair_info, mode, buffer == 0 and vim.api.nvim_get_current_buf() or buffer)
+  api.nvim_buf_set_keymap(buffer, mode, lhs, H.pair_info_to_map_rhs(pair_info), opts)
+  H.register_pair(pair_info, mode, buffer == 0 and api.nvim_get_current_buf() or buffer)
 
   H.ensure_cr_bs(mode)
 end
@@ -69,7 +67,7 @@ end
 M.unmap = function(mode, lhs, pair)
   vim.validate({ pair = { pair, 'string' } })
 
-  pcall(vim.api.nvim_del_keymap, mode, lhs)
+  pcall(api.nvim_del_keymap, mode, lhs)
   if pair == '' then
     return
   end
@@ -79,11 +77,11 @@ end
 M.unmap_buf = function(buffer, mode, lhs, pair)
   vim.validate({ pair = { pair, 'string' } })
 
-  pcall(vim.api.nvim_buf_del_keymap, buffer, mode, lhs)
+  pcall(api.nvim_buf_del_keymap, buffer, mode, lhs)
   if pair == '' then
     return
   end
-  H.unregister_pair(pair, mode, buffer == 0 and vim.api.nvim_get_current_buf() or buffer)
+  H.unregister_pair(pair, mode, buffer == 0 and api.nvim_get_current_buf() or buffer)
 end
 
 M.open = function(pair, neigh_pattern)
@@ -148,7 +146,7 @@ H.registered_pairs = {
 }
 
 local function escape(s)
-  return vim.api.nvim_replace_termcodes(s, true, true, true)
+  return api.nvim_replace_termcodes(s, true, true, true)
 end
 H.keys = {
   above = escape('<C-o>O'),
@@ -222,10 +220,10 @@ H.apply_config = function(config)
 end
 
 H.create_autocommands = function()
-  local augroup = vim.api.nvim_create_augroup('PairMate', {})
+  local augroup = api.nvim_create_augroup('PairMate', {})
 
   local au = function(event, pattern, callback, desc)
-    vim.api.nvim_create_autocmd(
+    api.nvim_create_autocmd(
       event,
       { group = augroup, pattern = pattern, callback = callback, desc = desc }
     )
@@ -281,7 +279,7 @@ H.is_pair_registered = function(pair, mode, buffer, key)
     return true
   end
 
-  buffer = buffer == 0 and vim.api.nvim_get_current_buf() or buffer
+  buffer = buffer == 0 and api.nvim_get_current_buf() or buffer
   local buf_pairs = mode_pairs[buffer]
   if not buf_pairs then
     return false
@@ -345,14 +343,14 @@ end
 
 H.get_cursor_neigh = function(start, finish)
   local line, col
-  if vim.fn.mode() == 'c' then
+  if api.nvim_get_mode().mode == 'c' then
     line = vim.fn.getcmdline()
     col = vim.fn.getcmdpos()
     start = start - 1
     finish = finish - 1
   else
-    line = vim.api.nvim_get_current_line()
-    col = vim.api.nvim_win_get_cursor(0)[2]
+    line = api.nvim_get_current_line()
+    col = api.nvim_win_get_cursor(0)[2]
   end
 
   return string.sub(('%s%s%s'):format('\r', line, '\n'), col + 1 + start, col + 1 + finish)
@@ -363,7 +361,7 @@ H.neigh_match = function(pattern)
 end
 
 H.get_arrow_key = function(key)
-  if vim.fn.mode() == 'i' then
+  if api.nvim_get_mode().mode == 'i' then
     return H.keys.keep_undo .. H.keys[key]
   else
     return H.keys[key]
