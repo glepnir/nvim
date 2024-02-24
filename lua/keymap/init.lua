@@ -38,10 +38,6 @@ map.n({
   ['<leader>c'] = cmd('Rapid'),
 })
 
-map.n('<leader>n', function()
-  vim.cmd('Lexplore')
-end)
-
 --template.nvim
 map.n('<Leader>t', function()
   local tmp_name

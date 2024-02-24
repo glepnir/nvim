@@ -344,7 +344,7 @@ end
 ---
 ---@return string Relevant value of 'commentstring'.
 MiniComment.get_commentstring = function(ref_position)
-  local buf_cs = api.nvim_buf_get_option(0, 'commentstring')
+  local buf_cs = api.nvim_get_option_value('commentstring', { buf = 0 })
 
   local has_ts_parser, ts_parser = pcall(vim.treesitter.get_parser)
   if not has_ts_parser then
