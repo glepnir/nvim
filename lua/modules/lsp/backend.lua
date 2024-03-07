@@ -24,12 +24,10 @@ lspconfig.gopls.setup({
   cmd = { 'gopls', 'serve' },
   on_attach = M._attach,
   capabilities = M.capabilities,
-  init_options = {
-    usePlaceholders = true,
-    completeUnimported = true,
-  },
   settings = {
     gopls = {
+      usePlaceholders = true,
+      completeUnimported = true,
       analyses = {
         unusedparams = true,
       },
