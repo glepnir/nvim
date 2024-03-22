@@ -1,6 +1,6 @@
+local api = vim.api
 local map = require('core.keymap')
 local cmd = map.cmd
-
 map.n({
   ['j'] = 'gj',
   ['k'] = 'gk',
@@ -53,10 +53,18 @@ map.t({
   ['<C-x>k'] = cmd('quit'),
 })
 
+-- Ctrl-y works like emacs
+map.i('<C-y>', function()
+  if vim.fn.pumvisible() == 1 or #vim.fn.getreg('"') == 0 then
+    return '<C-y>'
+  end
+  return '<Esc>pa'
+end, { expr = true })
+
 -- move line down
 map.i('<A-k>', function()
-  local lnum = vim.api.nvim_win_get_cursor(0)[1]
-  local line = vim.api.nvim_buf_get_lines(0, lnum - 3, lnum - 2, false)[1]
+  local lnum = api.nvim_win_get_cursor(0)[1]
+  local line = api.nvim_buf_get_lines(0, lnum - 3, lnum - 2, false)[1]
   return #line > 0 and '<Esc>:m .-2<CR>==gi' or '<Esc>kkddj:m .-2<CR>==gi'
 end, { expr = true })
 
