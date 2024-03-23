@@ -58,7 +58,7 @@ map.i('<C-y>', function()
   if vim.fn.pumvisible() == 1 or #vim.fn.getreg('"') == 0 then
     return '<C-y>'
   end
-  return '<Esc>pa'
+  return '<Esc>p==a'
 end, { expr = true })
 
 -- move line down
