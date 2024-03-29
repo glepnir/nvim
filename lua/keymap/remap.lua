@@ -21,6 +21,11 @@ map.n({
   ['<C-x>t'] = cmd('tabnew | terminal'),
 })
 
+-- paste with correct indent
+map.n('p', function()
+  vim.cmd('normal! p==')
+end, { remap = true })
+
 map.i({
   ['<C-d>'] = '<C-o>diw',
   ['<C-b>'] = '<Left>',
@@ -92,11 +97,11 @@ map.i('<CR>', function()
   return vim.fn.pumvisible() == 1 and '<C-y>' or _G.PairMate.cr()
 end, { expr = true })
 
-map.i('<c-e>', function()
+map.i('<C-e>', function()
   if vim.fn.pumvisible() == 1 then
     require('epo').disable_trigger()
     return '<c-e>'
   else
-    return '<Esc>g_a'
+    return '<End>'
   end
 end, { expr = true })
