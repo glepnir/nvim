@@ -23,7 +23,10 @@ map.n({
 
 -- paste with correct indent
 map.n('p', function()
-  vim.cmd('normal! p==')
+  local text = vim.fn.getreg('"')
+  -- if have mulitple \n assume before copy from the visual mode
+  local count = #vim.split(text, '\n', { trimempty = true })
+  vim.cmd('normal! ' .. ('p%s'):format((count == 1 and '==' or ('v%sj=='):format(count))))
 end, { remap = true })
 
 map.i({
