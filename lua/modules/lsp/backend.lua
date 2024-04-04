@@ -70,20 +70,20 @@ lspconfig.lua_ls.setup({
 })
 
 lspconfig.clangd.setup({
-  root_files = {
-    'compile_commands.json',
-    '.clangd',
-    '.clang-tidy',
-    '.clang-format',
-    'compile_flags.txt',
-    'configure.ac', -- AutoTools
-  },
+  cmd = { 'clangd', '--background-index' },
   on_attach = M._attach,
   capabilities = M.capabilities,
-  cmd = {
-    'clangd',
-    '--background-index',
-  },
+  root_dir = function(fname)
+    return lspconfig.util.root_pattern(unpack({
+      --reorder
+      'compile_commands.json',
+      '.clangd',
+      '.clang-tidy',
+      '.clang-format',
+      'compile_flags.txt',
+      'configure.ac', -- AutoTools
+    }))(fname) or lspconfig.util.find_git_ancestor(fname)
+  end,
 })
 
 lspconfig.rust_analyzer.setup({
