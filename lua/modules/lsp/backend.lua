@@ -70,6 +70,14 @@ lspconfig.lua_ls.setup({
 })
 
 lspconfig.clangd.setup({
+  root_files = {
+    'compile_commands.json',
+    '.clangd',
+    '.clang-tidy',
+    '.clang-format',
+    'compile_flags.txt',
+    'configure.ac', -- AutoTools
+  },
   on_attach = M._attach,
   capabilities = M.capabilities,
   cmd = {

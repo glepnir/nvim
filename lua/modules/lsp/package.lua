@@ -1,5 +1,6 @@
 packadd({
   'neovim/nvim-lspconfig',
+  dev = true,
   ft = {
     'go',
     'lua',
