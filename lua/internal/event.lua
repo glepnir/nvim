@@ -20,7 +20,6 @@ au('BufEnter', {
   once = true,
   callback = function()
     require('keymap')
-    require('internal.track').setup()
   end,
 })
 
