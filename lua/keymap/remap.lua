@@ -61,6 +61,21 @@ map.t({
   ['<C-x>k'] = cmd('quit'),
 })
 
+-- insert cut text to paste
+map.i('<A-w>', function()
+  local mark = vim.api.nvim_buf_get_mark(0, 'a')
+  local lnum, col = unpack(api.nvim_win_get_cursor(0))
+  if mark[1] == 0 then
+    api.nvim_buf_set_mark(0, 'a', lnum, col, {})
+  else
+    local keys = '<ESC>d`aa'
+    api.nvim_feedkeys(api.nvim_replace_termcodes(keys, true, true, true), 'n', false)
+    vim.schedule(function()
+      api.nvim_buf_del_mark(0, 'a')
+    end)
+  end
+end)
+
 -- Ctrl-y works like emacs
 map.i('<C-y>', function()
   if vim.fn.pumvisible() == 1 or #vim.fn.getreg('"') == 0 then
