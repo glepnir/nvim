@@ -11,7 +11,7 @@ end
 
 function config.guard()
   local ft = require('guard.filetype')
-  ft('c'):fmt({
+  ft('c,cpp'):fmt({
     cmd = 'clang-format',
     stdin = true,
     ignore_patterns = { 'neovim', 'vim' },
