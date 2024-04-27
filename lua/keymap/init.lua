@@ -4,13 +4,13 @@ local cmd = map.cmd
 
 map.n({
   -- Lspsaga
-  ['[e'] = cmd('Lspsaga diagnostic_jump_next'),
-  [']e'] = cmd('Lspsaga diagnostic_jump_prev'),
+  ['[d'] = cmd('Lspsaga diagnostic_jump_next'),
+  [']d'] = cmd('Lspsaga diagnostic_jump_prev'),
   ['K'] = cmd('Lspsaga hover_doc'),
-  ['ga'] = cmd('Lspsaga code_action'),
+  ['cra'] = cmd('Lspsaga code_action'),
+  ['crn'] = cmd('Lspsaga rename'),
   ['gd'] = cmd('Lspsaga peek_definition'),
   ['gp'] = cmd('Lspsaga goto_definition'),
-  ['gr'] = cmd('Lspsaga rename'),
   ['gh'] = cmd('Lspsaga finder'),
   ['<Leader>o'] = cmd('Lspsaga outline'),
   ['<Leader>dw'] = cmd('Lspsaga show_workspace_diagnostics'),

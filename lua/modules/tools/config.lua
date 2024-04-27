@@ -60,8 +60,6 @@ function config.dyninput()
       },
     },
   })
-
-  -- exec_filetype('dyninput')
 end
 
 return config
