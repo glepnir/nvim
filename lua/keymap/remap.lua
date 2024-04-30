@@ -94,7 +94,7 @@ end, { expr = true })
 map.i('<TAB>', function()
   if vim.fn.pumvisible() == 1 then
     return '<C-n>'
-  elseif vim.snippet.jumpable(1) then
+  elseif vim.snippet.active({ direction = 1 }) then
     return '<cmd>lua vim.snippet.jump(1)<cr>'
   else
     return '<TAB>'
@@ -104,7 +104,7 @@ end, { expr = true })
 map.i('<S-TAB>', function()
   if vim.fn.pumvisible() == 1 then
     return '<C-p>'
-  elseif vim.snippet.jumpable(-1) then
+  elseif vim.snippet.active({ direction = -1 }) then
     return '<cmd>lua vim.snippet.jump(-1)<CR>'
   else
     return '<S-TAB>'
