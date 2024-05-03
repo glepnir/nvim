@@ -1,4 +1,4 @@
-local uv, api = vim.loop, vim.api
+local uv, api = vim.uv, vim.api
 local pack = {}
 pack.__index = pack
 
@@ -31,14 +31,13 @@ function pack:boot_strap()
     api.nvim_command(cmd)
   end
   vim.opt.runtimepath:prepend(lazy_path)
-  local lazy = require('lazy')
-  local opts = {
+  self:load_modules_packages()
+  --TODO(glepnir): remove lazy it sourced the fil which in ftplugin twice !!!
+  require('lazy').setup(self.repos, {
     ---@diagnostic disable-next-line: param-type-mismatch
     lockfile = vim.fs.joinpath(self.data_path, 'lazy-lock.json'),
     dev = { path = '~/workspace' },
-  }
-  self:load_modules_packages()
-  lazy.setup(self.repos, opts)
+  })
 end
 
 _G.packadd = function(repo)
