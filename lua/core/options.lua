@@ -62,8 +62,8 @@ opt.number = true
 opt.signcolumn = 'no'
 opt.spelloptions = 'camel'
 
-opt.textwidth = 100
-opt.colorcolumn = '100'
+opt.textwidth = 80
+opt.colorcolumn = '+0'
 
 local function get_signs(name)
   return function()
