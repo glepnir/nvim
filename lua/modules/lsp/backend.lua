@@ -115,6 +115,8 @@ local servers = {
   'zls',
 }
 
+-- lspconfig.pylsp.setup({ settings = { pylsp = { plugins = { pylint = { enabled = true } } } } })
+
 for _, server in ipairs(servers) do
   lspconfig[server].setup({
     on_attach = M._attach,
