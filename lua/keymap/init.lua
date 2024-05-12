@@ -4,8 +4,8 @@ local cmd = map.cmd
 
 map.n({
   -- Lspsaga
-  ['[d'] = cmd('Lspsaga diagnostic_jump_next'),
-  [']d'] = cmd('Lspsaga diagnostic_jump_prev'),
+  ['[d'] = ':Lspsaga diagnostic_jump_next<CR>',
+  [']d'] = ':Lspsaga diagnostic_jump_prev<CR>',
   ['K'] = cmd('Lspsaga hover_doc'),
   ['ga'] = cmd('Lspsaga code_action'),
   ['gr'] = cmd('Lspsaga rename'),

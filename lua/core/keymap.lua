@@ -84,7 +84,7 @@ local function index(self, key)
 
   if key == 'cmd' then
     local cmd_fn = function(str)
-      return '<cmd>' .. str .. '<CR>'
+      return '<Cmd>' .. str .. '<CR>'
     end
     rawset(self, key, cmd_fn)
     return cmd_fn
