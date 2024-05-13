@@ -34,12 +34,6 @@ packadd({
 })
 
 packadd({
-  'nvimdev/dyninput.nvim',
-  ft = { 'c', 'cpp', 'go', 'rust', 'lua' },
-  config = conf.dyninput,
-})
-
-packadd({
   'nvimdev/hlsearch.nvim',
   event = 'BufRead',
   config = true,
@@ -49,12 +43,4 @@ packadd({
   'nvimdev/dbsession.nvim',
   cmd = { 'SessionSave', 'SessionLoad', 'SessionDelete' },
   opts = true,
-})
-
-packadd({
-  'nvimdev/rapid.nvim',
-  cmd = 'Rapid',
-  config = function()
-    require('rapid').setup()
-  end,
 })
