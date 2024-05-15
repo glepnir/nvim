@@ -30,7 +30,7 @@ M.config = {
     ["'"] = {
       action = 'closeopen',
       pair = "''",
-      neigh_pattern = '[^%a\\].',
+      neigh_pattern = '[^%a&\\].',
       register = { cr = false },
     },
     ['`'] = {
