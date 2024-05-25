@@ -1,3 +1,4 @@
+local g = vim.g
 --disable_distribution_plugins
 g.loaded_gzip = 1
 g.loaded_tar = 1
