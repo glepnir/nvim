@@ -75,7 +75,7 @@ local function get_signs(name)
           and item[4].sign_hl_group
           and item[4].sign_hl_group:find(name)
       end)
-    return not it and '  ' or '%#' .. it[4].sign_hl_group .. '#' .. it[4].sign_text .. '%*'
+    return not it and '  ' or ('%%#%s#%s%%*'):format(it[4].sign_hl_group, it[4].sign_text)
   end
 end
 
@@ -92,7 +92,7 @@ function _G.show_stc()
       return vim.v.lnum
     end
   end
-  return stc_diagnostic() .. '%=' .. show_break() .. stc_gitsign()
+  return ('%s%%=%s%s'):format(stc_diagnostic(), show_break(), stc_gitsign())
 end
 
 vim.opt.stc = '%!v:lua.show_stc()'

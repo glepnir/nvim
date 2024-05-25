@@ -4,7 +4,7 @@ function config.telescope()
   require('telescope').setup({
     defaults = {
       prompt_prefix = ' ',
-      selection_caret = ' ',
+      selection_caret = '➤ ',
       layout_config = {
         horizontal = { prompt_position = 'top', results_width = 0.6 },
         vertical = { mirror = false },
