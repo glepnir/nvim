@@ -1,4 +1,3 @@
-local g, api = vim.g, vim.api
 --disable_distribution_plugins
 g.loaded_gzip = 1
 g.loaded_tar = 1
