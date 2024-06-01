@@ -7,8 +7,9 @@ M.capabilities = vim.tbl_deep_extend(
   require('epo').register_cap()
 )
 
-function M._attach(client, _)
+function M._attach(client, bufnr)
   vim.opt.omnifunc = 'v:lua.vim.lsp.omnifunc'
+  -- vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
   client.server_capabilities.semanticTokensProvider = nil
   local orignal = vim.notify
   local mynotify = function(msg, level, opts)
