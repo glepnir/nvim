@@ -22,11 +22,12 @@ map.n({
   ['<Leader>a'] = cmd('Telescope app'),
   ['<Leader>fa'] = cmd('Telescope live_grep'),
   ['<Leader>fs'] = cmd('Telescope grep_string'),
-  ['<Leader>ff'] = cmd(
+  ['<Leader>ff'] = cmd('Telescope find_files find_command=rg,--ignore,--hidden,--files'),
+  ['<Leader>fg'] = cmd('Telescope git_files'),
+  -- find in workspace folder which is my project directory
+  ['<Leader>fw'] = cmd(
     'Telescope find_files cwd=$HOME/workspace' .. ' find_command=rg,--ignore,--hidden,--files'
   ),
-  ['<Leader>fg'] = cmd('Telescope git_files'),
-  ['<Leader>fw'] = cmd('Telescope grep_string'),
   ['<Leader>fh'] = cmd('Telescope help_tags'),
   ['<Leader>fo'] = cmd('Telescope oldfiles'),
   ['<Leader>gc'] = cmd('Telescope git_commits'),
