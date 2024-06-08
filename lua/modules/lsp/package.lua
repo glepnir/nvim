@@ -1,20 +1,6 @@
 packadd({
   'neovim/nvim-lspconfig',
-  ft = {
-    'go',
-    'lua',
-    'sh',
-    'rust',
-    'c',
-    'cpp',
-    'zig',
-    'python',
-    'javascript',
-    'javascriptreact',
-    'typescript',
-    'typescriptreact',
-    'json',
-  },
+  ft = vim.g.my_program_ft,
   config = function()
     local i = '■'
     vim.diagnostic.config({ signs = { text = { i, i, i, i } } })

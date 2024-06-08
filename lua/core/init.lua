@@ -17,5 +17,22 @@ g.loaded_rrhelper = 1
 g.loaded_netrwPlugin = 1
 g.mapleader = ' '
 
+-- the programming language which i write.
+g.my_program_ft = {
+  'go',
+  'lua',
+  'sh',
+  'rust',
+  'c',
+  'cpp',
+  'zig',
+  'python',
+  'javascript',
+  'javascriptreact',
+  'typescript',
+  'typescriptreact',
+  'json',
+}
+
 require('core.pack'):boot_strap()
 require('core.options')
