@@ -173,23 +173,6 @@ H.setup_config = function(config)
     ['modes.terminal'] = { config.modes.terminal, 'boolean' },
   })
 
-  local validate_mapping = function(pair_info, prefix)
-    if pair_info == false then
-      return
-    end
-    H.validate_pair_info(pair_info, prefix)
-  end
-
-  validate_mapping(config.mappings['('], "mappings['(']")
-  validate_mapping(config.mappings['['], "mappings['[']")
-  validate_mapping(config.mappings['{'], "mappings['{']")
-  validate_mapping(config.mappings[')'], "mappings[')']")
-  validate_mapping(config.mappings[']'], "mappings[']']")
-  validate_mapping(config.mappings['}'], "mappings['}']")
-  validate_mapping(config.mappings['"'], "mappings['\"']")
-  validate_mapping(config.mappings["'"], 'mappings["\'"]')
-  validate_mapping(config.mappings['`'], "mappings['`']")
-
   return config
 end
 

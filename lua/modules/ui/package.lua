@@ -1,9 +1,17 @@
 local conf = require('modules.ui.config')
 
+-- packadd({
+--   'nvimdev/nightsky.vim',
+--   config = function()
+--     vim.cmd.colorscheme('nightsky')
+--   end,
+-- })
+
 packadd({
-  'nvimdev/nightsky.vim',
+  'nvimdev/pure.vim',
+  dev = true,
   config = function()
-    vim.cmd.colorscheme('nightsky')
+    vim.cmd.colorscheme('pure')
   end,
 })
 
