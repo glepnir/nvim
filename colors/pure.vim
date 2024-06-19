@@ -99,8 +99,8 @@ hi SpellRare guisp=#8cf8f7 cterm=undercurl gui=undercurl
 hi SpellLocal guisp=#b3f6c0 cterm=undercurl gui=undercurl
 hi Pmenu guibg=#2c2e33 cterm=reverse
 hi link @string.special SpecialChar
-hi link PmenuMatch Pmenu
-hi link PmenuMatchSel PmenuSel
+hi PmenuMatch guifg=#007373 guibg=#2c2e33 blend=0
+hi PmenuMatchSel guifg=#007373 guibg=#e0e2ea blend =0
 hi link PmenuKind Pmenu
 hi link PmenuKindSel PmenuSel
 hi link PmenuExtra Pmenu
@@ -199,7 +199,6 @@ hi link @constant.builtin Special
 hi link @constant Constant
 hi link @variable.parameter.builtin Special
 hi link @variable.builtin Special
-hi @variable guifg=#e0e2ea
 hi Comment guifg=#9b9ea4
 hi link DiagnosticUnnecessary Comment
 hi link DiagnosticSignOk DiagnosticOk
