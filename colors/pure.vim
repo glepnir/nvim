@@ -112,61 +112,15 @@ hi TabLineSel cterm=bold gui=bold
 hi link TabLineFill TabLine
 hi CursorColumn guibg=#2c2e33
 hi Identifier guifg=#a6dbff ctermfg=12
-hi link @function Function
-hi link @function.builtin Special
-hi link @constructor Special
-hi link @operator Operator
 hi Operator guifg=#e0e2ea
-hi link @keyword Keyword
-hi link @punctuation Delimiter
 hi Delimiter guifg=#e0e2ea
-hi link @punctuation.special Special
-hi link @comment Comment
-hi link @comment.error DiagnosticError
-hi link @comment.warning DiagnosticWarn
-hi link @comment.note DiagnosticInfo
-hi link @comment.todo Todo
 hi Todo guifg=#e0e2ea cterm=bold gui=bold
-hi link @markup Special
-hi @markup.strong cterm=bold gui=bold
-hi @markup.italic cterm=italic gui=italic
-hi @markup.strikethrough cterm=strikethrough gui=strikethrough
-hi @markup.underline cterm=underline gui=underline
-hi link @markup.heading Title
-hi link @markup.link Underlined
-hi link @diff.plus Added
 hi Added guifg=#b3f6c0 ctermfg=10
 hi WarningMsg guifg=#fce094 ctermfg=11
-hi link @diff.minus Removed
 hi Removed guifg=#ffc0b9 ctermfg=9
-hi link @diff.delta Changed
 hi Changed guifg=#8cf8f7 ctermfg=14
-hi link @tag Tag
-hi link @tag.builtin Special
-hi link @lsp.type.class @type
-hi link @lsp.type.comment @comment
-hi link @lsp.type.decorator @attribute
-hi link @lsp.type.enum @type
-hi link @lsp.type.enumMember @constant
-hi link @lsp.type.event @type
-hi link @lsp.type.function @function
-hi link @lsp.type.interface @type
-hi link @lsp.type.keyword @keyword
-hi link @lsp.type.macro @constant.macro
 hi link Number Constant
-hi link @lsp.type.modifier @type.qualifier
-hi link @lsp.type.namespace @module
-hi link @lsp.type.number @number
 hi Title guifg=#e0e2ea cterm=bold gui=bold
-hi link @lsp.type.parameter @variable.parameter
-hi link @lsp.type.property @property
-hi link @lsp.type.regexp @string.regexp
-hi link @lsp.type.string @string
-hi link @lsp.type.struct @type
-hi link @lsp.type.type @type
-hi link @lsp.type.typeParameter @type.definition
-hi link @lsp.type.variable @variable
-hi link @lsp.mod.deprecated DiagnosticDeprecated
 hi DiagnosticDeprecated guisp=#ffc0b9 cterm=strikethrough gui=strikethrough
 hi FloatShadow guibg=#4f5258 ctermbg=0
 hi FloatShadowThrough guibg=#4f5258 ctermbg=0
@@ -176,8 +130,40 @@ hi Constant guifg=#e0e2ea
 hi String guifg=#b3f6c0 ctermfg=10
 hi Function guifg=#a6dbff ctermfg=12
 hi Statement guifg=#e0e2ea cterm=bold gui=bold
-hi link @lsp.type.operator @operator
-hi link @lsp.type.method @function.method
+hi Comment guifg=#9b9ea4
+
+" Diagnostic
+hi DiagnosticError guifg=#ffc0b9 ctermfg=9
+hi DiagnosticWarn guifg=#fce094 ctermfg=11
+hi DiagnosticHint guifg=#a6dbff ctermfg=12
+hi DiagnosticInfo guifg=#8cf8f7 ctermfg=14
+hi DiagnosticOk guifg=#b3f6c0 ctermfg=10
+hi link DiagnosticFloatingInfo DiagnosticInfo
+hi link DiagnosticFloatingError DiagnosticError
+hi link DiagnosticFloatingWarn DiagnosticWarn
+hi link DiagnosticFloatingHint DiagnosticHint
+hi link DiagnosticFloatingOk DiagnosticOk
+hi link DiagnosticUnnecessary Comment
+hi link DiagnosticSignOk DiagnosticOk
+hi link DiagnosticSignHint DiagnosticHint
+hi link DiagnosticSignInfo DiagnosticInfo
+hi link DiagnosticSignWarn DiagnosticWarn
+hi link DiagnosticSignError DiagnosticError
+hi link DiagnosticVirtualTextOk DiagnosticOk
+hi link DiagnosticVirtualTextHint DiagnosticHint
+hi link DiagnosticVirtualTextInfo DiagnosticInfo
+hi link DiagnosticVirtualTextWarn DiagnosticWarn
+hi link DiagnosticVirtualTextError DiagnosticError
+hi DiagnosticUnderlineError guisp=#ffc0b9 cterm=undercurl gui=undercurl
+hi DiagnosticUnderlineWarn guisp=#fce094 cterm=undercurl gui=undercurl
+hi DiagnosticUnderlineInfo guisp=#8cf8f7 cterm=undercurl gui=undercurl
+hi DiagnosticUnderlineHint guisp=#a6dbff cterm=undercurl gui=undercurl
+hi DiagnosticUnderlineOk guisp=#b3f6c0 cterm=underline gui=underline
+
+" Lsp
+hi @variable guifg=#e0e2ea
+hi link @variable.parameter.builtin Special
+hi link @variable.builtin Special
 hi link @property @variable
 hi link @attribute.builtin Special
 hi link @attribute Macro
@@ -197,35 +183,55 @@ hi link @module.builtin Special
 hi link @module Structure
 hi link @constant.builtin Special
 hi link @constant Constant
-hi link @variable.parameter.builtin Special
-hi link @variable.builtin Special
-hi Comment guifg=#9b9ea4
-hi link DiagnosticUnnecessary Comment
-hi link DiagnosticSignOk DiagnosticOk
-hi link DiagnosticSignHint DiagnosticHint
-hi link DiagnosticSignInfo DiagnosticInfo
-hi link DiagnosticSignWarn DiagnosticWarn
-hi link DiagnosticSignError DiagnosticError
-hi link DiagnosticVirtualTextOk DiagnosticOk
-hi link DiagnosticVirtualTextHint DiagnosticHint
-hi link DiagnosticVirtualTextInfo DiagnosticInfo
-hi link DiagnosticVirtualTextWarn DiagnosticWarn
-hi link DiagnosticVirtualTextError DiagnosticError
-hi DiagnosticOk guifg=#b3f6c0 ctermfg=10
-hi link DiagnosticFloatingOk DiagnosticOk
-hi DiagnosticHint guifg=#a6dbff ctermfg=12
-hi link DiagnosticFloatingHint DiagnosticHint
-hi DiagnosticInfo guifg=#8cf8f7 ctermfg=14
-hi link DiagnosticFloatingInfo DiagnosticInfo
-hi DiagnosticWarn guifg=#fce094 ctermfg=11
-hi link DiagnosticFloatingWarn DiagnosticWarn
-hi DiagnosticError guifg=#ffc0b9 ctermfg=9
-hi link DiagnosticFloatingError DiagnosticError
-hi DiagnosticUnderlineError guisp=#ffc0b9 cterm=underline gui=underline
-hi DiagnosticUnderlineWarn guisp=#fce094 cterm=underline gui=underline
-hi DiagnosticUnderlineInfo guisp=#8cf8f7 cterm=underline gui=underline
-hi DiagnosticUnderlineHint guisp=#a6dbff cterm=underline gui=underline
-hi DiagnosticUnderlineOk guisp=#b3f6c0 cterm=underline gui=underline
+hi link @tag Tag
+hi link @function Function
+hi link @function.builtin Special
+hi link @constructor Special
+hi link @operator Operator
+hi link @keyword Keyword
+hi link @punctuation Delimiter
+hi link @punctuation.special Special
+hi link @comment Comment
+hi link @comment.error DiagnosticError
+hi link @comment.warning DiagnosticWarn
+hi link @comment.note DiagnosticInfo
+hi link @comment.todo Todo
+hi link @markup Special
+hi @markup.strong cterm=bold gui=bold
+hi @markup.italic cterm=italic gui=italic
+hi @markup.strikethrough cterm=strikethrough gui=strikethrough
+hi @markup.underline cterm=underline gui=underline
+hi link @markup.heading Title
+hi link @markup.link Underlined
+hi link @diff.plus Added
+hi link @diff.minus Removed
+hi link @diff.delta Changed
+hi link @tag.builtin Special
+hi link @lsp.type.operator @operator
+hi link @lsp.type.method @function.method
+hi link @lsp.type.class @type
+hi link @lsp.type.comment @comment
+hi link @lsp.type.decorator @attribute
+hi link @lsp.type.enum @type
+hi link @lsp.type.enumMember @constant
+hi link @lsp.type.event @type
+hi link @lsp.type.function @function
+hi link @lsp.type.interface @type
+hi link @lsp.type.keyword @keyword
+hi link @lsp.type.macro @constant.macro
+hi link @lsp.type.modifier @type.qualifier
+hi link @lsp.type.namespace @module
+hi link @lsp.type.number @number
+hi link @lsp.type.parameter @variable.parameter
+hi link @lsp.type.property @property
+hi link @lsp.type.regexp @string.regexp
+hi link @lsp.type.string @string
+hi link @lsp.type.struct @type
+hi link @lsp.type.type @type
+hi link @lsp.type.typeParameter @type.definition
+hi link @lsp.type.variable @variable
+hi link @lsp.mod.deprecated DiagnosticDeprecated
+
 hi link SnippetTabstop Visual
 hi link LspSignatureActiveParameter Visual
 hi link LspReferenceWrite LspReferenceText
