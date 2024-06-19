@@ -1,13 +1,6 @@
 local conf = require('modules.ui.config')
 
 packadd({
-  'nvimdev/nightsky.vim',
-  config = function()
-    vim.cmd.colorscheme('nightsky')
-  end,
-})
-
-packadd({
   'nvimdev/dashboard-nvim',
   event = 'UIEnter',
   config = conf.dashboard,
