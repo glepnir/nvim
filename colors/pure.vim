@@ -12,10 +12,7 @@ hi clear
 if exists("syntax_on")
   syntax reset
 endif
-
 let g:colors_name = 'pure'
-
-let s:LightBlue = '#a6dbff'
 
 hi Normal guifg=#e0e2ea guibg=#14161b
 hi CursorLine guibg=#2c2e33
