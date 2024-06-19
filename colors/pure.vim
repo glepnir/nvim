@@ -238,3 +238,6 @@ hi IndentLine guifg=#2c2e33
 hi IndentLineCurrent guifg=#9b9ea4
 
 hi DashboardHeader guifg=#b3f6c0
+hi GitSignsAdd guifg=#005523
+hi GitSignsChange guifg=#007373
+hi GitSignsDelete guifg=#590008

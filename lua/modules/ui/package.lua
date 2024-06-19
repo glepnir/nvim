@@ -8,9 +8,12 @@ packadd({
 })
 
 packadd({
-  'nvimdev/whiskyline.nvim',
+  'nvimdev/modeline.nvim',
   event = 'BufEnter',
-  config = conf.whisky,
+  dev = true,
+  config = function()
+    require('modeline').setup()
+  end,
 })
 
 packadd({

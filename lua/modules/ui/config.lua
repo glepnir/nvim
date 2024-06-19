@@ -1,9 +1,5 @@
 local config = {}
 
-function config.whisky()
-  require('whiskyline').setup()
-end
-
 function config.dashboard()
   local db = require('dashboard')
   db.setup({
