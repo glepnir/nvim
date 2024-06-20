@@ -1,6 +1,6 @@
 packadd({
   'neovim/nvim-lspconfig',
-  ft = vim.g.my_program_ft,
+  ft = _G.my_program_ft,
   config = function()
     local i = '■'
     vim.diagnostic.config({ signs = { text = { i, i, i, i } } })

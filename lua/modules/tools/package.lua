@@ -17,7 +17,7 @@ packadd({
 
 packadd({
   'nvimdev/guard.nvim',
-  ft = { 'c', 'cpp', 'rust', 'lua', 'go', 'typescript', 'javascript', 'javascriptreact' },
+  ft = _G.my_program_ft,
   config = conf.guard,
   dependencies = {
     { 'nvimdev/guard-collection' },

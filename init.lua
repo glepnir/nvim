@@ -19,7 +19,7 @@ g.loaded_netrwPlugin = 1
 g.mapleader = ' '
 
 -- the programming language which i write.
-g.my_program_ft = {
+_G.my_program_ft = {
   'c',
   'cpp',
   'rust',

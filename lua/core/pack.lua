@@ -1,4 +1,4 @@
-local uv, api = vim.uv, vim.api
+local uv, api, fn = vim.uv, vim.api, vim.fn
 local pack = {}
 pack.__index = pack
 
@@ -20,9 +20,8 @@ function pack:load_modules_packages()
 end
 
 function pack:boot_strap()
-  self.helper = require('core.helper')
-  self.data_path = self.helper.data_path()
-  self.config_path = self.helper.config_path()
+  self.data_path = fn.stdpath('data')
+  self.config_path = fn.stdpath('config')
   ---@diagnostic disable-next-line: param-type-mismatch
   local lazy_path = vim.fs.joinpath(self.data_path, 'lazy', 'lazy.nvim')
   local state = uv.fs_stat(lazy_path)
