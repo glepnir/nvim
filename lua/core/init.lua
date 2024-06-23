@@ -2,7 +2,7 @@ require('core.pack'):boot_strap()
 require('core.options')
 
 -- some color i interested
--- backup: #062329
+-- backup: #05262e
 vim.cmd([[
 hi EndOfBuffer guifg=#14161b
 hi Function guifg=#a6dbff ctermfg=12
