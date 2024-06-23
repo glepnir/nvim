@@ -7,6 +7,9 @@ vim.cmd([[
 hi EndOfBuffer guifg=#14161b
 hi Function guifg=#a6dbff ctermfg=12
 hi link @property @variable
+hi Type guifg=#fce094 ctermfg=11
+hi link @type.builtin Type
+hi link @type Type
 
 hi DiagnosticUnderlineError guisp=#ffc0b9 cterm=undercurl gui=undercurl
 hi DiagnosticUnderlineWarn guisp=#fce094 cterm=undercurl gui=undercurl
