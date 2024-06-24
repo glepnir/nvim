@@ -9,7 +9,7 @@ packadd({
 
 packadd({
   'nvimdev/modeline.nvim',
-  event = 'User DashboardLoaded',
+  event = 'BufEnter */*',
   config = function()
     require('modeline').setup()
   end,
