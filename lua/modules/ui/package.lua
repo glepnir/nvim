@@ -4,12 +4,12 @@ packadd({
   'nvimdev/dashboard-nvim',
   event = 'UIEnter',
   config = conf.dashboard,
-  dependencies = { 'nvim-tree/nvim-web-devicons' },
 })
 
 packadd({
   'nvimdev/modeline.nvim',
   event = 'BufEnter */*',
+  dev = true,
   config = function()
     require('modeline').setup()
   end,

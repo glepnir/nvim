@@ -16,6 +16,7 @@ packadd({
   config = function()
     require('lspsaga').setup({
       symbol_in_winbar = {
+        enable = false,
         hide_keyword = true,
         folder_level = 0,
       },

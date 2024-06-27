@@ -115,3 +115,24 @@ map.i('<C-e>', function()
     return '<End>'
   end
 end, { expr = true })
+
+local ns_id, mark_id = vim.api.nvim_create_namespace('my_marks'), nil
+
+local function jump_to_mark()
+  if not mark_id then
+    local row, col = unpack(api.nvim_win_get_cursor(0))
+    mark_id = api.nvim_buf_set_extmark(0, ns_id, row - 1, col, { id = 1, hl_group = 'IncSearch' })
+    return
+  end
+  local mark = api.nvim_buf_get_extmark_by_id(0, ns_id, mark_id, {})
+  if not mark or #mark == 0 then
+    return
+  end
+  api.nvim_win_set_cursor(0, { mark[1] + 1, mark[2] })
+  api.nvim_buf_del_extmark(0, ns_id, mark_id)
+  mark_id = nil
+  print('Jumped to mark at: ' .. (mark[1] + 1) .. ', ' .. mark[2])
+  return '<Nop>'
+end
+
+vim.keymap.set('i', '<C-X><C-X>', jump_to_mark, { expr = true })
