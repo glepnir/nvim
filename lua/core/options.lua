@@ -1,5 +1,4 @@
-local api = vim.api
-local opt = vim.opt
+local api, opt = vim.api, vim.opt
 
 opt.hidden = true
 opt.magic = true
@@ -20,12 +19,7 @@ opt.smartcase = true
 opt.infercase = true
 opt.cursorline = true
 
-if vim.fn.executable('rg') == 1 then
-  opt.grepformat = '%f:%l:%c:%m,%f:%l:%m'
-  opt.grepprg = 'rg --vimgrep --no-heading --smart-case'
-end
-
-opt.completeopt = 'menu,menuone,noinsert'
+opt.completeopt = 'menu,menuone,noinsert,fuzzy'
 opt.showmode = false
 opt.shortmess = 'aoOTIcF'
 opt.scrolloff = 2
@@ -67,7 +61,7 @@ opt.colorcolumn = '+0'
 
 local function get_signs(name)
   return function()
-    local bufnr = vim.api.nvim_win_get_buf(vim.g.statusline_winid)
+    local bufnr = api.nvim_win_get_buf(vim.g.statusline_winid)
     local it = vim
       .iter(api.nvim_buf_get_extmarks(bufnr, -1, 0, -1, { details = true, type = 'sign' }))
       :find(function(item)
@@ -86,11 +80,8 @@ function _G.show_stc()
   local function show_break()
     if vim.v.virtnum > 0 then
       return (' '):rep(math.floor(math.ceil(math.log10(vim.v.lnum))) - 1) .. '↳'
-    elseif vim.v.virtnum < 0 then
-      return ''
-    else
-      return vim.v.lnum
     end
+    return vim.v.virtnum < 0 and '' or vim.v.lnum
   end
   return ('%s%%=%s%s'):format(stc_diagnostic(), show_break(), stc_gitsign())
 end

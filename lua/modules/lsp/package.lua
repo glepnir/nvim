@@ -33,7 +33,6 @@ packadd({
 packadd({
   'nvimdev/epo.nvim',
   event = 'LspAttach',
-  dev = true,
   config = function()
     require('epo').setup()
   end,
