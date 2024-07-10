@@ -15,8 +15,8 @@ packadd({
   dev = true,
   config = function()
     require('lspsaga').setup({
+      ui = { use_nerd = false },
       symbol_in_winbar = {
-        enable = false,
         hide_keyword = true,
         folder_level = 0,
       },

@@ -9,7 +9,6 @@ packadd({
 packadd({
   'nvimdev/modeline.nvim',
   event = 'BufEnter */*',
-  dev = true,
   config = function()
     require('modeline').setup()
   end,

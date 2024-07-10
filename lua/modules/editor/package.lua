@@ -12,7 +12,7 @@ packadd({
 
 packadd({
   'nvim-treesitter/nvim-treesitter',
-  event = 'BufRead',
+  event = { 'BufRead', 'BufNewFile' },
   build = ':TSUpdate',
   config = conf.nvim_treesitter,
 })
