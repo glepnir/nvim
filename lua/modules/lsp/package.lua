@@ -29,11 +29,3 @@ packadd({
     })
   end,
 })
-
-packadd({
-  'nvimdev/epo.nvim',
-  event = 'LspAttach',
-  config = function()
-    require('epo').setup()
-  end,
-})

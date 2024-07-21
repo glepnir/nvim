@@ -1,15 +1,29 @@
+local api, completion = vim.api, vim.lsp.completion
 local M = {}
 local lspconfig = require('lspconfig')
 
-M.capabilities = vim.tbl_deep_extend(
-  'force',
-  vim.lsp.protocol.make_client_capabilities(),
-  require('epo').register_cap()
-)
+local function has_word_before()
+  local _, col = unpack(api.nvim_win_get_cursor(0))
+  if col == 0 then
+    return false
+  end
+  local line_text = api.nvim_get_current_line()
+  local char_before_cursor = line_text:sub(col, col)
+  return char_before_cursor:match('[%w_]')
+end
 
+---@diagnostic disable-next-line: unused-local
 function M._attach(client, bufnr)
+  api.nvim_create_autocmd({ 'TextChangedI' }, {
+    callback = function()
+      completion.enable(true, client.id, bufnr)
+      if has_word_before() then
+        completion.trigger()
+      end
+    end,
+  })
+
   vim.opt.omnifunc = 'v:lua.vim.lsp.omnifunc'
-  -- vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
   client.server_capabilities.semanticTokensProvider = nil
   local orignal = vim.notify
   local mynotify = function(msg, level, opts)
@@ -71,7 +85,18 @@ lspconfig.lua_ls.setup({
 })
 
 lspconfig.clangd.setup({
-  cmd = { 'clangd', '--background-index' },
+  cmd = {
+    'clangd',
+    '--background-index',
+  },
+  init_options = {
+    fallbackFlags = {
+      _G.is_mac and '-isystem/Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include',
+      _G.is_mac and '-isystem/opt/homebrew/Cellar/sdl2/2.30.5/include',
+      _G.is_mac and '-isystem/opt/homebrew/Cellar/glew/2.2.0_1/include',
+      _G.is_mac and '-isystem/opt/homebrew/Cellar/freetype/2.13.2/include/freetype2',
+    },
+  },
   on_attach = M._attach,
   capabilities = M.capabilities,
   root_dir = function(fname)

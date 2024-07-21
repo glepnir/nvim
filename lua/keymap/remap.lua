@@ -136,3 +136,8 @@ map.i('<C-t>', function()
   api.nvim_buf_del_extmark(0, ns_id, mark_id)
   mark_id = nil
 end)
+
+-- move to the top of file like emacs M-<
+map.i('<A-<>', function()
+  api.nvim_win_set_cursor(0, { 1, 1 })
+end)

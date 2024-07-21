@@ -35,6 +35,8 @@ _G.my_program_ft = {
   'json',
 }
 
+_G.is_mac = vim.uv.os_uname().sysname == 'Darwin'
+
 -- Load Modules
 require('core')
 require('internal.event')
