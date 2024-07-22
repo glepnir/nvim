@@ -41,3 +41,18 @@ au('LspAttach', {
     auto_trigger(bufnr)
   end,
 })
+
+local function key_with_disable_textchangedi(key)
+  -- Add the TextChangedI to eventignore avoid confirm completion thne insert
+  -- text trigger TextChangedI again.
+  vim.opt.eventignore:append('TextChangedI')
+  api.nvim_feedkeys(api.nvim_replace_termcodes(key, true, false, true), 'n', true)
+  -- reset in next eventloop
+  vim.defer_fn(function()
+    vim.opt.eventignore:remove('TextChangedI')
+  end, 0)
+end
+
+return {
+  key_with_disable_textchangedi = key_with_disable_textchangedi,
+}
