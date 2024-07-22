@@ -3,7 +3,7 @@ local M = {}
 local lspconfig = require('lspconfig')
 
 ffi.cdef([[
-  typedef int32_t linenr_T
+  typedef int32_t linenr_T;
   char *ml_get(linenr_T lnum);
 ]])
 
