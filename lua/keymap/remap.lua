@@ -109,7 +109,6 @@ end, { expr = true })
 
 map.i('<C-e>', function()
   if vim.fn.pumvisible() == 1 then
-    require('epo').disable_trigger()
     return '<c-e>'
   else
     return '<End>'

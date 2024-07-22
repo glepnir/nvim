@@ -1,23 +1,30 @@
-local api, completion = vim.api, vim.lsp.completion
+local api, completion, ffi = vim.api, vim.lsp.completion, require('ffi')
 local M = {}
 local lspconfig = require('lspconfig')
 
-local function has_word_before()
-  local _, col = unpack(api.nvim_win_get_cursor(0))
+ffi.cdef([[
+  typedef int32_t linenr_T
+  char *ml_get(linenr_T lnum);
+]])
+
+local function has_word_before(triggerCharacters)
+  local lnum, col = unpack(api.nvim_win_get_cursor(0))
   if col == 0 then
     return false
   end
-  local line_text = api.nvim_get_current_line()
+  local line_text = ffi.string(ffi.C.ml_get(lnum))
   local char_before_cursor = line_text:sub(col, col)
   return char_before_cursor:match('[%w_]')
+    or vim.tbl_contains(triggerCharacters, char_before_cursor)
 end
 
----@diagnostic disable-next-line: unused-local
 function M._attach(client, bufnr)
   api.nvim_create_autocmd({ 'TextChangedI' }, {
     callback = function()
       completion.enable(true, client.id, bufnr)
-      if has_word_before() then
+      local triggerchars =
+        vim.tbl_get(client, 'server_capabilities', 'completionProvider', 'triggerCharacters')
+      if has_word_before(triggerchars) then
         completion.trigger()
       end
     end,
