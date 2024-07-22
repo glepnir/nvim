@@ -1,8 +1,6 @@
 local api, completion, ffi, lsp = vim.api, vim.lsp.completion, require('ffi'), vim.lsp
 local au = api.nvim_create_autocmd
 local ms = vim.lsp.protocol.Methods
-local TextChangedI = 'TextChangedI'
-local completing = false
 
 ffi.cdef([[
   typedef int32_t linenr_T;
@@ -16,19 +14,16 @@ local function has_word_before(triggerCharacters)
   end
   local line_text = ffi.string(ffi.C.ml_get(lnum))
   local char_before_cursor = line_text:sub(col, col)
-  return char_before_cursor:match('[%w_]')
+  local result = char_before_cursor:match('[%w_]')
     or vim.tbl_contains(triggerCharacters, char_before_cursor)
+  return result
 end
 
 local function auto_trigger(bufnr)
-  au({ TextChangedI }, {
+  au({ 'TextChangedI' }, {
     buffer = bufnr,
     callback = function(args)
-      if args.event == TextChangedI and completing then
-        return
-      end
-      completing = true
-      local client = lsp.get_clients({ bufnr = args.buf, method = ms.textDocument_completion })
+      local client = lsp.get_clients({ bufnr = args.buf, method = ms.textDocument_completion })[1]
       local triggerchars =
         vim.tbl_get(client, 'server_capabilities', 'completionProvider', 'triggerCharacters')
       if has_word_before(triggerchars) then
@@ -40,9 +35,9 @@ end
 
 au('LspAttach', {
   callback = function(args)
-    local bufnr = args.bufnr
+    local bufnr = args.buf
     local client_id = args.data.client_id
-    completion.enable(true, client_id, bufnr)
+    completion.enable(true, client_id, bufnr, {})
     auto_trigger(bufnr)
   end,
 })
