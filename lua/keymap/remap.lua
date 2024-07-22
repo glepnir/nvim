@@ -103,9 +103,8 @@ map.i('<S-TAB>', function()
   end
 end, { expr = true })
 
--- see lsp/backend.lua for completion
 local function key_with_disable_textchangedi(key)
-  -- Add the TextChangedI to eventignore avoid confirm completion insert
+  -- Add the TextChangedI to eventignore avoid confirm completion thne insert
   -- text trigger TextChangedI again.
   vim.opt.eventignore:append('TextChangedI')
   api.nvim_feedkeys(api.nvim_replace_termcodes(key, true, false, true), 'n', true)
@@ -125,7 +124,7 @@ end, { expr = true })
 
 map.i('<C-e>', function()
   if vim.fn.pumvisible() == 1 then
-    key_with_disable_textchangedi('<C-e>')
+    key_with_disable_textchangedi('<C-y>')
   else
     return '<End>'
   end

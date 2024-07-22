@@ -1,35 +1,7 @@
-local api, completion, ffi = vim.api, vim.lsp.completion, require('ffi')
 local M = {}
 local lspconfig = require('lspconfig')
 
-ffi.cdef([[
-  typedef int32_t linenr_T;
-  char *ml_get(linenr_T lnum);
-]])
-
-local function has_word_before(triggerCharacters)
-  local lnum, col = unpack(api.nvim_win_get_cursor(0))
-  if col == 0 then
-    return false
-  end
-  local line_text = ffi.string(ffi.C.ml_get(lnum))
-  local char_before_cursor = line_text:sub(col, col)
-  return char_before_cursor:match('[%w_]')
-    or vim.tbl_contains(triggerCharacters, char_before_cursor)
-end
-
-function M._attach(client, bufnr)
-  api.nvim_create_autocmd({ 'TextChangedI' }, {
-    callback = function()
-      completion.enable(true, client.id, bufnr)
-      local triggerchars =
-        vim.tbl_get(client, 'server_capabilities', 'completionProvider', 'triggerCharacters')
-      if has_word_before(triggerchars) then
-        completion.trigger()
-      end
-    end,
-  })
-
+function M._attach(client, _)
   vim.opt.omnifunc = 'v:lua.vim.lsp.omnifunc'
   client.server_capabilities.semanticTokensProvider = nil
   local orignal = vim.notify
