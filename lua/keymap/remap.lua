@@ -105,7 +105,7 @@ end, { expr = true })
 
 -- see lsp/backend.lua for completion
 local function key_with_disable_textchangedi(key)
-  -- Add the TextChangedI to eventignore avoid confirm completion thne insert
+  -- Add the TextChangedI to eventignore avoid confirm completion insert
   -- text trigger TextChangedI again.
   vim.opt.eventignore:append('TextChangedI')
   api.nvim_feedkeys(api.nvim_replace_termcodes(key, true, false, true), 'n', true)
