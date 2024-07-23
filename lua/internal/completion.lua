@@ -1,6 +1,7 @@
 local api, completion, ffi, lsp = vim.api, vim.lsp.completion, require('ffi'), vim.lsp
 local au = api.nvim_create_autocmd
 local ms = vim.lsp.protocol.Methods
+local TextChangedI, InsertCharPre = 'TextChangedI', 'InsertCharPre'
 
 ffi.cdef([[
   typedef int32_t linenr_T;
@@ -20,7 +21,7 @@ end
 
 -- hack can completion on any triggerCharacters
 local function auto_trigger(bufnr)
-  au({ 'TextChangedI' }, {
+  au(TextChangedI, {
     buffer = bufnr,
     callback = function(args)
       local client = lsp.get_clients({ bufnr = args.buf, method = ms.textDocument_completion })[1]
@@ -42,13 +43,33 @@ au('LspAttach', {
   end,
 })
 
+local function feedkeys(key)
+  api.nvim_feedkeys(api.nvim_replace_termcodes(key, true, false, true), 'n', true)
+end
+
+local function buf_has_client(bufnr)
+  return #lsp.get_clients({ bufnr = bufnr, method = ms.textDocument_completion }) > 0
+end
+
+-- completion for directory and files
+au(InsertCharPre, {
+  callback = function(args)
+    local char = vim.v.char
+    if char == '/' then
+      feedkeys('<C-X><C-F>')
+    elseif not char:match('%s') and not buf_has_client(args.buf) then
+      feedkeys('<C-X><C-N>')
+    end
+  end,
+})
+
 -- Add the TextChangedI to eventignore avoid confirm completion thne insert
 -- text trigger TextChangedI again.
 local function key_with_disable_textchangedi(key)
-  vim.opt.eventignore:append('TextChangedI')
-  api.nvim_feedkeys(api.nvim_replace_termcodes(key, true, false, true), 'n', true)
+  vim.opt.eventignore:append(TextChangedI)
+  feedkeys(key)
   vim.defer_fn(function()
-    vim.opt.eventignore:remove('TextChangedI')
+    vim.opt.eventignore:remove(TextChangedI)
   end, 0)
 end
 
