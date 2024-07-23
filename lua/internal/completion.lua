@@ -59,16 +59,25 @@ local function is_path_related(line, col)
   return char_before_cursor:match('[/%w_%-%.~]')
 end
 
+local it = vim.iter({ 'terminal', 'prompt', 'help' })
+
 -- completion for directory and files
 au(InsertCharPre, {
   callback = function(args)
+    local bufnr = args.buf
+    local ok = it:any(function(v)
+      return v == vim.bo[bufnr].buftype
+    end)
+    if not ok then
+      return
+    end
     local char = vim.v.char
     local _, col = unpack(api.nvim_win_get_cursor(0))
     local line_text = api.nvim_get_current_line()
     col = col + 1 -- Adjust for 1-based index
     if char == '/' and is_path_related(line_text, col - 1) then
       feedkeys('<C-X><C-F>')
-    elseif not char:match('%s') and not buf_has_client(args.buf) then
+    elseif not char:match('%s') and not buf_has_client(bufnr) then
       feedkeys('<C-X><C-N>')
     end
   end,
