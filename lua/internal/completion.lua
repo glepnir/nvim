@@ -14,11 +14,11 @@ local function has_word_before(triggerCharacters)
   end
   local line_text = ffi.string(ffi.C.ml_get(lnum))
   local char_before_cursor = line_text:sub(col, col)
-  local result = char_before_cursor:match('[%w_]')
-    or vim.tbl_contains(triggerCharacters, char_before_cursor)
-  return result
+  return char_before_cursor:match('[%w_]')
+    and not vim.tbl_contains(triggerCharacters, char_before_cursor)
 end
 
+-- hack can completion on any triggerCharacters
 local function auto_trigger(bufnr)
   au({ 'TextChangedI' }, {
     buffer = bufnr,
@@ -37,17 +37,16 @@ au('LspAttach', {
   callback = function(args)
     local bufnr = args.buf
     local client_id = args.data.client_id
-    completion.enable(true, client_id, bufnr, {})
+    completion.enable(true, client_id, bufnr, { autotrigger = true })
     auto_trigger(bufnr)
   end,
 })
 
+-- Add the TextChangedI to eventignore avoid confirm completion thne insert
+-- text trigger TextChangedI again.
 local function key_with_disable_textchangedi(key)
-  -- Add the TextChangedI to eventignore avoid confirm completion thne insert
-  -- text trigger TextChangedI again.
   vim.opt.eventignore:append('TextChangedI')
   api.nvim_feedkeys(api.nvim_replace_termcodes(key, true, false, true), 'n', true)
-  -- reset in next eventloop
   vim.defer_fn(function()
     vim.opt.eventignore:remove('TextChangedI')
   end, 0)
