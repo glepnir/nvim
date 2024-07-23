@@ -51,11 +51,22 @@ local function buf_has_client(bufnr)
   return #lsp.get_clients({ bufnr = bufnr, method = ms.textDocument_completion }) > 0
 end
 
+local function is_path_related(line, col)
+  if col == 0 then
+    return false
+  end
+  local char_before_cursor = line:sub(col, col)
+  return char_before_cursor:match('[/%w_%-%.~]')
+end
+
 -- completion for directory and files
 au(InsertCharPre, {
   callback = function(args)
     local char = vim.v.char
-    if char == '/' then
+    local _, col = unpack(api.nvim_win_get_cursor(0))
+    local line_text = api.nvim_get_current_line()
+    col = col + 1 -- Adjust for 1-based index
+    if char == '/' and is_path_related(line_text, col - 1) then
       feedkeys('<C-X><C-F>')
     elseif not char:match('%s') and not buf_has_client(args.buf) then
       feedkeys('<C-X><C-N>')
