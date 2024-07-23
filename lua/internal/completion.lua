@@ -68,14 +68,13 @@ au(InsertCharPre, {
     local ok = it:any(function(v)
       return v == vim.bo[bufnr].buftype
     end)
-    if not ok then
+    if ok then
       return
     end
     local char = vim.v.char
-    local _, col = unpack(api.nvim_win_get_cursor(0))
-    local line_text = api.nvim_get_current_line()
-    col = col + 1 -- Adjust for 1-based index
-    if char == '/' and is_path_related(line_text, col - 1) then
+    local lnum, col = unpack(api.nvim_win_get_cursor(0))
+    local line_text = ffi.string(ffi.C.ml_get(lnum))
+    if char == '/' and is_path_related(line_text, col) then
       feedkeys('<C-X><C-F>')
     elseif not char:match('%s') and not buf_has_client(bufnr) then
       feedkeys('<C-X><C-N>')
