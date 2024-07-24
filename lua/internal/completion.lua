@@ -59,13 +59,11 @@ local function is_path_related(line, col)
   return char_before_cursor:match('[/%w_%-%.~]')
 end
 
-local it = vim.iter({ 'terminal', 'prompt', 'help' })
-
 -- completion for directory and files
 au(InsertCharPre, {
   callback = function(args)
     local bufnr = args.buf
-    local ok = it:any(function(v)
+    local ok = vim.iter({ 'terminal', 'prompt', 'help' }):any(function(v)
       return v == vim.bo[bufnr].buftype
     end)
     if ok then
