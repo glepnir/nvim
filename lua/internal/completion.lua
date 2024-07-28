@@ -43,8 +43,8 @@ au('LspAttach', {
   end,
 })
 
-local function feedkeys(key, mode)
-  api.nvim_feedkeys(api.nvim_replace_termcodes(key, true, false, true), mode, true)
+local function feedkeys(key)
+  api.nvim_feedkeys(api.nvim_replace_termcodes(key, true, false, true), 'n', true)
 end
 
 local function buf_has_client(bufnr)
@@ -77,9 +77,9 @@ au(InsertCharPre, {
     local lnum, col = unpack(api.nvim_win_get_cursor(0))
     local line_text = ffi.string(ffi.C.ml_get(lnum))
     if char == '/' and is_path_related(line_text, col) then
-      feedkeys('<C-X><C-F>', 'm')
+      feedkeys('<C-X><C-F>')
     elseif not char:match('%s') and not buf_has_client(bufnr) then
-      feedkeys('<C-X><C-N>', 'm')
+      feedkeys('<C-X><C-N>')
     end
   end,
 })
@@ -88,7 +88,7 @@ au(InsertCharPre, {
 -- text trigger TextChangedI again.
 local function key_with_disable_textchangedi(key)
   vim.opt.eventignore:append(TextChangedI)
-  feedkeys(key, 'n')
+  feedkeys(key)
   vim.defer_fn(function()
     vim.opt.eventignore:remove(TextChangedI)
   end, 0)
