@@ -43,8 +43,8 @@ au('LspAttach', {
   end,
 })
 
-local function feedkeys(key)
-  api.nvim_feedkeys(api.nvim_replace_termcodes(key, true, false, true), 'n', true)
+local function feedkeys(key, mode)
+  api.nvim_feedkeys(api.nvim_replace_termcodes(key, true, false, true), mode, true)
 end
 
 local function buf_has_client(bufnr)
@@ -62,20 +62,24 @@ end
 -- completion for directory and files
 au(InsertCharPre, {
   callback = function(args)
+    if vim.fn.pumvisible() == 1 or vim.fn.state('m') == 'm' then
+      return
+    end
     local bufnr = args.buf
-    local ok = vim.iter({ 'terminal', 'prompt', 'help' }):any(function(v)
-      return v == vim.bo[bufnr].buftype
-    end)
-    if ok then
+    if
+      not vim.iter({ 'terminal', 'prompt', 'help' }):any(function(v)
+        return v == vim.bo[bufnr].buftype
+      end)
+    then
       return
     end
     local char = vim.v.char
     local lnum, col = unpack(api.nvim_win_get_cursor(0))
     local line_text = ffi.string(ffi.C.ml_get(lnum))
     if char == '/' and is_path_related(line_text, col) then
-      feedkeys('<C-X><C-F>')
+      feedkeys('<C-X><C-F>', 'm')
     elseif not char:match('%s') and not buf_has_client(bufnr) then
-      feedkeys('<C-X><C-N>')
+      feedkeys('<C-X><C-N>', 'm')
     end
   end,
 })
@@ -84,7 +88,7 @@ au(InsertCharPre, {
 -- text trigger TextChangedI again.
 local function key_with_disable_textchangedi(key)
   vim.opt.eventignore:append(TextChangedI)
-  feedkeys(key)
+  feedkeys(key, 'n')
   vim.defer_fn(function()
     vim.opt.eventignore:remove(TextChangedI)
   end, 0)
