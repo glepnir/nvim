@@ -62,6 +62,9 @@ end
 -- completion for directory and files
 au(InsertCharPre, {
   callback = function(args)
+    if vim.fn.pumvisible() == 1 or vim.fn.state('m') == 'm' then
+      return
+    end
     local bufnr = args.buf
     local ok = vim.iter({ 'terminal', 'prompt', 'help' }):any(function(v)
       return v == vim.bo[bufnr].buftype
