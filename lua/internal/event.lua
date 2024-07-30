@@ -57,3 +57,18 @@ au('InsertEnter', {
     require('internal.pairs').setup({})
   end,
 })
+
+au('FileType', {
+  pattern = 'netrw',
+  callback = function()
+    local map = function(lhs, rhs, desc)
+      vim.keymap.set('n', lhs, rhs, { buffer = true, remap = true, desc = desc })
+    end
+    vim.wo.stc = ''
+    map('r', 'R', 'rename file')
+    map('l', '<CR>', 'open directory or file')
+    map('.', 'gh', 'toggle dotfiles')
+    map('H', 'u', 'go back')
+    map('h', '-^', 'go up')
+  end,
+})
