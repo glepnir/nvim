@@ -69,7 +69,7 @@ map.n('<leader>n', function()
     vim.g.netrw_list_hide = [[\(^\|\s\s\)\zs\.\S\+]]
     vim.g.netrw_liststyle = 3
     vim.cmd.source(vim.env.VIMRUNTIME .. '/plugin/netrwPlugin.vim')
-    vim.cmd('Lexplore')
+    vim.cmd('Lexplore %:p:h')
     loaded_netrw = true
     return
   end
