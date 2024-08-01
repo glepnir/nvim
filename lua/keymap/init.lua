@@ -60,6 +60,7 @@ map.nt('<A-d>', cmd('Lspsaga term_toggle'))
 map.nx('ga', cmd('Lspsaga code_action'))
 
 local loaded_netrw = false
+-- keymap see internal/event.lua
 map.n('<leader>n', function()
   if not loaded_netrw then
     vim.g.loaded_netrwPlugin = nil

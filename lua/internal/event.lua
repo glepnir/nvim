@@ -61,15 +61,22 @@ au('InsertEnter', {
 au('FileType', {
   pattern = 'netrw',
   callback = function()
-    local map = function(lhs, rhs, desc)
-      vim.keymap.set('n', lhs, rhs, { buffer = true, remap = true, desc = desc })
+    local map = function(lhs, rhs, remap, desc)
+      vim.keymap.set('n', lhs, rhs, { buffer = true, remap = remap, desc = desc })
     end
     vim.wo.stc = ''
-    map('r', 'R', 'rename file')
-    map('l', '<CR>', 'open directory or file')
-    map('.', 'gh', 'toggle dotfiles')
-    map('H', 'u', 'go back')
-    map('h', '-^', 'go up')
+    local function split(cmd)
+      return function()
+        vim.cmd(('%s %s'):format(cmd, vim.fn.expand('<cfile>')))
+      end
+    end
+    map('r', 'R', true, 'rename file')
+    map('l', '<CR>', true, 'open directory or file')
+    map('.', 'gh', true, 'toggle dotfiles')
+    map('H', 'u', true, 'go back')
+    map('h', '-^', true, 'go up')
+    map('s', split('vsplit'), false, 'vsplit open')
+    map('v', split('split'), false, 'split open')
   end,
 })
 
