@@ -19,16 +19,22 @@ local function has_word_before(triggerCharacters)
     and not vim.list_contains(triggerCharacters, char_before_cursor)
 end
 
+local timer = assert(vim.uv.new_timer())
+
 -- hack can completion on any triggerCharacters
 local function auto_trigger(bufnr)
   au(TextChangedI, {
     buffer = bufnr,
     callback = function(args)
+      if vim.fn.pumvisible() == 1 or vim.fn.state('m') == 'm' then
+        return
+      end
       local client = lsp.get_clients({ bufnr = args.buf, method = ms.textDocument_completion })[1]
       local triggerchars =
         vim.tbl_get(client, 'server_capabilities', 'completionProvider', 'triggerCharacters')
       if has_word_before(triggerchars) then
-        completion.trigger()
+        timer:stop()
+        timer:start(150, 0, vim.schedule_wrap(completion.trigger))
       end
     end,
   })
