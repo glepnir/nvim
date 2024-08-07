@@ -5,7 +5,7 @@ map.n({
   ['j'] = 'gj',
   ['k'] = 'gk',
   ['<C-s>'] = cmd('write'),
-  ['<C-x>k'] = cmd(vim.bo.buftype == 'terminal' and 'q!' or 'bdelete!'),
+  ['<C-x>k'] = cmd(vim.bo.buftype == 'terminal' and 'q!' or 'BufKeepDelete'),
   ['<C-n>'] = cmd('bn'),
   ['<C-p>'] = cmd('bp'),
   ['<C-q>'] = cmd('qa!'),

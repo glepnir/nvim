@@ -20,7 +20,9 @@ au('BufEnter', {
   once = true,
   callback = function()
     require('keymap')
+    require('internal.buffer')
   end,
+  desc = 'Lazy load my keymap and buffer relate commands',
 })
 
 --disable diagnostic in neovim test file *_spec.lua
