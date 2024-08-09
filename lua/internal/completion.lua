@@ -1,6 +1,6 @@
 local api, completion, ffi, lsp = vim.api, vim.lsp.completion, require('ffi'), vim.lsp
-local au = api.nvim_create_autocmd
-local ms = vim.lsp.protocol.Methods
+local au, pumvisible, vimstate = api.nvim_create_autocmd, vim.fn.pumvisible(), vim.fn.state
+local ms, uv = vim.lsp.protocol.Methods, vim.uv
 local TextChangedI, InsertCharPre = 'TextChangedI', 'InsertCharPre'
 
 ffi.cdef([[
@@ -19,23 +19,50 @@ local function has_word_before(triggerCharacters)
     and not vim.list_contains(triggerCharacters, char_before_cursor)
 end
 
-local timer = assert(vim.uv.new_timer())
+local function debounce(func, delay)
+  local timer = nil ---[[uv_timer_t]]
+  return function(...)
+    local args = { ... }
+    if timer then
+      timer:stop()
+      timer:close()
+    end
+    timer = assert(uv.new_timer())
+    timer:start(delay, 0, function()
+      if timer and not timer:is_closing() then
+        timer:stop()
+        timer:close()
+        timer = nil
+      end
+      vim.schedule(function()
+        func(unpack(args))
+      end)
+    end)
+  end
+end
 
 -- hack can completion on any triggerCharacters
 local function auto_trigger(bufnr)
   au(TextChangedI, {
     buffer = bufnr,
     callback = function(args)
-      if vim.fn.pumvisible() == 1 or vim.fn.state('m') == 'm' then
+      if pumvisible() == 1 or vimstate('m') == 'm' then
         return
       end
-      local client = lsp.get_clients({ bufnr = args.buf, method = ms.textDocument_completion })[1]
-      local triggerchars =
-        vim.tbl_get(client, 'server_capabilities', 'completionProvider', 'triggerCharacters')
-      if has_word_before(triggerchars) then
-        timer:stop()
-        timer:start(150, 0, vim.schedule_wrap(completion.trigger))
+      local clients = lsp.get_clients({ bufnr = args.buf, method = ms.textDocument_completion })
+      if #clients == 0 then
+        return
       end
+      --just invoke trigger once even there has many clients.
+      vim.iter(clients):any(function(client)
+        local triggerchars =
+          vim.tbl_get(client, 'server_capabilities', 'completionProvider', 'triggerCharacters')
+        if has_word_before(triggerchars) then
+          debounce(completion.trigger, 200)()
+          return true
+        end
+        return false
+      end)
     end,
   })
 end
@@ -68,7 +95,7 @@ end
 -- completion for directory and files
 au(InsertCharPre, {
   callback = function(args)
-    if vim.fn.pumvisible() == 1 or vim.fn.state('m') == 'm' then
+    if pumvisible() == 1 or vimstate('m') == 'm' then
       return
     end
     local bufnr = args.buf
