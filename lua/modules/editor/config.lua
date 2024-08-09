@@ -42,7 +42,6 @@ function config.nvim_treesitter()
       'typescript',
       'javascript',
       'tsx',
-      'bash',
       'css',
       'scss',
       'diff',
