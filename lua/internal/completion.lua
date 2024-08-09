@@ -1,5 +1,5 @@
 local api, completion, ffi, lsp = vim.api, vim.lsp.completion, require('ffi'), vim.lsp
-local au, pumvisible, vimstate = api.nvim_create_autocmd, vim.fn.pumvisible(), vim.fn.state
+local au, pumvisible, vimstate = api.nvim_create_autocmd, vim.fn.pumvisible, vim.fn.state
 local ms, uv = vim.lsp.protocol.Methods, vim.uv
 local TextChangedI, InsertCharPre = 'TextChangedI', 'InsertCharPre'
 
