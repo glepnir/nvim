@@ -58,6 +58,7 @@ function config.nvim_treesitter()
       'json',
       'jsonc',
       'vimdoc',
+      'vim',
     },
     highlight = {
       enable = true,
