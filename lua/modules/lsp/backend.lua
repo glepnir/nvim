@@ -2,16 +2,7 @@ local M = {}
 local lspconfig = require('lspconfig')
 
 function M._attach(client, _)
-  vim.opt.omnifunc = 'v:lua.vim.lsp.omnifunc'
   client.server_capabilities.semanticTokensProvider = nil
-  local orignal = vim.notify
-  local mynotify = function(msg, level, opts)
-    if msg == 'No code actions available' or msg:find('overly') then
-      return
-    end
-    orignal(msg, level, opts)
-  end
-  vim.notify = mynotify
 end
 
 lspconfig.gopls.setup({
@@ -32,6 +23,7 @@ lspconfig.gopls.setup({
 })
 
 lspconfig.lua_ls.setup({
+  on_attach = M._attach,
   on_init = function(client)
     local path = client.workspace_folders[1].name
     if vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc') then
