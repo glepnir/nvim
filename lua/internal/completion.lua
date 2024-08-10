@@ -21,19 +21,21 @@ end
 
 local function debounce(func, delay)
   local timer = nil ---[[uv_timer_t]]
-  return function(...)
-    local args = { ... }
-    if timer then
+
+  local function safe_close()
+    if timer and timer:is_active() and not timer:is_closing() then
       timer:stop()
       timer:close()
+      timer = nil
     end
+  end
+
+  return function(...)
+    local args = { ... }
+    safe_close()
     timer = assert(uv.new_timer())
     timer:start(delay, 0, function()
-      if timer and not timer:is_closing() then
-        timer:stop()
-        timer:close()
-        timer = nil
-      end
+      safe_close()
       vim.schedule(function()
         xpcall(function()
           func(unpack(args))
