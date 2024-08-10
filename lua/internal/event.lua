@@ -78,7 +78,6 @@ au('FileType', {
     map('H', 'u', true, 'go back')
     map('h', '-^', true, 'go up')
     map('c', '%', true, 'create file')
-    map('r', '<Plug>NetrwRefresh', false, 'refresh')
     map('s', split('vsplit'), false, 'vsplit open')
     map('v', split('split'), false, 'split open')
   end,
