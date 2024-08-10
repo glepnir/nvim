@@ -35,7 +35,11 @@ local function debounce(func, delay)
         timer = nil
       end
       vim.schedule(function()
-        func(unpack(args))
+        xpcall(function()
+          func(unpack(args))
+        end, function(err)
+          vim.notify('Error in debounced trigger function' .. err, vim.log.levels.ERROR)
+        end)
       end)
     end)
   end
@@ -43,6 +47,7 @@ end
 
 -- hack can completion on any triggerCharacters
 local function auto_trigger(bufnr)
+  local debounced_trigger = debounce(completion.trigger, 200)
   au(TextChangedI, {
     buffer = bufnr,
     callback = function(args)
@@ -58,7 +63,7 @@ local function auto_trigger(bufnr)
         local triggerchars =
           vim.tbl_get(client, 'server_capabilities', 'completionProvider', 'triggerCharacters')
         if has_word_before(triggerchars) then
-          debounce(completion.trigger, 200)()
+          debounced_trigger()
           return true
         end
         return false
