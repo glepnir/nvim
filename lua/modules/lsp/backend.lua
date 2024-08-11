@@ -25,8 +25,9 @@ lspconfig.gopls.setup({
 lspconfig.lua_ls.setup({
   on_attach = M._attach,
   on_init = function(client)
-    local path = client.workspace_folders[1].name
-    if vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc') then
+    local path = client.workspace_folders and client.workspace_folders[1].name
+    local fs_stat = vim.uv.fs_stat
+    if path and (fs_stat(path .. '/.luarc.json') or fs_stat(path .. '/.luarc.jsonc')) then
       return
     end
 
