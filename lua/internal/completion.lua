@@ -1,4 +1,4 @@
-local api, completion, ffi, lsp = vim.api, vim.lsp.completion, require('ffi'), vim.lsp
+local api, completion, ffi, lsp, uv = vim.api, vim.lsp.completion, require('ffi'), vim.lsp, vim.uv
 local au, pumvisible, vimstate = api.nvim_create_autocmd, vim.fn.pumvisible, vim.fn.state
 local ms = vim.lsp.protocol.Methods
 local TextChangedI, InsertCharPre = 'TextChangedI', 'InsertCharPre'
@@ -19,8 +19,35 @@ local function has_word_before(triggerCharacters)
     and not vim.list_contains(triggerCharacters, char_before_cursor)
 end
 
+local function debounce(fn, delay)
+  local timer = nil ---[[uv_timer_t]]
+  local function safe_close()
+    if timer and timer:is_active() and not timer:is_closing() then
+      timer:stop()
+      timer:close()
+      timer = nil
+    end
+  end
+  return function(...)
+    local args = { ... }
+    safe_close()
+    timer = assert(uv.new_timer())
+    timer:start(delay, 0, function()
+      safe_close()
+      vim.schedule(function()
+        xpcall(function()
+          fn(args)
+        end, function(err)
+          vim.notify('Error in debounced trigger function' .. err, vim.log.levels.ERROR)
+        end)
+      end)
+    end)
+  end
+end
+
 -- hack can completion on any triggerCharacters
 local function auto_trigger(bufnr)
+  local debounced_trigger = debounce(completion.trigger, 150)
   au(TextChangedI, {
     buffer = bufnr,
     callback = function(args)
@@ -33,7 +60,7 @@ local function auto_trigger(bufnr)
         local triggerchars =
           vim.tbl_get(client, 'server_capabilities', 'completionProvider', 'triggerCharacters')
         if has_word_before(triggerchars) then
-          completion.trigger()
+          debounced_trigger()
           return true
         end
         return false
