@@ -1,8 +1,6 @@
 require('core.pack'):boot_strap()
 require('core.options')
 
--- some color i interested
--- backup: #05262e #79a617
 vim.cmd([[
 hi EndOfBuffer guifg=#14161b
 hi Function guifg=#a6dbff ctermfg=12
@@ -27,3 +25,5 @@ hi GitSignsAdd guifg=#005523
 hi GitSignsChange guifg=#007373
 hi GitSignsDelete guifg=#590008
 ]])
+
+-- vim.cmd.colorscheme('solarized')

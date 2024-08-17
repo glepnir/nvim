@@ -22,7 +22,7 @@ packadd({
         folder_level = 0,
       },
       lightbulb = {
-        sign = false,
+        enable = false,
       },
       outline = {
         layout = 'float',

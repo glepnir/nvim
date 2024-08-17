@@ -104,8 +104,8 @@ map.i('<S-TAB>', function()
 end, { expr = true })
 
 map.i('<CR>', function()
-  if vim.fn.pumvisible() == 1 then
-    require('internal.completion').key_with_disable_textchangedi('<C-y>')
+  if tonumber(vim.fn.pumvisible()) == 1 then
+    return '<C-y>'
   else
     return _G.PairMate.cr()
   end
@@ -113,7 +113,7 @@ end, { expr = true })
 
 map.i('<C-e>', function()
   if vim.fn.pumvisible() == 1 then
-    require('internal.completion').key_with_disable_textchangedi('<C-e>')
+    return '<C-e>'
   else
     return '<End>'
   end

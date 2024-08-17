@@ -1,23 +1,12 @@
 local api, completion, ffi, lsp, uv = vim.api, vim.lsp.completion, require('ffi'), vim.lsp, vim.uv
 local au, pumvisible, vimstate = api.nvim_create_autocmd, vim.fn.pumvisible, vim.fn.state
 local ms = vim.lsp.protocol.Methods
-local TextChangedI, InsertCharPre = 'TextChangedI', 'InsertCharPre'
+local InsertCharPre = 'InsertCharPre'
 
 ffi.cdef([[
   typedef int32_t linenr_T;
   char *ml_get(linenr_T lnum);
 ]])
-
-local function has_word_before(triggerCharacters)
-  local lnum, col = unpack(api.nvim_win_get_cursor(0))
-  if col == 0 then
-    return false
-  end
-  local line_text = ffi.string(ffi.C.ml_get(lnum))
-  local char_before_cursor = line_text:sub(col, col)
-  return char_before_cursor:match('[%w_]')
-    and not vim.list_contains(triggerCharacters, char_before_cursor)
-end
 
 local function debounce(fn, delay)
   local timer = nil ---[[uv_timer_t]]
@@ -32,39 +21,44 @@ local function debounce(fn, delay)
     local args = { ... }
     safe_close()
     timer = assert(uv.new_timer())
-    timer:start(delay, 0, function()
-      safe_close()
-      vim.schedule(function()
+    timer:start(
+      delay,
+      0,
+      vim.schedule_wrap(function()
+        safe_close()
         xpcall(function()
           fn(args)
         end, function(err)
-          vim.notify('Error in debounced trigger function' .. err, vim.log.levels.ERROR)
+          vim.notify('Error in debounced trigger function ' .. err, vim.log.levels.ERROR)
         end)
       end)
-    end)
+    )
   end
 end
 
--- hack can completion on any triggerCharacters
-local function auto_trigger(bufnr)
-  local debounced_trigger = debounce(completion.trigger, 150)
-  au(TextChangedI, {
+-- completion on word which not exist in lsp client triggerCharacters
+local function auto_trigger(bufnr, client_id)
+  local debounced_trigger = debounce(completion.trigger, 100)
+  --TODO: do i need TextChangedI for works on delete characters ?
+  au(InsertCharPre, {
     buffer = bufnr,
-    callback = function(args)
-      local clients = lsp.get_clients({ bufnr = args.buf, method = ms.textDocument_completion })
-      if #clients == 0 then
+    callback = function()
+      if tonumber(pumvisible()) == 1 or vimstate('m') == 'm' then
         return
       end
-      --just invoke trigger once even there has many clients.
-      vim.iter(clients):any(function(client)
-        local triggerchars =
-          vim.tbl_get(client, 'server_capabilities', 'completionProvider', 'triggerCharacters')
-        if has_word_before(triggerchars) then
-          debounced_trigger()
-          return true
-        end
-        return false
-      end)
+      local client = lsp.get_client_by_id(client_id)
+      if not client then
+        return
+      end
+      local triggerchars = vim.tbl_get(
+        client,
+        'server_capabilities',
+        'completionProvider',
+        'triggerCharacters'
+      ) or {}
+      if vim.v.char:match('[%w_]') or vim.list_contains(triggerchars, vim.v.char) then
+        debounced_trigger()
+      end
     end,
   })
 end
@@ -73,8 +67,13 @@ au('LspAttach', {
   callback = function(args)
     local bufnr = args.buf
     local client_id = args.data.client_id
-    completion.enable(true, client_id, bufnr, { autotrigger = true })
-    auto_trigger(bufnr)
+    completion.enable(true, client_id, bufnr, {
+      autotrigger = false,
+      convert = function(item)
+        return { abbr = item.label:gsub('%b()', '') }
+      end,
+    })
+    auto_trigger(bufnr, client_id)
   end,
 })
 
@@ -97,7 +96,7 @@ end
 -- completion for directory and files
 au(InsertCharPre, {
   callback = function(args)
-    if pumvisible() == 1 or vimstate('m') == 'm' then
+    if tonumber(pumvisible()) == 1 or vimstate('m') == 'm' then
       return
     end
     local bufnr = args.buf
@@ -117,17 +116,3 @@ au(InsertCharPre, {
     end
   end,
 })
-
--- Add the TextChangedI to eventignore avoid confirm completion thne insert
--- text trigger TextChangedI again.
-local function key_with_disable_textchangedi(key)
-  vim.opt.eventignore:append(TextChangedI)
-  feedkeys(key)
-  vim.defer_fn(function()
-    vim.opt.eventignore:remove(TextChangedI)
-  end, 0)
-end
-
-return {
-  key_with_disable_textchangedi = key_with_disable_textchangedi,
-}

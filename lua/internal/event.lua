@@ -1,4 +1,4 @@
-local api, lsp, uv = vim.api, vim.lsp, vim.uv
+local api = vim.api
 local au = api.nvim_create_autocmd
 local group = vim.api.nvim_create_augroup('GlepnirGroup', {})
 
@@ -21,8 +21,9 @@ au('BufEnter', {
   callback = function()
     require('keymap')
     require('internal.buffer')
+    vim.cmd.packadd('nohlsearch')
   end,
-  desc = 'Lazy load my keymap and buffer relate commands',
+  desc = 'Lazy load my keymap and buffer relate commands and defaul opt plugins',
 })
 
 --disable diagnostic in neovim test file *_spec.lua
