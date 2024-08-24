@@ -18,8 +18,7 @@ packadd({
     require('lspsaga').setup({
       ui = { use_nerd = false },
       symbol_in_winbar = {
-        hide_keyword = true,
-        folder_level = 0,
+        enable = false,
       },
       lightbulb = {
         enable = false,

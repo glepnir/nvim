@@ -61,6 +61,14 @@ au('InsertEnter', {
   end,
 })
 
+au('LspAttach', {
+  callback = function(args)
+    if vim.bo[args.buf].filetype == 'lua' and api.nvim_buf_get_name(args.buf):find('_spec') then
+      vim.diagnostic.enable(false, { bufnr = args.buf })
+    end
+  end,
+})
+
 au('FileType', {
   pattern = 'netrw',
   callback = function()
