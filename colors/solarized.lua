@@ -115,7 +115,7 @@ local function load_solarized()
 
   -- Indentmini
   shl('IndentLine', { link = 'Comment' })
-  shl('IndentLineCurrent', { fg = colors.cyan })
+  shl('IndentLineCurrent', { link = 'Comment' })
 
   -- GitSigns
   shl('GitSignsAdd', { fg = colors.green, bg = colors.bg })

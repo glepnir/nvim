@@ -1,53 +1,20 @@
-local api, completion, ffi, lsp, uv = vim.api, vim.lsp.completion, require('ffi'), vim.lsp, vim.uv
-local au, pumvisible, vimstate = api.nvim_create_autocmd, vim.fn.pumvisible, vim.fn.state
-local ms = vim.lsp.protocol.Methods
+local api, completion, ffi, lsp = vim.api, vim.lsp.completion, require('ffi'), vim.lsp
+local au, vimstate = api.nvim_create_autocmd, vim.fn.state
+local ms, libc = vim.lsp.protocol.Methods, ffi.C
 local InsertCharPre = 'InsertCharPre'
-
 ffi.cdef([[
   typedef int32_t linenr_T;
   char *ml_get(linenr_T lnum);
+  bool pum_visible(void);
 ]])
-
-local function debounce(fn, delay)
-  local timer = nil ---[[uv_timer_t]]
-  local function safe_close()
-    if timer and timer:is_active() and not timer:is_closing() then
-      timer:stop()
-      timer:close()
-      timer = nil
-    end
-  end
-  return function(...)
-    local args = { ... }
-    safe_close()
-    timer = assert(uv.new_timer())
-    timer:start(
-      delay,
-      0,
-      vim.schedule_wrap(function()
-        safe_close()
-        xpcall(function()
-          fn(args)
-        end, function(err)
-          vim.notify('Error in debounced trigger function ' .. err, vim.log.levels.ERROR)
-        end)
-      end)
-    )
-  end
-end
+local pumvisible = libc.pum_visible
 
 -- completion on word which not exist in lsp client triggerCharacters
-local function auto_trigger(bufnr, client_id)
-  local debounced_trigger = debounce(completion.trigger, 100)
-  --TODO: do i need TextChangedI for works on delete characters ?
+local function auto_trigger(bufnr, client)
   au(InsertCharPre, {
     buffer = bufnr,
     callback = function()
-      if tonumber(pumvisible()) == 1 or vimstate('m') == 'm' then
-        return
-      end
-      local client = lsp.get_client_by_id(client_id)
-      if not client then
+      if pumvisible() or vimstate('m') == 'm' then
         return
       end
       local triggerchars = vim.tbl_get(
@@ -56,8 +23,8 @@ local function auto_trigger(bufnr, client_id)
         'completionProvider',
         'triggerCharacters'
       ) or {}
-      if vim.v.char:match('[%w_]') or vim.list_contains(triggerchars, vim.v.char) then
-        debounced_trigger()
+      if not vim.list_contains(triggerchars, vim.v.char) then
+        completion.trigger()
       end
     end,
   })
@@ -68,12 +35,16 @@ au('LspAttach', {
     local bufnr = args.buf
     local client_id = args.data.client_id
     completion.enable(true, client_id, bufnr, {
-      autotrigger = false,
+      autotrigger = true,
       convert = function(item)
         return { abbr = item.label:gsub('%b()', '') }
       end,
     })
-    auto_trigger(bufnr, client_id)
+    local client = lsp.get_client_by_id(client_id)
+    if not client then
+      return
+    end
+    auto_trigger(bufnr, client)
   end,
 })
 
@@ -96,7 +67,7 @@ end
 -- completion for directory and files
 au(InsertCharPre, {
   callback = function(args)
-    if tonumber(pumvisible()) == 1 or vimstate('m') == 'm' then
+    if pumvisible() or vimstate('m') == 'm' then
       return
     end
     local bufnr = args.buf
