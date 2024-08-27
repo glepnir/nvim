@@ -69,6 +69,34 @@ au('LspAttach', {
   end,
 })
 
+local timer = nil --[[uv_timer_t]]
+local function reset_timer()
+  if timer then
+    timer:stop()
+    timer:close()
+  end
+  timer = nil
+end
+
+au('LspDetach', {
+  callback = function(args)
+    local client_id = args.data.client_id
+    local client = vim.lsp.get_clients({ client_id = client_id })[1]
+    if not vim.tbl_isempty(client.attached_buffers) then
+      return
+    end
+    reset_timer()
+    timer = assert(vim.uv.new_timer())
+    timer:start(200, 0, function()
+      reset_timer()
+      vim.schedule(function()
+        vim.lsp.stop_client(client_id, true)
+      end)
+    end)
+  end,
+  desc = 'Auto stop client when no buffer atttached',
+})
+
 au('FileType', {
   pattern = 'netrw',
   callback = function()
