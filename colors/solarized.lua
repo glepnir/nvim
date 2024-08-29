@@ -16,7 +16,7 @@ local colors = {
   green = '#859900',
   -- Custom modifications
   bg = '#001f27', -- Darker background
-  fg = '#bfbfbf', -- Brighter foreground
+  fg = '#b8b8b8', -- Brighter foreground
 }
 
 local function shl(group, properties)
@@ -41,6 +41,7 @@ local function load_solarized()
   shl('PreProc', { fg = colors.orange })
   shl('Type', { fg = colors.yellow })
   shl('Special', { fg = colors.orange })
+  shl('Operator', { fg = colors.base0 })
   shl('Underlined', { fg = colors.violet, underline = true })
   shl('Todo', { fg = colors.violet, bold = true })
   shl('Error', { fg = colors.red, bg = colors.base03, bold = true })
@@ -80,7 +81,7 @@ local function load_solarized()
   shl('@interface', { fg = colors.yellow })
   shl('@namespace', { fg = colors.base0 })
   shl('@punctuation', { fg = colors.base0 })
-  shl('@operator', { fg = colors.base0 })
+  shl('@operator', { link = 'Operator' })
   shl('@attribute', { fg = colors.yellow })
   shl('@boolean', { link = 'Constant' })
   shl('@number', { link = 'Number' })

@@ -17,7 +17,7 @@ packadd({
 
 packadd({
   'nvimdev/guard.nvim',
-  ft = _G.my_program_ft,
+  ft = program_ft,
   config = conf.guard,
   dependencies = {
     { 'nvimdev/guard-collection' },

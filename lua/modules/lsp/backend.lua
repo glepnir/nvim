@@ -58,7 +58,7 @@ lspconfig.clangd.setup({
     '--background-index',
   },
   init_options = {
-    fallback_flags = { '-std=c++20' },
+    fallback_flags = { '-std=c++23' },
   },
   on_attach = M._attach,
   capabilities = M.capabilities,
@@ -102,6 +102,7 @@ local servers = {
   'basedpyright',
   'bashls',
   'zls',
+  'cmake',
 }
 
 for _, server in ipairs(servers) do

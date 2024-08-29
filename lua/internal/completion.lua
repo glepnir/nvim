@@ -1,5 +1,5 @@
 local api, completion, ffi, lsp = vim.api, vim.lsp.completion, require('ffi'), vim.lsp
-local au, vimstate = api.nvim_create_autocmd, vim.fn.state
+local au = api.nvim_create_autocmd
 local ms, libc = vim.lsp.protocol.Methods, ffi.C
 local InsertCharPre = 'InsertCharPre'
 ffi.cdef([[
@@ -14,7 +14,7 @@ local function auto_trigger(bufnr, client)
   au(InsertCharPre, {
     buffer = bufnr,
     callback = function()
-      if pumvisible() or vimstate('m') == 'm' then
+      if pumvisible() then
         return
       end
       local triggerchars = vim.tbl_get(
@@ -23,8 +23,26 @@ local function auto_trigger(bufnr, client)
         'completionProvider',
         'triggerCharacters'
       ) or {}
-      if not vim.list_contains(triggerchars, vim.v.char) then
+      if vim.v.char:match('[%w_]') and not vim.list_contains(triggerchars, vim.v.char) then
         completion.trigger()
+      end
+    end,
+  })
+end
+
+local function set_popup(bufnr)
+  au('CompleteChanged', {
+    buffer = bufnr,
+    callback = function()
+      local info = vim.fn.complete_info()
+      if info.preview_winid and info.preview_bufnr then
+        api.nvim_set_option_value('filetype', 'markdown', { buf = info.preview_bufnr })
+        api.nvim_set_option_value('conceallevel', 2, { win = info.preview_winid, scope = 'local' })
+        api.nvim_set_option_value(
+          'concealcursor',
+          'niv',
+          { win = info.preview_winid, scope = 'local' }
+        )
       end
     end,
   })
@@ -37,7 +55,7 @@ au('LspAttach', {
     completion.enable(true, client_id, bufnr, {
       autotrigger = true,
       convert = function(item)
-        return { abbr = item.label:gsub('%b()', '') }
+        return { abbr = item.label:gsub('%b()', ''), kind = '' }
       end,
     })
     local client = lsp.get_client_by_id(client_id)
@@ -45,6 +63,7 @@ au('LspAttach', {
       return
     end
     auto_trigger(bufnr, client)
+    -- set_popup(bufnr)
   end,
 })
 
@@ -67,7 +86,7 @@ end
 -- completion for directory and files
 au(InsertCharPre, {
   callback = function(args)
-    if pumvisible() or vimstate('m') == 'm' then
+    if pumvisible() then
       return
     end
     local bufnr = args.buf

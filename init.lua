@@ -19,7 +19,7 @@ g.loaded_netrwPlugin = 1
 g.mapleader = ' '
 
 -- the programming language which i write.
-_G.my_program_ft = {
+_G.program_ft = {
   'c',
   'cpp',
   'rust',
@@ -33,6 +33,7 @@ _G.my_program_ft = {
   'typescript',
   'typescriptreact',
   'json',
+  'cmake',
 }
 
 _G.is_mac = vim.uv.os_uname().sysname == 'Darwin'
