@@ -16,7 +16,7 @@ local colors = {
   green = '#859900',
   -- Custom modifications
   bg = '#001f27', -- Darker background
-  fg = '#b0b0b0', -- Brighter foreground
+  fg = '#b6b6b6', -- Brighter foreground
 }
 
 local function shl(group, properties)

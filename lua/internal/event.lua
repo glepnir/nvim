@@ -119,3 +119,10 @@ au('FileType', {
     map('v', split('split'), false, 'split open')
   end,
 })
+
+au('FileType', {
+  pattern = 'cpp',
+  callback = function()
+    vim.opt_local.cindent = false
+  end,
+})
