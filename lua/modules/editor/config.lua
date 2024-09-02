@@ -75,7 +75,7 @@ function M.nvim_treesitter()
   })
 
   api.nvim_create_autocmd('FileType', {
-    pattern = { 'javascriptreact', 'typescriptreact', 'lua' },
+    pattern = { 'javascriptreact', 'typescriptreact' },
     callback = function(opt)
       if vim.bo[opt.buf].filetype == 'lua' and api.nvim_buf_get_name(opt.buf):find('%_spec') then
         vim.treesitter.stop(opt.buf)

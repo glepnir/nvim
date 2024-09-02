@@ -19,7 +19,7 @@ function config.guard()
 
   ft('lua'):fmt({
     cmd = 'stylua',
-    args = { '-' },
+    args = { '-f', vim.fs.joinpath(vim.env.HOME, '.stylua.toml'), '-' },
     stdin = true,
     ignore_patterns = '%w_spec%.lua',
   })

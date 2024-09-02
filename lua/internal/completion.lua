@@ -63,7 +63,7 @@ au('LspAttach', {
       return
     end
     auto_trigger(bufnr, client)
-    -- set_popup(bufnr)
+    set_popup(bufnr)
   end,
 })
 
