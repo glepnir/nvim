@@ -59,6 +59,7 @@ function M.nvim_treesitter()
       'jsonc',
       'vimdoc',
       'vim',
+      'cmake',
     },
     highlight = {
       enable = true,

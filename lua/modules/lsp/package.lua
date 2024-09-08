@@ -4,7 +4,11 @@ packadd({
   config = function()
     vim.lsp.set_log_level(vim.lsp.log_levels.OFF)
     local i = '■'
-    vim.diagnostic.config({ signs = { text = { i, i, i, i } } })
+    vim.diagnostic.config({
+      signs = {
+        text = { i, i, i, i },
+      },
+    })
     require('modules.lsp.backend')
     require('modules.lsp.frontend')
   end,

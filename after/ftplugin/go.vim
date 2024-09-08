@@ -1,4 +1,4 @@
-setl commentstring=// %s
+setl commentstring=//%s
 setl noexpandtab
 setl shiftwidth=4
 setl softtabstop=4

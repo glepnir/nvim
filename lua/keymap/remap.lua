@@ -70,7 +70,7 @@ end)
 
 -- Ctrl-y works like emacs
 map.i('<C-y>', function()
-  if vim.fn.pumvisible() == 1 or #vim.fn.getreg('"') == 0 then
+  if tonumber(vim.fn.pumvisible()) == 1 or vim.fn.getreg('"0'):find('%w') == nil then
     return '<C-y>'
   end
   return '<Esc>p==a'
@@ -140,7 +140,13 @@ map.i('<C-t>', function()
   mark_id = nil
 end)
 
--- move to the top of file like emacs M-<
-map.i('<A-<>', function()
-  api.nvim_win_set_cursor(0, { 1, 1 })
+-- gX: Web search
+map.n('gX', function()
+  vim.ui.open(('https://google.com/search?q=%s'):format(vim.fn.expand('<cword>')))
+end)
+
+map.x('gX', function()
+  local lines = vim.fn.getregion(vim.fn.getpos('.'), vim.fn.getpos('v'), { type = vim.fn.mode() })
+  vim.ui.open(('https://google.com/search?q=%s'):format(vim.trim(table.concat(lines, ' '))))
+  api.nvim_input('<esc>')
 end)

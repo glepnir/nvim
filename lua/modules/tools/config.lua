@@ -21,7 +21,7 @@ function config.guard()
     cmd = 'stylua',
     args = { '-f', vim.fs.joinpath(vim.env.HOME, '.stylua.toml'), '-' },
     stdin = true,
-    ignore_patterns = '%w_spec%.lua',
+    ignore_patterns = 'neovim/*%.lua',
   })
   ft('go'):fmt('lsp'):append('golines')
   ft('rust'):fmt('rustfmt')

@@ -8,7 +8,7 @@ lspconfig.jsonls.setup({
 
 -- npm i -g typescript
 -- npm i -g typescript-langauge-server
-lspconfig.tsserver.setup({
+lspconfig.ts_ls.setup({
   on_attach = _attach,
   capabilities = capabilities,
 })

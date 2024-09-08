@@ -78,6 +78,12 @@ local function reset_timer()
   timer = nil
 end
 
+au('VimEnter', {
+  callback = function()
+    vim.fn.setreg('"0', '')
+  end,
+})
+
 au('LspDetach', {
   callback = function(args)
     local client_id = args.data.client_id

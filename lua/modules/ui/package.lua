@@ -24,7 +24,7 @@ packadd({
   'nvimdev/indentmini.nvim',
   event = 'BufEnter */*',
   config = function()
-    vim.opt_local.listchars:append({ tab = '  ' })
+    vim.opt.listchars:append({ tab = '  ' })
     require('indentmini').setup({
       only_current = true,
     })

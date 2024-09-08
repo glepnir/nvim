@@ -58,7 +58,7 @@ lspconfig.clangd.setup({
     '--background-index',
   },
   init_options = {
-    fallback_flags = { '-std=c++2b' },
+    fallback_flags = { '-std=c++23' },
   },
   on_attach = M._attach,
   capabilities = M.capabilities,

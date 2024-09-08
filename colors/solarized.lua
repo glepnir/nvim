@@ -15,9 +15,13 @@ local colors = {
   cyan = '#2aa198',
   green = '#859900',
   -- Custom modifications
-  bg = '#001f27', -- Darker background
+  bg = '#002933', -- Darker background 1: #001f2a
   fg = '#b6b6b6', -- Brighter foreground
 }
+
+if vim.g.solarized_soft then
+  colors.bg = colors.base03
+end
 
 local function shl(group, properties)
   vim.api.nvim_set_hl(0, group, properties)
@@ -37,7 +41,7 @@ local function load_solarized()
   shl('Constant', { fg = colors.violet })
   shl('Identifier', { fg = colors.blue })
   shl('Statement', { fg = colors.green })
-  shl('Number', { fg = colors.fg })
+  shl('Number', { link = 'Constant' })
   shl('PreProc', { fg = colors.orange })
   shl('Type', { fg = colors.yellow })
   shl('Special', { fg = colors.orange })
@@ -61,17 +65,20 @@ local function load_solarized()
   shl('WinSeparator', { fg = colors.base1 })
   shl('StatusLine', { bg = colors.base1, fg = colors.base02 })
   shl('StatusLineNC', { bg = colors.base00, fg = colors.base02 })
+  shl('ModeMsg', { fg = colors.cyan })
 
   -- Treesitter highlights
   shl('@function', { fg = colors.blue })
   shl('@function.builtin', { fg = colors.blue })
   shl('@variable', { fg = colors.fg })
   shl('@keyword', { fg = colors.green, bold = true })
+  shl('@keyword.import', { link = 'PreProc' })
   shl('@string', { fg = colors.cyan })
   shl('@comment', { fg = colors.base01, italic = true })
   shl('@type', { fg = colors.yellow })
   shl('@type.builtin', { link = '@type' })
-  shl('@constant', { fg = colors.violet })
+  shl('@constant', { link = 'Constant' })
+  shl('@constant.builtin', { link = 'Constant' })
   shl('@constructor', { fg = colors.orange })
   shl('@parameter', { fg = colors.base0 })
   shl('@class', { fg = colors.yellow })
