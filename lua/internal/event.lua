@@ -123,5 +123,6 @@ au('FileType', {
     map('c', '%', true, 'create file')
     map('s', split('vsplit'), false, 'vsplit open')
     map('v', split('split'), false, 'split open')
+    map('<C-l>', '<C-W>l', false)
   end,
 })

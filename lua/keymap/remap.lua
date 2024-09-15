@@ -5,7 +5,7 @@ map.n({
   ['j'] = 'gj',
   ['k'] = 'gk',
   ['<C-s>'] = cmd('write'),
-  ['<C-x>k'] = cmd(vim.bo.buftype == 'terminal' and 'q!' or 'BufKeepDelete'),
+  -- ['<C-x>k'] = cmd(vim.bo.buftype == 'terminal' and 'q!' or 'BufKeepDelete'),
   ['<C-n>'] = cmd('bn'),
   ['<C-p>'] = cmd('bp'),
   ['<C-q>'] = cmd('qa!'),
@@ -84,7 +84,7 @@ map.i('<A-k>', function()
 end, { expr = true })
 
 map.i('<TAB>', function()
-  if vim.fn.pumvisible() == 1 then
+  if tonumber(vim.fn.pumvisible()) == 1 then
     return '<C-n>'
   elseif vim.snippet.active({ direction = 1 }) then
     return '<cmd>lua vim.snippet.jump(1)<cr>'

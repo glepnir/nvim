@@ -125,7 +125,7 @@ local function index(self, key)
     if not opts.buf then
       map = set_keymap
     else
-      map = buf_map(opts.buf)
+      map = buf_map(opts.buf == true and 0 or opts.buf)
       opts.buf = nil
     end
 

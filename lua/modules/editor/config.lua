@@ -65,7 +65,7 @@ function M.nvim_treesitter()
       enable = true,
       disable = function(_, buf)
         local bufname = vim.api.nvim_buf_get_name(buf)
-        local max_filesize = 100 * 1024
+        local max_filesize = 300 * 1024
         local ok, stats = pcall(vim.uv.fs_stat, bufname)
         if ok and stats and stats.size > max_filesize then
           return true

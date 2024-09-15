@@ -20,7 +20,7 @@ packadd({
 --@see https://github.com/nvim-treesitter/nvim-treesitter-textobjects/issues/507
 packadd({
   'nvim-treesitter/nvim-treesitter-textobjects',
-  ft = { 'c', 'rust', 'go', 'lua' },
+  ft = { 'c', 'rust', 'go', 'lua', 'cpp' },
   config = function()
     vim.defer_fn(function()
       require('nvim-treesitter.configs').setup({

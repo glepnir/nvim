@@ -8,20 +8,15 @@ local colors = {
   base2 = '#eee8d5',
   base3 = '#fdf6e3',
   yellow = '#b58900',
-  orange = '#cc7d2d',
+  orange = '#b85900',
   red = '#d75f5f',
   violet = '#9884c4',
   blue = '#268bd2',
   cyan = '#2aa198',
-  green = '#859900',
+  green = '#8ca800',
   -- Custom modifications
-  bg = '#002933', -- Darker background 1: #001f2a
   fg = '#b6b6b6', -- Brighter foreground
 }
-
-if vim.g.solarized_soft then
-  colors.bg = colors.base03
-end
 
 local function shl(group, properties)
   vim.api.nvim_set_hl(0, group, properties)
@@ -29,11 +24,11 @@ end
 
 local function load_solarized()
   -- General editor highlights
-  shl('Normal', { fg = colors.fg, bg = colors.bg })
-  shl('EndOfBuffer', { fg = colors.bg })
+  shl('Normal', { fg = colors.fg, bg = colors.base03 })
+  shl('EndOfBuffer', { fg = colors.base03 })
   shl('CursorLine', { bg = colors.base02 })
   shl('CursorLineNr', { fg = colors.base1, bg = colors.base02 })
-  shl('LineNr', { fg = colors.base01, bg = colors.bg })
+  shl('LineNr', { fg = colors.base01, bg = colors.base03 })
   shl('Comment', { fg = colors.base01, italic = true })
   shl('String', { fg = colors.cyan })
   shl('Function', { fg = colors.blue })
@@ -66,19 +61,22 @@ local function load_solarized()
   shl('StatusLine', { bg = colors.base1, fg = colors.base02 })
   shl('StatusLineNC', { bg = colors.base00, fg = colors.base02 })
   shl('ModeMsg', { fg = colors.cyan })
+  shl('ColorColumn', { bg = colors.base02 })
 
   -- Treesitter highlights
   shl('@function', { fg = colors.blue })
   shl('@function.builtin', { fg = colors.blue })
   shl('@variable', { fg = colors.fg })
-  shl('@keyword', { fg = colors.green, bold = true })
+  shl('@keyword', { fg = colors.green })
   shl('@keyword.import', { link = 'PreProc' })
   shl('@string', { fg = colors.cyan })
+  shl('@string.escape', { fg = colors.cyan })
   shl('@comment', { fg = colors.base01, italic = true })
   shl('@type', { fg = colors.yellow })
   shl('@type.builtin', { link = '@type' })
   shl('@constant', { link = 'Constant' })
   shl('@constant.builtin', { link = 'Constant' })
+  shl('@constant.macro', { link = 'Constant' })
   shl('@constructor', { fg = colors.orange })
   shl('@parameter', { fg = colors.base0 })
   shl('@class', { fg = colors.yellow })
@@ -126,9 +124,9 @@ local function load_solarized()
   shl('IndentLineCurrent', { link = 'Comment' })
 
   -- GitSigns
-  shl('GitSignsAdd', { fg = colors.green, bg = colors.bg })
-  shl('GitSignsChange', { fg = colors.yellow, bg = colors.bg })
-  shl('GitSignsDelete', { fg = colors.red, bg = colors.bg })
+  shl('GitSignsAdd', { fg = colors.green, bg = colors.base03 })
+  shl('GitSignsChange', { fg = colors.yellow, bg = colors.base03 })
+  shl('GitSignsDelete', { fg = colors.red, bg = colors.base03 })
   shl('DashboardHeader', { fg = colors.green })
 end
 

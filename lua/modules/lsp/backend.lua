@@ -56,6 +56,7 @@ lspconfig.clangd.setup({
   cmd = {
     'clangd',
     '--background-index',
+    '--clang-tidy',
   },
   init_options = {
     fallback_flags = { '-std=c++23' },
