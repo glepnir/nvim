@@ -8,7 +8,7 @@ local colors = {
   base2 = '#eee8d5',
   base3 = '#fdf6e3',
   yellow = '#b58900',
-  orange = '#c2660a',
+  orange = '#b86614',
   red = '#d75f5f',
   violet = '#9884c4',
   blue = '#268bd2',
@@ -72,6 +72,7 @@ local function load_solarized()
   shl('@keyword.import', { link = 'PreProc' })
   shl('@string', { fg = colors.cyan })
   shl('@string.escape', { fg = colors.cyan })
+  shl('@string.regexp', { fg = colors.cyan })
   shl('@comment', { fg = colors.base01, italic = true })
   shl('@type', { fg = colors.yellow })
   shl('@type.builtin', { link = '@type' })

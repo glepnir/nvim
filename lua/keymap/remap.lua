@@ -150,3 +150,30 @@ map.x('gX', function()
   vim.ui.open(('https://google.com/search?q=%s'):format(vim.trim(table.concat(lines, ' '))))
   api.nvim_input('<esc>')
 end)
+
+map.n('gs', function()
+  local bufnr = api.nvim_create_buf(false, false)
+  vim.bo[bufnr].buftype = 'prompt'
+  vim.fn.prompt_setprompt(bufnr, '➤ ')
+  local width = math.floor(vim.o.columns * 0.5)
+  local winid = api.nvim_open_win(bufnr, true, {
+    relative = 'editor',
+    row = 5,
+    width = width,
+    height = 1,
+    col = math.floor(vim.o.columns / 2) - math.floor(width / 2),
+    border = 'rounded',
+    title = 'Google Search',
+    title_pos = 'center',
+  })
+  vim.cmd.startinsert()
+  vim.wo[winid].number = false
+  vim.wo[winid].stc = ''
+  vim.fn.prompt_setcallback(bufnr, function(text)
+    vim.ui.open(('https://google.com/search?q=%s'):format(vim.trim(text)))
+    api.nvim_win_close(winid, true)
+  end)
+  vim.keymap.set({ 'n', 'i' }, '<C-c>', function()
+    pcall(api.nvim_win_close, winid, true)
+  end, { buffer = bufnr })
+end)
