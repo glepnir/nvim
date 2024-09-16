@@ -8,7 +8,7 @@ local colors = {
   base2 = '#eee8d5',
   base3 = '#fdf6e3',
   yellow = '#b58900',
-  orange = '#b85900',
+  orange = '#c2660a',
   red = '#d75f5f',
   violet = '#9884c4',
   blue = '#268bd2',
@@ -45,7 +45,7 @@ local function load_solarized()
   shl('Todo', { fg = colors.violet, bold = true })
   shl('Error', { fg = colors.red, bg = colors.base03, bold = true })
   shl('WarningMsg', { fg = colors.orange })
-  shl('IncSearch', { fg = colors.base03, bg = colors.yellow })
+  shl('IncSearch', { fg = colors.base03, bg = colors.orange })
   shl('Search', { fg = colors.base03, bg = colors.yellow })
   shl('Visual', { bg = colors.base02 })
   shl('Pmenu', { fg = colors.base0, bg = colors.base02 })
@@ -62,6 +62,7 @@ local function load_solarized()
   shl('StatusLineNC', { bg = colors.base00, fg = colors.base02 })
   shl('ModeMsg', { fg = colors.cyan })
   shl('ColorColumn', { bg = colors.base02 })
+  shl('Title', { fg = colors.orange })
 
   -- Treesitter highlights
   shl('@function', { fg = colors.blue })
