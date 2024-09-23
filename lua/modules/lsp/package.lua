@@ -1,6 +1,7 @@
 packadd({
   'neovim/nvim-lspconfig',
   ft = program_ft,
+  dev = true,
   config = function()
     vim.lsp.set_log_level(vim.lsp.log_levels.OFF)
     local i = '●'
@@ -9,8 +10,7 @@ packadd({
         text = { i, i, i, i },
       },
     })
-    require('modules.lsp.backend')
-    require('modules.lsp.frontend')
+    require('modules.lsp.config')
   end,
 })
 

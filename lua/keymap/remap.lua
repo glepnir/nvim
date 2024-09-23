@@ -169,6 +169,7 @@ map.n('gs', function()
   vim.cmd.startinsert()
   vim.wo[winid].number = false
   vim.wo[winid].stc = ''
+  vim.wo[winid].lcs = 'trail: '
   vim.fn.prompt_setcallback(bufnr, function(text)
     vim.ui.open(('https://google.com/search?q=%s'):format(vim.trim(text)))
     api.nvim_win_close(winid, true)

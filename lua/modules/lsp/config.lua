@@ -104,6 +104,9 @@ local servers = {
   'bashls',
   'zls',
   'cmake',
+  'jsonls',
+  'ts_ls',
+  'eslint',
 }
 
 for _, server in ipairs(servers) do
