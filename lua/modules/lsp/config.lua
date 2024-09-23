@@ -46,7 +46,7 @@ lspconfig.lua_ls.setup({
 
 lspconfig.clangd.setup({
   cmd = { 'clangd', '--background-index', '--clang-tidy' },
-  init_options = { fallback_flags = { '-std=c++23' } },
+  init_options = { fallbackFlags = { '-std=c++23' } },
   root_dir = function(fname)
     return lspconfig.util.root_pattern(unpack({
       --reorder
