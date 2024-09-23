@@ -1,14 +1,14 @@
-local M = {}
-local lspconfig = require 'lspconfig'
+local lspconfig = require('lspconfig')
 
-function M._attach(client, _)
-  client.server_capabilities.semanticTokensProvider = nil
-end
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(args)
+    local client = vim.lsp.get_clients({ id = args.data.client_id })[1]
+    client.server_capabilities.semanticTokensProvider = nil
+  end,
+})
 
-lspconfig.gopls.setup {
+lspconfig.gopls.setup({
   cmd = { 'gopls', 'serve' },
-  on_attach = M._attach,
-  capabilities = M.capabilities,
   settings = {
     gopls = {
       usePlaceholders = true,
@@ -20,24 +20,18 @@ lspconfig.gopls.setup {
       staticcheck = true,
     },
   },
-}
+})
 
-lspconfig.lua_ls.setup {
-  on_attach = M._attach,
+lspconfig.lua_ls.setup({
   on_init = function(client)
     local path = client.workspace_folders and client.workspace_folders[1].name
     local fs_stat = vim.uv.fs_stat
     if path and (fs_stat(path .. '/.luarc.json') or fs_stat(path .. '/.luarc.jsonc')) then
       return
     end
-
     client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
-      runtime = {
-        version = 'LuaJIT',
-      },
-      completion = {
-        callSnippet = 'Replace',
-      },
+      runtime = { version = 'LuaJIT' },
+      completion = { callSnippet = 'Replace' },
       workspace = {
         checkThirdParty = false,
         library = {
@@ -47,24 +41,14 @@ lspconfig.lua_ls.setup {
       },
     })
   end,
-  settings = {
-    Lua = {},
-  },
-}
+  settings = { Lua = {} },
+})
 
-lspconfig.clangd.setup {
-  cmd = {
-    'clangd',
-    '--background-index',
-    -- '--clang-tidy',
-  },
-  init_options = {
-    fallback_flags = { '-std=c++23' },
-  },
-  on_attach = M._attach,
-  capabilities = M.capabilities,
+lspconfig.clangd.setup({
+  cmd = { 'clangd', '--background-index', '--clang-tidy' },
+  init_options = { fallback_flags = { '-std=c++23' } },
   root_dir = function(fname)
-    return lspconfig.util.root_pattern(unpack {
+    return lspconfig.util.root_pattern(unpack({
       --reorder
       'compile_commands.json',
       '.clangd',
@@ -72,13 +56,11 @@ lspconfig.clangd.setup {
       '.clang-format',
       'compile_flags.txt',
       'configure.ac', -- AutoTools
-    })(fname) or lspconfig.util.find_git_ancestor(fname)
+    }))(fname) or lspconfig.util.find_git_ancestor(fname)
   end,
-}
+})
 
-lspconfig.rust_analyzer.setup {
-  on_attach = M._attach,
-  capabilities = M.capabilities,
+lspconfig.rust_analyzer.setup({
   settings = {
     ['rust-analyzer'] = {
       imports = {
@@ -97,7 +79,7 @@ lspconfig.rust_analyzer.setup {
       },
     },
   },
-}
+})
 
 local servers = {
   'basedpyright',
@@ -110,10 +92,7 @@ local servers = {
 }
 
 for _, server in ipairs(servers) do
-  lspconfig[server].setup {
-    on_attach = M._attach,
-    capabilities = M.capabilities,
-  }
+  lspconfig[server].setup({})
 end
 
 vim.lsp.handlers['workspace/diagnostic/refresh'] = function(_, _, ctx)
@@ -122,5 +101,3 @@ vim.lsp.handlers['workspace/diagnostic/refresh'] = function(_, _, ctx)
   vim.diagnostic.reset(ns, bufnr)
   return true
 end
-
-return M
