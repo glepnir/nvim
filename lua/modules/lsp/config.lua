@@ -1,11 +1,11 @@
 local M = {}
-local lspconfig = require('lspconfig')
+local lspconfig = require 'lspconfig'
 
 function M._attach(client, _)
   client.server_capabilities.semanticTokensProvider = nil
 end
 
-lspconfig.gopls.setup({
+lspconfig.gopls.setup {
   cmd = { 'gopls', 'serve' },
   on_attach = M._attach,
   capabilities = M.capabilities,
@@ -20,9 +20,9 @@ lspconfig.gopls.setup({
       staticcheck = true,
     },
   },
-})
+}
 
-lspconfig.lua_ls.setup({
+lspconfig.lua_ls.setup {
   on_attach = M._attach,
   on_init = function(client)
     local path = client.workspace_folders and client.workspace_folders[1].name
@@ -50,13 +50,13 @@ lspconfig.lua_ls.setup({
   settings = {
     Lua = {},
   },
-})
+}
 
-lspconfig.clangd.setup({
+lspconfig.clangd.setup {
   cmd = {
     'clangd',
     '--background-index',
-    '--clang-tidy',
+    -- '--clang-tidy',
   },
   init_options = {
     fallback_flags = { '-std=c++23' },
@@ -64,7 +64,7 @@ lspconfig.clangd.setup({
   on_attach = M._attach,
   capabilities = M.capabilities,
   root_dir = function(fname)
-    return lspconfig.util.root_pattern(unpack({
+    return lspconfig.util.root_pattern(unpack {
       --reorder
       'compile_commands.json',
       '.clangd',
@@ -72,11 +72,11 @@ lspconfig.clangd.setup({
       '.clang-format',
       'compile_flags.txt',
       'configure.ac', -- AutoTools
-    }))(fname) or lspconfig.util.find_git_ancestor(fname)
+    })(fname) or lspconfig.util.find_git_ancestor(fname)
   end,
-})
+}
 
-lspconfig.rust_analyzer.setup({
+lspconfig.rust_analyzer.setup {
   on_attach = M._attach,
   capabilities = M.capabilities,
   settings = {
@@ -97,7 +97,7 @@ lspconfig.rust_analyzer.setup({
       },
     },
   },
-})
+}
 
 local servers = {
   'basedpyright',
@@ -110,10 +110,10 @@ local servers = {
 }
 
 for _, server in ipairs(servers) do
-  lspconfig[server].setup({
+  lspconfig[server].setup {
     on_attach = M._attach,
     capabilities = M.capabilities,
-  })
+  }
 end
 
 vim.lsp.handlers['workspace/diagnostic/refresh'] = function(_, _, ctx)

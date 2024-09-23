@@ -1,4 +1,5 @@
 local colors = {
+  base04 = '#00202b',
   base03 = '#002b36',
   base02 = '#073642',
   base01 = '#586e75',
@@ -48,12 +49,12 @@ local function load_solarized()
   shl('IncSearch', { fg = colors.base03, bg = colors.orange })
   shl('Search', { fg = colors.base03, bg = colors.yellow })
   shl('Visual', { fg = colors.base01, bg = colors.base03, reverse = true })
-  shl('Pmenu', { fg = colors.base0, bg = colors.base02 })
-  shl('PmenuMatch', { fg = colors.yellow, bg = colors.base02 })
-  shl('PmenuMatchSel', { fg = colors.yellow, bg = colors.cyan })
-  shl('PmenuSel', { fg = colors.base03, bg = colors.cyan })
-  shl('PmenuSbar', { bg = colors.base01 })
-  shl('PmenuThumb', { bg = colors.base0 })
+  shl('Pmenu', { fg = colors.base0, bg = colors.base04 })
+  shl('PmenuMatch', { fg = colors.cyan, bg = colors.base04, bold = true })
+  shl('PmenuMatchSel', { fg = colors.cyan, bg = colors.base00, bold = true })
+  shl('PmenuSel', { fg = colors.base3, bg = colors.base00 })
+  shl('PmenuSbar', { bg = colors.base1 })
+  shl('PmenuThumb', { bg = colors.base01 })
   shl('MatchParen', { bg = colors.base02 })
   shl('WinBar', { bg = colors.base02 })
   shl('NormalFloat', { bg = colors.base02 })
