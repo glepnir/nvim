@@ -115,16 +115,6 @@ local function load_solarized()
   shl('LspReferenceRead', { bg = colors.base02 })
   shl('LspReferenceWrite', { bg = colors.base02 })
 
-  -- Git
-  shl('diffAdded', { fg = colors.green })
-  shl('diffRemoved', { fg = colors.red })
-  shl('diffChanged', { fg = colors.yellow })
-  shl('diffOldFile', { fg = colors.orange })
-  shl('diffNewFile', { fg = colors.cyan })
-  shl('diffFile', { fg = colors.base0 })
-  shl('diffLine', { fg = colors.base00 })
-  shl('diffIndexLine', { fg = colors.violet })
-
   -- Indentmini
   shl('IndentLine', { link = 'Comment' })
   shl('IndentLineCurrent', { link = 'Comment' })
