@@ -26,8 +26,6 @@ function config.guard()
   ft('go'):fmt('lsp'):append('golines')
   ft('rust'):fmt('rustfmt')
   ft('typescript', 'javascript', 'typescriptreact', 'javascriptreact'):fmt('prettier')
-
-  require('guard').setup()
 end
 
 return config
