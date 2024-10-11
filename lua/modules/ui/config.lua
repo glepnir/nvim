@@ -22,7 +22,7 @@ function config.dashboard()
         {
           desc = 'Files',
           group = 'Function',
-          action = 'Telescope find_files find_command=rg,--ignore,--hidden,--files',
+          action = 'FzfLua files',
           key = 'f',
         },
         {
@@ -34,7 +34,7 @@ function config.dashboard()
         {
           desc = 'dotfiles',
           group = 'Constant',
-          action = 'Telescope dotfiles',
+          action = 'FzfLua files cwd=$HOME/.dotfiles',
           key = 'd',
         },
       },

@@ -18,26 +18,30 @@ map.n({
   -- dbsession
   ['<Leader>ss'] = cmd('SessionSave'),
   ['<Leader>sl'] = cmd('SessionLoad'),
-  -- Telescope
-  ['<Leader>a'] = cmd('Telescope app'),
-  ['<Leader>fa'] = cmd('Telescope live_grep'),
-  ['<Leader>fs'] = cmd('Telescope grep_string'),
-  ['<Leader>ff'] = cmd('Telescope find_files find_command=rg,--ignore,--hidden,--files'),
-  ['<Leader>fg'] = cmd('Telescope git_files'),
-  -- find in workspace folder which is my project directory
-  ['<Leader>fw'] = cmd(
-    'Telescope find_files cwd=$HOME/workspace' .. ' find_command=rg,--ignore,--hidden,--files'
-  ),
-  ['<Leader>fh'] = cmd('Telescope help_tags'),
-  ['<Leader>fo'] = cmd('Telescope oldfiles'),
-  ['<Leader>gc'] = cmd('Telescope git_commits'),
-  ['<Leader>fd'] = cmd('Telescope dotfiles'),
+  -- FzfLua
+  ['<Leader>b'] = cmd('FzfLua buffers'),
+  ['<Leader>fa'] = cmd('FzfLua live_grep_native'),
+  ['<Leader>fs'] = cmd('FzfLua grep_cword'),
+  ['<Leader>ff'] = cmd('FzfLua files'),
+  ['<Leader>fh'] = cmd('FzfLua helptags'),
+  ['<Leader>fo'] = cmd('FzfLua oldfiles'),
+  ['<Leader>fg'] = cmd('FzfLua git_files'),
+  ['<Leader>gc'] = cmd('FzfLua git_commits'),
+  ['<Leader>fd'] = cmd('FzfLua files cwd=$HOME/.dotfiles'),
+  ['<Leader>fc'] = cmd('FzfLua files cwd=$HOME/.config'),
   -- flybuf.nvim
   ['<Leader>j'] = cmd('FlyBuf'),
   --gitsign
   [']g'] = cmd('lua require"gitsigns".next_hunk()<CR>'),
   ['[g'] = cmd('lua require"gitsigns".prev_hunk()<CR>'),
 })
+
+vim.keymap.set({ 'i', 'n' }, '<C-x><C-f>', function()
+  require('fzf-lua').complete_file({
+    cmd = 'rg --files',
+    winopts = { preview = { hidden = 'nohidden' } },
+  })
+end, { silent = true, desc = 'Fuzzy complete file' })
 
 --template.nvim
 map.n('<Leader>t', function()

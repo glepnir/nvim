@@ -82,7 +82,7 @@ lspconfig.rust_analyzer.setup({
 })
 
 local servers = {
-  'basedpyright',
+  'pyright',
   'bashls',
   'zls',
   'cmake',
@@ -92,7 +92,12 @@ local servers = {
 }
 
 for _, server in ipairs(servers) do
-  lspconfig[server].setup({})
+  lspconfig[server].setup({
+    autostart = false,
+    root_dir = function()
+      return vim.fn.getcwd()
+    end,
+  })
 end
 
 vim.lsp.handlers['workspace/diagnostic/refresh'] = function(_, _, ctx)
