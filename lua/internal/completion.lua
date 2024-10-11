@@ -59,9 +59,6 @@ au('LspAttach', {
       end,
     })
     local client = lsp.get_client_by_id(client_id)
-    if not client then
-      return
-    end
     auto_trigger(bufnr, client)
     -- set_popup(bufnr)
   end,
