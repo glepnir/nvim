@@ -27,7 +27,6 @@ map.n({
   ['<Leader>fo'] = cmd('FzfLua oldfiles'),
   ['<Leader>fg'] = cmd('FzfLua git_files'),
   ['<Leader>gc'] = cmd('FzfLua git_commits'),
-  ['<Leader>fd'] = cmd('FzfLua files cwd=$HOME/.dotfiles'),
   ['<Leader>fc'] = cmd('FzfLua files cwd=$HOME/.config'),
   -- flybuf.nvim
   ['<Leader>j'] = cmd('FlyBuf'),

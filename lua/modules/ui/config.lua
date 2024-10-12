@@ -32,9 +32,9 @@ function config.dashboard()
           key = 'a',
         },
         {
-          desc = 'dotfiles',
+          desc = 'Configs',
           group = 'Constant',
-          action = 'FzfLua files cwd=$HOME/.dotfiles',
+          action = 'FzfLua files cwd=$HOME/config',
           key = 'd',
         },
       },
