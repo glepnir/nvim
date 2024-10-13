@@ -34,7 +34,7 @@ function config.dashboard()
         {
           desc = 'Configs',
           group = 'Constant',
-          action = 'FzfLua files cwd=$HOME/config',
+          action = 'FzfLua files cwd=$HOME/.config',
           key = 'd',
         },
       },

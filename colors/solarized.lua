@@ -14,7 +14,7 @@ local colors = {
   violet = '#9884c4',
   blue = '#268bd2',
   cyan = '#2aa198',
-  green = '#8ca800',
+  green = '#84a800',
   -- Custom modifications
   fg = '#b6b6b6', -- Brighter foreground
 }
