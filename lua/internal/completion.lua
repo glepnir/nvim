@@ -80,6 +80,35 @@ local function is_path_related(line, col)
   return char_before_cursor:match('[/%w_%-%.~]')
 end
 
+local debounce_fn = function()
+  local timer = nil --[[uv_timer_t]]
+  local function safe_close()
+    if timer and timer:is_active() then
+      timer:stop()
+      timer:close()
+      timer = nil
+    end
+  end
+
+  return function(key)
+    timer = assert(vim.uv.new_timer())
+    safe_close()
+    local row, col = unpack(api.nvim_win_get_cursor(0))
+    timer:start(50, 0, function()
+      safe_close()
+      vim.schedule(function()
+        local curpos = api.nvim_win_get_cursor(0)
+        if curpos[1] ~= row and curpos[2] ~= col + 1 then
+          return
+        end
+        feedkeys(key)
+      end)
+    end)
+  end
+end
+
+local debounce_feedkey = debounce_fn()
+
 -- completion for directory and files
 au(InsertCharPre, {
   callback = function(args)
@@ -97,9 +126,9 @@ au(InsertCharPre, {
     local lnum, col = unpack(api.nvim_win_get_cursor(0))
     local line_text = ffi.string(ffi.C.ml_get(lnum))
     if char == '/' and is_path_related(line_text, col) then
-      feedkeys('<C-X><C-F>')
+      debounce_feedkey('<C-X><C-F>')
     elseif not char:match('%s') and not buf_has_client(bufnr) then
-      feedkeys('<C-X><C-N>')
+      debounce_feedkey('<C-X><C-N>')
     end
   end,
 })

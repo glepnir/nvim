@@ -92,12 +92,7 @@ local servers = {
 }
 
 for _, server in ipairs(servers) do
-  lspconfig[server].setup({
-    autostart = false,
-    root_dir = function()
-      return vim.fn.getcwd()
-    end,
-  })
+  lspconfig[server].setup({})
 end
 
 vim.lsp.handlers['workspace/diagnostic/refresh'] = function(_, _, ctx)
