@@ -126,7 +126,7 @@ au(InsertCharPre, {
     local lnum, col = unpack(api.nvim_win_get_cursor(0))
     local line_text = ffi.string(ffi.C.ml_get(lnum))
     if char == '/' and is_path_related(line_text, col) then
-      debounce_feedkey('<C-X><C-F>')
+      feedkeys('<C-X><C-F>')
     elseif not char:match('%s') and not buf_has_client(bufnr) then
       debounce_feedkey('<C-X><C-N>')
     end
