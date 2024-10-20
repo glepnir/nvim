@@ -11,7 +11,7 @@ local colors = {
   yellow = '#b58900',
   orange = '#b86614',
   red = '#d75f5f',
-  violet = '#9884c4',
+  violet = '#887ec8',
   blue = '#268bd2',
   cyan = '#2aa198',
   green = '#84a800',
@@ -72,6 +72,7 @@ local function load_solarized()
   shl('@function', { fg = colors.blue })
   shl('@function.builtin', { fg = colors.blue })
   shl('@variable', { fg = colors.fg })
+  shl('@variable.builtin', { fg = colors.fg })
   shl('@keyword', { fg = colors.green })
   shl('@keyword.import', { link = 'PreProc' })
   shl('@string', { fg = colors.cyan })
@@ -83,7 +84,7 @@ local function load_solarized()
   shl('@constant', { link = 'Constant' })
   shl('@constant.builtin', { link = 'Constant' })
   shl('@constant.macro', { link = 'Constant' })
-  shl('@constructor', { fg = colors.orange })
+  shl('@constructor', { link = 'Function' })
   shl('@parameter', { fg = colors.base0 })
   shl('@class', { fg = colors.yellow })
   shl('@method', { fg = colors.blue })

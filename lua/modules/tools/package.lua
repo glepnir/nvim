@@ -26,7 +26,7 @@ packadd({
 
 packadd({
   'norcalli/nvim-colorizer.lua',
-  event = 'BufEnter */colors/*',
+  fg = 'lua',
   config = function()
     vim.opt.termguicolors = true
     require('colorizer').setup()

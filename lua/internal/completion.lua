@@ -51,14 +51,17 @@ end
 au('LspAttach', {
   callback = function(args)
     local bufnr = args.buf
-    local client_id = args.data.client_id
-    completion.enable(true, client_id, bufnr, {
+    local client = lsp.get_client_by_id(args.data.client_id)
+    if not client or not client.supports_method('textDocument/completion') then
+      return
+    end
+
+    completion.enable(true, client.id, bufnr, {
       autotrigger = true,
       convert = function(item)
         return { abbr = item.label:gsub('%b()', ''), kind = '' }
       end,
     })
-    local client = lsp.get_client_by_id(client_id)
     auto_trigger(bufnr, client)
     -- set_popup(bufnr)
   end,
@@ -107,28 +110,28 @@ local debounce_fn = function()
   end
 end
 
-local debounce_feedkey = debounce_fn()
-
--- completion for directory and files
-au(InsertCharPre, {
-  callback = function(args)
-    if pumvisible() then
-      return
-    end
-    local bufnr = args.buf
-    local ok = vim.iter({ 'terminal', 'prompt', 'help' }):any(function(v)
-      return v == vim.bo[bufnr].buftype
-    end)
-    if ok then
-      return
-    end
-    local char = vim.v.char
-    local lnum, col = unpack(api.nvim_win_get_cursor(0))
-    local line_text = ffi.string(ffi.C.ml_get(lnum))
-    if char == '/' and is_path_related(line_text, col) then
-      feedkeys('<C-X><C-F>')
-    elseif not char:match('%s') and not buf_has_client(bufnr) then
-      debounce_feedkey('<C-X><C-N>')
-    end
-  end,
-})
+-- local debounce_feedkey = debounce_fn()
+--
+-- -- completion for directory and files
+-- au(InsertCharPre, {
+--   callback = function(args)
+--     if pumvisible() then
+--       return
+--     end
+--     local bufnr = args.buf
+--     local ok = vim.iter({ 'terminal', 'prompt', 'help' }):any(function(v)
+--       return v == vim.bo[bufnr].buftype
+--     end)
+--     if ok then
+--       return
+--     end
+--     local char = vim.v.char
+--     local lnum, col = unpack(api.nvim_win_get_cursor(0))
+--     local line_text = ffi.string(ffi.C.ml_get(lnum))
+--     if char == '/' and is_path_related(line_text, col) then
+--       feedkeys('<C-X><C-F>')
+--     elseif not char:match('%s') and not buf_has_client(bufnr) then
+--       debounce_feedkey('<C-X><C-N>')
+--     end
+--   end,
+-- })

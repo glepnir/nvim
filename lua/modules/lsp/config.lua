@@ -46,7 +46,7 @@ lspconfig.lua_ls.setup({
 
 lspconfig.clangd.setup({
   cmd = { 'clangd', '--background-index' },
-  init_options = { fallbackFlags = { '-std=c++23' } },
+  init_options = { fallbackFlags = { vim.bo.filetype == 'cpp' and '-std=c++23' or nil } },
   root_dir = function(fname)
     return lspconfig.util.root_pattern(unpack({
       --reorder
@@ -89,6 +89,7 @@ local servers = {
   'jsonls',
   'ts_ls',
   'eslint',
+  -- 'basics_ls',
 }
 
 for _, server in ipairs(servers) do

@@ -35,7 +35,7 @@ map.n({
   ['[g'] = cmd('lua require"gitsigns".prev_hunk()<CR>'),
 })
 
-vim.keymap.set({ 'i', 'n' }, '<C-x><C-f>', function()
+vim.keymap.set({ 'n' }, '<C-x><C-f>', function()
   require('fzf-lua').complete_file({
     cmd = 'rg --files',
     winopts = { preview = { hidden = 'nohidden' } },
