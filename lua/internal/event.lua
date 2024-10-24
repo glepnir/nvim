@@ -103,6 +103,20 @@ au('LspDetach', {
   desc = 'Auto stop client when no buffer atttached',
 })
 
+au('InsertLeave', {
+  callback = function()
+    if vim.fn.executable('iswitch') == 0 then
+      return
+    end
+    vim.system({ 'iswitch', '-s', 'com.apple.keylayout.ABC' }, nil, function(proc)
+      if proc.code ~= 0 then
+        api.nvim_err_writeln('Failed to switch input source: ' .. proc.stderr)
+      end
+    end)
+  end,
+  desc = 'auto switch to abc input',
+})
+
 au('FileType', {
   pattern = 'netrw',
   callback = function()

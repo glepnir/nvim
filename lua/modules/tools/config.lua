@@ -21,7 +21,7 @@ function config.guard()
     cmd = 'stylua',
     args = { '-' },
     stdin = true,
-    ignore_patterns = 'neovim/*%.lua',
+    ignore_patterns = 'functional/*/*_spec.lua',
   })
   ft('go'):fmt('lsp'):append('golines')
   ft('rust'):fmt('rustfmt')
