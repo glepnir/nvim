@@ -110,28 +110,28 @@ local debounce_fn = function()
   end
 end
 
--- local debounce_feedkey = debounce_fn()
---
--- -- completion for directory and files
--- au(InsertCharPre, {
---   callback = function(args)
---     if pumvisible() then
---       return
---     end
---     local bufnr = args.buf
---     local ok = vim.iter({ 'terminal', 'prompt', 'help' }):any(function(v)
---       return v == vim.bo[bufnr].buftype
---     end)
---     if ok then
---       return
---     end
---     local char = vim.v.char
---     local lnum, col = unpack(api.nvim_win_get_cursor(0))
---     local line_text = ffi.string(ffi.C.ml_get(lnum))
---     if char == '/' and is_path_related(line_text, col) then
---       feedkeys('<C-X><C-F>')
---     elseif not char:match('%s') and not buf_has_client(bufnr) then
---       debounce_feedkey('<C-X><C-N>')
---     end
---   end,
--- })
+local debounce_feedkey = debounce_fn()
+
+-- completion for directory and files
+au(InsertCharPre, {
+  callback = function(args)
+    if pumvisible() then
+      return
+    end
+    local bufnr = args.buf
+    local ok = vim.iter({ 'terminal', 'prompt', 'help' }):any(function(v)
+      return v == vim.bo[bufnr].buftype
+    end)
+    if ok then
+      return
+    end
+    local char = vim.v.char
+    local lnum, col = unpack(api.nvim_win_get_cursor(0))
+    local line_text = ffi.string(ffi.C.ml_get(lnum))
+    if char == '/' and is_path_related(line_text, col) then
+      feedkeys('<C-X><C-F>')
+    elseif not char:match('%s') and not buf_has_client(bufnr) then
+      debounce_feedkey('<C-X><C-N>')
+    end
+  end,
+})

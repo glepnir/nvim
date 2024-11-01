@@ -38,12 +38,13 @@ au('FileType', {
   end,
 })
 
---for alacritty only
-au('ExitPre', {
-  group = group,
-  command = 'set guicursor=a:ver90',
-  desc = 'Set cursor back to beam when leaving Neovim.',
-})
+if vim.env.TERM == 'alacritty' then
+  au('ExitPre', {
+    group = group,
+    command = 'set guicursor=a:ver90',
+    desc = 'Set cursor back to beam when leaving Neovim.',
+  })
+end
 
 au('TermOpen', {
   group = group,

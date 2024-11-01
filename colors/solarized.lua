@@ -125,6 +125,7 @@ local function load_solarized()
   shl('GitSignsChange', { fg = colors.yellow, bg = colors.base03 })
   shl('GitSignsDelete', { fg = colors.red, bg = colors.base03 })
   shl('DashboardHeader', { fg = colors.green })
+  shl('ModeLineMode', { bold = true })
 end
 
 load_solarized()
