@@ -1,14 +1,6 @@
 local conf = require('modules.tools.config')
 
 packadd({
-  'nvimdev/flybuf.nvim',
-  cmd = 'FlyBuf',
-  config = function()
-    require('flybuf').setup({})
-  end,
-})
-
-packadd({
   'nvimdev/template.nvim',
   dev = true,
   cmd = 'Template',
@@ -18,6 +10,7 @@ packadd({
 packadd({
   'nvimdev/guard.nvim',
   ft = program_ft,
+  dev = true,
   config = conf.guard,
   dependencies = {
     { 'nvimdev/guard-collection' },

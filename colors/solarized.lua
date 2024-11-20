@@ -1,3 +1,5 @@
+-- orange    #cb4b16
+-- violet    #6c71c4
 local colors = {
   base04 = '#00202b',
   base03 = '#002936',
@@ -9,15 +11,18 @@ local colors = {
   base2 = '#eee8d5',
   base3 = '#fdf6e3',
   yellow = '#b58900',
-  orange = '#b86614',
+  orange = '#b86114',
   red = '#d75f5f',
   violet = '#887ec8',
   blue = '#268bd2',
   cyan = '#2aa198',
   green = '#84a800',
+  magenta = '#d33682',
   -- Custom modifications
   fg = '#b6b6b6', -- Brighter foreground
 }
+
+vim.g.colors_name = 'solarized'
 
 local function shl(group, properties)
   vim.api.nvim_set_hl(0, group, properties)
@@ -43,7 +48,7 @@ local function load_solarized()
   shl('Special', { fg = colors.orange })
   shl('Operator', { fg = colors.base0 })
   shl('Underlined', { fg = colors.violet, underline = true })
-  shl('Todo', { fg = colors.violet, bold = true })
+  shl('Todo', { fg = colors.magenta, bold = true })
   shl('Error', { fg = colors.red, bg = colors.base03, bold = true })
   shl('WarningMsg', { fg = colors.orange })
   shl('IncSearch', { fg = colors.base03, bg = colors.orange })
@@ -67,6 +72,7 @@ local function load_solarized()
   shl('ColorColumn', { bg = colors.base02 })
   shl('Title', { fg = colors.orange })
   shl('WildMenu', { fg = colors.base2, bg = colors.base02, reverse = true })
+  shl('Folded', { bg = colors.base02, fg = colors.base0 })
 
   -- Treesitter highlights
   shl('@function', { fg = colors.blue })

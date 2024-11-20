@@ -21,7 +21,8 @@ function config.guard()
     cmd = 'stylua',
     args = { '-' },
     stdin = true,
-    ignore_patterns = 'functional/*/*_spec.lua',
+    ignore_patterns = 'function.*_spec%.lua',
+    find = '.stylua.toml',
   })
   ft('go'):fmt('lsp'):append('golines')
   ft('rust'):fmt('rustfmt')
