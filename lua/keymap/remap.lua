@@ -160,7 +160,7 @@ map.n('gs', function()
     relative = 'editor',
     row = 5,
     width = width,
-    height = 1,
+    height = 4,
     col = math.floor(vim.o.columns / 2) - math.floor(width / 2),
     border = 'rounded',
     title = 'Google Search',
@@ -170,6 +170,7 @@ map.n('gs', function()
   vim.wo[winid].number = false
   vim.wo[winid].stc = ''
   vim.wo[winid].lcs = 'trail: '
+  vim.wo[winid].wrap = true
   vim.fn.prompt_setcallback(bufnr, function(text)
     vim.ui.open(('https://google.com/search?q=%s'):format(vim.trim(text)))
     api.nvim_win_close(winid, true)

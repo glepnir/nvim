@@ -89,6 +89,7 @@ local servers = {
   'jsonls',
   'ts_ls',
   'eslint',
+  'ruff',
   -- 'basics_ls',
 }
 

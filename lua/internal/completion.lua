@@ -52,7 +52,7 @@ au('LspAttach', {
   callback = function(args)
     local bufnr = args.buf
     local client = lsp.get_client_by_id(args.data.client_id)
-    if not client or not client.supports_method('textDocument/completion') then
+    if not client or not client:supports_method('textDocument/completion') then
       return
     end
 

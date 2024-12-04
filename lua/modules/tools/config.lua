@@ -6,7 +6,6 @@ function config.template_nvim()
     author = 'glepnir',
     email = 'glephunter@gmail.com',
   })
-  require('telescope').load_extension('find_template')
 end
 
 function config.guard()
@@ -19,7 +18,7 @@ function config.guard()
 
   ft('lua'):fmt({
     cmd = 'stylua',
-    args = { '-' },
+    args = { '--stdin-filepath', './dummy', '-' },
     stdin = true,
     ignore_patterns = 'function.*_spec%.lua',
     find = '.stylua.toml',
