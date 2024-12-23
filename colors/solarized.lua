@@ -2,7 +2,7 @@
 -- violet    #6c71c4
 local colors = {
   base04 = '#00202b',
-  base03 = '#002838',
+  base03 = '#002837',
   base02 = '#073642',
   base01 = '#586e75',
   base00 = '#657b83',
@@ -125,7 +125,7 @@ local function load_solarized()
 
   -- Indentmini
   shl('IndentLine', { link = 'Comment' })
-  shl('IndentLineCurrent', { link = 'Comment' })
+  shl('IndentLineCurrent', { fg = '#084352' })
 
   -- GitSigns
   shl('GitSignsAdd', { fg = colors.green, bg = colors.base03 })

@@ -45,7 +45,7 @@ lspconfig.lua_ls.setup({
 })
 
 lspconfig.clangd.setup({
-  cmd = { 'clangd', '--background-index' },
+  cmd = { 'clangd', '--background-index', '--header-insertion=never' },
   init_options = { fallbackFlags = { vim.bo.filetype == 'cpp' and '-std=c++23' or nil } },
   root_dir = function(fname)
     return lspconfig.util.root_pattern(unpack({
@@ -82,14 +82,13 @@ lspconfig.rust_analyzer.setup({
 })
 
 local servers = {
-  'pyright',
+  'basedpyright',
   'bashls',
   'zls',
   'cmake',
   'jsonls',
   'ts_ls',
   'eslint',
-  'ruff',
   -- 'basics_ls',
 }
 

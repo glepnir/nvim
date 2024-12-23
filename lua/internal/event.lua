@@ -21,7 +21,6 @@ au('BufEnter', {
   callback = function()
     require('keymap')
     require('internal.buffer')
-    vim.cmd.packadd('nohlsearch')
   end,
   desc = 'Lazy load my keymap and buffer relate commands and defaul opt plugins',
 })
@@ -89,7 +88,7 @@ au('LspDetach', {
   callback = function(args)
     local client_id = args.data.client_id
     local client = vim.lsp.get_clients({ client_id = client_id })[1]
-    if not vim.tbl_isempty(client.attached_buffers) then
+    if not client or not vim.tbl_isempty(client.attached_buffers) then
       return
     end
     reset_timer()
