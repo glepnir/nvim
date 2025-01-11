@@ -8,11 +8,13 @@ ffi.cdef([[
   bool pum_visible(void);
 ]])
 local pumvisible = libc.pum_visible
+local g = api.nvim_create_augroup('glepnir/completion', { clear = true })
 
 -- completion on word which not exist in lsp client triggerCharacters
 local function auto_trigger(bufnr, client)
   au(InsertCharPre, {
     buffer = bufnr,
+    group = g,
     callback = function()
       if pumvisible() then
         return
@@ -29,6 +31,28 @@ local function auto_trigger(bufnr, client)
     end,
   })
 end
+
+au('LspAttach', {
+  group = g,
+  callback = function(args)
+    local bufnr = args.buf
+    local client = lsp.get_client_by_id(args.data.client_id)
+    if not client or not client:supports_method('textDocument/completion') then
+      return
+    end
+
+    completion.enable(true, client.id, bufnr, {
+      autotrigger = true,
+      convert = function(item)
+        return { abbr = item.label:gsub('%b()', ''), kind = '', kind_hlgroup = '' }
+      end,
+    })
+
+    if #api.nvim_get_autocmds({ buffer = bufnr, event = 'InsertCharPre', group = g }) == 0 then
+      auto_trigger(bufnr, client)
+    end
+  end,
+})
 
 local function set_popup(bufnr)
   au('CompleteChanged', {
@@ -47,25 +71,6 @@ local function set_popup(bufnr)
     end,
   })
 end
-
-au('LspAttach', {
-  callback = function(args)
-    local bufnr = args.buf
-    local client = lsp.get_client_by_id(args.data.client_id)
-    if not client or not client:supports_method('textDocument/completion') then
-      return
-    end
-
-    completion.enable(true, client.id, bufnr, {
-      autotrigger = true,
-      convert = function(item)
-        return { abbr = item.label:gsub('%b()', ''), kind = '' }
-      end,
-    })
-    auto_trigger(bufnr, client)
-    -- set_popup(bufnr)
-  end,
-})
 
 local function feedkeys(key)
   api.nvim_feedkeys(api.nvim_replace_termcodes(key, true, false, true), 'n', true)

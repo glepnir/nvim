@@ -82,7 +82,8 @@ lspconfig.rust_analyzer.setup({
 })
 
 local servers = {
-  'basedpyright',
+  -- 'basedpyright',
+  'pyright',
   'bashls',
   'zls',
   'cmake',

@@ -104,6 +104,7 @@ au('LspDetach', {
 })
 
 au('InsertLeave', {
+  group = group,
   callback = function()
     if vim.fn.executable('iswitch') == 0 then
       return
@@ -117,7 +118,28 @@ au('InsertLeave', {
   desc = 'auto switch to abc input',
 })
 
+au('CmdlineLeave', {
+  group = group,
+  once = true,
+  callback = function()
+    if vim.v.event.cmdtype ~= '/' then
+      return
+    end
+    au({ 'InsertEnter', 'CursorHold' }, {
+      group = group,
+      callback = function()
+        if vim.v.hlsearch == 0 then
+          return
+        end
+        local keycode = api.nvim_replace_termcodes('<Cmd>nohl<CR>', true, false, true)
+        api.nvim_feedkeys(keycode, 'n', false)
+      end,
+    })
+  end,
+})
+
 au('FileType', {
+  group = group,
   pattern = 'netrw',
   callback = function()
     local map = function(lhs, rhs, remap, desc)
