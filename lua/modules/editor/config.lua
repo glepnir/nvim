@@ -2,8 +2,6 @@ local M = {}
 local api = vim.api
 
 function M.nvim_treesitter()
-  vim.opt.foldmethod = 'expr'
-  vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
   require('nvim-treesitter.configs').setup({
     ensure_installed = {
       'c',

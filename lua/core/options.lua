@@ -43,7 +43,6 @@ opt.tabstop = 2
 opt.shiftwidth = 2
 
 opt.foldlevelstart = 99
-opt.foldmethod = 'marker'
 
 opt.splitright = true
 opt.wrap = false

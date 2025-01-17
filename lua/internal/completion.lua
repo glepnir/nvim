@@ -54,24 +54,6 @@ au('LspAttach', {
   end,
 })
 
-local function set_popup(bufnr)
-  au('CompleteChanged', {
-    buffer = bufnr,
-    callback = function()
-      local info = vim.fn.complete_info()
-      if info.preview_winid and info.preview_bufnr then
-        api.nvim_set_option_value('filetype', 'markdown', { buf = info.preview_bufnr })
-        api.nvim_set_option_value('conceallevel', 2, { win = info.preview_winid, scope = 'local' })
-        api.nvim_set_option_value(
-          'concealcursor',
-          'niv',
-          { win = info.preview_winid, scope = 'local' }
-        )
-      end
-    end,
-  })
-end
-
 local function feedkeys(key)
   api.nvim_feedkeys(api.nvim_replace_termcodes(key, true, false, true), 'n', true)
 end
@@ -91,7 +73,7 @@ end
 local debounce_fn = function()
   local timer = nil --[[uv_timer_t]]
   local function safe_close()
-    if timer and timer:is_active() then
+    if timer and not timer:is_closing() then
       timer:stop()
       timer:close()
       timer = nil
@@ -99,8 +81,8 @@ local debounce_fn = function()
   end
 
   return function(key)
-    timer = assert(vim.uv.new_timer())
     safe_close()
+    timer = assert(vim.uv.new_timer())
     local row, col = unpack(api.nvim_win_get_cursor(0))
     timer:start(50, 0, function()
       safe_close()
