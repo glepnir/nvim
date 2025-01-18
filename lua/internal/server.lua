@@ -75,7 +75,8 @@ end
 local function collect_buffer_words(root_name, filename, triggerchar)
   local words = {}
   for _, word in ipairs(vim.tbl_get(words_cache, root_name, filename) or {}) do
-    if word:match('^' .. triggerchar) and not vim.list_contains(words, word) then
+    -- only compare for alpha
+    if word:sub(1, 1) == triggerchar and not vim.list_contains(words, word) then
       table.insert(words, word)
     end
   end
