@@ -90,10 +90,13 @@ end
 
 local function schedule_result(callback, items)
   vim.schedule(function()
-    callback(nil, {
-      isIncomplete = false,
-      items = items,
-    })
+    local mode = vim.api.nvim_get_mode().mode
+    if mode == 'i' or mode == 'ic' then
+      callback(nil, {
+        isIncomplete = #items == 0 and true or false,
+        items = items,
+      })
+    end
   end)
 end
 
@@ -139,9 +142,11 @@ function server.create()
       end
 
       local triggerchar = line:sub(position.character, position.character)
-      if #triggerchar > 0 and not triggerchar:find('%w') then
+      if #triggerchar > 0 and triggerchar ~= '/' and not triggerchar:find('%w') then
+        schedule_result(callback, {})
         return
       end
+
       if triggerchar ~= '/' then
         local items = collect_buffer_words(root_name, filename, triggerchar)
         schedule_result(callback, items)
@@ -158,7 +163,6 @@ function server.create()
         prefix = prefix:sub(has_space + 1, position.character)
       end
       local dir_part = prefix:match('^(.*/)[^/]*$')
-      print(dir_part)
 
       if not dir_part then
         callback(nil, { items = {} })
