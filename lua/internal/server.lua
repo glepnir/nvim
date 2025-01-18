@@ -1,6 +1,9 @@
-local server = {}
 local client_capabilities = {}
 local projects = {}
+
+--- Custom Server for path and buffer word
+--- Usage in ./lua/internal/completion
+local server = {}
 
 ---@return table
 local function get_root(filename)
@@ -57,6 +60,16 @@ local function check_path_exists_async(path, callback)
   end)
 end
 
+local function find_last_occurrence(str, pattern)
+  local reversed_str = string.reverse(str)
+  local start_pos, end_pos = string.find(reversed_str, string.reverse(pattern))
+  if start_pos then
+    return #str - end_pos + 1
+  else
+    return nil
+  end
+end
+
 function server.create()
   return function()
     local srv = {}
@@ -99,9 +112,13 @@ function server.create()
       end
 
       local prefix = line:sub(1, position.character)
-      local is_literal = prefix:find('"')
-      if is_literal then
-        prefix = prefix:sub(is_literal + 1, position.character)
+      local has_literal = find_last_occurrence(prefix, '"')
+      if has_literal then
+        prefix = prefix:sub(has_literal + 1, position.character)
+      end
+      local has_space = find_last_occurrence(prefix, ' ')
+      if has_space then
+        prefix = prefix:sub(has_space + 1, position.character)
       end
       local dir_part = prefix:match('^(.*/)[^/]*$')
 
