@@ -139,6 +139,9 @@ function server.create()
       end
 
       local triggerchar = line:sub(position.character, position.character)
+      if #triggerchar > 0 and not triggerchar:find('%w') then
+        return
+      end
       if triggerchar ~= '/' then
         local items = collect_buffer_words(root_name, filename, triggerchar)
         schedule_result(callback, items)
