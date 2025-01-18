@@ -189,7 +189,7 @@ function server.create()
               local label = name
               if entry.type == 'directory' then
                 label = label:gsub('/$', '')
-              elseif label:match('^.') then
+              elseif entry.type == 'file' and name:match('^%.') then
                 label = label:gsub('^.', '')
               end
 
