@@ -1,20 +1,22 @@
 local client_capabilities = {}
 local projects = {}
+local words_cache = {}
 
 --- Custom Server for path and buffer word
 --- Usage in ./lua/internal/completion
 local server = {}
 
----@return table
+---@return table, string
 local function get_root(filename)
-  local data
+  local data, name
   for r, item in pairs(projects) do
     if vim.startswith(filename, r) then
       data = item
+      name = r
       break
     end
   end
-  return data
+  return data, name
 end
 
 ---@param path string
@@ -62,12 +64,37 @@ end
 
 local function find_last_occurrence(str, pattern)
   local reversed_str = string.reverse(str)
-  local start_pos, end_pos = string.find(reversed_str, string.reverse(pattern))
+  local start_pos, end_pos = string.find(reversed_str, pattern)
   if start_pos then
     return #str - end_pos + 1
   else
     return nil
   end
+end
+
+local function collect_buffer_words(root_name, filename, triggerchar)
+  local words = {}
+  for _, word in ipairs(vim.tbl_get(words_cache, root_name, filename) or {}) do
+    if word:match('^' .. triggerchar) and not vim.list_contains(words, word) then
+      table.insert(words, word)
+    end
+  end
+  return vim.tbl_map(function(word)
+    return {
+      label = word,
+      filterText = word,
+      kind = 1,
+    }
+  end, words)
+end
+
+local function schedule_result(callback, items)
+  vim.schedule(function()
+    callback(nil, {
+      isIncomplete = false,
+      items = items,
+    })
+  end)
 end
 
 function server.create()
@@ -98,16 +125,23 @@ function server.create()
       local uri = params.textDocument.uri
       local position = params.position
       local filename = uri:gsub('file://', '')
-      local root = get_root(filename)
+      local root, root_name = get_root(filename)
 
       if not root then
-        callback(nil, { items = {} })
+        schedule_result(callback, {})
         return
       end
 
       local line = root[filename][position.line + 1]
       if not line then
-        callback(nil, { items = {} })
+        schedule_result(callback, {})
+        return
+      end
+
+      local triggerchar = line:sub(position.character, position.character)
+      if triggerchar ~= '/' then
+        local items = collect_buffer_words(root_name, filename, triggerchar)
+        schedule_result(callback, items)
         return
       end
 
@@ -121,6 +155,7 @@ function server.create()
         prefix = prefix:sub(has_space + 1, position.character)
       end
       local dir_part = prefix:match('^(.*/)[^/]*$')
+      print(dir_part)
 
       if not dir_part then
         callback(nil, { items = {} })
@@ -131,7 +166,7 @@ function server.create()
 
       check_path_exists_async(expanded_path, function(exists)
         if not exists then
-          callback(nil, { items = {} })
+          schedule_result(callback, {})
           return
         end
 
@@ -161,12 +196,7 @@ function server.create()
             end
           end
 
-          vim.schedule(function()
-            callback(nil, {
-              isIncomplete = false,
-              items = items,
-            })
-          end)
+          schedule_result(callback, items)
         end)
       end)
     end
@@ -184,9 +214,19 @@ function server.create()
 
     srv['textDocument/didChange'] = function(params)
       local filename = params.textDocument.uri:gsub('file://', '')
-      local root = get_root(filename)
-      if root then
-        root[filename] = vim.split(params.contentChanges[1].text, '\n')
+      local root, root_name = get_root(filename)
+      if not root then
+        return
+      end
+      root[filename] = vim.split(params.contentChanges[1].text, '\n')
+      words_cache[root_name] = {}
+      words_cache[root_name][filename] = words_cache[root_name][filename] or {}
+      local data = words_cache[root_name][filename]
+      for _, line in ipairs(root[filename]) do
+        local item = vim.split(line, '%s', { trimempty = true })
+        for _, word in ipairs(item) do
+          data[#data + 1] = word
+        end
       end
     end
 
