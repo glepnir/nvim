@@ -228,7 +228,8 @@ function server.create()
       for _, line in ipairs(root[filename]) do
         local item = vim.split(line, '%s', { trimempty = true })
         for _, word in ipairs(item) do
-          if not vim.list_contains(data, word) then
+          -- no need store number in cache
+          if tonumber(word) == nil and not vim.list_contains(data, word) then
             table.insert(data, word)
           end
         end
