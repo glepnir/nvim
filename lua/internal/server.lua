@@ -1,22 +1,21 @@
 local client_capabilities = {}
 local projects = {}
-local words_cache = {}
+local dict = {}
 
 --- Custom Server for path and buffer word
 --- Usage in ./lua/internal/completion
 local server = {}
 
----@return table, string
+---@return table
 local function get_root(filename)
-  local data, name
+  local data
   for r, item in pairs(projects) do
     if vim.startswith(filename, r) then
       data = item
-      name = r
       break
     end
   end
-  return data, name
+  return data
 end
 
 ---@param path string
@@ -72,9 +71,9 @@ local function find_last_occurrence(str, pattern)
   end
 end
 
-local function collect_buffer_words(root_name, filename, triggerchar)
+local function collect_buffer_words(triggerchar)
   local words = {}
-  for _, word in ipairs(vim.tbl_get(words_cache, root_name, filename) or {}) do
+  for _, word in ipairs(dict) do
     -- only compare for alpha
     if word:sub(1, 1) == triggerchar and not vim.list_contains(words, word) then
       table.insert(words, word)
@@ -129,7 +128,7 @@ function server.create()
       local uri = params.textDocument.uri
       local position = params.position
       local filename = uri:gsub('file://', '')
-      local root, root_name = get_root(filename)
+      local root = get_root(filename)
 
       if not root then
         schedule_result(callback, {})
@@ -149,7 +148,7 @@ function server.create()
       end
 
       if triggerchar ~= '/' then
-        local items = collect_buffer_words(root_name, filename, triggerchar)
+        local items = collect_buffer_words(triggerchar)
         schedule_result(callback, items)
         return
       end
@@ -222,20 +221,17 @@ function server.create()
 
     srv['textDocument/didChange'] = function(params)
       local filename = params.textDocument.uri:gsub('file://', '')
-      local root, root_name = get_root(filename)
+      local root = get_root(filename)
       if not root then
         return
       end
       root[filename] = vim.split(params.contentChanges[1].text, '\n')
-      words_cache[root_name] = {}
-      words_cache[root_name][filename] = words_cache[root_name][filename] or {}
-      local data = words_cache[root_name][filename]
       for _, line in ipairs(root[filename]) do
         local item = vim.split(line, '%s', { trimempty = true })
         for _, word in ipairs(item) do
           -- no need store number in cache
-          if tonumber(word) == nil and not vim.list_contains(data, word) then
-            table.insert(data, word)
+          if tonumber(word) == nil and not vim.list_contains(dict, word) then
+            table.insert(dict, word)
           end
         end
       end
