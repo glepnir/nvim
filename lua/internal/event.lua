@@ -137,15 +137,3 @@ au('CmdlineLeave', {
     })
   end,
 })
-
--- au('FileType', {
---   group = group,
---   pattern = 'lua',
---   callback = function()
---     vim.lsp.start({
---       name = 'MineServer',
---       cmd = require('internal.server').create(),
---       root_dir = vim.uv.cwd(),
---     })
---   end,
--- })

@@ -1,6 +1,7 @@
+local au = vim.api.nvim_create_autocmd
 local lspconfig = require('lspconfig')
 
-vim.api.nvim_create_autocmd('LspAttach', {
+au('LspAttach', {
   callback = function(args)
     local client = vim.lsp.get_clients({ id = args.data.client_id })[1]
     client.server_capabilities.semanticTokensProvider = nil
