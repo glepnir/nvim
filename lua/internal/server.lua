@@ -1,6 +1,47 @@
 local client_capabilities = {}
 local projects = {}
 
+-- Default configuration for Phoenix
+local default = {
+  -- Dictionary related settings
+  dict = {
+    -- Maximum number of words to store in the dictionary
+    -- Higher values consume more memory but provide better completions
+    max_words = 50000,
+
+    -- Minimum word length to be considered for completion
+    -- Shorter words may create noise in completions
+    min_word_length = 2,
+    -- Time factor weight for sorting completions (0-1)
+    -- Higher values favor recently used items more strongly
+    recency_weight = 0.3,
+
+    -- Base weight for frequency in sorting (0-1)
+    -- Complements recency_weight, should sum to 1
+    frequency_weight = 0.7,
+  },
+
+  -- Performance related settings
+  scan = {
+    cache_ttl = 5000,
+    -- Number of items to process in each batch
+    -- Higher values improve speed but may cause stuttering
+    batch_size = 1000,
+    -- Ignored the file or dictionary which matched the pattern
+    ignore_patterns = {},
+
+    -- Throttle delay for dictionary updates in milliseconds
+    -- Prevents excessive CPU usage during rapid file changes
+    throttle_ms = 100,
+  },
+}
+
+local cfg = setmetatable({}, {
+  __index = function(_, scope)
+    return vim.tbl_get(vim.g.phoenix or default, scope)
+  end,
+})
+
 local Trie = {}
 function Trie.new()
   return {
@@ -57,8 +98,8 @@ end
 local dict = {
   trie = Trie.new(),
   word_count = 0,
-  max_words = 50000,
-  min_word_length = 2,
+  max_words = cfg.dict.max_words,
+  min_word_length = cfg.dict.min_word_length,
 }
 
 -- LRU cache
@@ -205,7 +246,7 @@ end
 
 local function scan_dir_async(path, callback)
   local cached = scan_cache:get(path)
-  if cached and (vim.uv.now() - cached.timestamp) < 5000 then
+  if cached and (vim.uv.now() - cached.timestamp) < cfg.scan.cache_ttl then
     callback(cached.results)
     return
   end
@@ -218,7 +259,7 @@ local function scan_dir_async(path, callback)
     end
 
     local results = {}
-    local batch_size = 1000 -- enough ?
+    local batch_size = cfg.scan.batch_size
     local current_batch = {}
 
     while true do
@@ -228,6 +269,15 @@ local function scan_dir_async(path, callback)
           vim.list_extend(results, current_batch)
         end
         break
+      end
+
+      if #cfg.scan.ignore_patterns > 0 then
+        local ok = vim.iter(cfg.scan.ignore_patterns):any(function(pattern)
+          return name:match(pattern)
+        end)
+        if ok then
+          goto continue
+        end
       end
 
       local is_hidden = name:match('^%.')
@@ -246,6 +296,7 @@ local function scan_dir_async(path, callback)
         current_batch = {}
         coroutine.yield()
       end
+      ::continue::
     end
 
     scan_cache:put(path, {
@@ -360,7 +411,7 @@ local update_dict = async.throttle(function(lines)
   end
 
   vim.schedule(process_batch)
-end, 100)
+end, cfg.scan.throttle_ms)
 
 local function collect_completions(prefix)
   local results = Trie.search_prefix(dict.trie, prefix)
@@ -371,11 +422,12 @@ local function collect_completions(prefix)
   local now = vim.uv.now()
   return vim.tbl_map(function(node)
     local time_factor = math.max(0, 1 - (now - node.last_used) / (24 * 60 * 60 * 1000))
+    local weight = cfg.dict.frequency_weight + cfg.dict.recency_weight * time_factor
     return {
       label = node.word,
       filterText = node.word,
       kind = 1,
-      sortText = string.format('%09d', node.frequency * (0.7 + 0.3 * time_factor)),
+      sortText = string.format('%09d', node.frequency * weight),
     }
   end, results)
 end
