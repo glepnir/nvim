@@ -3,6 +3,7 @@ local projects = {}
 
 -- Default configuration for Phoenix
 local default = {
+  filetypes = { '*' },
   -- Dictionary related settings
   dict = {
     -- Maximum number of words to store in the dictionary
@@ -596,4 +597,17 @@ function server.create()
   end
 end
 
-return server
+local function setup()
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = cfg.filetypes,
+    callback = function()
+      vim.lsp.start({
+        name = 'phoenix',
+        cmd = server.create(),
+        root_dir = vim.uv.cwd(),
+      })
+    end,
+  })
+end
+
+return { setup = setup }

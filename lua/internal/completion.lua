@@ -56,12 +56,4 @@ au('LspAttach', {
   end,
 })
 
-au('FileType', {
-  callback = function()
-    vim.lsp.start({
-      name = 'wordpath',
-      cmd = require('internal.server').create(),
-      root_dir = vim.uv.cwd(),
-    })
-  end,
-})
+require('internal.server').setup()
