@@ -60,54 +60,97 @@ local dict = {
 
 -- LRU cache
 local LRUCache = {}
+
+-- Node constructor
+local function new_node(key, value)
+  return { key = key, value = value, prev = nil, next = nil }
+end
+
 function LRUCache:new(max_size)
   local obj = {
     cache = {},
-    order = {},
+    head = nil,
+    tail = nil,
     max_size = max_size or 100,
+    size = 0,
   }
   setmetatable(obj, self)
   self.__index = self
   return obj
 end
 
-function LRUCache:find_index(key)
-  for i = 1, #self.order do
-    if self.order[i] == key then
-      return i
-    end
+-- Move node to the head of the list
+function LRUCache:move_to_head(node)
+  if node == self.head then
+    return
   end
-  return nil
+  self:remove(node)
+  self:add_to_head(node)
 end
 
-function LRUCache:get(key)
-  local item = self.cache[key]
-  if item then
-    local idx = self:find_index(key)
-    if idx then
-      local value = table.remove(self.order, idx)
-      table.insert(self.order, value)
-    end
-    return item.value
+-- Add node to the head of the list
+function LRUCache:add_to_head(node)
+  node.next = self.head
+  node.prev = nil
+  if self.head then
+    self.head.prev = node
   end
-  return nil
+  self.head = node
+  if not self.tail then
+    self.tail = node
+  end
+  self.size = self.size + 1
 end
 
-function LRUCache:put(key, value)
-  if self.cache[key] then
-    self.cache[key].value = value
-    local idx = self:find_index(key)
-    if idx then
-      local new_value = table.remove(self.order, idx)
-      table.insert(self.order, new_value)
-    end
+-- Remove node from the list
+function LRUCache:remove(node)
+  if node.prev then
+    node.prev.next = node.next
   else
-    while #self.order >= self.max_size do
-      local oldest = table.remove(self.order, 1)
-      self.cache[oldest] = nil
+    self.head = node.next
+  end
+  if node.next then
+    node.next.prev = node.prev
+  else
+    self.tail = node.prev
+  end
+  self.size = self.size - 1
+end
+
+-- Remove the tail node
+function LRUCache:remove_tail()
+  if not self.tail then
+    return nil
+  end
+  local tail_node = self.tail
+  self:remove(tail_node)
+  return tail_node
+end
+
+-- Get the value of a key
+function LRUCache:get(key)
+  local node = self.cache[key]
+  if not node then
+    return nil
+  end
+  self:move_to_head(node)
+  return node.value
+end
+
+-- Put a key-value pair into the cache
+function LRUCache:put(key, value)
+  local node = self.cache[key]
+  if node then
+    node.value = value
+    self:move_to_head(node)
+  else
+    if self.size >= self.max_size then
+      local tail_node = self:remove_tail()
+      self.cache[tail_node.key] = nil
     end
-    self.cache[key] = { value = value }
-    table.insert(self.order, key)
+    local new_node = new_node(key, value)
+    self:add_to_head(new_node)
+    self.cache[key] = new_node
   end
 end
 
@@ -158,7 +201,7 @@ end
 local function scan_dir_async(path, callback)
   local cached = scan_cache:get(path)
   if cached and (vim.uv.now() - cached.timestamp) < 5000 then
-    schedule_result(callback, cached.results)
+    callback(cached.results)
     return
   end
 
