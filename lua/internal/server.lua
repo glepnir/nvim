@@ -7,10 +7,11 @@ function Trie.new()
     children = {},
     is_end = false,
     frequency = 0,
+    last_used = 0, -- timestamp for LRU-based cleanup
   }
 end
 
-function Trie.insert(root, word)
+function Trie.insert(root, word, timestamp)
   local node = root
   for i = 1, #word do
     local char = word:sub(i, i)
@@ -20,6 +21,7 @@ function Trie.insert(root, word)
   local was_new = not node.is_end
   node.is_end = true
   node.frequency = node.frequency + 1
+  node.last_used = timestamp
   return was_new
 end
 
@@ -39,6 +41,7 @@ function Trie.search_prefix(root, prefix)
       table.insert(results, {
         word = current_word,
         frequency = current_node.frequency,
+        last_used = vim.uv.now(),
       })
     end
 
@@ -252,7 +255,17 @@ local function scan_dir_async(path, callback)
     resolve(results)
   end)
 
-  coroutine.resume(co, callback)
+  local function handle_error(err)
+    vim.schedule(function()
+      vim.notify(string.format('Error in scan_dir_async: %s', err), vim.log.levels.ERROR)
+      callback({})
+    end)
+  end
+
+  local ok, err = coroutine.resume(co, callback)
+  if not ok then
+    handle_error(err)
+  end
 end
 
 -- async cleanup low frequency from dict
@@ -355,12 +368,14 @@ local function collect_completions(prefix)
     return a.frequency > b.frequency
   end)
 
-  return vim.tbl_map(function(item)
+  local now = vim.uv.now()
+  return vim.tbl_map(function(node)
+    local time_factor = math.max(0, 1 - (now - node.last_used) / (24 * 60 * 60 * 1000))
     return {
-      label = item.word,
-      filterText = item.word,
+      label = node.word,
+      filterText = node.word,
       kind = 1,
-      sortText = string.format('%09d', 999999999 - item.frequency),
+      sortText = string.format('%09d', node.frequency * (0.7 + 0.3 * time_factor)),
     }
   end, results)
 end
