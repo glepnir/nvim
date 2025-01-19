@@ -1,12 +1,143 @@
 local client_capabilities = {}
 local projects = {}
-local dict = {}
 
---- Custom Server for path and buffer word
---- Usage in ./lua/internal/completion
+local Trie = {}
+function Trie.new()
+  return {
+    children = {},
+    is_end = false,
+    frequency = 0,
+  }
+end
+
+function Trie.insert(root, word)
+  local node = root
+  for i = 1, #word do
+    local char = word:sub(i, i)
+    node.children[char] = node.children[char] or Trie.new()
+    node = node.children[char]
+  end
+  local was_new = not node.is_end
+  node.is_end = true
+  node.frequency = node.frequency + 1
+  return was_new
+end
+
+function Trie.search_prefix(root, prefix)
+  local node = root
+  for i = 1, #prefix do
+    local char = prefix:sub(i, i)
+    if not node.children[char] then
+      return {}
+    end
+    node = node.children[char]
+  end
+
+  local results = {}
+  local function collect_words(current_node, current_word)
+    if current_node.is_end then
+      table.insert(results, {
+        word = current_word,
+        frequency = current_node.frequency,
+      })
+    end
+
+    for char, child in pairs(current_node.children) do
+      collect_words(child, current_word .. char)
+    end
+  end
+
+  collect_words(node, prefix)
+  return results
+end
+
+local dict = {
+  trie = Trie.new(),
+  word_count = 0,
+  max_words = 50000,
+  min_word_length = 2,
+}
+
+-- LRU cache
+local LRUCache = {}
+function LRUCache:new(max_size)
+  local obj = {
+    cache = {},
+    order = {},
+    max_size = max_size or 100,
+  }
+  setmetatable(obj, self)
+  self.__index = self
+  return obj
+end
+
+function LRUCache:find_index(key)
+  for i = 1, #self.order do
+    if self.order[i] == key then
+      return i
+    end
+  end
+  return nil
+end
+
+function LRUCache:get(key)
+  local item = self.cache[key]
+  if item then
+    local idx = self:find_index(key)
+    if idx then
+      local value = table.remove(self.order, idx)
+      table.insert(self.order, value)
+    end
+    return item.value
+  end
+  return nil
+end
+
+function LRUCache:put(key, value)
+  if self.cache[key] then
+    self.cache[key].value = value
+    local idx = self:find_index(key)
+    if idx then
+      local new_value = table.remove(self.order, idx)
+      table.insert(self.order, new_value)
+    end
+  else
+    while #self.order >= self.max_size do
+      local oldest = table.remove(self.order, 1)
+      self.cache[oldest] = nil
+    end
+    self.cache[key] = { value = value }
+    table.insert(self.order, key)
+  end
+end
+
+local scan_cache = LRUCache:new(100)
+
+local async = {}
+
+function async.throttle(fn, delay)
+  local timer = nil
+  return function(...)
+    local args = { ... }
+    if timer and not timer:is_closing() then
+      timer:stop()
+      timer:close()
+    end
+    timer = assert(vim.uv.new_timer())
+    timer:start(
+      delay,
+      0,
+      vim.schedule_wrap(function()
+        timer:stop()
+        timer:close()
+        fn(unpack(args))
+      end)
+    )
+  end
+end
+
 local server = {}
 
----@return table
 local function get_root(filename)
   local data
   for r, item in pairs(projects) do
@@ -18,9 +149,19 @@ local function get_root(filename)
   return data
 end
 
----@param path string
----@param callback function
+local function schedule_result(callback, items)
+  vim.schedule(function()
+    callback(nil, { isIncomplete = false, items = items or {} })
+  end)
+end
+
 local function scan_dir_async(path, callback)
+  local cached = scan_cache:get(path)
+  if cached and (vim.uv.now() - cached.timestamp) < 5000 then
+    schedule_result(callback, cached.results)
+    return
+  end
+
   local co = coroutine.create(function(resolve)
     local handle = vim.uv.fs_scandir(path)
     if not handle then
@@ -29,9 +170,15 @@ local function scan_dir_async(path, callback)
     end
 
     local results = {}
+    local batch_size = 1000 -- enough ?
+    local current_batch = {}
+
     while true do
       local name, type = vim.uv.fs_scandir_next(handle)
       if not name then
+        if #current_batch > 0 then
+          vim.list_extend(results, current_batch)
+        end
         break
       end
 
@@ -40,25 +187,137 @@ local function scan_dir_async(path, callback)
         name = name .. '/'
       end
 
-      table.insert(results, {
+      table.insert(current_batch, {
         name = name,
         type = type,
         is_hidden = is_hidden,
       })
+
+      if #current_batch >= batch_size then
+        vim.list_extend(results, current_batch)
+        current_batch = {}
+        coroutine.yield()
+      end
     end
 
+    scan_cache:put(path, {
+      timestamp = vim.uv.now(),
+      results = results,
+    })
     resolve(results)
   end)
 
   coroutine.resume(co, callback)
 end
 
----@param path string
----@param callback function
-local function check_path_exists_async(path, callback)
-  vim.uv.fs_stat(path, function(err, stats)
-    callback(not err and stats ~= nil)
+-- async cleanup low frequency from dict
+local function cleanup_dict()
+  if dict.word_count <= dict.max_words then
+    return
+  end
+
+  local co = coroutine.create(function()
+    local words = {}
+    local function collect_words(node, current_word)
+      if node.is_end then
+        table.insert(words, {
+          word = current_word,
+          frequency = node.frequency,
+        })
+      end
+      -- yield when collect 100 words
+      if #words % 100 == 0 then
+        coroutine.yield()
+      end
+      for char, child in pairs(node.children) do
+        collect_words(child, current_word .. char)
+      end
+    end
+
+    collect_words(dict.trie, '')
+    coroutine.yield()
+
+    table.sort(words, function(a, b)
+      return a.frequency > b.frequency
+    end)
+    coroutine.yield()
+
+    local new_trie = Trie.new()
+    local new_count = 0
+
+    -- rebuild Trie
+    for i = 1, dict.max_words do
+      if words[i] then
+        Trie.insert(new_trie, words[i].word)
+        new_count = new_count + 1
+      end
+      if i % 100 == 0 then
+        coroutine.yield()
+      end
+    end
+
+    dict.trie = new_trie
+    dict.word_count = new_count
   end)
+
+  local function resume()
+    local ok = coroutine.resume(co)
+    if ok and coroutine.status(co) ~= 'dead' then
+      vim.schedule(resume)
+    end
+  end
+
+  vim.schedule(resume)
+end
+
+local update_dict = async.throttle(function(lines)
+  local processed = 0
+  local batch_size = 1000
+
+  local function process_batch()
+    local end_idx = math.min(processed + batch_size, #lines)
+    local new_words = 0
+
+    for i = processed + 1, end_idx do
+      local line = lines[i]
+      for word in line:gmatch('[^%s%.%_]+') do
+        if not tonumber(word) and #word >= dict.min_word_length then
+          if Trie.insert(dict.trie, word) then -- increase when is new word
+            new_words = new_words + 1
+          end
+        end
+      end
+    end
+
+    dict.word_count = dict.word_count + new_words
+    processed = end_idx
+
+    if processed < #lines then
+      vim.schedule(process_batch)
+    elseif dict.word_count > dict.max_words then
+      vim.schedule(function()
+        cleanup_dict()
+      end)
+    end
+  end
+
+  vim.schedule(process_batch)
+end, 100)
+
+local function collect_completions(prefix)
+  local results = Trie.search_prefix(dict.trie, prefix)
+  table.sort(results, function(a, b)
+    return a.frequency > b.frequency
+  end)
+
+  return vim.tbl_map(function(item)
+    return {
+      label = item.word,
+      filterText = item.word,
+      kind = 1,
+      sortText = string.format('%09d', 999999999 - item.frequency),
+    }
+  end, results)
 end
 
 local function find_last_occurrence(str, pattern)
@@ -69,35 +328,6 @@ local function find_last_occurrence(str, pattern)
   else
     return nil
   end
-end
-
-local function collect_buffer_words(triggerchar)
-  local words = {}
-  for _, word in ipairs(dict) do
-    -- only compare for alpha
-    if word:sub(1, 1) == triggerchar and not vim.list_contains(words, word) then
-      table.insert(words, word)
-    end
-  end
-  return vim.tbl_map(function(word)
-    return {
-      label = word,
-      filterText = word,
-      kind = 1,
-    }
-  end, words)
-end
-
-local function schedule_result(callback, items)
-  vim.schedule(function()
-    local mode = vim.api.nvim_get_mode().mode
-    if mode == 'i' or mode == 'ic' then
-      callback(nil, {
-        isIncomplete = #items == 0 and true or false,
-        items = items,
-      })
-    end
-  end)
 end
 
 function server.create()
@@ -118,7 +348,7 @@ function server.create()
           },
           textDocumentSync = {
             openClose = true,
-            change = 1, -- Full
+            change = 1,
           },
         },
       })
@@ -131,51 +361,35 @@ function server.create()
       local root = get_root(filename)
 
       if not root then
-        schedule_result(callback, {})
+        schedule_result(callback)
         return
       end
 
       local line = root[filename][position.line + 1]
       if not line then
-        schedule_result(callback, {})
+        schedule_result(callback)
         return
       end
 
-      local triggerchar = line:sub(position.character, position.character)
-      if #triggerchar > 0 and triggerchar ~= '/' and not triggerchar:find('%w') then
-        schedule_result(callback, {})
-        return
-      end
+      local char_at_cursor = line:sub(position.character, position.character)
+      if char_at_cursor == '/' then
+        local prefix = line:sub(1, position.character)
+        local has_literal = find_last_occurrence(prefix, '"')
+        if has_literal then
+          prefix = prefix:sub(has_literal + 1, position.character)
+        end
+        local has_space = find_last_occurrence(prefix, '%s')
+        if has_space then
+          prefix = prefix:sub(has_space + 1, position.character)
+        end
+        local dir_part = prefix:match('^(.*/)[^/]*$')
 
-      if triggerchar ~= '/' then
-        local items = collect_buffer_words(triggerchar)
-        schedule_result(callback, items)
-        return
-      end
-
-      local prefix = line:sub(1, position.character)
-      local has_literal = find_last_occurrence(prefix, '"')
-      if has_literal then
-        prefix = prefix:sub(has_literal + 1, position.character)
-      end
-      local has_space = find_last_occurrence(prefix, ' ')
-      if has_space then
-        prefix = prefix:sub(has_space + 1, position.character)
-      end
-      local dir_part = prefix:match('^(.*/)[^/]*$')
-
-      if not dir_part then
-        callback(nil, { items = {} })
-        return
-      end
-
-      local expanded_path = vim.fs.normalize(dir_part)
-
-      check_path_exists_async(expanded_path, function(exists)
-        if not exists then
-          schedule_result(callback, {})
+        if not dir_part then
+          schedule_result(callback)
           return
         end
+
+        local expanded_path = vim.fs.normalize(vim.fs.abspath(dir_part))
 
         scan_dir_async(expanded_path, function(results)
           local items = {}
@@ -184,7 +398,7 @@ function server.create()
           for _, entry in ipairs(results) do
             local name = entry.name
             if vim.startswith(name:lower(), current_input:lower()) then
-              local kind = entry.type == 'directory' and 19 or 17 -- 19 for folder, 17 for file
+              local kind = entry.type == 'directory' and 19 or 17
               local label = name
               if entry.type == 'directory' then
                 label = label:gsub('/$', '')
@@ -205,7 +419,16 @@ function server.create()
 
           schedule_result(callback, items)
         end)
-      end)
+      else
+        local prefix = line:sub(1, position.character):match('[%w_]*$')
+        if not prefix or #prefix == 0 then
+          schedule_result(callback)
+          return
+        end
+
+        local items = collect_completions(prefix)
+        schedule_result(callback, items)
+      end
     end
 
     srv['textDocument/completion'] = srv.completion
@@ -217,6 +440,7 @@ function server.create()
         return
       end
       data[filename] = vim.split(params.textDocument.text, '\n')
+      update_dict(data[filename])
     end
 
     srv['textDocument/didChange'] = function(params)
@@ -226,14 +450,10 @@ function server.create()
         return
       end
       root[filename] = vim.split(params.contentChanges[1].text, '\n')
-      for _, line in ipairs(root[filename]) do
-        local item = vim.split(line, '%s', { trimempty = true })
-        for _, word in ipairs(item) do
-          -- no need store number in cache
-          if tonumber(word) == nil and not vim.list_contains(dict, word) then
-            table.insert(dict, word)
-          end
-        end
+      update_dict(root[filename])
+
+      if dict.word_count > dict.max_words then
+        cleanup_dict()
       end
     end
 
