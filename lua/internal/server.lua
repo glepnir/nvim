@@ -146,11 +146,13 @@ function LRUCache:put(key, value)
   else
     if self.size >= self.max_size then
       local tail_node = self:remove_tail()
-      self.cache[tail_node.key] = nil
+      if tail_node then
+        self.cache[tail_node.key] = nil
+      end
     end
-    local new_node = new_node(key, value)
-    self:add_to_head(new_node)
-    self.cache[key] = new_node
+    local newNode = new_node(key, value)
+    self:add_to_head(newNode)
+    self.cache[key] = newNode
   end
 end
 
