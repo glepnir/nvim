@@ -26,9 +26,7 @@ local function auto_trigger(bufnr, client)
         'triggerCharacters'
       ) or {}
       if vim.v.char:match('[%w_]') and not vim.list_contains(triggerchars, vim.v.char) then
-        vim.schedule(function()
-          completion.trigger()
-        end)
+        completion.trigger()
       end
     end,
   })
