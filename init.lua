@@ -20,6 +20,7 @@ _G.program_ft = {
   'html',
   'markdown',
   'text',
+  'help',
 }
 _G.is_mac = vim.uv.os_uname().sysname == 'Darwin'
 
