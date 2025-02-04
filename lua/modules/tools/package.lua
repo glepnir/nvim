@@ -26,6 +26,14 @@ packadd({
 })
 
 packadd({
+  'nvimdev/fnpairs.nvim',
+  event = 'InsertEnter',
+  config = function()
+    require('fnpairs').setup()
+  end,
+})
+
+packadd({
   'nvimdev/dbsession.nvim',
   cmd = { 'SessionSave', 'SessionLoad', 'SessionDelete' },
   opts = true,

@@ -54,13 +54,6 @@ au('TermOpen', {
   end,
 })
 
-au('InsertEnter', {
-  group = group,
-  callback = function()
-    require('internal.pairs').setup({})
-  end,
-})
-
 au('LspAttach', {
   callback = function(args)
     if vim.bo[args.buf].filetype == 'lua' and api.nvim_buf_get_name(args.buf):find('_spec') then

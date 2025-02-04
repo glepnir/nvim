@@ -106,8 +106,22 @@ end, { expr = true })
 map.i('<CR>', function()
   if tonumber(vim.fn.pumvisible()) == 1 then
     return '<C-y>'
-  else
-    return _G.PairMate.cr()
+  end
+  local line = api.nvim_get_current_line()
+  local col = api.nvim_win_get_cursor(0)[2]
+  local before = line:sub(col, col)
+  local after = line:sub(col + 1, col + 1)
+  local t = {
+    ['('] = ')',
+    ['['] = ']',
+    ['{'] = '}',
+  }
+
+  if not t[before] then
+    return '<CR>'
+  end
+  if t[before] == after then
+    return '<CR><ESC>O'
   end
 end, { expr = true })
 

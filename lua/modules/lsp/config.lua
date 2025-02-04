@@ -91,6 +91,7 @@ local servers = {
   'jsonls',
   'ts_ls',
   'eslint',
+  'tailwindcss',
   -- 'basics_ls',
 }
 
