@@ -22,7 +22,6 @@ packadd({
 
 packadd({
   'nvimdev/dired.nvim',
-  dev = true,
   cmd = 'Dired',
 })
 
