@@ -92,6 +92,7 @@ local servers = {
   'ts_ls',
   'eslint',
   'tailwindcss',
+  'cssls',
   -- 'basics_ls',
 }
 

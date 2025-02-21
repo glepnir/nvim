@@ -116,13 +116,10 @@ map.i('<CR>', function()
     ['['] = ']',
     ['{'] = '}',
   }
-
-  if not t[before] then
-    return '<CR>'
-  end
-  if t[before] == after then
+  if t[before] and t[before] == after then
     return '<CR><ESC>O'
   end
+  return '<CR>'
 end, { expr = true })
 
 map.i('<C-e>', function()

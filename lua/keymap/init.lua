@@ -13,7 +13,6 @@ map.n({
   ['gp'] = cmd('Lspsaga goto_definition'),
   ['gh'] = cmd('Lspsaga finder'),
   ['<Leader>o'] = cmd('Lspsaga outline'),
-  ['<Leader>d'] = cmd('Dired'),
   -- dbsession
   ['<Leader>ss'] = cmd('SessionSave'),
   ['<Leader>sl'] = cmd('SessionLoad'),
@@ -34,12 +33,7 @@ map.n({
   ['[g'] = cmd('lua require"gitsigns".prev_hunk()<CR>'),
 })
 
-vim.keymap.set({ 'n' }, '<C-x><C-f>', function()
-  require('fzf-lua').complete_file({
-    cmd = 'rg --files',
-    winopts = { preview = { hidden = 'nohidden' } },
-  })
-end, { silent = true, desc = 'Fuzzy complete file' })
+map.ni('<C-X><C-f>', cmd('Dired'))
 
 --template.nvim
 map.n('<Leader>t', function()

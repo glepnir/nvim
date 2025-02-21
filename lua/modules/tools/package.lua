@@ -28,6 +28,7 @@ packadd({
 packadd({
   'nvimdev/fnpairs.nvim',
   event = 'InsertEnter',
+  dev = true,
 })
 
 packadd({

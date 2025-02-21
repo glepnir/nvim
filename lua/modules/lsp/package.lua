@@ -5,6 +5,7 @@ packadd({
     -- vim.lsp.set_log_level(vim.lsp.log_levels.OFF)
     local i = '●'
     vim.diagnostic.config({
+      virtual_text = { current_line = true },
       signs = {
         text = { i, i, i, i },
       },

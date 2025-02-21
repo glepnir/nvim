@@ -7,6 +7,17 @@ local g = api.nvim_create_augroup('glepnir.completion', { clear = true })
 vim.opt.cot = 'menu,menuone,noinsert,fuzzy,popup'
 vim.opt.cia = 'kind,abbr,menu'
 
+api.nvim_create_autocmd('CompleteChanged', {
+  callback = function()
+    local info = vim.fn.complete_info()
+    if info.preview_bufnr then
+      vim.bo[info.preview_bufnr].filetype = 'markdown'
+      vim.wo[info.preview_winid].conceallevel = 2
+      vim.wo[info.preview_winid].concealcursor = 'niv'
+    end
+  end,
+})
+
 api.nvim_create_autocmd('LspAttach', {
   group = g,
   callback = function(args)
