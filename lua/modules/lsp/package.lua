@@ -16,7 +16,7 @@ packadd({
 
 packadd({
   'nvimdev/phoenix.nvim',
-  ft = program_ft,
+  ft = 'lua',
   dev = true,
 })
 
