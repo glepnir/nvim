@@ -19,6 +19,7 @@ map.n({
   ['[t'] = cmd('vs | vertical resize -5 | terminal'),
   [']t'] = cmd('set splitbelow | sp | set nosplitbelow | resize -5 | terminal'),
   ['<C-x>t'] = cmd('tabnew | terminal'),
+  ['gV'] = '`[v`]',
 })
 
 map.i({

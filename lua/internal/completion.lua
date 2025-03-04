@@ -9,11 +9,12 @@ vim.opt.cia = 'kind,abbr,menu'
 
 api.nvim_create_autocmd('CompleteChanged', {
   callback = function()
-    local info = vim.fn.complete_info()
+    local info = vim.fn.complete_info({ 'selected' })
     if info.preview_bufnr then
       vim.bo[info.preview_bufnr].filetype = 'markdown'
       vim.wo[info.preview_winid].conceallevel = 2
       vim.wo[info.preview_winid].concealcursor = 'niv'
+      vim.wo[info.preview_winid].wrap = true
     end
   end,
 })
@@ -31,16 +32,26 @@ api.nvim_create_autocmd('LspAttach', {
       autotrigger = true,
       convert = function(item)
         local kind = lsp.protocol.CompletionItemKind[item.kind] or 'u'
+        local doc = item.documentation or {}
+        local info, menu
+        if vim.bo.filetype == 'c' then
+          info = ('%s%s\n \n%s'):format(item.detail or '', item.label, doc.value or '')
+          menu = ''
+        end
         return {
           abbr = item.label:gsub('%b()', ''),
           kind = kind:sub(1, 1):lower(),
           kind_hlgroup = ('@lsp.type.%s'):format(kind:sub(1, 1):lower() .. kind:sub(2)),
+          menu = menu,
+          info = info,
         }
       end,
     })
+
     if #api.nvim_get_autocmds({ buffer = bufnr, event = 'InsertCharPre', group = g }) ~= 0 then
       return
     end
+
     api.nvim_create_autocmd(InsertCharPre, {
       buffer = bufnr,
       group = g,
@@ -60,7 +71,23 @@ api.nvim_create_autocmd('LspAttach', {
           end)
         end
       end,
-      desc = 'glepnir: completion on character which not exist in lsp client triggerCharacters',
+      desc = 'completion on character which not exist in lsp client triggerCharacters',
+    })
+
+    api.nvim_create_autocmd(InsertCharPre, {
+      buffer = bufnr,
+      group = g,
+      callback = function()
+        vim.g._ts_force_sync_parsing = tonumber(pumvisible()) == 1
+      end,
+    })
+
+    api.nvim_create_autocmd('CompleteDone', {
+      buffer = bufnr,
+      group = g,
+      callback = function()
+        vim.g._ts_force_sync_parsing = false
+      end,
     })
   end,
 })
