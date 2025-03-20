@@ -36,14 +36,12 @@ api.nvim_create_autocmd('LspAttach', {
         local info, menu
         if vim.bo.filetype == 'c' then
           info = ('%s%s\n \n%s'):format(item.detail or '', item.label, doc.value or '')
-          menu = ''
         end
         return {
           abbr = item.label:gsub('%b()', ''),
           kind = kind:sub(1, 1):lower(),
-          kind_hlgroup = ('@lsp.type.%s'):format(kind:sub(1, 1):lower() .. kind:sub(2)),
-          menu = menu,
-          info = info,
+          menu = '',
+          info = info and info:gsub('\n+%s*\n$', '') or nil,
         }
       end,
     })
@@ -67,18 +65,18 @@ api.nvim_create_autocmd('LspAttach', {
         ) or {}
         if vim.v.char:match('[%w_]') and not vim.list_contains(triggerchars, vim.v.char) then
           vim.schedule(function()
-            completion.trigger()
+            completion.get()
           end)
         end
       end,
       desc = 'completion on character which not exist in lsp client triggerCharacters',
     })
 
-    api.nvim_create_autocmd(InsertCharPre, {
+    api.nvim_create_autocmd('TextChangedP', {
       buffer = bufnr,
       group = g,
       callback = function()
-        vim.g._ts_force_sync_parsing = tonumber(pumvisible()) == 1
+        vim.g._ts_force_sync_parsing = true
       end,
     })
 

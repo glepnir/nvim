@@ -102,9 +102,10 @@ au('InsertLeave', {
     if vim.fn.executable('iswitch') == 0 then
       return
     end
+
     vim.system({ 'iswitch', '-s', 'com.apple.keylayout.ABC' }, nil, function(proc)
       if proc.code ~= 0 then
-        api.nvim_err_writeln('Failed to switch input source: ' .. proc.stderr)
+        vim.notify('Failed to switch input source: ' .. proc.stderr, vim.log.levels.WARN)
       end
     end)
   end,

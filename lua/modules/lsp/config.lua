@@ -23,26 +23,33 @@ lspconfig.gopls.setup({
   },
 })
 
-lspconfig.lua_ls.setup({
+require('lspconfig').lua_ls.setup({
   on_init = function(client)
-    local path = client.workspace_folders and client.workspace_folders[1].name
-    local fs_stat = vim.uv.fs_stat
-    if path and (fs_stat(path .. '/.luarc.json') or fs_stat(path .. '/.luarc.jsonc')) then
-      return
+    if client.workspace_folders then
+      local path = client.workspace_folders[1].name
+      if
+        path ~= vim.fn.stdpath('config')
+        and (vim.loop.fs_stat(path .. '/.luarc.json') or vim.loop.fs_stat(path .. '/.luarc.jsonc'))
+      then
+        return
+      end
     end
+
     client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
-      runtime = { version = 'LuaJIT' },
-      completion = { callSnippet = 'Replace' },
+      runtime = {
+        version = 'LuaJIT',
+      },
       workspace = {
         checkThirdParty = false,
         library = {
           vim.env.VIMRUNTIME,
-          '${3rd}/luv/library',
         },
       },
     })
   end,
-  settings = { Lua = {} },
+  settings = {
+    Lua = {},
+  },
 })
 
 lspconfig.clangd.setup({
@@ -83,8 +90,8 @@ lspconfig.rust_analyzer.setup({
 })
 
 local servers = {
-  -- 'basedpyright',
-  'pyright',
+  'basedpyright',
+  'ruff',
   'bashls',
   'zls',
   'cmake',
@@ -93,7 +100,6 @@ local servers = {
   'eslint',
   'tailwindcss',
   'cssls',
-  -- 'basics_ls',
 }
 
 for _, server in ipairs(servers) do

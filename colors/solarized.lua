@@ -2,7 +2,8 @@
 -- violet    #6c71c4
 local colors = {
   base04 = '#00202b',
-  base03 = '#002837',
+  -- base03 = '#002837',
+  base03 = '#002937',
   base02 = '#073642',
   base01 = '#586e75',
   base00 = '#657b83',
@@ -74,6 +75,7 @@ local function load_solarized()
   shl('WildMenu', { fg = colors.base2, bg = colors.base02, reverse = true })
   shl('Folded', { bg = colors.base02, fg = colors.base0 })
   shl('ErrorMsg', { fg = colors.red })
+  shl('ComplMatchIns', { fg = colors.base01 })
 
   -- Treesitter highlights
   shl('@function', { fg = colors.blue })
@@ -96,7 +98,7 @@ local function load_solarized()
   shl('@class', { fg = colors.yellow })
   shl('@method', { fg = colors.blue })
   shl('@property', { link = '@variable' })
-  shl('@field', { fg = colors.base0 })
+  -- shl('@field', { fg = colors.base0 })
   shl('@interface', { fg = colors.yellow })
   shl('@namespace', { fg = colors.base0 })
   shl('@punctuation', { fg = colors.base0 })
