@@ -204,13 +204,16 @@ end)
 map.n('gs', function()
   local bufnr = api.nvim_create_buf(false, false)
   vim.bo[bufnr].buftype = 'prompt'
-  vim.fn.prompt_setprompt(bufnr, '➤ ')
+  vim.fn.prompt_setprompt(bufnr, ' ')
+  api.nvim_buf_set_extmark(bufnr, api.nvim_create_namespace('WebSearch'), 0, 0, {
+    line_hl_group = 'String',
+  })
   local width = math.floor(vim.o.columns * 0.5)
   local winid = api.nvim_open_win(bufnr, true, {
     relative = 'editor',
     row = 5,
     width = width,
-    height = 4,
+    height = 1,
     col = math.floor(vim.o.columns / 2) - math.floor(width / 2),
     border = 'rounded',
     title = 'Google Search',
@@ -221,6 +224,7 @@ map.n('gs', function()
   vim.wo[winid].stc = ''
   vim.wo[winid].lcs = 'trail: '
   vim.wo[winid].wrap = true
+  vim.wo[winid].signcolumn = 'no'
   vim.fn.prompt_setcallback(bufnr, function(text)
     vim.ui.open(('https://google.com/search?q=%s'):format(vim.trim(text)))
     api.nvim_win_close(winid, true)
