@@ -1,7 +1,5 @@
 local api, completion, lsp = vim.api, vim.lsp.completion, vim.lsp
 local ms = lsp.protocol.Methods
-local InsertCharPre = 'InsertCharPre'
-local pumvisible = vim.fn.pumvisible
 local g = api.nvim_create_augroup('glepnir.completion', { clear = true })
 
 vim.opt.cot = 'menu,menuone,noinsert,fuzzy,popup'
@@ -34,6 +32,12 @@ api.nvim_create_autocmd('LspAttach', {
           table.insert(chars, string.char(i))
         end
       end
+
+      for i = string.byte('A'), string.byte('Z') do
+        if not vim.list_contains(chars, string.char(i)) then
+          table.insert(chars, string.char(i))
+        end
+      end
     end
 
     completion.enable(true, client.id, bufnr, {
@@ -52,6 +56,18 @@ api.nvim_create_autocmd('LspAttach', {
           info = info and info:gsub('\n+%s*\n$', '') or nil,
         }
       end,
+    })
+
+    api.nvim_create_autocmd('TextChangedP', {
+      buffer = bufnr,
+      group = g,
+      command = 'let g:_ts_force_sync_parsing = v:true',
+    })
+
+    api.nvim_create_autocmd('CompleteDone', {
+      buffer = bufnr,
+      group = g,
+      command = 'let g:_ts_force_sync_parsing = v:false',
     })
   end,
 })
