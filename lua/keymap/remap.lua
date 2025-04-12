@@ -27,7 +27,6 @@ map.i({
   ['<C-b>'] = '<Left>',
   ['<C-f>'] = '<Right>',
   ['<C-a>'] = '<Esc>^i',
-  ['<C-k>'] = '<C-o>d$',
   ['<C-s>'] = '<ESC>:w<CR>',
   ['<C-n>'] = '<Down>',
   ['<C-p>'] = '<Up>',
@@ -109,7 +108,7 @@ end)
 
 -- Ctrl-y works like emacs
 map.i('<C-y>', function()
-  if tonumber(vim.fn.pumvisible()) == 1 or vim.fn.getreg('"0'):find('%w') == nil then
+  if tonumber(vim.fn.pumvisible()) == 1 or vim.fn.getreg('"+'):find('%w') == nil then
     return '<C-y>'
   end
   return '<Esc>p==a'

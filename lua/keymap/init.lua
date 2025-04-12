@@ -20,7 +20,6 @@ map.n({
   ['<Leader>b'] = cmd('FzfLua buffers'),
   ['<Leader>fa'] = cmd('FzfLua live_grep_native'),
   ['<Leader>fs'] = cmd('FzfLua grep_cword'),
-  ['<Leader>ff'] = cmd('FzfLua files'),
   ['<Leader>fh'] = cmd('FzfLua helptags'),
   ['<Leader>fo'] = cmd('FzfLua oldfiles'),
   ['<Leader>fg'] = cmd('FzfLua git_files'),
