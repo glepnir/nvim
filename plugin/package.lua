@@ -41,7 +41,7 @@ async(function()
         {
           desc = 'Update',
           group = 'Include',
-          action = 'Lazy update',
+          action = 'Strive update',
           key = 'u',
         },
         {
@@ -49,12 +49,6 @@ async(function()
           group = 'Function',
           action = 'FzfLua files',
           key = 'f',
-        },
-        {
-          desc = 'Apps',
-          group = 'String',
-          action = 'Telescope app',
-          key = 'a',
         },
         {
           desc = 'Configs',
