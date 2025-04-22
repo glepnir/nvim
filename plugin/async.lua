@@ -136,9 +136,17 @@ function _G.try_await(promise)
 end
 
 -- Create an async function that can use await
-function _G.async(func)
+function _G.async(func, sync)
+  if sync then
+    return func()
+  end
+
   return function(...)
     local args = { ... }
+    if args[1] == true and not vim.in_fast_event() then
+      return func()
+    end
+
     local co = coroutine.create(function()
       local status, result = pcall(function()
         return func(unpack(args))
