@@ -27,39 +27,6 @@ async(function()
   vim.o.rtp = strive_path .. ',' .. vim.o.rtp
   local use = require('strive').use
 
-  use('nvimdev/dashboard-nvim'):setup({
-    theme = 'hyper',
-    config = {
-      week_header = {
-        enable = true,
-      },
-      project = {
-        enable = false,
-      },
-      disable_move = true,
-      shortcut = {
-        {
-          desc = 'Update',
-          group = 'Include',
-          action = 'Strive update',
-          key = 'u',
-        },
-        {
-          desc = 'Files',
-          group = 'Function',
-          action = 'FzfLua files',
-          key = 'f',
-        },
-        {
-          desc = 'Configs',
-          group = 'Constant',
-          action = 'FzfLua files cwd=$HOME/.config',
-          key = 'd',
-        },
-      },
-    },
-  })
-
   use('nvimdev/modeline.nvim'):on({ 'BufEnter', 'BufNewFile' }):setup()
   use('lewis6991/gitsigns.nvim'):on('BufEnter'):setup({
     signs = {
