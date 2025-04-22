@@ -89,6 +89,8 @@ opt.signcolumn = 'yes'
 opt.textwidth = 80
 opt.colorcolumn = '+0'
 
+vim.cmd.colorscheme('solarized')
+
 -- Load Modules
 require('core')
 require('internal.event')
