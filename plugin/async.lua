@@ -136,11 +136,7 @@ function _G.try_await(promise)
 end
 
 -- Create an async function that can use await
-function _G.async(func, sync)
-  if sync then
-    return func()
-  end
-
+function _G.async(func)
   return function(...)
     local args = { ... }
     if args[1] == true and not vim.in_fast_event() then

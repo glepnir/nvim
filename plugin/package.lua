@@ -3,8 +3,8 @@ local data_dir = vim.fn.stdpath('data')
 local strive_path = vim.fs.joinpath(data_dir, 'site', 'pack', 'strive', 'opt', 'strive')
 local devpath = '/Users/mw/workspace'
 
+local installed = (uv.fs_stat(strive_path) or {}).type == 'directory'
 async(function()
-  local installed = (uv.fs_stat(strive_path) or {}).type == 'directory'
   if not installed then
     local result =
       try_await(asystem({ 'git', 'clone', 'https://github.com/nvimdev/strive', strive_path }, {
@@ -27,8 +27,50 @@ async(function()
   vim.o.rtp = strive_path .. ',' .. vim.o.rtp
   local use = require('strive').use
 
-  use('nvimdev/modeline.nvim'):on({ 'BufEnter', 'BufNewFile' }):setup()
-  use('lewis6991/gitsigns.nvim'):on('BufEnter'):setup({
+  use('nvimdev/dashboard-nvim')
+    :config(function()
+      local db = require('dashboard')
+      db.setup({
+        theme = 'hyper',
+        config = {
+          week_header = {
+            enable = true,
+          },
+          project = {
+            enable = false,
+          },
+          disable_move = true,
+          shortcut = {
+            {
+              desc = 'Update',
+              group = 'Include',
+              action = 'Strive update',
+              key = 'u',
+            },
+            {
+              desc = 'Files',
+              group = 'Function',
+              action = 'FzfLua files',
+              key = 'f',
+            },
+            {
+              desc = 'Configs',
+              group = 'Constant',
+              action = 'FzfLua files cwd=$HOME/.config',
+              key = 'd',
+            },
+          },
+        },
+      })
+    end)
+    :cond(function()
+      return vim.fn.argc() == 0
+        and api.nvim_buf_line_count(0) == 0
+        and api.nvim_buf_get_name(0) == ''
+    end)
+
+  use('nvimdev/modeline.nvim'):on({ 'BufEnter */*', 'BufNewFile' }):setup()
+  use('lewis6991/gitsigns.nvim'):on('BufEnter */*'):setup({
     signs = {
       add = { text = '┃' },
       change = { text = '┃' },
@@ -79,7 +121,7 @@ async(function()
 
   use('nvim-treesitter/nvim-treesitter')
     :on({ 'BufRead', 'BufNewFile' })
-    :build('TSUpdate')
+    :run('TSUpdate')
     :config(function()
       require('nvim-treesitter.configs').setup({
         ensure_installed = {
@@ -158,7 +200,80 @@ async(function()
     :depends('nvim-treesitter/nvim-treesitter-textobjects')
 
   use('nvimdev/phoenix.nvim'):ft(program_ft)
-  use('neovim/nvim-lspconfig'):ft(program_ft)
+  use('neovim/nvim-lspconfig'):ft(program_ft):config(function()
+    vim.lsp.config('lua_ls', {
+      on_init = function(client)
+        if client.workspace_folders then
+          local path = client.workspace_folders[1].name
+          if
+            path ~= vim.fn.stdpath('config')
+            and (
+              vim.loop.fs_stat(path .. '/.luarc.json') or vim.loop.fs_stat(path .. '/.luarc.jsonc')
+            )
+          then
+            return
+          end
+        end
+
+        client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+          runtime = {
+            version = 'LuaJIT',
+          },
+          workspace = {
+            checkThirdParty = false,
+            library = {
+              vim.env.VIMRUNTIME,
+            },
+          },
+        })
+      end,
+      settings = {
+        Lua = {},
+      },
+    })
+
+    vim.lsp.config('clangd', {
+      cmd = { 'clangd', '--background-index', '--header-insertion=never' },
+      init_options = { fallbackFlags = { vim.bo.filetype == 'cpp' and '-std=c++23' or nil } },
+    })
+
+    vim.lsp.config('rust_analyzer', {
+      settings = {
+        ['rust-analyzer'] = {
+          imports = {
+            granularity = {
+              group = 'module',
+            },
+            prefix = 'self',
+          },
+          cargo = {
+            buildScripts = {
+              enable = true,
+            },
+          },
+          procMacro = {
+            enable = true,
+          },
+        },
+      },
+    })
+
+    vim.lsp.enable({
+      'lua_ls',
+      'clangd',
+      'rust_analyzer',
+      'basedpyright',
+      'ruff',
+      'bashls',
+      'zls',
+      'cmake',
+      'jsonls',
+      'ts_ls',
+      'eslint',
+      'tailwindcss',
+      'cssls',
+    })
+  end)
 
   use('nvimdev/lspsaga.nvim')
     :on('LspAttach')
@@ -175,13 +290,12 @@ async(function()
       },
     })
     :load_path(devpath)
-end)()
+end)(installed)
 
-local i = '●'
 vim.diagnostic.config({
   virtual_text = { current_line = true },
   signs = {
-    text = { i, i, i, i },
+    text = { '●', '●', '●', '●' },
   },
 })
 
@@ -190,75 +304,4 @@ api.nvim_create_autocmd('LspAttach', {
     local client = vim.lsp.get_clients({ id = args.data.client_id })[1]
     client.server_capabilities.semanticTokensProvider = nil
   end,
-})
-
-vim.lsp.config('lua_ls', {
-  on_init = function(client)
-    if client.workspace_folders then
-      local path = client.workspace_folders[1].name
-      if
-        path ~= vim.fn.stdpath('config')
-        and (vim.loop.fs_stat(path .. '/.luarc.json') or vim.loop.fs_stat(path .. '/.luarc.jsonc'))
-      then
-        return
-      end
-    end
-
-    client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
-      runtime = {
-        version = 'LuaJIT',
-      },
-      workspace = {
-        checkThirdParty = false,
-        library = {
-          vim.env.VIMRUNTIME,
-        },
-      },
-    })
-  end,
-  settings = {
-    Lua = {},
-  },
-})
-
-vim.lsp.config('clangd', {
-  cmd = { 'clangd', '--background-index', '--header-insertion=never' },
-  init_options = { fallbackFlags = { vim.bo.filetype == 'cpp' and '-std=c++23' or nil } },
-})
-
-vim.lsp.config('rust_analyzer', {
-  settings = {
-    ['rust-analyzer'] = {
-      imports = {
-        granularity = {
-          group = 'module',
-        },
-        prefix = 'self',
-      },
-      cargo = {
-        buildScripts = {
-          enable = true,
-        },
-      },
-      procMacro = {
-        enable = true,
-      },
-    },
-  },
-})
-
-vim.lsp.enable({
-  'lua_ls',
-  'clangd',
-  'rust_analyzer',
-  'basedpyright',
-  'ruff',
-  'bashls',
-  'zls',
-  'cmake',
-  'jsonls',
-  'ts_ls',
-  'eslint',
-  'tailwindcss',
-  'cssls',
 })
