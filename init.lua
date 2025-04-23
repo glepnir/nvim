@@ -25,7 +25,6 @@ _G.program_ft = {
 }
 _G.is_mac = vim.uv.os_uname().sysname == 'Darwin'
 
---disable_distribution_plugins
 g.loaded_gzip = 1
 g.loaded_tar = 1
 g.loaded_tarPlugin = 1
@@ -89,7 +88,8 @@ opt.signcolumn = 'yes'
 opt.textwidth = 80
 opt.colorcolumn = '+0'
 
+vim.cmd.colorscheme('solarized')
+
 -- Load Modules
-require('core')
 require('internal.event')
 require('internal.completion')
