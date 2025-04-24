@@ -19,8 +19,7 @@ au('BufEnter', {
   group = group,
   once = true,
   callback = function()
-    require('keymap')
-    require('internal.buffer')
+    require('internal.keymap')
   end,
   desc = 'Lazy load my keymap and buffer relate commands and defaul opt plugins',
 })

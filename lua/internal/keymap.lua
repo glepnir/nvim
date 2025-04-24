@@ -1,6 +1,87 @@
+-- local map = require('core.keymap')
 local api = vim.api
-local map = require('core.keymap')
-local cmd = map.cmd
+
+-- Create a smart keymap wrapper using metatables
+local keymap = {}
+
+-- Valid vim modes
+local valid_modes =
+  { n = true, i = true, v = true, x = true, s = true, o = true, c = true, t = true }
+
+-- Store mode combinations we've created
+local mode_cache = {}
+
+-- Function that performs the actual mapping
+local function perform_mapping(modes, lhs, rhs, opts)
+  opts = opts or {}
+
+  if type(lhs) == 'table' then
+    -- Handle table of mappings
+    for key, action in pairs(lhs) do
+      vim.keymap.set(modes, key, action, opts)
+    end
+  else
+    -- Handle single mapping
+    vim.keymap.set(modes, lhs, rhs, opts)
+  end
+
+  return keymap -- Return keymap for chaining
+end
+
+-- Parse a mode string into an array of mode characters
+local function parse_modes(mode_str)
+  local modes = {}
+  for i = 1, #mode_str do
+    local char = mode_str:sub(i, i)
+    if valid_modes[char] then
+      table.insert(modes, char)
+    end
+  end
+  return modes
+end
+
+-- Create the metatable that powers the dynamic mode access
+local mt = {
+  __index = function(_, key)
+    -- If this mode combination is already cached, return it
+    if mode_cache[key] then
+      return mode_cache[key]
+    end
+
+    -- Check if this is a valid mode string
+    local modes = parse_modes(key)
+    if #modes > 0 then
+      -- Create and cache a function for this mode combination
+      local mode_fn = function(lhs, rhs, opts)
+        return perform_mapping(modes, lhs, rhs, opts)
+      end
+
+      mode_cache[key] = mode_fn
+      return mode_fn
+    end
+
+    return nil -- Not a valid mode key
+  end,
+
+  -- Make the keymap table directly callable
+  __call = function(_, modes, lhs, rhs, opts)
+    if type(modes) == 'string' then
+      -- Convert string to mode list
+      return perform_mapping(parse_modes(modes), lhs, rhs, opts)
+    else
+      -- Assume modes is already a list
+      return perform_mapping(modes, lhs, rhs, opts)
+    end
+  end,
+}
+
+local map = setmetatable(keymap, mt)
+
+-- Helper function for command mappings
+local cmd = function(command)
+  return '<cmd>' .. command .. '<CR>'
+end
+
 map.n({
   ['j'] = 'gj',
   ['k'] = 'gk',
@@ -52,22 +133,22 @@ map.i('<C-K>', function()
     if trimmed_line == '' then
       if row < total_lines then
         killed_text = '\n'
-        local next_line = vim.api.nvim_buf_get_lines(0, row, row + 1, false)[1] or ''
-        vim.api.nvim_buf_set_lines(0, row - 1, row + 1, false, { next_line })
+        local next_line = api.nvim_buf_get_lines(0, row, row + 1, false)[1] or ''
+        api.nvim_buf_set_lines(0, row - 1, row + 1, false, { next_line })
       end
     else
       killed_text = line
-      vim.api.nvim_set_current_line('')
+      api.nvim_set_current_line('')
     end
   else
     if col < #trimmed_line then
       killed_text = line:sub(col + 1)
-      vim.api.nvim_set_current_line(line:sub(1, col))
+      api.nvim_set_current_line(line:sub(1, col))
     else
       if row < total_lines then
         killed_text = '\n'
-        local next_line = vim.api.nvim_buf_get_lines(0, row, row + 1, false)[1] or ''
-        vim.api.nvim_buf_set_lines(0, row - 1, row + 1, false, { line .. next_line })
+        local next_line = api.nvim_buf_get_lines(0, row, row + 1, false)[1] or ''
+        api.nvim_buf_set_lines(0, row - 1, row + 1, false, { line .. next_line })
       end
     end
   end
@@ -232,3 +313,54 @@ map.n('gs', function()
     pcall(api.nvim_win_close, winid, true)
   end, { buffer = bufnr })
 end)
+
+map.n({
+  -- Lspsaga
+  ['[d'] = cmd('Lspsaga diagnostic_jump_next'),
+  [']d'] = cmd('Lspsaga diagnostic_jump_prev'),
+  ['K'] = cmd('Lspsaga hover_doc'),
+  ['ga'] = cmd('Lspsaga code_action'),
+  ['gr'] = cmd('Lspsaga rename'),
+  ['gd'] = cmd('Lspsaga peek_definition'),
+  ['gp'] = cmd('Lspsaga goto_definition'),
+  ['gh'] = cmd('Lspsaga finder'),
+  ['<Leader>o'] = cmd('Lspsaga outline'),
+  -- dbsession
+  ['<Leader>ss'] = cmd('SessionSave'),
+  ['<Leader>sl'] = cmd('SessionLoad'),
+  -- FzfLua
+  ['<Leader>b'] = cmd('FzfLua buffers'),
+  ['<Leader>fa'] = cmd('FzfLua live_grep_native'),
+  ['<Leader>fs'] = cmd('FzfLua grep_cword'),
+  ['<Leader>ff'] = cmd('FzfLua files'),
+  ['<Leader>fh'] = cmd('FzfLua helptags'),
+  ['<Leader>fo'] = cmd('FzfLua oldfiles'),
+  ['<Leader>fg'] = cmd('FzfLua git_files'),
+  ['<Leader>gc'] = cmd('FzfLua git_commits'),
+  ['<Leader>fc'] = cmd('FzfLua files cwd=$HOME/.config'),
+  -- flybuf.nvim
+  ['<Leader>j'] = cmd('FlyBuf'),
+  --gitsign
+  [']g'] = cmd('lua require"gitsigns".next_hunk()<CR>'),
+  ['[g'] = cmd('lua require"gitsigns".prev_hunk()<CR>'),
+})
+
+map.ni('<C-X><C-f>', cmd('Dired'))
+
+--template.nvim
+map.n('<Leader>t', function()
+  local tmp_name
+  if vim.bo.filetype == 'lua' then
+    tmp_name = 'nvim_temp'
+  end
+  if tmp_name then
+    vim.cmd('Template ' .. tmp_name)
+    return
+  end
+  return ':Template '
+end, { expr = true })
+
+-- Lspsaga floaterminal
+map.nt('<A-d>', cmd('Lspsaga term_toggle'))
+
+map.nx('ga', cmd('Lspsaga code_action'))
