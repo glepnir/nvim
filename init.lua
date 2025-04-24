@@ -90,6 +90,4 @@ opt.colorcolumn = '+0'
 
 vim.cmd.colorscheme('solarized')
 
--- Load Modules
-require('internal.event')
 require('internal.completion')

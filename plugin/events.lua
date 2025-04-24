@@ -58,6 +58,9 @@ au('LspAttach', {
     if vim.bo[args.buf].filetype == 'lua' and api.nvim_buf_get_name(args.buf):find('_spec') then
       vim.diagnostic.enable(false, { bufnr = args.buf })
     end
+
+    local client = vim.lsp.get_clients({ id = args.data.client_id })[1]
+    client.server_capabilities.semanticTokensProvider = nil
   end,
 })
 

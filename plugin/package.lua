@@ -298,10 +298,3 @@ vim.diagnostic.config({
     text = { '●', '●', '●', '●' },
   },
 })
-
-api.nvim_create_autocmd('LspAttach', {
-  callback = function(args)
-    local client = vim.lsp.get_clients({ id = args.data.client_id })[1]
-    client.server_capabilities.semanticTokensProvider = nil
-  end,
-})
