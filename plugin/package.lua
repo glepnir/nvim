@@ -28,41 +28,38 @@ async(function()
   local use = require('strive').use
 
   use('nvimdev/dashboard-nvim')
-    :config(function()
-      local db = require('dashboard')
-      db.setup({
-        theme = 'hyper',
-        config = {
-          week_header = {
-            enable = true,
+    :setup({
+      theme = 'hyper',
+      config = {
+        week_header = {
+          enable = true,
+        },
+        project = {
+          enable = false,
+        },
+        disable_move = true,
+        shortcut = {
+          {
+            desc = 'Update',
+            group = 'Include',
+            action = 'Strive update',
+            key = 'u',
           },
-          project = {
-            enable = false,
+          {
+            desc = 'Files',
+            group = 'Function',
+            action = 'FzfLua files',
+            key = 'f',
           },
-          disable_move = true,
-          shortcut = {
-            {
-              desc = 'Update',
-              group = 'Include',
-              action = 'Strive update',
-              key = 'u',
-            },
-            {
-              desc = 'Files',
-              group = 'Function',
-              action = 'FzfLua files',
-              key = 'f',
-            },
-            {
-              desc = 'Configs',
-              group = 'Constant',
-              action = 'FzfLua files cwd=$HOME/.config',
-              key = 'd',
-            },
+          {
+            desc = 'Configs',
+            group = 'Constant',
+            action = 'FzfLua files cwd=$HOME/.config',
+            key = 'd',
           },
         },
-      })
-    end)
+      },
+    })
     :cond(function()
       return vim.fn.argc() == 0
         and api.nvim_buf_line_count(0) == 0
