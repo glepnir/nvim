@@ -120,7 +120,7 @@ async(function()
   })
 
   use('nvim-treesitter/nvim-treesitter')
-    :on({ 'BufRead', 'BufNewFile' })
+    :on({ 'BufReadPost', 'BufNewFile' })
     :run('TSUpdate')
     :config(function()
       require('nvim-treesitter.configs').setup({
