@@ -114,22 +114,15 @@ au('InsertLeave', {
   desc = 'auto switch to abc input',
 })
 
-au('CmdlineLeave', {
-  group = group,
-  once = true,
-  callback = function()
-    if vim.v.event.cmdtype ~= '/' then
-      return
+au('FileType', {
+  callback = function(args)
+    local ok = pcall(vim.treesitter.get_parser, args.buf)
+    if ok and vim.wo.foldmethod ~= 'expr' then
+      vim.wo.foldmethod = 'expr'
+      vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+      vim.defer_fn(function()
+        vim.cmd('normal! zx')
+      end, 50)
     end
-    au({ 'InsertEnter', 'CursorHold' }, {
-      group = group,
-      callback = function()
-        if vim.v.hlsearch == 0 then
-          return
-        end
-        local keycode = api.nvim_replace_termcodes('<Cmd>nohl<CR>', true, false, true)
-        api.nvim_feedkeys(keycode, 'n', false)
-      end,
-    })
   end,
 })

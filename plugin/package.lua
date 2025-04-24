@@ -168,19 +168,6 @@ async(function()
         },
       })
 
-      vim.api.nvim_create_autocmd('FileType', {
-        callback = function(args)
-          local ok = pcall(vim.treesitter.get_parser, args.buf)
-          if ok and vim.wo.foldmethod ~= 'expr' then
-            vim.wo.foldmethod = 'expr'
-            vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-            vim.defer_fn(function()
-              vim.cmd('normal! zx')
-            end, 50)
-          end
-        end,
-      })
-
       vim.schedule(function()
         require('nvim-treesitter.configs').setup({
           textobjects = {
