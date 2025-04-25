@@ -115,6 +115,7 @@ au('InsertLeave', {
 })
 
 au('FileType', {
+  group = group,
   callback = function(args)
     local ok = pcall(vim.treesitter.get_parser, args.buf)
     if ok and vim.wo.foldmethod ~= 'expr' then
@@ -125,4 +126,12 @@ au('FileType', {
       end, 50)
     end
   end,
+})
+
+au('InsertEnter', {
+  group = group,
+  callback = function()
+    require('internal.pairs')
+  end,
+  desc = 'auto pairs',
 })

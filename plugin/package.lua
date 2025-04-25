@@ -109,7 +109,6 @@ async(function()
     end)
     :depends('nvimdev/guard-collection')
 
-  use('nvimdev/fnpairs.nvim'):on('InsertEnter'):setup()
   use('nvimdev/dbsession.nvim'):cmd({ 'SessionSave', 'SessionLoad', 'SessionDelete' })
 
   use('ibhagwan/fzf-lua'):cmd('FzfLua'):setup({
@@ -275,6 +274,8 @@ async(function()
     })
     :load_path(devpath)
 end)(installed)
+
+vim.lsp.log.set_level(vim.log.levels.OFF)
 
 vim.diagnostic.config({
   virtual_text = { current_line = true },
