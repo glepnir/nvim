@@ -88,4 +88,7 @@ opt.signcolumn = 'yes'
 opt.textwidth = 80
 opt.colorcolumn = '+0'
 
+opt.cot = 'menu,menuone,noinsert,fuzzy,popup'
+opt.cia = 'kind,abbr,menu'
+
 vim.cmd.colorscheme('solarized')

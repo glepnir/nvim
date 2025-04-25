@@ -1,25 +1,13 @@
-local api, completion, lsp = vim.api, vim.lsp.completion, vim.lsp
-local ms = lsp.protocol.Methods
-local g = api.nvim_create_augroup('glepnir.completion', { clear = true })
+local api = vim.api
+local au = api.nvim_create_autocmd
 
-vim.opt.cot = 'menu,menuone,noinsert,fuzzy,popup'
-vim.opt.cia = 'kind,abbr,menu'
-
-api.nvim_create_autocmd('CompleteChanged', {
-  callback = function()
-    local info = vim.fn.complete_info({ 'selected' })
-    if info.preview_bufnr then
-      vim.bo[info.preview_bufnr].filetype = 'markdown'
-      vim.wo[info.preview_winid].conceallevel = 2
-      vim.wo[info.preview_winid].concealcursor = 'niv'
-      vim.wo[info.preview_winid].wrap = true
-    end
-  end,
-})
-
-api.nvim_create_autocmd('LspAttach', {
-  group = g,
+au('LspAttach', {
+  group = api.nvim_create_augroup('glepnir.completion', { clear = true }),
   callback = function(args)
+    local lsp = vim.lsp
+    local completion = lsp.completion
+    local ms = lsp.protocol.Methods
+
     local bufnr = args.buf
     local client = lsp.get_client_by_id(args.data.client_id)
     if not client or not client:supports_method(ms.textDocument_completion) then
@@ -58,16 +46,30 @@ api.nvim_create_autocmd('LspAttach', {
       end,
     })
 
-    api.nvim_create_autocmd('TextChangedP', {
+    au('TextChangedP', {
       buffer = bufnr,
       group = g,
       command = 'let g:_ts_force_sync_parsing = v:true',
     })
 
-    api.nvim_create_autocmd('CompleteDone', {
+    au('CompleteDone', {
       buffer = bufnr,
       group = g,
       command = 'let g:_ts_force_sync_parsing = v:false',
+    })
+
+    au('CompleteChanged', {
+      group = g,
+      buffer = bufnr,
+      callback = function()
+        local info = vim.fn.complete_info({ 'selected' })
+        if info.preview_bufnr then
+          vim.bo[info.preview_bufnr].filetype = 'markdown'
+          vim.wo[info.preview_winid].conceallevel = 2
+          vim.wo[info.preview_winid].concealcursor = 'niv'
+          vim.wo[info.preview_winid].wrap = true
+        end
+      end,
     })
   end,
 })

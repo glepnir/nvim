@@ -1,6 +1,6 @@
 local api = vim.api
 local au = api.nvim_create_autocmd
-local group = vim.api.nvim_create_augroup('GlepnirGroup', {})
+local group = api.nvim_create_augroup('GlepnirGroup', {})
 
 au('BufWritePre', {
   group = group,
@@ -24,6 +24,16 @@ au('BufEnter', {
   desc = 'Lazy load my keymap and buffer relate commands and defaul opt plugins',
 })
 
+au('ExitPre', {
+  group = group,
+  callback = function()
+    if vim.env.TERM == 'alacritty' then
+      vim.o.guicursor = 'a:ver90'
+    end
+  end,
+  desc = 'Set cursor back to beam when leaving Neovim.',
+})
+
 --disable diagnostic in neovim test file *_spec.lua
 au('FileType', {
   group = group,
@@ -36,24 +46,13 @@ au('FileType', {
   end,
 })
 
-if vim.env.TERM == 'alacritty' then
-  au('ExitPre', {
-    group = group,
-    command = 'set guicursor=a:ver90',
-    desc = 'Set cursor back to beam when leaving Neovim.',
-  })
-end
-
 au('TermOpen', {
   group = group,
-  callback = function()
-    vim.opt_local.stc = ''
-    vim.wo.number = false
-    vim.cmd.startinsert()
-  end,
+  command = 'setl stc= nonumber | startinsert!',
 })
 
 au('LspAttach', {
+  group = group,
   callback = function(args)
     if vim.bo[args.buf].filetype == 'lua' and api.nvim_buf_get_name(args.buf):find('_spec') then
       vim.diagnostic.enable(false, { bufnr = args.buf })
