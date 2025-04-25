@@ -14,6 +14,8 @@ function BracketPair.new()
     ["'"] = "'",
     ['`'] = '`',
   }
+  -- Extend with any user-defined pairs
+  self.pairs = vim.tbl_extend('keep', self.pairs, vim.g.fnpairs or {})
   return self
 end
 
@@ -23,6 +25,22 @@ end
 
 function BracketPair:is_opening(char)
   return self.pairs[char] ~= nil
+end
+
+function BracketPair:is_balanced(str, opening_char)
+  local stack = {}
+  for i = 1, #str do
+    local c = str:sub(i, i)
+    if self.pairs[c] then
+      table.insert(stack, c)
+    elseif c == self.pairs[opening_char] then
+      if #stack == 0 or stack[#stack] ~= opening_char then
+        return false
+      end
+      table.remove(stack)
+    end
+  end
+  return true
 end
 
 -- Class for managing editor state
@@ -53,7 +71,7 @@ function State:get_char_after()
   return nil
 end
 
--- Action classes using composition instead of inheritance
+-- Action classes
 local ActionType = {
   SKIP = 'skip',
   INSERT = 'insert',
@@ -61,6 +79,36 @@ local ActionType = {
   NOTHING = 'nothing',
 }
 
+local Action = {}
+Action.__index = Action
+
+function Action.skip()
+  return setmetatable({
+    type = ActionType.SKIP,
+  }, Action)
+end
+
+function Action.insert(opening, closing)
+  return setmetatable({
+    type = ActionType.INSERT,
+    opening = opening,
+    closing = closing,
+  }, Action)
+end
+
+function Action.delete()
+  return setmetatable({
+    type = ActionType.DELETE,
+  }, Action)
+end
+
+function Action.nothing()
+  return setmetatable({
+    type = ActionType.NOTHING,
+  }, Action)
+end
+
+-- Action handler
 local ActionHandler = {}
 
 function ActionHandler.handle(action, state, bracket_pairs)
@@ -71,7 +119,6 @@ function ActionHandler.handle(action, state, bracket_pairs)
   elseif action.type == ActionType.DELETE then
     local before = state:get_char_before()
     local after = state:get_char_after()
-
     if before and after and bracket_pairs:get_closing(before) == after then
       return '<BS><Del>'
     end
@@ -94,35 +141,20 @@ end
 function Pairs:determine_action(char, state)
   -- Handle visual mode
   if state.mode == 'v' or state.mode == 'V' then
-    return {
-      type = ActionType.INSERT,
-      opening = char,
-      closing = self.bracket_pairs:get_closing(char),
-    }
+    return Action.insert(char, self.bracket_pairs:get_closing(char))
   end
 
   -- Check if we should skip closing bracket
   local next_char = state:get_char_after()
   if next_char and next_char == self.bracket_pairs:get_closing(char) then
-    return { type = ActionType.SKIP }
+    -- Check bracket balance
+    local substr = state.line:sub(state.cursor[2] + 1)
+    if self.bracket_pairs:is_balanced(substr, char) then
+      return Action.skip()
+    end
   end
 
-  -- Handle apostrophe in code (don't pair if preceded by word character)
-  local prev_char = state:get_char_before()
-  if char == "'" and prev_char and string.match(prev_char, '[%w]') then
-    return {
-      type = ActionType.INSERT,
-      opening = char,
-      closing = '',
-    }
-  end
-
-  -- Default: insert pair
-  return {
-    type = ActionType.INSERT,
-    opening = char,
-    closing = self.bracket_pairs:get_closing(char),
-  }
+  return Action.insert(char, self.bracket_pairs:get_closing(char))
 end
 
 function Pairs:handle_char(char)
@@ -133,8 +165,7 @@ end
 
 function Pairs:handle_backspace()
   local state = State.new()
-  local action = { type = ActionType.DELETE }
-  return ActionHandler.handle(action, state, self.bracket_pairs)
+  return ActionHandler.handle(Action.delete(), state, self.bracket_pairs)
 end
 
 function Pairs:setup()
@@ -142,7 +173,7 @@ function Pairs:setup()
   local plugin = self
 
   -- Setup bracket pairs
-  for opening, _ in pairs(plugin.bracket_pairs.pairs) do
+  for opening, _ in pairs(self.bracket_pairs.pairs) do
     vim.keymap.set('i', opening, function()
       return plugin:handle_char(opening)
     end, { expr = true })
