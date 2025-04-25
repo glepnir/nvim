@@ -113,6 +113,7 @@ async(function()
 
   use('ibhagwan/fzf-lua'):cmd('FzfLua'):setup({
     'max-perf',
+    lsp = { symbols = { symbol_style = 3 } },
   })
 
   use('nvim-treesitter/nvim-treesitter')

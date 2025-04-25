@@ -324,7 +324,7 @@ map.n({
   ['gd'] = cmd('Lspsaga peek_definition'),
   ['gp'] = cmd('Lspsaga goto_definition'),
   ['gh'] = cmd('Lspsaga finder'),
-  ['<Leader>o'] = cmd('Lspsaga outline'),
+  -- ['<Leader>o'] = cmd('Lspsaga outline'),
   -- dbsession
   ['<Leader>ss'] = cmd('SessionSave'),
   ['<Leader>sl'] = cmd('SessionLoad'),
@@ -337,6 +337,7 @@ map.n({
   ['<Leader>fo'] = cmd('FzfLua oldfiles'),
   ['<Leader>fg'] = cmd('FzfLua git_files'),
   ['<Leader>gc'] = cmd('FzfLua git_commits'),
+  ['<Leader>o'] = cmd('FzfLua lsp_document_symbols'),
   ['<Leader>fc'] = cmd('FzfLua files cwd=$HOME/.config'),
   -- flybuf.nvim
   ['<Leader>j'] = cmd('FlyBuf'),
