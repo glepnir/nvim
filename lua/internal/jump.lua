@@ -30,7 +30,7 @@ local function cleanup()
 end
 
 local function generate_keys(count)
-  local keys = 'asdghklqwertyuiopzxcvbnmfj'
+  local keys = 'asdghklqwertyuiopzxcvbnmfjASDGHLQWERTYUIOPZXCVBNMFJ'
   local key_len = #keys
   local result = {}
 
@@ -38,23 +38,8 @@ local function generate_keys(count)
     for i = 1, count do
       table.insert(result, string.sub(keys, i, i))
     end
-    return result, 1
-  else
-    local index = 1
-    for i = 1, key_len do
-      for j = 1, key_len do
-        table.insert(result, string.sub(keys, i, i) .. string.sub(keys, j, j))
-        index = index + 1
-        if index > count then
-          break
-        end
-      end
-      if index > count then
-        break
-      end
-    end
-    return result, 2 -- 双字符模式
   end
+  return result
 end
 
 local function mark_targets(targets)
@@ -64,27 +49,18 @@ local function mark_targets(targets)
 
   api.nvim_buf_clear_namespace(0, state.ns_id, 0, -1)
 
-  local keys, keyseq_length = generate_keys(#targets)
+  local keys = generate_keys(#targets)
 
   state.key_map = {}
   state.pending_key = nil
-  state.keyseq_length = keyseq_length
 
   for i, target in ipairs(targets) do
     if i <= #keys then
       local key = keys[i]
 
-      if keyseq_length == 1 then
-        state.key_map[key] = target
-      else
-        if not state.key_map[key:sub(1, 1)] then
-          state.key_map[key:sub(1, 1)] = {}
-        end
-        state.key_map[key:sub(1, 1)][key:sub(2, 2)] = target
-      end
-
+      state.key_map[key] = target
       api.nvim_buf_set_extmark(0, state.ns_id, target.row, target.col, {
-        virt_text = { { keyseq_length == 1 and key or key:sub(1, 1), 'JumpMotionTarget' } },
+        virt_text = { { key, 'JumpMotionTarget' } },
         virt_text_pos = 'overlay',
         priority = 100,
       })
@@ -101,43 +77,13 @@ local function mark_targets(targets)
       return
     end
 
-    if state.keyseq_length == 1 then
-      local target = state.key_map[char]
-      if target then
-        api.nvim_win_set_cursor(0, { target.row + 1, target.col })
-        cleanup()
-        return ''
-      end
+    local target = state.key_map[char]
+    if target then
+      api.nvim_win_set_cursor(0, { target.row + 1, target.col })
       cleanup()
-    else
-      -- double
-      if not state.pending_key then
-        if state.key_map[char] then
-          state.pending_key = char
-
-          api.nvim_buf_clear_namespace(0, state.ns_id, 0, -1)
-
-          for second_key, target in pairs(state.key_map[char]) do
-            api.nvim_buf_set_extmark(0, state.ns_id, target.row, target.col, {
-              virt_text = { { second_key, M.config.hl_group } },
-              virt_text_pos = 'overlay',
-              priority = 100,
-            })
-          end
-        else
-          cleanup()
-        end
-      else
-        ---@diagnostic disable-next-line: redefined-local
-        local targets = state.key_map[state.pending_key]
-        if targets and targets[char] then
-          api.nvim_win_set_cursor(targets[char].row + 1, targets[char].col)
-          cleanup()
-          return ''
-        end
-        cleanup()
-      end
+      return ''
     end
+    cleanup()
   end
 
   vim.on_key(state.on_key_func, state.ns_id)
