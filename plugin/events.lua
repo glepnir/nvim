@@ -114,6 +114,7 @@ au('InsertLeave', {
 })
 
 au('FileType', {
+  pattern = program_ft,
   group = group,
   callback = function(args)
     local ok = pcall(vim.treesitter.get_parser, args.buf)
