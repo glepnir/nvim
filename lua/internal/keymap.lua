@@ -365,3 +365,5 @@ end, { expr = true })
 map.nt('<A-d>', cmd('Lspsaga term_toggle'))
 
 map.nx('ga', cmd('Lspsaga code_action'))
+
+map.n('f', require('internal.jump').char)
