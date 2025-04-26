@@ -30,7 +30,7 @@ local function cleanup()
 end
 
 local function generate_keys(count)
-  local keys = 'asdghklqwertyuiopzxcvbnmfjASDGHLQWERTYUIOPZXCVBNMFJ'
+  local keys = 'asdghklqwertyuiopzxcvbnmjASDGHLQWERTYUIOPZXCVBNMFJ'
   local key_len = #keys
   local result = {}
 
