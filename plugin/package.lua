@@ -1,6 +1,6 @@
-local api, uv = vim.api, vim.uv
+local api, uv, fs = vim.api, vim.uv, vim.fs
 local data_dir = vim.fn.stdpath('data')
-local strive_path = vim.fs.joinpath(data_dir, 'site', 'pack', 'strive', 'opt', 'strive')
+local strive_path = fs.joinpath(data_dir, 'site', 'pack', 'strive', 'opt', 'strive')
 local devpath = '/Users/mw/workspace'
 
 local installed = (uv.fs_stat(strive_path) or {}).type == 'directory'
@@ -185,6 +185,15 @@ async(function()
 
   use('nvimdev/phoenix.nvim'):ft(program_ft)
   use('neovim/nvim-lspconfig'):ft(program_ft):config(function()
+    vim.lsp.log.set_level(vim.log.levels.OFF)
+
+    vim.diagnostic.config({
+      virtual_text = { current_line = true },
+      signs = {
+        text = { '●', '●', '●', '●' },
+      },
+    })
+
     vim.lsp.config('lua_ls', {
       on_init = function(client)
         if client.workspace_folders then
@@ -284,12 +293,3 @@ async(function()
     })
     :load_path(devpath)
 end)(installed)
-
-vim.lsp.log.set_level(vim.log.levels.OFF)
-
-vim.diagnostic.config({
-  virtual_text = { current_line = true },
-  signs = {
-    text = { '●', '●', '●', '●' },
-  },
-})

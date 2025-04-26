@@ -1,4 +1,3 @@
--- local map = require('core.keymap')
 local api = vim.api
 
 -- Create a smart keymap wrapper using metatables
@@ -14,15 +13,16 @@ local mode_cache = {}
 -- Function that performs the actual mapping
 local function perform_mapping(modes, lhs, rhs, opts)
   opts = opts or {}
+  local mapset = vim.keymap.set
 
   if type(lhs) == 'table' then
     -- Handle table of mappings
     for key, action in pairs(lhs) do
-      vim.keymap.set(modes, key, action, opts)
+      mapset(modes, key, action, opts)
     end
   else
     -- Handle single mapping
-    vim.keymap.set(modes, lhs, rhs, opts)
+    mapset(modes, lhs, rhs, opts)
   end
 
   return keymap -- Return keymap for chaining
@@ -174,7 +174,7 @@ map.t({
 
 -- insert cut text to paste
 map.i('<A-w>', function()
-  local mark = vim.api.nvim_buf_get_mark(0, 'a')
+  local mark = api.nvim_buf_get_mark(0, 'a')
   local lnum, col = unpack(api.nvim_win_get_cursor(0))
   if mark[1] == 0 then
     api.nvim_buf_set_mark(0, 'a', lnum, col, {})
