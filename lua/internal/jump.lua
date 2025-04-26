@@ -67,7 +67,7 @@ local function mark_targets(targets)
     end
   end
 
-  state.on_key_func = function(char)
+  state.on_key_func = function(char, typed)
     if not state.active then
       return
     end
@@ -77,7 +77,7 @@ local function mark_targets(targets)
       return
     end
 
-    local target = state.key_map[char]
+    local target = state.key_map[typed]
     if target then
       api.nvim_win_set_cursor(0, { target.row + 1, target.col })
       cleanup()
