@@ -345,24 +345,13 @@ map.n({
   ['[g'] = cmd('lua require"gitsigns".prev_hunk()<CR>'),
 })
 
-map.ni('<C-X><C-f>', cmd('Dired'))
-
---template.nvim
-map.n('<Leader>t', function()
-  local tmp_name
-  if vim.bo.filetype == 'lua' then
-    tmp_name = 'nvim_temp'
-  end
-  if tmp_name then
-    vim.cmd('Template ' .. tmp_name)
-    return
-  end
-  return ':Template '
-end, { expr = true })
+map.n('<C-X><C-f>', cmd('Dired'))
 
 -- Lspsaga floaterminal
 map.nt('<A-d>', cmd('Lspsaga term_toggle'))
 
 map.nx('ga', cmd('Lspsaga code_action'))
 
-map.n('f', require('internal.jump').char)
+map.n('f', function()
+  require('internal.jump').char()
+end)

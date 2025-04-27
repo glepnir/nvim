@@ -1,3 +1,5 @@
+-- Minimal asynchronous fast jump based on rg
+
 local api = vim.api
 local M = {}
 
@@ -7,16 +9,14 @@ local state = {
   ns_id = nil,
   key_map = {},
   on_key_func = nil,
-  pending_key = nil,
-  keyseq_length = 1,
+  max_targets = 62, -- keys count
 }
 
 local function cleanup()
   if state.active then
     if state.ns_id then
-      vim.api.nvim_buf_clear_namespace(0, state.ns_id, 0, -1)
+      api.nvim_buf_clear_namespace(0, state.ns_id, 0, -1)
     end
-
     if state.on_key_func then
       vim.on_key(nil, state.ns_id)
       state.on_key_func = nil
@@ -25,20 +25,18 @@ local function cleanup()
     state.active = false
     state.mode = nil
     state.key_map = {}
-    state.pending_key = nil
   end
 end
 
 local function generate_keys(count)
-  local keys = 'asdghklqwertyuiopzxcvbnmjASDGHLQWERTYUIOPZXCVBNMFJ'
+  local keys = 'asdfghjklzxcvbnmqwertyuiopASDFGHJKLZXCVBNMQWERTYUIOP1234567890'
   local key_len = #keys
   local result = {}
 
-  if count <= key_len then
-    for i = 1, count do
-      table.insert(result, string.sub(keys, i, i))
-    end
+  for i = 1, math.min(count, key_len) do
+    table.insert(result, string.sub(keys, i, i))
   end
+
   return result
 end
 
@@ -50,15 +48,13 @@ local function mark_targets(targets)
   api.nvim_buf_clear_namespace(0, state.ns_id, 0, -1)
 
   local keys = generate_keys(#targets)
-
   state.key_map = {}
-  state.pending_key = nil
 
   for i, target in ipairs(targets) do
     if i <= #keys then
       local key = keys[i]
-
       state.key_map[key] = target
+
       api.nvim_buf_set_extmark(0, state.ns_id, target.row, target.col, {
         virt_text = { { key, 'JumpMotionTarget' } },
         virt_text_pos = 'overlay',
@@ -83,58 +79,88 @@ local function mark_targets(targets)
       cleanup()
       return ''
     end
+
     cleanup()
   end
 
   vim.on_key(state.on_key_func, state.ns_id)
 end
 
--- char jump
 function M.char(char_to_find)
-  if state.active then
-    cleanup()
-  end
-
-  local char_input = char_to_find
-
-  if not char_input then
-    local ok, char = pcall(function()
-      return vim.fn.nr2char(vim.fn.getchar())
-    end)
-    if not ok or not char or char == '' or char == vim.fn.nr2char(27) then
-      return false
+  async(function()
+    if state.active then
+      cleanup()
     end
-    char_input = char
-  end
 
-  state.active = true
-  state.mode = 'char'
-
-  local first_line = vim.fn.line('w0') - 1
-  local last_line = vim.fn.line('w$')
-
-  local lines = api.nvim_buf_get_lines(0, first_line, last_line, false)
-  local targets = {}
-
-  for i, line in ipairs(lines) do
-    local row = first_line + i - 1
-    local pos = 0
-
-    while true do
-      pos = string.find(line, char_input, pos + 1, true)
-      if not pos then
-        break
+    local char_input = char_to_find
+    if not char_input then
+      local ok, char = pcall(function()
+        return vim.fn.nr2char(vim.fn.getchar())
+      end)
+      if not ok or not char or char == '' or char == vim.fn.nr2char(27) then
+        return false
       end
-
-      table.insert(targets, { row = row, col = pos - 1 })
+      char_input = char
     end
-  end
 
-  if #targets == 0 then
-    return
-  end
+    state.active = true
+    state.mode = 'char'
 
-  mark_targets(targets)
+    local first_line = vim.fn.line('w0') - 1
+    local last_line = vim.fn.line('w$')
+    local lines = api.nvim_buf_get_lines(0, first_line, last_line, false)
+    local visible_text = table.concat(lines, '\n')
+
+    local cmd = {
+      'rg',
+      '--json',
+      '--fixed-strings',
+      char_input,
+    }
+
+    local result = await(asystem(cmd, { stdin = visible_text }))
+
+    local targets = {}
+    local count = 0
+
+    if result.stdout then
+      for line in string.gmatch(result.stdout, '[^\r\n]+') do
+        if line:find('"type":"match"') then
+          local ok, json = pcall(vim.json.decode, line)
+          if ok and json and json.type == 'match' and json.data then
+            local row = json.data.line_number - 1
+
+            if json.data.submatches and #json.data.submatches > 0 then
+              for _, submatch in ipairs(json.data.submatches) do
+                local col = submatch.start
+
+                table.insert(targets, {
+                  row = first_line + row,
+                  col = col,
+                })
+
+                count = count + 1
+                if count >= state.max_targets then
+                  break
+                end
+              end
+            end
+
+            if count >= state.max_targets then
+              break
+            end
+          end
+        end
+      end
+    end
+
+    if #targets == 0 then
+      cleanup()
+      return
+    end
+
+    mark_targets(targets)
+  end)()
 end
 
 api.nvim_set_hl(0, 'JumpMotionTarget', {
