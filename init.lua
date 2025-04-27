@@ -87,6 +87,7 @@ opt.signcolumn = 'yes'
 
 opt.textwidth = 80
 opt.colorcolumn = '+0'
+opt.winborder = 'rounded'
 
 opt.cot = 'menu,menuone,noinsert,fuzzy,popup'
 opt.cia = 'kind,abbr,menu'

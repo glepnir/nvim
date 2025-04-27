@@ -318,7 +318,6 @@ map.n({
   -- Lspsaga
   ['[d'] = cmd('Lspsaga diagnostic_jump_next'),
   [']d'] = cmd('Lspsaga diagnostic_jump_prev'),
-  ['K'] = cmd('Lspsaga hover_doc'),
   ['ga'] = cmd('Lspsaga code_action'),
   ['gr'] = cmd('Lspsaga rename'),
   ['gd'] = cmd('Lspsaga peek_definition'),
