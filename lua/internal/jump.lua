@@ -88,6 +88,10 @@ local function mark_targets(targets)
 end
 
 function M.char(direction)
+  if vim.fn.executable('rg') == 0 then
+    return
+  end
+
   return function()
     async(function()
       if state.active then
@@ -111,8 +115,8 @@ function M.char(direction)
         return
       end
       local last_line = vim.fn.line('w$')
-      local srow = direction == FORWARD and curow or first_line
-      local erow = direction == BACKWARD and curow or last_line
+      local srow = direction == FORWARD and curow + 1 or first_line
+      local erow = direction == BACKWARD and curow - 1 or last_line
       local lines = api.nvim_buf_get_lines(0, srow, erow, false)
       local visible_text = table.concat(lines, '\n')
 
@@ -140,7 +144,7 @@ function M.char(direction)
                   local col = submatch.start
 
                   table.insert(targets, {
-                    row = first_line + row,
+                    row = srow + row,
                     col = col,
                   })
 
