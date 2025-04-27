@@ -353,5 +353,9 @@ map.nt('<A-d>', cmd('Lspsaga term_toggle'))
 map.nx('ga', cmd('Lspsaga code_action'))
 
 map.n('f', function()
-  require('internal.jump').char()
+  require('internal.jump').charForward()
+end)
+
+map.n('F', function()
+  require('internal.jump').charBackward()
 end)

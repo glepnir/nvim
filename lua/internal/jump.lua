@@ -2,6 +2,7 @@
 
 local api = vim.api
 local M = {}
+local FORWARD, BACKWARD = 1, -1
 
 local state = {
   active = false,
@@ -86,81 +87,86 @@ local function mark_targets(targets)
   vim.on_key(state.on_key_func, state.ns_id)
 end
 
-function M.char(char_to_find)
-  async(function()
-    if state.active then
-      cleanup()
-    end
+function M.char(direction)
+  return function()
+    async(function()
+      if state.active then
+        cleanup()
+      end
 
-    local char_input = char_to_find
-    if not char_input then
       local ok, char = pcall(function()
         return vim.fn.nr2char(vim.fn.getchar())
       end)
       if not ok or not char or char == '' or char == vim.fn.nr2char(27) then
         return false
       end
-      char_input = char
-    end
+      local char_input = char
 
-    state.active = true
-    state.mode = 'char'
+      state.active = true
+      state.mode = 'char'
 
-    local first_line = vim.fn.line('w0') - 1
-    local last_line = vim.fn.line('w$')
-    local lines = api.nvim_buf_get_lines(0, first_line, last_line, false)
-    local visible_text = table.concat(lines, '\n')
+      local first_line = vim.fn.line('w0') - 1
+      local curow = api.nvim_win_get_cursor(0)[1] - 1
+      if curow == 0 and direction == BACKWARD then
+        return
+      end
+      local last_line = vim.fn.line('w$')
+      local srow = direction == FORWARD and curow or first_line
+      local erow = direction == BACKWARD and curow or last_line
+      local lines = api.nvim_buf_get_lines(0, srow, erow, false)
+      local visible_text = table.concat(lines, '\n')
 
-    local cmd = {
-      'rg',
-      '--json',
-      '--fixed-strings',
-      char_input,
-    }
+      local cmd = {
+        'rg',
+        '--json',
+        '--fixed-strings',
+        char_input,
+      }
 
-    local result = await(asystem(cmd, { stdin = visible_text }))
+      local result = await(asystem(cmd, { stdin = visible_text }))
 
-    local targets = {}
-    local count = 0
+      local targets = {}
+      local count = 0
 
-    if result.stdout then
-      for line in string.gmatch(result.stdout, '[^\r\n]+') do
-        if line:find('"type":"match"') then
-          local ok, json = pcall(vim.json.decode, line)
-          if ok and json and json.type == 'match' and json.data then
-            local row = json.data.line_number - 1
+      if result.stdout then
+        for line in string.gmatch(result.stdout, '[^\r\n]+') do
+          if line:find('"type":"match"') then
+            local ok, json = pcall(vim.json.decode, line)
+            if ok and json and json.type == 'match' and json.data then
+              local row = json.data.line_number - 1
 
-            if json.data.submatches and #json.data.submatches > 0 then
-              for _, submatch in ipairs(json.data.submatches) do
-                local col = submatch.start
+              if json.data.submatches and #json.data.submatches > 0 then
+                for _, submatch in ipairs(json.data.submatches) do
+                  local col = submatch.start
 
-                table.insert(targets, {
-                  row = first_line + row,
-                  col = col,
-                })
+                  table.insert(targets, {
+                    row = first_line + row,
+                    col = col,
+                  })
 
-                count = count + 1
-                if count >= state.max_targets then
-                  break
+                  count = count + 1
+                  if count >= state.max_targets then
+                    break
+                  end
                 end
               end
-            end
 
-            if count >= state.max_targets then
-              break
+              if count >= state.max_targets then
+                break
+              end
             end
           end
         end
       end
-    end
 
-    if #targets == 0 then
-      cleanup()
-      return
-    end
+      if #targets == 0 then
+        cleanup()
+        return
+      end
 
-    mark_targets(targets)
-  end)()
+      mark_targets(targets)
+    end)()
+  end
 end
 
 api.nvim_set_hl(0, 'JumpMotionTarget', {
@@ -176,4 +182,4 @@ api.nvim_create_autocmd({ 'CursorMoved', 'InsertEnter', 'BufLeave', 'WinLeave' }
   end,
 })
 
-return { char = M.char }
+return { charForward = M.char(FORWARD), charBackward = M.char(BACKWARD) }
