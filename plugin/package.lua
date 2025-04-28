@@ -77,7 +77,7 @@ async(function()
       untracked = { text = '┃' },
     },
   })
-  use('nvimdev/dired.nvim'):cmd('Dired'):load_path(devpath)
+  use('nvimdev/dired.nvim'):cmd('Dired')
   use('nvimdev/indentmini.nvim')
     :on('BufEnter */*')
     :init(function()
