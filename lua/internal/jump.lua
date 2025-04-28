@@ -115,9 +115,23 @@ function M.char(direction)
         return
       end
       local last_line = vim.fn.line('w$')
-      local srow = direction == FORWARD and curow + 1 or first_line
-      local erow = direction == BACKWARD and curow - 1 or last_line
-      local lines = api.nvim_buf_get_lines(0, srow, erow, false)
+
+      local lines
+      local base_row
+
+      if direction == FORWARD then
+        base_row = curow + 1
+        lines = api.nvim_buf_get_lines(0, curow + 1, last_line, false)
+      else
+        base_row = first_line
+        lines = api.nvim_buf_get_lines(0, first_line, curow, false)
+        local reversed_lines = {}
+        for i = #lines, 1, -1 do
+          table.insert(reversed_lines, lines[i])
+        end
+        lines = reversed_lines
+      end
+
       local visible_text = table.concat(lines, '\n')
 
       local cmd = {
@@ -143,8 +157,15 @@ function M.char(direction)
                 for _, submatch in ipairs(json.data.submatches) do
                   local col = submatch.start
 
+                  local actual_row
+                  if direction == FORWARD then
+                    actual_row = base_row + row
+                  else
+                    actual_row = curow - 1 - row
+                  end
+
                   table.insert(targets, {
-                    row = srow + row,
+                    row = actual_row,
                     col = col,
                   })
 
@@ -161,6 +182,12 @@ function M.char(direction)
             end
           end
         end
+      end
+
+      if direction == BACKWARD then
+        table.sort(targets, function(a, b)
+          return a.row < b.row
+        end)
       end
 
       if #targets == 0 then
