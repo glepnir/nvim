@@ -201,7 +201,7 @@ function M.char(direction)
 end
 
 api.nvim_set_hl(0, 'JumpMotionTarget', {
-  fg = '#ff0000',
+  fg = '#ff4800',
   bold = true,
 })
 
