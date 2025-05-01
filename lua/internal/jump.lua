@@ -10,7 +10,7 @@ local state = {
   ns_id = nil,
   key_map = {},
   on_key_func = nil,
-  max_targets = 61, -- keys count
+  max_targets = 60, -- keys count
 }
 
 local function cleanup()
@@ -34,7 +34,7 @@ local function cleanup()
 end
 
 local function generate_keys(count)
-  local keys = 'asdghjklzxcvbnmqwertyuiopASDFGHJLZXCVBNMQWERTYUIOP1234567890'
+  local keys = 'asdghjklzxcvbnmqwertyuiopASDGHJLZXCVBNMQWERTYUIOP1234567890'
   local key_len = #keys
   local result = {}
 
