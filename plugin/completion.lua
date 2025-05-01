@@ -63,11 +63,10 @@ au('LspAttach', {
       buffer = bufnr,
       callback = function()
         local info = vim.fn.complete_info({ 'selected' })
-        if info.preview_bufnr then
+        if info.preview_bufnr and vim.bo[info.preview_bufnr].filetype == '' then
           vim.bo[info.preview_bufnr].filetype = 'markdown'
           vim.wo[info.preview_winid].conceallevel = 2
           vim.wo[info.preview_winid].concealcursor = 'niv'
-          vim.wo[info.preview_winid].wrap = true
         end
       end,
     })

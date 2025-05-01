@@ -26,11 +26,15 @@ local function cleanup()
     state.active = false
     state.mode = nil
     state.key_map = {}
+
+    if state.id then
+      api.nvim_del_autocmd(state.id)
+    end
   end
 end
 
 local function generate_keys(count)
-  local keys = 'asdfghjklzxcvbnmqwertyuiopASDFGHJLZXCVBNMQWERTYUIOP1234567890'
+  local keys = 'asdghjklzxcvbnmqwertyuiopASDFGHJLZXCVBNMQWERTYUIOP1234567890'
   local key_len = #keys
   local result = {}
 
@@ -85,6 +89,15 @@ local function mark_targets(targets)
   end
 
   vim.on_key(state.on_key_func, state.ns_id)
+
+  state.id = api.nvim_create_autocmd({ 'CursorMoved', 'InsertEnter', 'BufLeave', 'WinLeave' }, {
+    once = true,
+    callback = function()
+      if state.active then
+        cleanup()
+      end
+    end,
+  })
 end
 
 function M.char(direction)
@@ -203,14 +216,6 @@ end
 api.nvim_set_hl(0, 'JumpMotionTarget', {
   fg = '#ff4800',
   bold = true,
-})
-
-api.nvim_create_autocmd({ 'CursorMoved', 'InsertEnter', 'BufLeave', 'WinLeave' }, {
-  callback = function()
-    if state.active then
-      cleanup()
-    end
-  end,
 })
 
 return { charForward = M.char(FORWARD), charBackward = M.char(BACKWARD) }
