@@ -46,20 +46,7 @@ au('LspAttach', {
       end,
     })
 
-    au('TextChangedP', {
-      buffer = bufnr,
-      group = g,
-      command = 'let g:_ts_force_sync_parsing = v:true',
-    })
-
-    au('CompleteDone', {
-      buffer = bufnr,
-      group = g,
-      command = 'let g:_ts_force_sync_parsing = v:false',
-    })
-
     au('CompleteChanged', {
-      group = g,
       buffer = bufnr,
       callback = function()
         local info = vim.fn.complete_info({ 'selected' })

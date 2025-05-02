@@ -226,8 +226,6 @@ async(function()
     })
 
     vim.lsp.config('clangd', {
-      cmd = { 'clangd', '--background-index', '--header-insertion=never' },
-      init_options = { fallbackFlags = { vim.bo.filetype == 'cpp' and '-std=c++23' or nil } },
       root_markers = {
         '.clangd',
         '.clang-tidy',
