@@ -40,56 +40,57 @@ g.loaded_rrhelper = 1
 g.loaded_netrwPlugin = 1
 g.loaded_matchparen = 1
 
-local opt = vim.opt
-opt.hidden = true
-opt.magic = true
-opt.virtualedit = 'block'
-opt.clipboard = 'unnamedplus'
-opt.wildignorecase = true
-opt.swapfile = false
+local o = vim.o
+o.hidden = true
+o.magic = true
+o.virtualedit = 'block'
+o.clipboard = 'unnamedplus'
+o.wildignorecase = true
+o.swapfile = false
 
-opt.timeout = true
-opt.ttimeout = true
-opt.timeoutlen = 500
-opt.ttimeoutlen = 10
-opt.updatetime = 100
-opt.ignorecase = true
-opt.smartcase = true
-opt.cursorline = true
+o.timeout = true
+o.ttimeout = true
+o.timeoutlen = 500
+o.ttimeoutlen = 10
+o.updatetime = 100
+o.ignorecase = true
+o.smartcase = true
+o.cursorline = true
 
-opt.showmode = false
-opt.shortmess = 'aoOTIcF'
-opt.scrolloff = 2
-opt.sidescrolloff = 5
-opt.ruler = false
-opt.showtabline = 0
-opt.pumheight = 15
-opt.showcmd = false
+o.showmode = false
+o.shortmess = 'aoOTIcF'
+o.scrolloff = 2
+o.sidescrolloff = 5
+o.ruler = false
+o.showtabline = 0
+o.pumheight = 15
+o.showcmd = false
 
--- opt.laststatus = 3
-opt.list = true
+-- o.laststatus = 3
+o.list = true
 
 --eol:¬
-opt.listchars = 'tab:» ,nbsp:+,trail:·,extends:→,precedes:←,'
-opt.undofile = true
-opt.linebreak = true
+o.listchars = 'tab:» ,nbsp:+,trail:·,extends:→,precedes:←,'
+-- o.undofile = true
+o.linebreak = true
+o.smoothscroll = true
 
-opt.smarttab = true
-opt.expandtab = true
-opt.autoindent = true
-opt.tabstop = 2
-opt.sw = 2
-opt.foldlevelstart = 99
+o.smarttab = true
+o.expandtab = true
+o.autoindent = true
+o.tabstop = 2
+o.sw = 2
+o.foldlevelstart = 99
 
-opt.wrap = false
-opt.number = true
-opt.signcolumn = 'yes'
+o.wrap = false
+o.number = true
+o.signcolumn = 'yes'
 
-opt.textwidth = 80
-opt.colorcolumn = '+0'
-opt.winborder = 'rounded'
+o.textwidth = 80
+o.colorcolumn = '+0'
+o.winborder = 'rounded'
 
-opt.cot = 'menu,menuone,noinsert,fuzzy,popup'
-opt.cia = 'kind,abbr,menu'
+o.cot = 'menu,menuone,noinsert,fuzzy,popup'
+o.cia = 'kind,abbr,menu'
 
 vim.cmd.colorscheme('solarized')
