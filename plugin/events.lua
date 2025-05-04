@@ -58,8 +58,9 @@ au('LspAttach', {
       vim.diagnostic.enable(false, { bufnr = args.buf })
     end
 
-    local client = vim.lsp.get_clients({ id = args.data.client_id })[1]
-    client.server_capabilities.semanticTokensProvider = nil
+    vim.iter(vim.lsp.get_clients({ id = args.data.client_id })):map(function(client)
+      client.server_capabilities.semanticTokensProvider = nil
+    end)
   end,
 })
 

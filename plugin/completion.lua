@@ -32,16 +32,10 @@ au('LspAttach', {
       autotrigger = true,
       convert = function(item)
         local kind = lsp.protocol.CompletionItemKind[item.kind] or 'u'
-        local doc = item.documentation or {}
-        local info
-        if vim.bo.filetype == 'c' then
-          info = ('%s%s\n \n%s'):format(item.detail or '', item.label, doc.value or '')
-        end
         return {
           abbr = item.label:gsub('%b()', ''),
           kind = kind:sub(1, 1):lower(),
           menu = '',
-          info = info and info:gsub('\n+%s*\n$', '') or nil,
         }
       end,
     })

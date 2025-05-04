@@ -27,44 +27,38 @@ async(function()
   vim.o.rtp = strive_path .. ',' .. vim.o.rtp
   local use = require('strive').use
 
-  use('nvimdev/dashboard-nvim')
-    :setup({
-      theme = 'hyper',
-      config = {
-        week_header = {
-          enable = true,
+  use('nvimdev/dashboard-nvim'):on('UIEnter'):setup({
+    theme = 'hyper',
+    config = {
+      week_header = {
+        enable = true,
+      },
+      project = {
+        enable = false,
+      },
+      disable_move = true,
+      shortcut = {
+        {
+          desc = 'Update',
+          group = 'Include',
+          action = 'Strive update',
+          key = 'u',
         },
-        project = {
-          enable = false,
+        {
+          desc = 'Files',
+          group = 'Function',
+          action = 'FzfLua files',
+          key = 'f',
         },
-        disable_move = true,
-        shortcut = {
-          {
-            desc = 'Update',
-            group = 'Include',
-            action = 'Strive update',
-            key = 'u',
-          },
-          {
-            desc = 'Files',
-            group = 'Function',
-            action = 'FzfLua files',
-            key = 'f',
-          },
-          {
-            desc = 'Configs',
-            group = 'Constant',
-            action = 'FzfLua files cwd=$HOME/.config',
-            key = 'd',
-          },
+        {
+          desc = 'Configs',
+          group = 'Constant',
+          action = 'FzfLua files cwd=$HOME/.config',
+          key = 'd',
         },
       },
-    })
-    :cond(function()
-      return vim.fn.argc() == 0
-        and api.nvim_buf_line_count(0) == 0
-        and api.nvim_buf_get_name(0) == ''
-    end)
+    },
+  })
 
   use('nvimdev/modeline.nvim'):on({ 'BufEnter */*', 'BufNewFile' }):setup()
   use('lewis6991/gitsigns.nvim'):on('BufEnter */*'):setup({
