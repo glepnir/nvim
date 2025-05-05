@@ -1,4 +1,5 @@
 local api, QUICK, LOCAL, FORWARD, BACKWARD, mapset = vim.api, 1, 2, 1, 2, vim.keymap.set
+local treesitter = vim.treesitter
 
 local preview = {
   win = nil,
@@ -63,10 +64,18 @@ local function update_preview()
 
     if not preview.win or not api.nvim_win_is_valid(preview.win) then
       create_preview_window(item.bufnr)
-      return
     end
 
-    if item.bufnr and preview.win and api.nvim_win_is_valid(preview.win) then
+    local ft = vim.filetype.match({ buf = item.bufnr })
+    if ft then
+      local lang = treesitter.language.get_lang(ft)
+      local ok = pcall(treesitter.get_parser, item.bufnr, lang)
+      if ok then
+        vim.treesitter.start(item.bufnr, lang)
+      end
+    end
+
+    if preview.win and api.nvim_win_is_valid(preview.win) then
       api.nvim_win_set_buf(preview.win, item.bufnr)
       api.nvim_win_set_cursor(preview.win, { item.lnum, item.col })
       api.nvim_win_call(preview.win, function()
