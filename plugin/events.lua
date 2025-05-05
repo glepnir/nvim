@@ -19,7 +19,7 @@ au('BufEnter', {
   group = group,
   once = true,
   callback = function()
-    require('internal.keymap')
+    require('private.keymap')
   end,
   desc = 'Lazy load my keymap and buffer relate commands and defaul opt plugins',
 })
@@ -132,7 +132,14 @@ au('FileType', {
 au('InsertEnter', {
   group = group,
   callback = function()
-    require('internal.pairs')
+    require('private.pairs')
   end,
   desc = 'auto pairs',
+})
+
+au('CmdlineEnter', {
+  group = group,
+  callback = function()
+    require('private.grep')
+  end,
 })

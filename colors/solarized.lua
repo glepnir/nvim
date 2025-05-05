@@ -76,6 +76,8 @@ local function load_solarized()
   shl('Folded', { bg = colors.base02, fg = colors.base0 })
   shl('ErrorMsg', { fg = colors.red })
   shl('ComplMatchIns', { fg = colors.base01 })
+  shl('Directory', { fg = colors.cyan })
+  shl('QuickFixLine', { bold = true })
 
   -- Treesitter highlights
   shl('@function', { fg = colors.blue })
