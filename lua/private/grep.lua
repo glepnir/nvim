@@ -260,39 +260,51 @@ local grep = async(function(t, ...)
 
   local opened = false
   local id = nil
+  local batch_size = 200
+  local chunk = {}
+  local action = 'a'
   local result = try_await(asystem(cmd, {
     text = true,
     stdout = function(err, data)
       assert(not err)
       if data then
-        vim.schedule(function()
-          local lines = vim.split(data, '\n', { trimempty = true })
-          if #lines > 0 then
-            local action = 'a'
-            if not opened then
-              id = fn({}, 'r', {
-                lines = { 'Grep searching' },
-                efm = '%f',
-                quickfixtextfunc = 'v:lua.smart_quickfix_format',
-              })
-              vim.cmd(t == QUICK and 'cw' or 'lw')
-              local buf = api.nvim_get_current_buf()
-              setup_init(buf)
-              highlight_qf(buf)
-              opened = true
-              action = 'r'
-            end
-
-            fn({}, action, {
-              lines = lines,
-              id = id,
-              efm = vim.o.errorformat,
-              quickfixtextfunc = 'v:lua.smart_quickfix_format',
-              title = 'Grep',
-            })
+        local lines = vim.split(data, '\n', { trimempty = true })
+        if #lines > 0 then
+          for _, line in ipairs(lines) do
+            table.insert(chunk, line)
           end
-        end)
+        end
       end
+
+      vim.schedule(function()
+        if #chunk > 0 and not opened then
+          id = fn({}, 'r', {
+            lines = { 'Grep searching' },
+            efm = '%f',
+            quickfixtextfunc = 'v:lua.smart_quickfix_format',
+          })
+          vim.cmd(t == QUICK and 'cw' or 'lw')
+          local buf = api.nvim_get_current_buf()
+          setup_init(buf)
+          highlight_qf(buf)
+          opened = true
+          action = 'r'
+        end
+
+        if #chunk >= batch_size or not data then
+          fn({}, action, {
+            lines = chunk,
+            id = id,
+            efm = vim.o.errorformat,
+            quickfixtextfunc = 'v:lua.smart_quickfix_format',
+            title = 'Grep',
+          })
+          if action == 'r' then
+            action = 'a'
+          end
+          chunk = {}
+        end
+      end)
     end,
   }))
 
