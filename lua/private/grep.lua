@@ -2,16 +2,16 @@ local api, QUICK, LOCAL, FORWARD, BACKWARD, mapset = vim.api, 1, 2, 1, 2, vim.ke
 local treesitter = vim.treesitter
 local ns_qf = api.nvim_create_namespace('quickfix_highlight')
 
-local preview = {
-  win = nil,
-  enabled = false,
+local state = {
+  preview = {
+    win = nil,
+    enabled = false,
+  },
+  count = 0,
 }
 
 local function create_preview_window(bufnr)
-  if preview.buf and api.nvim_buf_is_valid(preview.buf) then
-    api.nvim_buf_delete(preview.buf, { force = true })
-  end
-
+  local preview = state.preview
   local qf_win = api.nvim_get_current_win()
   local qf_width = api.nvim_win_get_width(qf_win)
   local qf_position = api.nvim_win_get_position(qf_win)
@@ -44,15 +44,19 @@ local function create_preview_window(bufnr)
   end, { buffer = preview.buf })
 
   api.nvim_create_autocmd('WinClosed', {
-    buffer = api.nvim_get_current_buf(),
+    buffer = bufnr,
     once = true,
     callback = function()
       api.nvim_win_close(preview.win, true)
+      state.count = 0
+      state.preview.win = nil
+      state.preview.enabled = false
     end,
   })
 end
 
 local function update_preview()
+  local preview = state.preview
   if not preview.enabled then
     return
   end
@@ -95,6 +99,7 @@ local function update_preview()
 end
 
 local function toggle_preview(buf)
+  local preview = state.preview
   preview.enabled = not preview.enabled
   if preview.enabled then
     update_preview()
@@ -123,6 +128,7 @@ local function setup_init(buf)
     end
   end
 
+  local preview = state.preview
   mapset('n', 'q', function()
     if preview.win and api.nvim_win_is_valid(preview.win) then
       api.nvim_win_close(preview.win, true)
@@ -145,6 +151,28 @@ local function setup_init(buf)
   mapset('n', 'p', function()
     toggle_preview(buf)
   end, { buffer = buf })
+end
+
+local function update_title()
+  local width = 15
+  local bar = ''
+
+  if not state.done then
+    local anim_pos = state.count % width
+    for i = 1, width do
+      bar = bar .. (i == anim_pos and '●' or '○')
+    end
+  else
+    bar = string.rep('●', width)
+  end
+
+  vim.wo[state.win].stl =
+    string.format(' %s [%s] %d matches', state.done and 'Done' or 'Searching', bar, state.count)
+  api.nvim__redraw({
+    win = state.win,
+    buf = state.buf,
+    statusline = true,
+  })
 end
 
 local function highlight_qf(buf)
@@ -267,6 +295,8 @@ local grep = async(function(t, ...)
     text = true,
     stdout = function(err, data)
       assert(not err)
+      state.done = not data
+      local process = {}
       if data then
         local lines = vim.split(data, '\n', { trimempty = true })
         if #lines > 0 then
@@ -274,6 +304,11 @@ local grep = async(function(t, ...)
             table.insert(chunk, line)
           end
         end
+      end
+
+      if #chunk >= batch_size then
+        process = { unpack(chunk, 1, batch_size) }
+        chunk = { unpack(chunk, batch_size + 1, #chunk) }
       end
 
       vim.schedule(function()
@@ -289,20 +324,24 @@ local grep = async(function(t, ...)
           highlight_qf(buf)
           opened = true
           action = 'r'
+          state.count = 0
+          state.win = api.nvim_get_current_win()
         end
 
-        if #chunk >= batch_size or not data then
+        if #process > 0 or not data then
           fn({}, action, {
-            lines = chunk,
+            lines = not data and chunk or process,
             id = id,
             efm = vim.o.errorformat,
             quickfixtextfunc = 'v:lua.smart_quickfix_format',
             title = 'Grep',
           })
+
+          state.count = state.count + (not data and #chunk or #process)
+          update_title()
           if action == 'r' then
             action = 'a'
           end
-          chunk = {}
         end
       end)
     end,
