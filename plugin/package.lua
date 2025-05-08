@@ -82,7 +82,7 @@ async(function()
     })
 
   use('nvimdev/guard.nvim')
-    :ft(program_ft)
+    :ft(lang_ft)
     :config(function()
       local ft = require('guard.filetype')
       ft('c,cpp'):fmt({
@@ -177,8 +177,8 @@ async(function()
     end)
     :depends('nvim-treesitter/nvim-treesitter-textobjects')
 
-  use('nvimdev/phoenix.nvim'):ft(program_ft)
-  use('neovim/nvim-lspconfig'):ft(program_ft):config(function()
+  use('nvimdev/phoenix.nvim'):ft(lang_ft)
+  use('neovim/nvim-lspconfig'):ft(lang_ft):config(function()
     vim.lsp.log.set_level(vim.log.levels.INFO)
 
     vim.diagnostic.config({
