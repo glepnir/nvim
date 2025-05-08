@@ -1,8 +1,7 @@
 local g = vim.g
 vim.loader.enable()
 g.mapleader = vim.keycode('<space>')
--- the programming language which i write.
-_G.program_ft = {
+_G.lang_ft = {
   'c',
   'cpp',
   'rust',
@@ -23,7 +22,6 @@ _G.program_ft = {
   'help',
   'css',
 }
-_G.is_mac = vim.uv.os_uname().sysname == 'Darwin'
 
 g.loaded_gzip = 1
 g.loaded_tar = 1
