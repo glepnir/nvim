@@ -108,7 +108,6 @@ map.i({
   ['<C-b>'] = '<Left>',
   ['<C-f>'] = '<Right>',
   ['<C-a>'] = '<Esc>^i',
-  ['<C-s>'] = '<ESC>:w<CR>',
   ['<C-n>'] = '<Down>',
   ['<C-p>'] = '<Up>',
   --down/up

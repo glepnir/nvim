@@ -148,7 +148,7 @@ async(function()
         highlight = {
           enable = true,
           disable = function(_, buf)
-            local bufname = vim.api.nvim_buf_get_name(buf)
+            local bufname = api.nvim_buf_get_name(buf)
             local max_filesize = 300 * 1024
             local ok, stats = pcall(uv.fs_stat, bufname)
             if ok and stats and stats.size > max_filesize then
@@ -179,7 +179,7 @@ async(function()
 
   use('nvimdev/phoenix.nvim'):ft(program_ft)
   use('neovim/nvim-lspconfig'):ft(program_ft):config(function()
-    vim.lsp.log.set_level(vim.log.levels.OFF)
+    vim.lsp.log.set_level(vim.log.levels.INFO)
 
     vim.diagnostic.config({
       virtual_text = { current_line = true },
