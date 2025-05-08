@@ -139,8 +139,8 @@ end
 function _G.async(func)
   return function(...)
     local args = { ... }
-    if args[1] == true and not vim.in_fast_event() then
-      return func()
+    if not vim.in_fast_event() then
+      return func(unpack(args))
     end
 
     local co = coroutine.create(function()

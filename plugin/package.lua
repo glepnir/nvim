@@ -220,6 +220,7 @@ async(function()
     })
 
     vim.lsp.config('clangd', {
+      cmd = { 'clangd', '--log=verbose' },
       root_markers = {
         '.clangd',
         '.clang-tidy',
@@ -284,4 +285,4 @@ async(function()
       },
     })
     :load_path(devpath)
-end)(installed)
+end)()
