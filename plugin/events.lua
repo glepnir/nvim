@@ -54,13 +54,19 @@ au('TermOpen', {
 au('LspAttach', {
   group = group,
   callback = function(args)
-    if vim.bo[args.buf].filetype == 'lua' and api.nvim_buf_get_name(args.buf):find('_spec') then
-      vim.diagnostic.enable(false, { bufnr = args.buf })
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if vim.bo[args.buf].filetype == 'lua' then
+      if api.nvim_buf_get_name(args.buf):find('_spec') then
+        vim.diagnostic.enable(false, { bufnr = args.buf })
+      end
+    end
+    if client and client:supports_method('textDocument/documentColor') then
+      vim.lsp.document_color.enable(true, args.buf)
     end
 
-    vim.iter(vim.lsp.get_clients({ id = args.data.client_id })):map(function(client)
+    if client then
       client.server_capabilities.semanticTokensProvider = nil
-    end)
+    end
   end,
 })
 
