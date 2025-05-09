@@ -188,6 +188,12 @@ async(function()
       },
     })
 
+    api.nvim_create_user_command('LspLog', function()
+      vim.cmd(string.format('tabnew %s', vim.lsp.get_log_path()))
+    end, {
+      desc = 'Opens the Nvim LSP client log.',
+    })
+
     vim.lsp.config('lua_ls', {
       on_init = function(client)
         if client.workspace_folders then
