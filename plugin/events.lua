@@ -119,5 +119,9 @@ au('CmdlineEnter', {
   group = group,
   callback = function()
     require('private.grep')
+
+    if vim.version().minor >= 12 then
+      require('vim._extui').enable({})
+    end
   end,
 })

@@ -13,23 +13,26 @@ au('LspAttach', {
     if not client or not client:supports_method(ms.textDocument_completion) then
       return
     end
-    local chars = client.server_capabilities.completionProvider.triggerCharacters
-    if chars then
-      for i = string.byte('a'), string.byte('z') do
-        if not vim.list_contains(chars, string.char(i)) then
-          table.insert(chars, string.char(i))
-        end
-      end
 
-      for i = string.byte('A'), string.byte('Z') do
-        if not vim.list_contains(chars, string.char(i)) then
-          table.insert(chars, string.char(i))
+    if not vim.env.DEBUG_COMPLETION then
+      local chars = client.server_capabilities.completionProvider.triggerCharacters
+      if chars then
+        for i = string.byte('a'), string.byte('z') do
+          if not vim.list_contains(chars, string.char(i)) then
+            table.insert(chars, string.char(i))
+          end
+        end
+
+        for i = string.byte('A'), string.byte('Z') do
+          if not vim.list_contains(chars, string.char(i)) then
+            table.insert(chars, string.char(i))
+          end
         end
       end
     end
 
     completion.enable(true, client.id, bufnr, {
-      autotrigger = true,
+      autotrigger = not vim.env.DEBUG_COMPLETION and true or { any = true },
       convert = function(item)
         local kind = lsp.protocol.CompletionItemKind[item.kind] or 'u'
         return {
