@@ -1,7 +1,7 @@
 local api, uv, fs = vim.api, vim.uv, vim.fs
 local data_dir = vim.fn.stdpath('data')
 local strive_path = fs.joinpath(data_dir, 'site', 'pack', 'strive', 'opt', 'strive')
-local devpath = '/Users/mw/workspace'
+vim.g.strive_dev_path = '/Users/mw/workspace'
 
 local installed = (uv.fs_stat(strive_path) or {}).type == 'directory'
 async(function()
@@ -288,5 +288,5 @@ async(function()
         layout = 'float',
       },
     })
-    :load_path(devpath)
+    :load_path()
 end)()

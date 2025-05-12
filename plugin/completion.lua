@@ -1,8 +1,9 @@
 local api = vim.api
 local au = api.nvim_create_autocmd
+local g = api.nvim_create_augroup('glepnir.completion', { clear = true })
 
 au('LspAttach', {
-  group = api.nvim_create_augroup('glepnir.completion', { clear = true }),
+  group = g,
   callback = function(args)
     local lsp = vim.lsp
     local completion = lsp.completion
@@ -14,7 +15,7 @@ au('LspAttach', {
       return
     end
 
-    if not vim.env.DEBUG_COMPLETION then
+    if not vim.env.DEBUG_COMPLETION and vim.bo[bufnr].filetype == 'lua' then
       local chars = client.server_capabilities.completionProvider.triggerCharacters
       if chars then
         for i = string.byte('a'), string.byte('z') do
@@ -43,16 +44,25 @@ au('LspAttach', {
       end,
     })
 
-    au('CompleteChanged', {
-      buffer = bufnr,
-      callback = function()
-        local info = vim.fn.complete_info({ 'selected' })
-        if info.preview_bufnr and vim.bo[info.preview_bufnr].filetype == '' then
-          vim.bo[info.preview_bufnr].filetype = 'markdown'
-          vim.wo[info.preview_winid].conceallevel = 2
-          vim.wo[info.preview_winid].concealcursor = 'niv'
-        end
-      end,
-    })
+    if
+      #api.nvim_get_autocmds({
+        buffer = bufnr,
+        event = { 'CompleteChanged' },
+        group = g,
+      }) == 0
+    then
+      au('CompleteChanged', {
+        buffer = bufnr,
+        group = g,
+        callback = function()
+          local info = vim.fn.complete_info({ 'selected' })
+          if info.preview_bufnr and vim.bo[info.preview_bufnr].filetype == '' then
+            vim.bo[info.preview_bufnr].filetype = 'markdown'
+            vim.wo[info.preview_winid].conceallevel = 2
+            vim.wo[info.preview_winid].concealcursor = 'niv'
+          end
+        end,
+      })
+    end
   end,
 })
