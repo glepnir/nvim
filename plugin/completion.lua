@@ -15,7 +15,7 @@ au('LspAttach', {
       return
     end
 
-    if not vim.env.DEBUG_COMPLETION and vim.bo[bufnr].filetype == 'lua' then
+    if not vim.env.DEBUG_COMPLETION then
       local chars = client.server_capabilities.completionProvider.triggerCharacters
       if chars then
         for i = string.byte('a'), string.byte('z') do

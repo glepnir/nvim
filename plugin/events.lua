@@ -86,8 +86,7 @@ au('InsertLeave', {
   desc = 'auto switch to abc input',
 })
 
-au('FileType', {
-  pattern = lang_ft,
+au('BufReadPost', {
   group = group,
   callback = function(args)
     local ok = pcall(vim.treesitter.get_parser, args.buf)

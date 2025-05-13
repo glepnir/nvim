@@ -92,3 +92,4 @@ o.cot = 'menu,menuone,noinsert,fuzzy,popup'
 o.cia = 'kind,abbr,menu'
 
 vim.cmd.colorscheme('solarized')
+vim.g.editorconfig = false
