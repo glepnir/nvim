@@ -1,4 +1,4 @@
-if expand('%') !~ 'neovim'
+if expand('%') !~ 'nvim'
   setl expandtab
   setl shiftwidth=4
   setl softtabstop=4
