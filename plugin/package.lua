@@ -67,7 +67,7 @@ async(function()
     end)
 
   use('nvimdev/modeline.nvim'):on({ 'BufEnter */*', 'BufNewFile' }):setup()
-  use('lewis6991/gitsigns.nvim'):on('BufEnter */*'):setup({
+  use('lewis6991/gitsigns.nvim'):on({ 'BufEnter */*', 'BufNewFile' }):setup({
     signs = {
       add = { text = '┃' },
       change = { text = '┃' },

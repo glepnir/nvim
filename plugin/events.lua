@@ -102,6 +102,7 @@ au('BufReadPost', {
 
 au('InsertEnter', {
   group = group,
+  once = true,
   callback = function()
     require('private.pairs')
   end,
@@ -110,6 +111,7 @@ au('InsertEnter', {
 
 au('CmdlineEnter', {
   group = group,
+  once = true,
   callback = function()
     require('private.grep')
 
