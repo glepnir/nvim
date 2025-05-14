@@ -185,7 +185,7 @@ async(function()
 
   use('nvimdev/phoenix.nvim'):ft(lang_ft)
   use('neovim/nvim-lspconfig'):ft(lang_ft):config(function()
-    vim.lsp.log.set_level(vim.log.levels.INFO)
+    vim.lsp.log.set_level(vim.log.levels.OFF)
 
     vim.diagnostic.config({
       virtual_text = { current_line = true },
@@ -230,7 +230,8 @@ async(function()
     })
 
     vim.lsp.config('clangd', {
-      cmd = { 'clangd', '--log=verbose' },
+      cmd = { 'clangd' },
+      -- cmd = { 'clangd', '--log=verbose' },
       root_markers = {
         '.clangd',
         '.clang-tidy',
