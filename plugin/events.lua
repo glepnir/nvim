@@ -120,3 +120,42 @@ au('CmdlineEnter', {
     end
   end,
 })
+
+au('UIEnter', {
+  group = group,
+  once = true,
+  callback = function()
+    vim.schedule(function()
+      vim.lsp.enable({
+        'luals',
+        'clangd',
+        'rust_analyzer',
+        'basedpyright',
+        'ruff',
+        'bashls',
+        'zls',
+        'cmake',
+        'jsonls',
+        'ts_ls',
+        'eslint',
+        'tailwindcss',
+        'cssls',
+      })
+
+      vim.lsp.log.set_level(vim.log.levels.INFO)
+
+      vim.diagnostic.config({
+        virtual_text = { current_line = true },
+        signs = {
+          text = { '●', '●', '●', '●' },
+        },
+      })
+
+      api.nvim_create_user_command('LspLog', function()
+        vim.cmd(string.format('tabnew %s', vim.lsp.get_log_path()))
+      end, {
+        desc = 'Opens the Nvim LSP client log.',
+      })
+    end)
+  end,
+})

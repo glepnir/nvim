@@ -1,7 +1,7 @@
 local api, uv, fs = vim.api, vim.uv, vim.fs
-local data_dir = vim.fn.stdpath('data')
-local strive_path = fs.joinpath(data_dir, 'site', 'pack', 'strive', 'opt', 'strive')
+local strive_path = fs.joinpath(vim.fn.stdpath('data'), 'strive')
 vim.g.strive_dev_path = '/Users/mw/workspace'
+strive_path = '/Users/mw/workspace/strive'
 
 local installed = (uv.fs_stat(strive_path) or {}).type == 'directory'
 async(function()
@@ -65,6 +65,7 @@ async(function()
         and api.nvim_buf_line_count(0) == 0
         and api.nvim_buf_get_name(0) == ''
     end)
+    :run('Dashboard')
 
   use('nvimdev/modeline.nvim'):on({ 'BufEnter */*', 'BufNewFile' }):setup()
   use('lewis6991/gitsigns.nvim'):on({ 'BufEnter */*', 'BufNewFile' }):setup({
@@ -88,7 +89,7 @@ async(function()
     })
 
   use('nvimdev/guard.nvim')
-    :ft(lang_ft)
+    :on('BufReadPost')
     :config(function()
       local ft = require('guard.filetype')
       ft('c,cpp'):fmt({
@@ -184,102 +185,6 @@ async(function()
     :depends('nvim-treesitter/nvim-treesitter-textobjects')
 
   use('nvimdev/phoenix.nvim'):ft(lang_ft)
-  use('neovim/nvim-lspconfig'):ft(lang_ft):config(function()
-    vim.lsp.log.set_level(vim.log.levels.OFF)
-
-    vim.diagnostic.config({
-      virtual_text = { current_line = true },
-      signs = {
-        text = { '●', '●', '●', '●' },
-      },
-    })
-
-    api.nvim_create_user_command('LspLog', function()
-      vim.cmd(string.format('tabnew %s', vim.lsp.get_log_path()))
-    end, {
-      desc = 'Opens the Nvim LSP client log.',
-    })
-
-    vim.lsp.config('lua_ls', {
-      on_init = function(client)
-        if client.workspace_folders then
-          local path = client.workspace_folders[1].name
-          if
-            path ~= vim.fn.stdpath('config')
-            and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc'))
-          then
-            return
-          end
-        end
-
-        client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
-          runtime = {
-            version = 'LuaJIT',
-          },
-          workspace = {
-            checkThirdParty = false,
-            library = {
-              vim.env.VIMRUNTIME,
-            },
-          },
-        })
-      end,
-      settings = {
-        Lua = {},
-      },
-    })
-
-    vim.lsp.config('clangd', {
-      cmd = { 'clangd' },
-      -- cmd = { 'clangd', '--log=verbose' },
-      root_markers = {
-        '.clangd',
-        '.clang-tidy',
-        '.clang-format',
-        'compile_commands.json',
-        'compile_flags.txt',
-        -- 'configure.ac',
-        '.git',
-      },
-    })
-
-    vim.lsp.config('rust_analyzer', {
-      settings = {
-        ['rust-analyzer'] = {
-          imports = {
-            granularity = {
-              group = 'module',
-            },
-            prefix = 'self',
-          },
-          cargo = {
-            buildScripts = {
-              enable = true,
-            },
-          },
-          procMacro = {
-            enable = true,
-          },
-        },
-      },
-    })
-
-    vim.lsp.enable({
-      'lua_ls',
-      'clangd',
-      'rust_analyzer',
-      'basedpyright',
-      'ruff',
-      'bashls',
-      'zls',
-      'cmake',
-      'jsonls',
-      'ts_ls',
-      'eslint',
-      'tailwindcss',
-      'cssls',
-    })
-  end)
 
   use('nvimdev/lspsaga.nvim')
     :on('LspAttach')
