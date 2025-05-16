@@ -9,15 +9,6 @@ au('TextYankPost', {
   end,
 })
 
-au('BufEnter', {
-  group = group,
-  once = true,
-  callback = function()
-    require('private.keymap')
-  end,
-  desc = 'Lazy load my keymap and buffer relate commands and defaul opt plugins',
-})
-
 au('ExitPre', {
   group = group,
   callback = function()
@@ -126,6 +117,8 @@ au('UIEnter', {
   once = true,
   callback = function()
     vim.schedule(function()
+      require('private.keymap')
+
       vim.lsp.enable({
         'luals',
         'clangd',
@@ -158,4 +151,5 @@ au('UIEnter', {
       })
     end)
   end,
+  desc = 'Lazy load keymap and Lsp relate',
 })
