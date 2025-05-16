@@ -21,6 +21,7 @@ _G.lang_ft = {
   'text',
   'help',
   'css',
+  'vim',
 }
 
 g.loaded_gzip = 1

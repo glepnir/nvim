@@ -1,5 +1,5 @@
 local api, uv, fs = vim.api, vim.uv, vim.fs
-local strive_path = fs.joinpath(vim.fn.stdpath('data'), 'strive')
+local strive_path = fs.joinpath(vim.fn.stdpath('data'), 'strive.nvim', 'strive')
 vim.g.strive_dev_path = '/Users/mw/workspace'
 
 local installed = (uv.fs_stat(strive_path) or {}).type == 'directory'
