@@ -101,7 +101,7 @@ local function mark_targets(targets)
 end
 
 function M.char(direction)
-  if vim.fn.executable('rg') == 0 then
+  if vim.fn.executable('rg') == 0 or vim.fn.line2byte(vim.fn.line('$') + 1) == -1 then
     return
   end
 
