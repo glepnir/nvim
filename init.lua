@@ -62,14 +62,17 @@ o.scrolloff = 2
 o.sidescrolloff = 5
 o.ruler = false
 o.showtabline = 0
-o.pumheight = 15
 o.showcmd = false
 
 -- o.laststatus = 3
 o.list = true
 
+o.pumheight = 15
+o.pummaxwidth = 30
+
 --eol:¬
 o.listchars = 'tab:» ,nbsp:+,trail:·,extends:→,precedes:←,'
+o.fillchars = 'trunc:…'
 -- o.undofile = true
 o.linebreak = true
 o.smoothscroll = true

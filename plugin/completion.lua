@@ -33,7 +33,8 @@ au('LspAttach', {
     end
 
     completion.enable(true, client.id, bufnr, {
-      autotrigger = not vim.env.DEBUG_COMPLETION and true or { any = true },
+      -- autotrigger = not vim.env.DEBUG_COMPLETION and true or { any = true },
+      autotrigger = true,
       convert = function(item)
         local kind = lsp.protocol.CompletionItemKind[item.kind] or 'u'
         return {

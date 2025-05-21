@@ -125,14 +125,9 @@ au('UIEnter', {
         'rust_analyzer',
         'basedpyright',
         'ruff',
-        'bashls',
         'zls',
         'cmake',
-        'jsonls',
-        'ts_ls',
-        'eslint',
-        'tailwindcss',
-        'cssls',
+        'tsls',
       })
 
       vim.lsp.log.set_level(vim.log.levels.INFO)
