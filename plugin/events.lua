@@ -102,8 +102,6 @@ au('CmdlineEnter', {
   group = group,
   once = true,
   callback = function()
-    require('private.grep')
-
     if vim.version().minor >= 12 then
       require('vim._extui').enable({})
     end
@@ -142,7 +140,9 @@ au('UIEnter', {
       end, {
         desc = 'Opens the Nvim LSP client log.',
       })
+
+      require('private.grep')
     end)
   end,
-  desc = 'Lazy load keymap and Lsp relate',
+  desc = 'Initializer',
 })
