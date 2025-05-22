@@ -1,6 +1,5 @@
 local api, QUICK, LOCAL, FORWARD, BACKWARD, mapset = vim.api, 1, 2, 1, 2, vim.keymap.set
-local treesitter = vim.treesitter
-local ns_qf = api.nvim_create_namespace('quickfix_highlight')
+local treesitter, fn = vim.treesitter, vim.fn
 
 local state = {
   preview = {
@@ -8,6 +7,7 @@ local state = {
     enabled = false,
   },
   count = 0,
+  match_ids = {},
 }
 
 local function create_preview_window(bufnr)
@@ -62,12 +62,12 @@ local function update_preview()
   end
 
   local win_id = api.nvim_get_current_win()
-  local win_info = vim.fn.getwininfo(win_id)[1]
+  local win_info = fn.getwininfo(win_id)[1]
 
   local is_loclist = win_info.loclist == 1
 
-  local idx = vim.fn.line('.')
-  local list = is_loclist and vim.fn.getloclist(0) or vim.fn.getqflist()
+  local idx = fn.line('.')
+  local list = is_loclist and fn.getloclist(0) or fn.getqflist()
 
   if idx > 0 and idx <= #list then
     local item = list[idx]
@@ -113,16 +113,27 @@ local function toggle_preview(buf)
   end
 end
 
-local function setup_init(buf)
+local function setup_init(buf, is_quick)
   vim.opt_local.wrap = false
   vim.opt_local.number = false
   vim.opt_local.relativenumber = false
   vim.opt_local.signcolumn = 'no'
 
+  local win = api.nvim_get_current_win()
+  fn.clearmatches(win)
+
+  vim.fn.matchadd('qfFileName', '^[^(]*', 12, -1, { buffer = buf })
+  vim.fn.matchadd('qfSeparator', '[()]', 15, -1, { buffer = buf })
+  vim.fn.matchadd('qfLineNr', '(\\d\\+:\\d\\+)', 20, -1, { buffer = buf })
+  vim.fn.matchadd('qfText', ')\\s*\\zs.*', 10, -1, { buffer = buf })
+
   local move = function(dir)
     return function()
       api.nvim_buf_call(buf, function()
-        pcall(vim.cmd, dir == FORWARD and 'cnext' or 'cprev')
+        pcall(
+          vim.cmd,
+          dir == FORWARD and (is_quick and 'cnext' or 'lnext') or (is_quick and 'cprev' or 'lprev')
+        )
         update_preview()
       end)
     end
@@ -175,96 +186,16 @@ local function update_title()
   })
 end
 
-local function highlight_qf(buf)
-  api.nvim_create_autocmd('TextChanged', {
-    buffer = buf,
-    callback = function()
-      local lines = api.nvim_buf_get_lines(buf, 0, -1, false)
-      for i, line in ipairs(lines) do
-        local line_idx = i - 1
-
-        local file_end = line:find(' → ')
-        if file_end then
-          api.nvim_buf_set_extmark(buf, ns_qf, line_idx, 0, {
-            end_row = line_idx,
-            end_col = file_end - 1,
-            hl_group = 'Keyword',
-          })
-
-          api.nvim_buf_set_extmark(buf, ns_qf, line_idx, file_end, {
-            end_row = line_idx,
-            end_col = file_end + 1,
-            hl_group = 'Function',
-          })
-
-          local lnum_start = file_end + 3
-          local lnum_end = line:find(':', lnum_start)
-          if lnum_end then
-            api.nvim_buf_set_extmark(buf, ns_qf, line_idx, lnum_start, {
-              end_row = line_idx,
-              end_col = lnum_end - 1,
-              hl_group = 'String',
-            })
-
-            local col_start = lnum_end
-            local col_end = line:find('→', col_start)
-            if col_end then
-              api.nvim_buf_set_extmark(buf, ns_qf, line_idx, col_start, {
-                end_row = line_idx,
-                end_col = col_end - 1,
-                hl_group = 'String',
-              })
-
-              api.nvim_buf_set_extmark(buf, ns_qf, line_idx, col_end - 1, {
-                end_row = line_idx,
-                end_col = col_end + 1,
-                hl_group = 'Function',
-              })
-
-              local text_start = col_end + 3
-              if text_start < #line then
-                api.nvim_buf_set_extmark(buf, ns_qf, line_idx, text_start, {
-                  end_row = line_idx,
-                  end_col = #line,
-                  hl_group = 'QfText',
-                })
-              end
-            end
-          end
-        end
-      end
-    end,
-  })
-end
-
-function _G.smart_quickfix_format(info)
-  local separator = info.quickfix == 1 and '→' or '•'
+function _G.compact_quickfix_format(info)
   local lines = {}
   local list = info.quickfix == 1 and vim.fn.getqflist() or vim.fn.getloclist(info.winid)
 
-  local max_filename_width = 0
   for i = info.start_idx, info.end_idx do
     local item = list[i]
     if item then
       local filename = item.bufnr > 0 and vim.fn.bufname(item.bufnr) or ''
-      max_filename_width = math.max(max_filename_width, #filename)
-    end
-  end
-
-  for i = info.start_idx, info.end_idx do
-    local item = list[i]
-    if item then
-      local filename = item.bufnr > 0 and vim.fn.bufname(item.bufnr) or ''
-      local format_str = '%-' .. max_filename_width .. 's %s %2d:%-2d %s %s'
-      local line = string.format(
-        format_str,
-        filename,
-        separator,
-        item.lnum,
-        item.col,
-        separator,
-        item.text or ''
-      )
+      -- 格式: filename (line:col) text
+      local line = string.format('%s (%d:%d) %s', filename, item.lnum, item.col, item.text or '')
       table.insert(lines, line)
     end
   end
@@ -275,10 +206,10 @@ local grep = async(function(t, ...)
   local args = { ... }
   local grepprg = vim.o.grepprg
   local cmd = vim.split(grepprg, '%s+', { trimempty = true })
-  local fn = t == QUICK and function(...)
-    vim.fn.setqflist(...)
+  local func = t == QUICK and function(...)
+    fn.setqflist(...)
   end or function(...)
-    vim.fn.setloclist(0, ...)
+    fn.setloclist(0, ...)
   end
 
   for _, arg in ipairs(args) do
@@ -313,15 +244,14 @@ local grep = async(function(t, ...)
 
       vim.schedule(function()
         if #chunk > 0 and not opened then
-          id = fn({}, 'r', {
+          id = func({}, 'r', {
             lines = { 'Grep searching' },
             efm = '%f',
-            quickfixtextfunc = 'v:lua.smart_quickfix_format',
+            quickfixtextfunc = 'v:lua.compact_quickfix_format',
           })
           vim.cmd(t == QUICK and 'cw' or 'lw')
           local buf = api.nvim_get_current_buf()
-          setup_init(buf)
-          highlight_qf(buf)
+          setup_init(buf, t == QUICK)
           opened = true
           action = 'r'
           state.count = 0
@@ -329,11 +259,11 @@ local grep = async(function(t, ...)
         end
 
         if #process > 0 or not data then
-          fn({}, action, {
+          func({}, action, {
             lines = not data and chunk or process,
             id = id,
             efm = vim.o.errorformat,
-            quickfixtextfunc = 'v:lua.smart_quickfix_format',
+            quickfixtextfunc = 'v:lua.compact_quickfix_format',
             title = 'Grep',
           })
 
@@ -353,21 +283,18 @@ local grep = async(function(t, ...)
 end)
 
 api.nvim_create_user_command('Grep', function(opts)
-  grep(QUICK, opts.args)
-end, { nargs = '+', complete = 'file_in_path', desc = 'Search using quickfix list' })
+  grep(LOCAL, opts.args)
+end, { nargs = '+', complete = 'file_in_path', desc = 'Search using localtion list' })
 
 api.nvim_create_user_command('GREP', function(opts)
-  grep(LOCAL, opts.args)
-end, { nargs = '+', complete = 'file_in_path', desc = 'Search using location list' })
+  grep(QUICK, opts.args)
+end, { nargs = '+', complete = 'file_in_path', desc = 'Search using quickfix list' })
 
 api.nvim_create_autocmd('CmdlineEnter', {
   pattern = ':',
   callback = function()
     vim.cmd(
       [[cnoreabbrev <expr> grep (getcmdtype() ==# ':' && getcmdline() ==# 'grep') ? 'Grep' : 'grep']]
-    )
-    vim.cmd(
-      [[cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() ==# 'lgrep') ? 'LGrep' : 'lgrep']]
     )
   end,
 })

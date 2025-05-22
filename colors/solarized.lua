@@ -78,6 +78,10 @@ local function load_solarized()
   shl('ComplMatchIns', { fg = colors.base01 })
   shl('Directory', { fg = colors.cyan })
   shl('QuickFixLine', { bold = true })
+  shl('qfFileName', { fg = colors.blue })
+  shl('qfSeparator', { fg = colors.violet })
+  shl('qfLineNr', { link = 'LineNr' })
+  shl('qfText', { link = 'String' })
 
   -- Treesitter highlights
   shl('@function', { fg = colors.blue })
