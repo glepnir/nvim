@@ -126,7 +126,7 @@ au('UIEnter', {
         'tsls',
       })
 
-      vim.lsp.log.set_level(vim.log.levels.INFO)
+      vim.lsp.log.set_level(vim.log.levels.OFF)
 
       vim.diagnostic.config({
         virtual_text = { current_line = true },

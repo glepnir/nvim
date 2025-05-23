@@ -122,10 +122,10 @@ local function setup_init(buf, is_quick)
   local win = api.nvim_get_current_win()
   fn.clearmatches(win)
 
-  vim.fn.matchadd('qfFileName', '^[^(]*', 12, -1, { buffer = buf })
-  vim.fn.matchadd('qfSeparator', '[()]', 15, -1, { buffer = buf })
-  vim.fn.matchadd('qfLineNr', '(\\d\\+:\\d\\+)', 20, -1, { buffer = buf })
-  vim.fn.matchadd('qfText', ')\\s*\\zs.*', 10, -1, { buffer = buf })
+  fn.matchadd('qfFileName', '^▸ \\zs.*', 12, -1, { window = win })
+  fn.matchadd('qfLineNr', '^\\s\\+\\d\\+:\\d\\+', 20, -1, { window = win })
+  fn.matchadd('qfSeparator', '│', 15, -1, { window = win })
+  fn.matchadd('qfText', '│ \\zs.*', 10, -1, { window = win })
 
   local move = function(dir)
     return function()
@@ -150,14 +150,6 @@ local function setup_init(buf, is_quick)
 
   mapset('n', '<C-n>', move(FORWARD), { buffer = buf })
   mapset('n', '<C-p>', move(BACKWARD), { buffer = buf })
-
-  mapset('n', '<CR>', function()
-    vim.cmd('normal! <CR>zz')
-    if preview.win and api.nvim_win_is_valid(preview.win) then
-      api.nvim_win_close(preview.win, true)
-      preview.win = nil
-    end
-  end, { buffer = buf })
 
   mapset('n', 'p', function()
     toggle_preview(buf)
@@ -189,14 +181,20 @@ end
 function _G.compact_quickfix_format(info)
   local lines = {}
   local list = info.quickfix == 1 and vim.fn.getqflist() or vim.fn.getloclist(info.winid)
+  local last_bufnr = nil
 
   for i = info.start_idx, info.end_idx do
     local item = list[i]
-    if item then
+    if item and item.valid == 1 and item.lnum > 0 and item.text ~= '' then
       local filename = item.bufnr > 0 and vim.fn.bufname(item.bufnr) or ''
-      -- 格式: filename (line:col) text
-      local line = string.format('%s (%d:%d) %s', filename, item.lnum, item.col, item.text or '')
-      table.insert(lines, line)
+      local text = item.text or ''
+
+      if item.bufnr ~= last_bufnr then
+        table.insert(lines, string.format('▸ %s', filename))
+        last_bufnr = item.bufnr
+      end
+
+      table.insert(lines, string.format('  %4d:%-3d │ %s', item.lnum, item.col, text))
     end
   end
   return lines
@@ -206,7 +204,7 @@ local grep = async(function(t, ...)
   local args = { ... }
   local grepprg = vim.o.grepprg
   local cmd = vim.split(grepprg, '%s+', { trimempty = true })
-  local func = t == QUICK and function(...)
+  local qf_fn = t == QUICK and function(...)
     fn.setqflist(...)
   end or function(...)
     fn.setloclist(0, ...)
@@ -221,7 +219,7 @@ local grep = async(function(t, ...)
   local id = nil
   local batch_size = 200
   local chunk = {}
-  local action = 'a'
+  local seen_files = {}
   local result = try_await(asystem(cmd, {
     text = true,
     stdout = function(err, data)
@@ -232,6 +230,16 @@ local grep = async(function(t, ...)
         local lines = vim.split(data, '\n', { trimempty = true })
         if #lines > 0 then
           for _, line in ipairs(lines) do
+            -- parse format: filename:lnum:col:text
+            local filename, lnum, col, text = line:match('^([^:]+):(%d+):(%d+):(.*)$')
+            if filename and lnum and col and text then
+              -- check is new file
+              if not seen_files[filename] then
+                -- insert header for it
+                table.insert(chunk, string.format('%s:0:0:', filename))
+                seen_files[filename] = true
+              end
+            end
             table.insert(chunk, line)
           end
         end
@@ -243,23 +251,8 @@ local grep = async(function(t, ...)
       end
 
       vim.schedule(function()
-        if #chunk > 0 and not opened then
-          id = func({}, 'r', {
-            lines = { 'Grep searching' },
-            efm = '%f',
-            quickfixtextfunc = 'v:lua.compact_quickfix_format',
-          })
-          vim.cmd(t == QUICK and 'cw' or 'lw')
-          local buf = api.nvim_get_current_buf()
-          setup_init(buf, t == QUICK)
-          opened = true
-          action = 'r'
-          state.count = 0
-          state.win = api.nvim_get_current_win()
-        end
-
         if #process > 0 or not data then
-          func({}, action, {
+          qf_fn({}, 'a', {
             lines = not data and chunk or process,
             id = id,
             efm = vim.o.errorformat,
@@ -267,11 +260,16 @@ local grep = async(function(t, ...)
             title = 'Grep',
           })
 
+          if not opened then
+            vim.cmd(t == QUICK and 'cw' or 'lw')
+            local buf = api.nvim_get_current_buf()
+            state.win = api.nvim_get_current_win()
+            setup_init(buf, t == QUICK)
+            opened = true
+          end
+
           state.count = state.count + (not data and #chunk or #process)
           update_title()
-          if action == 'r' then
-            action = 'a'
-          end
         end
       end)
     end,

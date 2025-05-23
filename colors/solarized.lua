@@ -79,7 +79,7 @@ local function load_solarized()
   shl('Directory', { fg = colors.cyan })
   shl('QuickFixLine', { bold = true })
   shl('qfFileName', { fg = colors.blue })
-  shl('qfSeparator', { fg = colors.violet })
+  shl('qfSeparator', { fg = colors.orange })
   shl('qfLineNr', { link = 'LineNr' })
   shl('qfText', { link = 'String' })
 
