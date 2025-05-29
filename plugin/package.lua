@@ -135,7 +135,7 @@ async(function()
       })
     end)
   use('nvim-treesitter/nvim-treesitter-textobjects')
-    :on('BufREadPost')
+    :on('BufReadPost')
     :branch('main')
     :setup({
       select = {
