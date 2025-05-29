@@ -132,6 +132,12 @@ au('UIEnter', {
         virtual_text = { current_line = true },
         signs = {
           text = { '●', '●', '●', '●' },
+          numhl = {
+            'DiagnosticError',
+            'DiagnosticWarn',
+            'DiagnosticInfo',
+            'DiagnosticHint',
+          },
         },
       })
 
@@ -141,7 +147,13 @@ au('UIEnter', {
         desc = 'Opens the Nvim LSP client log.',
       })
 
+      api.nvim_create_user_command('LspDebug', function()
+        vim.lsp.log.set_level(vim.log.levels.WARN)
+      end, { desc = 'enable lsp log' })
+
       require('private.grep')
+
+      vim.cmd.packadd('nohlsearch')
     end)
   end,
   desc = 'Initializer',

@@ -1,7 +1,7 @@
 local g = vim.g
 vim.loader.enable()
 g.mapleader = vim.keycode('<space>')
-_G.lang_ft = {
+vim.g.language = {
   'c',
   'cpp',
   'rust',
@@ -64,15 +64,16 @@ o.ruler = false
 o.showtabline = 0
 o.showcmd = false
 
--- o.laststatus = 3
-o.list = true
-
 o.pumheight = 15
 o.pummaxwidth = 30
 
+o.list = true
 --eol:¬
 o.listchars = 'tab:» ,nbsp:+,trail:·,extends:→,precedes:←,'
 o.fillchars = 'trunc:…'
+o.foldtext = ''
+o.foldlevelstart = 99
+
 -- o.undofile = true
 o.linebreak = true
 o.smoothscroll = true
@@ -82,7 +83,6 @@ o.expandtab = true
 o.autoindent = true
 o.tabstop = 2
 o.sw = 2
-o.foldlevelstart = 99
 
 o.wrap = false
 o.number = true
@@ -96,3 +96,4 @@ o.cot = 'menu,menuone,noinsert,fuzzy,popup'
 o.cia = 'kind,abbr,menu'
 
 vim.cmd.colorscheme('solarized')
+vim.g.health = { style = 'float' }

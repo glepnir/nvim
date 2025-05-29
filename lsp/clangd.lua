@@ -19,7 +19,7 @@ local function switch_source_header(client, buf)
 end
 
 return {
-  cmd = { 'clangd' },
+  cmd = { 'clangd', '--log=verbose' },
   filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda', 'proto' },
   root_markers = {
     '.clangd',

@@ -66,7 +66,7 @@ async(function()
     end)
     :run('Dashboard')
 
-  use('nvimdev/modeline.nvim'):on({ 'BufEnter */*', 'BufNewFile' }):setup()
+  use('nvimdev/modeline.nvim'):on({ 'BufEnter */*', 'BufNewFile' }):setup():load_path()
   use('lewis6991/gitsigns.nvim'):on({ 'BufEnter */*', 'BufNewFile' }):setup({
     signs = {
       add = { text = '┃' },
@@ -108,6 +108,7 @@ async(function()
       ft('typescript', 'javascript', 'typescriptreact', 'javascriptreact'):fmt('prettier')
     end)
     :depends('nvimdev/guard-collection')
+    :load_path()
 
   use('nvimdev/dbsession.nvim'):cmd({ 'SessionSave', 'SessionLoad', 'SessionDelete' })
 
@@ -183,7 +184,7 @@ async(function()
     end)
     :depends('nvim-treesitter/nvim-treesitter-textobjects')
 
-  use('nvimdev/phoenix.nvim'):ft(lang_ft)
+  use('nvimdev/phoenix.nvim'):ft(vim.g.language)
 
   use('nvimdev/lspsaga.nvim')
     :on('LspAttach')
