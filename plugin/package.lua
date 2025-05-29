@@ -1,6 +1,7 @@
 local api, uv, fs = vim.api, vim.uv, vim.fs
 local strive_path = fs.joinpath(vim.fn.stdpath('data'), 'strive.nvim', 'strive')
 vim.g.strive_dev_path = '/Users/mw/workspace'
+strive_path = '/Users/mw/workspace/strive'
 
 local installed = (uv.fs_stat(strive_path) or {}).type == 'directory'
 async(function()
@@ -118,71 +119,66 @@ async(function()
   })
 
   use('nvim-treesitter/nvim-treesitter')
-    :on({ 'BufReadPost', 'BufNewFile' })
-    :run('TSUpdate')
+    :on('StriveDone')
+    :branch('main')
+    :run(function()
+      require('nvim-treesitter').install(vim.g.language)
+    end)
     :config(function()
-      require('nvim-treesitter.configs').setup({
-        ensure_installed = {
-          'c',
-          'cpp',
-          'rust',
-          'zig',
-          'lua',
-          'go',
-          'python',
-          'proto',
-          'typescript',
-          'javascript',
-          'tsx',
-          'css',
-          'scss',
-          'diff',
-          'dockerfile',
-          'gomod',
-          'gosum',
-          'gowork',
-          'graphql',
-          'html',
-          'sql',
-          'markdown',
-          'markdown_inline',
-          'json',
-          'jsonc',
-          'vimdoc',
-          'vim',
-          'cmake',
-        },
-        highlight = {
-          enable = true,
-          disable = function(_, buf)
-            local bufname = api.nvim_buf_get_name(buf)
-            local max_filesize = 300 * 1024
-            local ok, stats = pcall(uv.fs_stat, bufname)
-            if ok and stats and stats.size > max_filesize then
-              return true
-            end
-          end,
-          additional_vim_regex_highlighting = false,
-        },
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = vim.g.language,
+        once = true,
+        callback = function()
+          vim.treesitter.start()
+          vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+          -- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end,
       })
-
-      vim.schedule(function()
-        require('nvim-treesitter.configs').setup({
-          textobjects = {
-            select = {
-              enable = true,
-              keymaps = {
-                ['af'] = '@function.outer',
-                ['if'] = '@function.inner',
-                ['ac'] = '@class.outer',
-                ['ic'] = { query = '@class.inner' },
-              },
-            },
-          },
-        })
+    end)
+  use('nvim-treesitter/nvim-treesitter-textobjects')
+    :on('BufREadPost')
+    :branch('main')
+    :setup({
+      select = {
+        -- Automatically jump forward to textobj, similar to targets.vim
+        lookahead = true,
+        selection_modes = {
+          ['@parameter.outer'] = 'v', -- charwise
+          ['@function.outer'] = 'V', -- linewise
+          ['@class.outer'] = '<c-v>', -- blockwise
+        },
+        include_surrounding_whitespace = false,
+      },
+    })
+    :config(function()
+      vim.keymap.set({ 'x', 'o' }, 'af', function()
+        require('nvim-treesitter-textobjects.select').select_textobject(
+          '@function.outer',
+          'textobjects'
+        )
+      end)
+      vim.keymap.set({ 'x', 'o' }, 'if', function()
+        require('nvim-treesitter-textobjects.select').select_textobject(
+          '@function.inner',
+          'textobjects'
+        )
+      end)
+      vim.keymap.set({ 'x', 'o' }, 'ac', function()
+        require('nvim-treesitter-textobjects.select').select_textobject(
+          '@class.outer',
+          'textobjects'
+        )
+      end)
+      vim.keymap.set({ 'x', 'o' }, 'ic', function()
+        require('nvim-treesitter-textobjects.select').select_textobject(
+          '@class.inner',
+          'textobjects'
+        )
+      end)
+      vim.keymap.set({ 'x', 'o' }, 'as', function()
+        require('nvim-treesitter-textobjects.select').select_textobject('@local.scope', 'locals')
       end)
     end)
-    :depends('nvim-treesitter/nvim-treesitter-textobjects')
 
   use('nvimdev/phoenix.nvim'):ft(vim.g.language)
 

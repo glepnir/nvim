@@ -75,20 +75,6 @@ au('InsertLeave', {
   desc = 'auto switch to abc input',
 })
 
-au('BufReadPost', {
-  group = group,
-  callback = function(args)
-    local ok = pcall(vim.treesitter.get_parser, args.buf)
-    if ok and vim.wo.foldmethod ~= 'expr' then
-      vim.wo.foldmethod = 'expr'
-      vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-      vim.defer_fn(function()
-        vim.cmd('normal! zx')
-      end, 50)
-    end
-  end,
-})
-
 au('InsertEnter', {
   group = group,
   once = true,
