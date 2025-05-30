@@ -66,7 +66,7 @@ async(function()
     end)
     :run('Dashboard')
 
-  use('nvimdev/modeline.nvim'):on({ 'BufEnter */*', 'BufNewFile' }):setup():load_path()
+  use('nvimdev/modeline.nvim'):on({ 'BufEnter */*', 'BufNewFile' }):setup()
   use('lewis6991/gitsigns.nvim'):on({ 'BufEnter */*', 'BufNewFile' }):setup({
     signs = {
       add = { text = '┃' },
