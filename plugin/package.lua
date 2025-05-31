@@ -86,6 +86,7 @@ async(function()
     :setup({
       only_current = true,
     })
+    :load_path()
 
   use('nvimdev/guard.nvim')
     :on('BufReadPost')
@@ -117,22 +118,10 @@ async(function()
     lsp = { symbols = { symbol_style = 3 } },
   })
 
-  use('nvim-treesitter/nvim-treesitter')
-    :on('StriveDone')
-    :branch('main')
-    :run(function()
-      require('nvim-treesitter').install(vim.g.language)
-    end)
-    :config(function()
-      vim.api.nvim_create_autocmd('FileType', {
-        pattern = vim.g.language,
-        callback = function()
-          vim.treesitter.start()
-          vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-          -- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-        end,
-      })
-    end)
+  use('nvim-treesitter/nvim-treesitter'):on('BufReadPre'):branch('main'):run(function()
+    require('nvim-treesitter').install(vim.g.language)
+  end)
+
   use('nvim-treesitter/nvim-treesitter-textobjects')
     :on('BufReadPost')
     :branch('main')
