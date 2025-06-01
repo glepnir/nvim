@@ -99,6 +99,7 @@ au('UIEnter', {
   once = true,
   callback = function()
     vim.schedule(function()
+      require('private.dashboard').show()
       require('private.keymap')
 
       vim.lsp.enable({
