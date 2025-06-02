@@ -1,3 +1,5 @@
+local group = vim.api.nvim_create_augroup('Dashboard', { clear = true })
+
 local M = {}
 
 local config = {
@@ -22,6 +24,7 @@ local config = {
   shortcuts = {
     { key = 'f', desc = 'Open File', action = '<cmd>FzfLua files<CR>' },
     { key = 'o', desc = 'Recent Files', action = '<cmd>FzfLua oldfiles<CR>' },
+    { key = 'd', desc = 'Dotfiles', action = '<cmd>FzfLua files cwd=$HOME/.config<CR>' },
     { key = 'e', desc = 'New File', action = '<cmd>enew<CR>' },
     { key = 'u', desc = 'Update Plugins', action = '<cmd>Strive update<CR>' },
     { key = 'q', desc = 'Quit', action = '<cmd>qa<CR>' },
@@ -39,11 +42,10 @@ local config = {
     top_offset = 8,
     date_top_offset = 3,
     plugin_info_offset = 5,
-    shortcuts_top_offset = 8,
+    shortcuts_top_offset = 3,
   },
 }
 
--- 动态计算居中位置（恢复真正的居中逻辑）
 local function calculate_positions()
   local screen_width = vim.o.columns
 
@@ -78,8 +80,8 @@ local function setup_highlights()
     DashboardFooter = { fg = '#565f89', italic = true },
   }
 
-  for group, opts in pairs(highlights) do
-    vim.api.nvim_set_hl(0, group, opts)
+  for g, opts in pairs(highlights) do
+    vim.api.nvim_set_hl(0, g, opts)
   end
 end
 
@@ -115,7 +117,6 @@ local function render_dashboard(buf)
   local lines = {}
   local highlights_to_apply = {}
 
-  -- 动态计算居中位置
   local pos = calculate_positions()
 
   for _ = 1, config.layout.top_offset do
@@ -125,7 +126,7 @@ local function render_dashboard(buf)
   local lambda_lines = #config.lambda_art
   local date_line_idx = config.layout.top_offset + config.layout.date_top_offset
   local plugin_info_line_idx = config.layout.top_offset + config.layout.plugin_info_offset
-  local shortcuts_start_idx = plugin_info_line_idx + 2
+  local shortcuts_start_idx = plugin_info_line_idx + config.layout.shortcuts_top_offset
 
   local total_lines = math.max(
     config.layout.top_offset + lambda_lines,
@@ -137,14 +138,12 @@ local function render_dashboard(buf)
     table.insert(lines, '')
   end
 
-  -- 添加Lambda艺术（保持正确的高亮计算）
   for i, lambda_line in ipairs(config.lambda_art) do
     local line_idx = config.layout.top_offset + i
     if line_idx <= #lines then
       local new_line = string.rep(' ', pos.lambda_left_margin - 1) .. lambda_line
       lines[line_idx] = new_line
 
-      -- 计算Lambda的实际字节位置进行高亮
       local lambda_byte_start = pos.lambda_left_margin - 1
       local lambda_byte_end = lambda_byte_start + #lambda_line
 
@@ -157,7 +156,6 @@ local function render_dashboard(buf)
     end
   end
 
-  -- 添加日期时间（保持正确的高亮计算）
   local datetime_str = get_datetime()
   if date_line_idx <= #lines then
     local current_line = lines[date_line_idx] or ''
@@ -165,7 +163,6 @@ local function render_dashboard(buf)
     local new_line = current_line .. string.rep(' ', needed_spaces) .. datetime_str
     lines[date_line_idx] = new_line
 
-    -- 计算日期的实际字节位置
     local date_byte_start = #current_line + needed_spaces
     local date_byte_end = date_byte_start + #datetime_str
 
@@ -177,7 +174,6 @@ local function render_dashboard(buf)
     })
   end
 
-  -- 添加插件信息（保持正确的高亮计算）
   local startup_time = vim.g.strive_startup_time or '0'
   local plugin_info_str = string.format(
     'load %d/%d plugins in %sms',
@@ -192,7 +188,6 @@ local function render_dashboard(buf)
     local new_line = current_line .. string.rep(' ', needed_spaces) .. plugin_info_str
     lines[plugin_info_line_idx] = new_line
 
-    -- 计算插件信息的实际字节位置
     local plugin_byte_start = #current_line + needed_spaces
     local plugin_byte_end = plugin_byte_start + #plugin_info_str
 
@@ -204,33 +199,35 @@ local function render_dashboard(buf)
     })
   end
 
-  -- 添加快捷键（保持正确的高亮计算）
+  local cursor = {}
+
   local shortcuts = config.shortcuts
   for i, shortcut in ipairs(shortcuts) do
     local row_idx = shortcuts_start_idx + i - 1
     if row_idx <= #lines then
-      local shortcut_text = string.format('[%s] %s', shortcut.key, shortcut.desc)
+      local shortcut_text = string.format('[%s]  %s', shortcut.key, shortcut.desc)
 
       local current_line = lines[row_idx] or ''
-      local needed_spaces = math.max(0, pos.right_section_left - 1 - #current_line)
+      local needed_spaces = math.max(2, pos.right_section_left - 1 - #current_line)
       local new_line = current_line .. string.rep(' ', needed_spaces) .. shortcut_text
+      if i == 1 then
+        cursor[1] = row_idx
+        cursor[2] = #new_line - #shortcut_text + 5
+      end
       lines[row_idx] = new_line
 
-      -- 计算快捷键的实际字节位置
       local shortcut_byte_start = #current_line + needed_spaces
 
-      -- 快捷键字母高亮 [x]
       table.insert(highlights_to_apply, {
         line = row_idx - 1,
-        col_start = shortcut_byte_start + 1, -- 跳过 '['
-        col_end = shortcut_byte_start + 2, -- 只高亮字母
+        col_start = shortcut_byte_start + 1,
+        col_end = shortcut_byte_start + 2,
         hl_group = config.highlights.key,
       })
 
-      -- 描述高亮（从 '] ' 之后开始）
       table.insert(highlights_to_apply, {
         line = row_idx - 1,
-        col_start = shortcut_byte_start + 3, -- 跳过 '[x] '
+        col_start = shortcut_byte_start + 3,
         col_end = shortcut_byte_start + #shortcut_text,
         hl_group = config.highlights.desc,
       })
@@ -240,13 +237,12 @@ local function render_dashboard(buf)
   vim.bo[buf].modifiable = true
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
   vim.bo[buf].modifiable = false
+  vim.api.nvim_win_set_cursor(0, cursor)
 
   local ns_id = vim.api.nvim_create_namespace('dashboard')
   for _, hl in ipairs(highlights_to_apply) do
     vim.hl.range(buf, ns_id, hl.hl_group, { hl.line, hl.col_start }, { hl.line, hl.col_end })
   end
-
-  return lines, pos
 end
 
 local function setup_keymaps(buf)
@@ -260,6 +256,32 @@ local function setup_keymaps(buf)
   vim.keymap.set('n', 'q', ':q<CR>', opts)
 end
 
+local function opt_handler()
+  local save_opts = {}
+
+  save_opts.number = vim.wo.number
+  save_opts.relativenumber = vim.wo.relativenumber
+  save_opts.cursorline = vim.wo.cursorline
+  save_opts.cursorcolumn = vim.wo.cursorcolumn
+  save_opts.colorcolumn = vim.wo.colorcolumn
+  save_opts.signcolumn = vim.wo.signcolumn
+  save_opts.wrap = vim.wo.wrap
+  save_opts.laststatus = vim.o.laststatus
+  save_opts.showtabline = vim.o.showtabline
+
+  return function()
+    vim.wo.number = save_opts.number
+    vim.wo.relativenumber = save_opts.relativenumber
+    vim.wo.cursorline = save_opts.cursorline
+    vim.wo.cursorcolumn = save_opts.cursorcolumn
+    vim.wo.colorcolumn = save_opts.colorcolumn
+    vim.wo.signcolumn = save_opts.signcolumn
+    vim.wo.wrap = save_opts.wrap
+    vim.o.laststatus = save_opts.laststatus
+    vim.o.showtabline = save_opts.showtabline
+  end
+end
+
 function M.show()
   if vim.fn.argc() > 0 or vim.fn.line2byte('$') ~= -1 then
     return
@@ -267,55 +289,46 @@ function M.show()
 
   local buf = create_dashboard_buffer()
   vim.api.nvim_set_current_buf(buf)
-  local _, pos = render_dashboard(buf)
+  render_dashboard(buf)
   setup_highlights()
   setup_keymaps(buf)
 
-  vim.api.nvim_win_set_cursor(0, { 15, vim.fn.virtcol2col(0, 15, pos.right_section_left) + 1 })
+  local restore_opt = opt_handler()
 
   vim.wo.number = false
   vim.wo.relativenumber = false
   vim.wo.cursorline = false
   vim.wo.cursorcolumn = false
   vim.wo.colorcolumn = '0'
-  vim.wo.foldcolumn = '0'
   vim.wo.signcolumn = 'no'
-  vim.wo.wrap = false
+  vim.wo.wrap = true
 
   vim.o.laststatus = 0
   vim.o.showtabline = 0
-  vim.o.cmdheight = 0
-end
 
-local group = vim.api.nvim_create_augroup('Dashboard', { clear = true })
+  vim.api.nvim_create_autocmd('VimResized', {
+    group = group,
+    callback = function()
+      if vim.bo.buftype == 'nofile' and vim.bo.filetype == '' then
+        render_dashboard(buf)
+      end
+    end,
+  })
+
+  vim.api.nvim_create_autocmd('BufLeave', {
+    buffer = buf,
+    group = group,
+    callback = function()
+      restore_opt()
+    end,
+  })
+end
 
 vim.api.nvim_create_autocmd('VimEnter', {
   group = group,
   callback = function()
     if vim.fn.argc() == 0 and vim.fn.line2byte('$') == -1 then
       M.show()
-    end
-  end,
-})
-
-vim.api.nvim_create_autocmd('VimResized', {
-  group = group,
-  callback = function()
-    if vim.bo.buftype == 'nofile' and vim.bo.filetype == '' then
-      local buf = vim.api.nvim_get_current_buf()
-      render_dashboard(buf)
-    end
-  end,
-})
-
-vim.api.nvim_create_autocmd('BufLeave', {
-  group = group,
-  pattern = '*',
-  callback = function()
-    if vim.bo.buftype == 'nofile' and vim.bo.filetype == '' then
-      vim.o.laststatus = 2
-      vim.o.showtabline = 1
-      vim.o.cmdheight = 1
     end
   end,
 })
