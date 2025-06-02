@@ -76,7 +76,7 @@ local function setup_highlights()
     DashboardLambda = { fg = '#7aa2f7', bold = true },
     DashboardKey = { fg = '#f7768e', bold = true },
     DashboardDesc = { fg = '#9ece6a' },
-    DashboardDate = { fg = '#e0af68' },
+    DashboardDate = { fg = '#e0af68', bold = true },
     DashboardFooter = { fg = '#565f89', italic = true },
   }
 
