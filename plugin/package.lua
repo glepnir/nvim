@@ -1,4 +1,4 @@
-local api, uv, fs = vim.api, vim.uv, vim.fs
+local uv, fs = vim.uv, vim.fs
 local strive_path = fs.joinpath(vim.fn.stdpath('data'), 'strive.nvim', 'strive')
 vim.g.strive_dev_path = '/Users/mw/workspace'
 
