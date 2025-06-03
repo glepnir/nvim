@@ -64,6 +64,27 @@ au('LspAttach', {
           end
         end,
       })
+
+      au('CompleteDone', {
+        buffer = bufnr,
+        group = g,
+        callback = function()
+          local item =
+            vim.tbl_get(vim.v.completed_item, 'user_data', 'nvim', 'lsp', 'completion_item')
+          if not item then
+            return
+          end
+
+          if item.kind == 3 and item.insertTextFormat == lsp.protocol.InsertTextFormat.Snippet then
+            vim.schedule(function()
+              if api.nvim_get_mode().mode == 's' then
+                lsp.buf.signature_help()
+              end
+            end)
+          end
+        end,
+        desc = 'Auto show signature help when compeltion done',
+      })
     end
   end,
 })
