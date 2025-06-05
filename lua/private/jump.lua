@@ -84,8 +84,6 @@ local function mark_targets(targets)
       cleanup()
       return ''
     end
-
-    cleanup()
   end
 
   vim.on_key(state.on_key_func, state.ns_id)
