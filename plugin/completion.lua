@@ -75,7 +75,11 @@ au('LspAttach', {
             return
           end
 
-          if item.kind == 3 and item.insertTextFormat == lsp.protocol.InsertTextFormat.Snippet then
+          if
+            item.kind == 3
+            and item.insertTextFormat == lsp.protocol.InsertTextFormat.Snippet
+            and (item.textEdit ~= nil or item.insertText ~= nil)
+          then
             vim.schedule(function()
               if api.nvim_get_mode().mode == 's' then
                 lsp.buf.signature_help()

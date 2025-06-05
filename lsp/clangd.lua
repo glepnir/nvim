@@ -38,6 +38,11 @@ return {
     -- Off-spec, but clangd and vim.lsp support UTF-8, which is more efficient.
     offsetEncoding = { 'utf-8', 'utf-16' },
   },
+  on_init = function(client, init_result)
+    if init_result.offsetEncoding then
+      client.offset_encoding = init_result.offsetEncoding
+    end
+  end,
 
   -- Assumes at most one clangd client is attached to a buffer.
   on_attach = function(client, buf)

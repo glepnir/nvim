@@ -1,12 +1,13 @@
-local uv, fs = vim.uv, vim.fs
-local strive_path = fs.joinpath(vim.fn.stdpath('data'), 'strive.nvim', 'strive')
+local uv = vim.uv
+local strive = vim.fs.joinpath(vim.fn.stdpath('data'), 'site', 'pack', 'strive', 'opt', 'strive')
 vim.g.strive_dev_path = '/Users/mw/workspace'
+strive = '/Users/mw/workspace/strive'
 
-local installed = (uv.fs_stat(strive_path) or {}).type == 'directory'
+local installed = (uv.fs_stat(strive) or {}).type == 'directory'
 async(function()
   if not installed then
     local result =
-      try_await(asystem({ 'git', 'clone', 'https://github.com/nvimdev/strive', strive_path }, {
+      try_await(asystem({ 'git', 'clone', 'https://github.com/nvimdev/strive', strive }, {
         timeout = 5000,
         stderr = function(_, data)
           if data then
@@ -23,7 +24,7 @@ async(function()
     vim.notify('Strive installed success', vim.log.levels.INFO)
   end
 
-  vim.o.rtp = strive_path .. ',' .. vim.o.rtp
+  vim.o.rtp = strive .. ',' .. vim.o.rtp
   local use = require('strive').use
 
   use('nvimdev/modeline.nvim'):on({ 'BufEnter */*', 'BufNewFile' }):setup()
