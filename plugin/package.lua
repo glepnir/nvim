@@ -46,7 +46,6 @@ async(function()
     :setup({
       only_current = true,
     })
-    :load_path()
 
   use('nvimdev/guard.nvim')
     :on('BufReadPost')
@@ -127,7 +126,11 @@ async(function()
       end)
     end)
 
-  use('nvimdev/phoenix.nvim'):ft(vim.g.language)
+  use('nvimdev/phoenix.nvim'):ft(vim.g.language):init(function()
+    vim.g.phoenix = {
+      snippet = vim.fn.stdpath('config') .. '/snippets',
+    }
+  end)
 
   use('nvimdev/lspsaga.nvim')
     :on('LspAttach')
