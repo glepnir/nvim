@@ -55,6 +55,29 @@ function State.new()
   return self
 end
 
+function State:get_word_before()
+  local col = self.cursor[2]
+  if col == 0 then
+    return ''
+  end
+
+  local start_pos = col
+  while start_pos > 0 do
+    local char = self.line:sub(start_pos, start_pos)
+    if char:match('%s') then
+      start_pos = start_pos + 1
+      break
+    end
+    start_pos = start_pos - 1
+  end
+
+  if start_pos == 0 then
+    start_pos = 1
+  end
+
+  return self.line:sub(start_pos, col)
+end
+
 function State:get_char_before()
   local pos = self.cursor[2]
   if pos > 0 then
@@ -102,9 +125,10 @@ function Action.delete()
   }, Action)
 end
 
-function Action.nothing()
+function Action.nothing(char)
   return setmetatable({
     type = ActionType.NOTHING,
+    char = char,
   }, Action)
 end
 
@@ -123,8 +147,8 @@ function ActionHandler.handle(action, state, bracket_pairs)
       return '<BS><Del>'
     end
     return '<BS>'
-  else -- NOTHING
-    return ''
+  else -- NOTHING insert char self
+    return action.char or ''
   end
 end
 
@@ -142,6 +166,14 @@ function Pairs:determine_action(char, state)
   -- Handle visual mode
   if state.mode == 'v' or state.mode == 'V' then
     return Action.insert(char, self.bracket_pairs:get_closing(char))
+  end
+
+  -- Check ' used in binary number
+  if char == "'" then
+    local word_before = state:get_word_before()
+    if word_before and word_before:match('0b[01]*$') then
+      return Action.nothing(char)
+    end
   end
 
   -- Check if we should skip closing bracket
