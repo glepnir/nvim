@@ -126,6 +126,7 @@ au('UIEnter', {
             'DiagnosticHint',
           },
         },
+        severity_sort = true
       })
 
       api.nvim_create_user_command('LspLog', function()
