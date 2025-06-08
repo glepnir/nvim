@@ -2,8 +2,7 @@
 	"for": {
 		"prefix": "for",
 		"body": [
-			"for (${size_t} ${i} = ${1:0}; ${i} < ${2:length}; ${i}++)",
-			"{",
+			"for (${size_t} ${i} = ${1:0}; ${i} < ${2:length}; ${i}++) {",
 			"	$3",
 			"}"
 		],
@@ -12,8 +11,7 @@
 	"forr": {
 		"prefix": "forr",
 		"body": [
-			"for (int ${i} = ${1:length} - 1; ${i} >= ${2:0}; ${i}--)",
-			"{",
+			"for (int ${i} = ${1:length} - 1; ${i} >= ${2:0}; ${i}--) {",
 			"	$3",
 			"}"
 		],
@@ -22,8 +20,7 @@
 	"while": {
 		"prefix": "while",
 		"body": [
-			"while ($1)",
-			"{",
+			"while ($1) {",
 			"	$2",
 			"}"
 		],
@@ -32,8 +29,7 @@
 	"if": {
 		"prefix": "if",
 		"body": [
-			"if ($1)",
-			"{",
+			"if ($1) {",
 			"	$2",
 			"}"
 		],
@@ -42,28 +38,16 @@
 	"else": {
 		"prefix": "else",
 		"body": [
-			"else",
-			"{",
+			"else {",
 			"	$1",
 			"}"
 		],
 		"description": "Code snippet for else statement"
 	},
-	"else if": {
-		"prefix": "else if",
-		"body": [
-			"else if ($1)",
-			"{",
-			"	$2",
-			"}"
-		],
-		"description": "Code snippet for else-if statement"
-	},
 	"enum": {
 		"prefix": "enum",
 		"body": [
-			"enum ${MyEnum}",
-			"{",
+			"enum ${MyEnum} {",
 			"	$1",
 			"};"
 		],
@@ -99,8 +83,7 @@
 	"struct": {
 		"prefix": "struct",
 		"body": [
-			"struct ${MyStruct}",
-			"{",
+			"struct ${MyStruct} {",
 			"	$1",
 			"};"
 		],
@@ -109,8 +92,7 @@
 	"switch": {
 		"prefix": "switch",
 		"body": [
-			"switch (${switch_on})",
-			"{",
+			"switch (${switch_on}) {",
 			"default:",
 			"	break;$1",
 			"}"
@@ -120,8 +102,7 @@
 	"union": {
 		"prefix": "union",
 		"body": [
-			"union ${MyUnion}",
-			"{",
+			"union ${MyUnion} {",
 			"	$1",
 			"};"
 		],
