@@ -1,14 +1,14 @@
 {
   "beginend": {
     "prefix": "beginend",
-    "body": "${1:v}.begin(), ${1:v}.end()",
-    "description": "Snippet for a beginend"
+    "body": "${1:container}.begin(), ${1:container}.end()",
+    "description": "Snippet for begin/end iterator pair"
   },
   "for": {
     "prefix": "for",
     "body": [
-      "for (${size_t} ${i} = ${1:0}; ${i} < ${2:length}; ${i}++) {",
-      " $3",
+      "for (size_t ${1:i} = ${2:0}; ${1:i} < ${3:size}; ++${1:i}) {",
+      "  $0",
       "}"
     ],
     "description": "Code snippet for 'for' loop"
@@ -16,164 +16,294 @@
   "forr": {
     "prefix": "forr",
     "body": [
-      "for (int ${i} = ${1:length} - 1; ${i} >= ${2:0}; ${i}--) {",
-      " $3",
+      "for (size_t ${1:i} = ${2:size}; ${1:i} > ${3:0}; --${1:i}) {",
+      "  $0",
       "}"
     ],
     "description": "Code snippet for reverse 'for' loop"
   },
+  "fori": {
+    "prefix": "fori",
+    "body": [
+      "for (int ${1:i} = ${2:0}; ${1:i} < ${3:length}; ++${1:i}) {",
+      "  $0",
+      "}"
+    ],
+    "description": "Code snippet for integer 'for' loop"
+  },
   "do": {
     "prefix": "do",
-    "body": ["do", "{", "       $1", "} while($2);"],
+    "body": [
+      "do {",
+      "  $0",
+      "} while (${1:condition});"
+    ],
     "description": "Code snippet for do...while loop"
   },
   "while": {
     "prefix": "while",
-    "body": ["while ($1) {", "       $2", "}"],
+    "body": [
+      "while (${1:condition}) {",
+      "  $0",
+      "}"
+    ],
     "description": "Code snippet for while loop"
   },
   "foreach": {
     "prefix": "foreach",
-    "body": ["for(auto ${var} : ${collection_to_loop}) {", " $1", "}"],
-    "description": "Code snippet for range-based for loop (c++11) statement"
+    "body": [
+      "for (const auto& ${1:item} : ${2:container}) {",
+      "  $0",
+      "}"
+    ],
+    "description": "Code snippet for range-based for loop (const ref)"
+  },
+  "foreachmut": {
+    "prefix": "foreachmut", 
+    "body": [
+      "for (auto& ${1:item} : ${2:container}) {",
+      "  $0",
+      "}"
+    ],
+    "description": "Code snippet for range-based for loop (mutable ref)"
+  },
+  "foreachval": {
+    "prefix": "foreachval",
+    "body": [
+      "for (auto ${1:item} : ${2:container}) {",
+      "  $0",
+      "}"
+    ],
+    "description": "Code snippet for range-based for loop (by value)"
   },
   "if": {
     "prefix": "if",
-    "body": ["if ($1) {", "  $2", "}"],
+    "body": [
+      "if (${1:condition}) {",
+      "  $0",
+      "}"
+    ],
     "description": "Code snippet for if statement"
   },
   "else": {
     "prefix": "else",
-    "body": ["else {", "     $1", "}"],
+    "body": [
+      "else {",
+      "  $0",
+      "}"
+    ],
     "description": "Code snippet for else statement"
+  },
+  "elseif": {
+    "prefix": "elseif",
+    "body": [
+      "else if (${1:condition}) {",
+      "  $0",
+      "}"
+    ],
+    "description": "Code snippet for else if statement"
   },
   "enum": {
     "prefix": "enum",
-    "body": ["enum ${MyEnum} {", "   $1", "};"],
-    "description": "Code snippet for enum"
-  },
-  "enum class": {
-    "prefix": "enum class",
-    "body": ["enum class ${MyClass} { };"],
-    "description": "Code snippet for enum class (c++11)"
-  },
-  "class": {
-    "prefix": "class",
     "body": [
-      "class ${MyClass} {",
-      "public:",
-      " ${MyClass}();",
-      " ${MyClass}(${MyClass} &&) = default;",
-      " ${MyClass}(const ${MyClass} &) = default;",
-      " ${MyClass} &operator=(${MyClass} &&) = default;",
-      " ${MyClass} &operator=(const ${MyClass} &) = default;",
-      " ~${MyClass}();",
-      "",
-      "private:",
-      " $1",
-      "};",
-      "",
-      "${MyClass}::${MyClass}() {",
-      "}",
-      "",
-      "${MyClass}::~${MyClass}() {",
-      "}"
-    ],
-    "description": "Code snippet for class"
-  },
-  "classi": {
-    "prefix": "classi",
-    "body": [
-      "class ${MyClass} {",
-      "public:",
-      " ${MyClass}() = default;",
-      " ${MyClass}(${MyClass} &&) = default;",
-      " ${MyClass}(const ${MyClass} &) = default;",
-      " ${MyClass} &operator=(${MyClass} &&) = default;",
-      " ${MyClass} &operator=(const ${MyClass} &) = default;",
-      " ~${MyClass}() = default;",
-      "",
-      "private:",
-      " $1",
+      "enum class ${1:MyEnum} {",
+      "  $0",
       "};"
     ],
-    "description": "Code snippet for class with inline constructor/destructor"
+    "description": "Code snippet for scoped enum (enum class)"
   },
-  "interface": {
-    "prefix": "interface",
-    "body": ["__interface I${Interface}", "{", "        $1", "};"],
-    "description": "Code snippet for interface (Visual C++)"
+  "enumlegacy": {
+    "prefix": "enumlegacy",
+    "body": [
+      "enum ${1:MyEnum} {",
+      "  $0",
+      "};"
+    ],
+    "description": "Code snippet for legacy enum"
+  },
+  "class": {
+    "prefix": "class", 
+    "body": [
+      "class ${1:MyClass} {",
+      "public:",
+      "  ${1:MyClass}() = default;",
+      "  ${1:MyClass}(const ${1:MyClass}&) = default;",
+      "  ${1:MyClass}(${1:MyClass}&&) = default;",
+      "  ${1:MyClass}& operator=(const ${1:MyClass}&) = default;",
+      "  ${1:MyClass}& operator=(${1:MyClass}&&) = default;",
+      "  ~${1:MyClass}() = default;",
+      "",
+      "private:",
+      "  $0",
+      "};"
+    ],
+    "description": "Modern C++ class with rule of five"
   },
   "namespace": {
     "prefix": "namespace",
-    "body": ["namespace ${MyNamespace} {", " $1", "}"],
+    "body": [
+      "namespace ${1:name} {",
+      "",
+      "$0",
+      "",
+      "}  // namespace ${1:name}"
+    ],
     "description": "Code snippet for namespace"
   },
   "#ifdef": {
     "prefix": "#ifdef",
-    "body": ["#ifdef ${DEBUG}", "$1", "#endif // ${DEBUG}"],
+    "body": [
+      "#ifdef ${1:MACRO}",
+      "$0",
+      "#endif  // ${1:MACRO}"
+    ],
     "description": "Code snippet for #ifdef"
   },
   "#ifndef": {
     "prefix": "#ifndef",
-    "body": ["#ifndef ${1:1}", "$2", "#endif // !$1"],
+    "body": [
+      "#ifndef ${1:MACRO}",
+      "$0",
+      "#endif  // !${1:MACRO}"
+    ],
     "description": "Code snippet for #ifndef"
   },
   "#if": {
     "prefix": "#if",
-    "body": ["#ifdef ${1:0}", "$2", "#endif // $1"],
+    "body": [
+      "#if ${1:condition}",
+      "$0",
+      "#endif  // ${1:condition}"
+    ],
     "description": "Code snippet for #if"
   },
   "struct": {
     "prefix": "struct",
-    "body": ["struct ${MyStruct} {", "       $1", "};"],
+    "body": [
+      "struct ${1:MyStruct} {",
+      "  $0",
+      "};"
+    ],
     "description": "Code snippet for struct"
   },
   "switch": {
     "prefix": "switch",
-    "body": ["switch (${switch_on}) {", "default:", "        break;$1", "}"],
+    "body": [
+      "switch (${1:expr}) {",
+      "  case ${2:value}:",
+      "    $0",
+      "    break;",
+      "  default:",
+      "    break;",
+      "}"
+    ],
     "description": "Code snippet for switch statement"
+  },
+  "case": {
+    "prefix": "case",
+    "body": [
+      "case ${1:value}:",
+      "  $0",
+      "  break;"
+    ],
+    "description": "Code snippet for case statement"
   },
   "try": {
     "prefix": "try",
     "body": [
       "try {",
-      " ",
-      "}",
-      "catch (const std::exception&) {",
-      " $1",
+      "  $0",
+      "} catch (const ${1:std::exception}& ${2:e}) {",
+      "  $3",
       "}"
     ],
     "description": "Code snippet for try catch"
   },
   "union": {
     "prefix": "union",
-    "body": ["union ${MyUnion} {", " $1", "};"],
+    "body": [
+      "union ${1:MyUnion} {",
+      "  $0",
+      "};"
+    ],
     "description": "Code snippet for union"
   },
   "cout": {
     "prefix": "cout",
-    "body": ["std::cout << \"${1:/* message */}\" << std::endl;"],
-    "description": "Code snippet for printing to std::cout, provided the header is set"
+    "body": "std::cout << ${1:\"message\"} << '\\n';",
+    "description": "Code snippet for std::cout"
+  },
+  "cerr": {
+    "prefix": "cerr",
+    "body": "std::cerr << ${1:\"error\"} << '\\n';",
+    "description": "Code snippet for std::cerr"
   },
   "#inc": {
     "prefix": "#inc",
-    "body": ["#include \"$1\""],
-    "description": "Code snippet for #include \" \""
+    "body": "#include \"${1:header.h}\"",
+    "description": "Code snippet for #include with quotes"
   },
   "#inc<": {
     "prefix": "#inc<",
-    "body": ["#include <$1>"],
-    "description": "Code snippet for #include \" \""
+    "body": "#include <${1:header}>",
+    "description": "Code snippet for #include with angle brackets"
   },
   "#def": {
     "prefix": "#def",
-    "body": ["#define \"$1\" \"$2\" "],
-    "description": "Code snippet for #define \" \""
+    "body": "#define ${1:MACRO} ${2:value}",
+    "description": "Code snippet for #define"
+  },
+  "#pragma": {
+    "prefix": "#pragma",
+    "body": "#pragma ${1:once}",
+    "description": "Code snippet for #pragma"
   },
   "main": {
     "prefix": "main",
-    "body": ["int main(int argc, const char** argv) {", "    return 0;", "}"],
+    "body": [
+      "int main(int argc, char* argv[]) {",
+      "  $0",
+      "  return 0;",
+      "}"
+    ],
     "description": "Code snippet for main function"
+  },
+  "mainsimple": {
+    "prefix": "mainsimple",
+    "body": [
+      "int main() {",
+      "  $0",
+      "  return 0;",
+      "}"
+    ],
+    "description": "Code snippet for simple main function"
+  },
+  "lambda": {
+    "prefix": "lambda",
+    "body": "[${1:}](${2:}) ${3:-> auto} {$0}",
+    "description": "Code snippet for lambda expression"
+  },
+  "auto": {
+    "prefix": "auto",
+    "body": "auto ${1:var} = ${2:value};",
+    "description": "Code snippet for auto variable"
+  },
+  "constexpr": {
+    "prefix": "constexpr",
+    "body": "constexpr ${1:auto} ${2:var} = ${3:value};",
+    "description": "Code snippet for constexpr variable"
+  },
+  "template": {
+    "prefix": "template",
+    "body": [
+      "template <${1:typename T}>",
+      "$0"
+    ],
+    "description": "Code snippet for template"
+  },
+  "using": {
+    "prefix": "using",
+    "body": "using ${1:alias} = ${2:type};",
+    "description": "Code snippet for type alias"
   }
 }
