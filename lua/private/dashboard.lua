@@ -265,6 +265,7 @@ local function opt_handler()
   save_opts.wrap = vim.wo.wrap
   save_opts.laststatus = vim.o.laststatus
   save_opts.showtabline = vim.o.showtabline
+  save_opts.listchars = vim.o.listchars
 
   return function()
     vim.wo.number = save_opts.number
@@ -276,6 +277,7 @@ local function opt_handler()
     vim.wo.wrap = save_opts.wrap
     vim.o.laststatus = save_opts.laststatus
     vim.o.showtabline = save_opts.showtabline
+    vim.o.listchars = save_opts.listchars
   end
 end
 
@@ -298,7 +300,8 @@ function M.show()
   vim.wo.cursorcolumn = false
   vim.wo.colorcolumn = '0'
   vim.wo.signcolumn = 'no'
-  vim.wo.wrap = true
+  vim.wo.wrap = false
+  vim.wo.listchars = 'precedes: '
 
   vim.o.laststatus = 0
   vim.o.showtabline = 0

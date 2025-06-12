@@ -26,7 +26,7 @@ au('FileType', {
   callback = function(opt)
     local fname = vim.api.nvim_buf_get_name(opt.buf)
     if fname:find('%w_spec%.lua') then
-      vim.diagnostic.enable(not vim.diagnostic.is_enabled({ bufnr = opt.buf }))
+      -- vim.diagnostic.enable(not vim.diagnostic.is_enabled({ bufnr = opt.buf }))
     end
   end,
 })
@@ -126,7 +126,7 @@ au('UIEnter', {
             'DiagnosticHint',
           },
         },
-        severity_sort = true
+        severity_sort = true,
       })
 
       api.nvim_create_user_command('LspLog', function()
