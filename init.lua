@@ -103,5 +103,5 @@ o.winborder = 'rounded'
 o.cot = 'menu,menuone,noinsert,fuzzy,popup'
 o.cia = 'kind,abbr,menu'
 
-vim.cmd.colorscheme('solarized')
+vim.cmd.colorscheme(vim.env.NVIMTHEME and vim.env.NVIMTHEME or 'solarized')
 vim.g.health = { style = 'float' }
