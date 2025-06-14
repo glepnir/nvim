@@ -17,7 +17,7 @@
     "prefix": "forj",
     "body": [
       "for (int j = ${1:0}; j < ${2:length}; j++) {",
-      "     $0",
+      "    $0",
       "}"
     ],
     "description": "Code snippet for integer 'for' loop"
@@ -26,7 +26,7 @@
     "prefix": "forr",
     "body": [
       "for (int i = ${1:0}; i < ${2:length}; i--) {",
-      "     $0",
+      "    $0",
       "}"
     ],
     "description": "Code snippet for integer 'for' loop"
@@ -272,8 +272,8 @@
     "prefix": "mains",
     "body": [
       "int main() {",
-      "     $0",
-      "     return 0;",
+      "    $0",
+      "    return 0;",
       "}"
     ],
     "description": "Code snippet for simple main function"
