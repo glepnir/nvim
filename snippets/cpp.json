@@ -8,7 +8,7 @@
     "prefix": "fori",
     "body": [
       "for (int i = ${1:0}; i < ${2:length}; i++) {",
-      "     $0",
+      "    $0",
       "}"
     ],
     "description": "Code snippet for integer 'for' loop"
