@@ -7,10 +7,6 @@ setl cinkeys-=:
 
 iabbrev <buffer> sv std::string_view
 
-" === Simple Loops and Control Flow ===
-iabbrev <buffer> fi <C-R>=expand('for (int i = 0; i <condition; i++) {\\n}')<CR><Esc>?condition<CR>ciw
-iabbrev <buffer> fj <C-R>=expand('for (int j = 0; j <condition; j++) {\\n}')<CR><Esc>?condition<CR>ciw
-
 " === Simple Container Declarations ===
 iabbrev <buffer> vecint std::vector<int> vec;
 iabbrev <buffer> vecstr std::vector<std::string> vec;

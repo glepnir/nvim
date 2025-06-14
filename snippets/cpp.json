@@ -8,7 +8,16 @@
     "prefix": "fori",
     "body": [
       "for (int i = ${1:0}; i < ${2:length}; i++) {",
-      "  $0",
+      "     $0",
+      "}"
+    ],
+    "description": "Code snippet for integer 'for' loop"
+  },
+  "forj": {
+    "prefix": "forj",
+    "body": [
+      "for (int j = ${1:0}; j < ${2:length}; j++) {",
+      "     $0",
       "}"
     ],
     "description": "Code snippet for integer 'for' loop"
@@ -17,7 +26,7 @@
     "prefix": "forr",
     "body": [
       "for (int i = ${1:0}; i < ${2:length}; i--) {",
-      "  $0",
+      "     $0",
       "}"
     ],
     "description": "Code snippet for integer 'for' loop"
@@ -26,7 +35,7 @@
     "prefix": "do",
     "body": [
       "do {",
-      "  $0",
+      "    $0",
       "} while (${1:condition});"
     ],
     "description": "Code snippet for do...while loop"
@@ -35,7 +44,7 @@
     "prefix": "while",
     "body": [
       "while (${1:condition}) {",
-      "  $0",
+      "    $0",
       "}"
     ],
     "description": "Code snippet for while loop"
@@ -44,7 +53,7 @@
     "prefix": "foreach",
     "body": [
       "for (const auto& ${1:item} : ${2:container}) {",
-      "  $0",
+      "    $0",
       "}"
     ],
     "description": "Code snippet for range-based for loop (const ref)"
@@ -53,7 +62,7 @@
     "prefix": "foreachmut",
     "body": [
       "for (auto& ${1:item} : ${2:container}) {",
-      "  $0",
+      "    $0",
       "}"
     ],
     "description": "Code snippet for range-based for loop (mutable ref)"
@@ -62,7 +71,7 @@
     "prefix": "foreachval",
     "body": [
       "for (auto ${1:item} : ${2:container}) {",
-      "  $0",
+      "    $0",
       "}"
     ],
     "description": "Code snippet for range-based for loop (by value)"
@@ -71,7 +80,7 @@
     "prefix": "if",
     "body": [
       "if (${1:condition}) {",
-      "  $0",
+      "    $0",
       "}"
     ],
     "description": "Code snippet for if statement"
@@ -80,7 +89,7 @@
     "prefix": "else",
     "body": [
       "else {",
-      "  $0",
+      "    $0",
       "}"
     ],
     "description": "Code snippet for else statement"
@@ -89,7 +98,7 @@
     "prefix": "elseif",
     "body": [
       "else if (${1:condition}) {",
-      "  $0",
+      "    $0",
       "}"
     ],
     "description": "Code snippet for else if statement"
@@ -98,7 +107,7 @@
     "prefix": "enum",
     "body": [
       "enum class ${1:MyEnum} {",
-      "  $0",
+      "    $0",
       "};"
     ],
     "description": "Code snippet for scoped enum (enum class)"
@@ -107,7 +116,7 @@
     "prefix": "enumlegacy",
     "body": [
       "enum ${1:MyEnum} {",
-      "  $0",
+      "    $0",
       "};"
     ],
     "description": "Code snippet for legacy enum"
@@ -194,8 +203,8 @@
     "prefix": "case",
     "body": [
       "case ${1:value}:",
-      "  $0",
-      "  break;"
+      "    $0",
+      "    break;"
     ],
     "description": "Code snippet for case statement"
   },
@@ -253,18 +262,18 @@
     "prefix": "main",
     "body": [
       "int main(int argc, char* argv[]) {",
-      "  $0",
-      "  return 0;",
+      "    $0",
+      "    return 0;",
       "}"
     ],
     "description": "Code snippet for main function"
   },
   "mainsimple": {
-    "prefix": "mainsimple",
+    "prefix": "mains",
     "body": [
       "int main() {",
-      "  $0",
-      "  return 0;",
+      "     $0",
+      "     return 0;",
       "}"
     ],
     "description": "Code snippet for simple main function"
