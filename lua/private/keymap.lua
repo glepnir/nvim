@@ -292,7 +292,7 @@ map.n('gs', function()
     relative = 'editor',
     row = 5,
     width = width,
-    height = 1,
+    height = 5,
     col = math.floor(vim.o.columns / 2) - math.floor(width / 2),
     border = 'rounded',
     title = 'Google Search',
