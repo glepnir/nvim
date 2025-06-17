@@ -190,10 +190,10 @@
     "prefix": "switch",
     "body": [
       "switch (${1:expr}) {",
-      "  case ${2:value}:",
+      "case ${2:value}:",
       "    $0",
       "    break;",
-      "  default:",
+      "default:",
       "    break;",
       "}"
     ],
