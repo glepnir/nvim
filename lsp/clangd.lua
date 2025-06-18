@@ -19,7 +19,7 @@ local function switch_source_header(client, buf)
 end
 
 return {
-  cmd = { 'clangd', '--log=verbose' },
+  cmd = { 'clangd' },
   filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda', 'proto' },
   root_markers = {
     '.clangd',
@@ -29,10 +29,20 @@ return {
     'compile_flags.txt',
     'configure.ac', -- GNU Autotools.
   },
+  settings = {
+    clangd = {
+      Completion = {
+        CodePatterns = 'NONE',
+      },
+    },
+  },
   capabilities = {
     textDocument = {
       completion = {
         editsNearCursor = true,
+        -- completionItem = {
+        --   snippetSupport = false,
+        -- },
       },
     },
     -- Off-spec, but clangd and vim.lsp support UTF-8, which is more efficient.

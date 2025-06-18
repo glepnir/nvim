@@ -8,7 +8,7 @@
     "prefix": "fori",
     "body": [
       "for (int i = ${1:0}; i < ${2:length}; i++) {",
-      "    $0",
+      "\t$0",
       "}"
     ],
     "description": "Code snippet for integer 'for' loop"
@@ -17,7 +17,7 @@
     "prefix": "forj",
     "body": [
       "for (int j = ${1:0}; j < ${2:length}; j++) {",
-      "    $0",
+      "\t$0",
       "}"
     ],
     "description": "Code snippet for integer 'for' loop"
@@ -26,7 +26,7 @@
     "prefix": "forr",
     "body": [
       "for (int i = ${1:0}; i < ${2:length}; i--) {",
-      "    $0",
+      "\t$0",
       "}"
     ],
     "description": "Code snippet for integer 'for' loop"
@@ -35,7 +35,7 @@
     "prefix": "do",
     "body": [
       "do {",
-      "    $0",
+      "\t$0",
       "} while (${1:condition});"
     ],
     "description": "Code snippet for do...while loop"
@@ -44,7 +44,7 @@
     "prefix": "while",
     "body": [
       "while (${1:condition}) {",
-      "    $0",
+      "\t$0",
       "}"
     ],
     "description": "Code snippet for while loop"
@@ -53,7 +53,7 @@
     "prefix": "foreach",
     "body": [
       "for (const auto& ${1:item} : ${2:container}) {",
-      "    $0",
+      "\t$0",
       "}"
     ],
     "description": "Code snippet for range-based for loop (const ref)"
@@ -62,7 +62,7 @@
     "prefix": "foreachmut",
     "body": [
       "for (auto& ${1:item} : ${2:container}) {",
-      "    $0",
+      "\t$0",
       "}"
     ],
     "description": "Code snippet for range-based for loop (mutable ref)"
@@ -71,7 +71,7 @@
     "prefix": "foreachval",
     "body": [
       "for (auto ${1:item} : ${2:container}) {",
-      "    $0",
+      "\t$0",
       "}"
     ],
     "description": "Code snippet for range-based for loop (by value)"
@@ -80,7 +80,7 @@
     "prefix": "if",
     "body": [
       "if (${1:condition}) {",
-      "    $0",
+      "\t$0",
       "}"
     ],
     "description": "Code snippet for if statement"
@@ -89,7 +89,7 @@
     "prefix": "else",
     "body": [
       "else {",
-      "    $0",
+      "\t$0",
       "}"
     ],
     "description": "Code snippet for else statement"
@@ -98,7 +98,7 @@
     "prefix": "elseif",
     "body": [
       "else if (${1:condition}) {",
-      "    $0",
+      "\t$0",
       "}"
     ],
     "description": "Code snippet for else if statement"
@@ -107,7 +107,7 @@
     "prefix": "enum",
     "body": [
       "enum class ${1:MyEnum} {",
-      "    $0",
+      "\t$0",
       "};"
     ],
     "description": "Code snippet for scoped enum (enum class)"
@@ -116,7 +116,7 @@
     "prefix": "enumlegacy",
     "body": [
       "enum ${1:MyEnum} {",
-      "    $0",
+      "\t$0",
       "};"
     ],
     "description": "Code snippet for legacy enum"
@@ -126,15 +126,15 @@
     "body": [
       "class ${1:MyClass} {",
       "public:",
-      "  ${1:MyClass}() = default;",
-      "  ${1:MyClass}(const ${1:MyClass}&) = default;",
-      "  ${1:MyClass}(${1:MyClass}&&) = default;",
-      "  ${1:MyClass}& operator=(const ${1:MyClass}&) = default;",
-      "  ${1:MyClass}& operator=(${1:MyClass}&&) = default;",
-      "  ~${1:MyClass}() = default;",
+      "\t${1:MyClass}() = default;",
+      "\t${1:MyClass}(const ${1:MyClass}&) = default;",
+      "\t${1:MyClass}(${1:MyClass}&&) = default;",
+      "\t${1:MyClass}& operator=(const ${1:MyClass}&) = default;",
+      "\t${1:MyClass}& operator=(${1:MyClass}&&) = default;",
+      "\t~${1:MyClass}() = default;",
       "",
       "private:",
-      "  $0",
+      "\t$0",
       "};"
     ],
     "description": "Modern C++ class with rule of five"
@@ -181,7 +181,7 @@
     "prefix": "struct",
     "body": [
       "struct ${1:MyStruct} {",
-      "  $0",
+      "\t$0",
       "};"
     ],
     "description": "Code snippet for struct"
@@ -191,10 +191,10 @@
     "body": [
       "switch (${1:expr}) {",
       "case ${2:value}:",
-      "    $0",
-      "    break;",
+      "\t$0",
+      "\tbreak;",
       "default:",
-      "    break;",
+      "\tbreak;",
       "}"
     ],
     "description": "Code snippet for switch statement"
@@ -203,8 +203,8 @@
     "prefix": "case",
     "body": [
       "case ${1:value}:",
-      "    $0",
-      "    break;"
+      "\t$0",
+      "\tbreak;"
     ],
     "description": "Code snippet for case statement"
   },
@@ -212,9 +212,9 @@
     "prefix": "try",
     "body": [
       "try {",
-      "  $0",
+      "\t$0",
       "} catch (const ${1:std::exception}& ${2:e}) {",
-      "  $3",
+      "\t$3",
       "}"
     ],
     "description": "Code snippet for try catch"
@@ -223,7 +223,7 @@
     "prefix": "union",
     "body": [
       "union ${1:MyUnion} {",
-      "  $0",
+      "\t$0",
       "};"
     ],
     "description": "Code snippet for union"
@@ -262,8 +262,8 @@
     "prefix": "main",
     "body": [
       "int main(int argc, char* argv[]) {",
-      "    $0",
-      "    return 0;",
+      "\t$0",
+      "\treturn 0;",
       "}"
     ],
     "description": "Code snippet for main function"
@@ -272,8 +272,8 @@
     "prefix": "mains",
     "body": [
       "int main() {",
-      "    $0",
-      "    return 0;",
+      "\t$0",
+      "\treturn 0;",
       "}"
     ],
     "description": "Code snippet for simple main function"
@@ -310,7 +310,7 @@
     "prefix": "forit",
     "body": [
       "for (auto ${1:it} = ${2:container}.begin(); ${1:it} != ${2:container}.end(); ${1:it}++) {",
-      "    $0",
+      "\t$0",
       "}"
     ],
     "description": "For loop with iterator - it and container appear multiple times"
@@ -319,7 +319,7 @@
     "prefix": "forci",
     "body": [
       "for (auto ${1:it} = ${2:container}.cbegin(); ${1:it} != ${2:container}.cend(); ++${1:it}) {",
-      "    $0",
+      "\t$0",
       "}"
     ],
     "description": "For loop with const iterator - it and container appear multiple times"
@@ -328,7 +328,7 @@
     "prefix": "forri",
     "body": [
       "for (auto ${1:it} = ${2:container}.rbegin(); ${1:it} != ${2:container}.rend(); ++${1:it}) {",
-      "    $0",
+      "\t$0",
       "}"
     ],
     "description": "For loop with reverse iterator - it and container appear multiple times"
@@ -337,9 +337,9 @@
     "prefix": "ife",
     "body": [
       "if (${1:condition}) {",
-      "    $2",
+      "\t$2",
       "} else {",
-      "    $0",
+      "\t$0",
       "}"
     ],
     "description": "If-else statement"
@@ -349,11 +349,11 @@
     "body": [
       "switch (${1:variable}) {",
       "case ${2:value}:",
-      "    $3",
-      "    break;",
+      "\t$3",
+      "\tbreak;",
       "default:",
-      "    $0",
-      "    break;",
+      "\t$0",
+      "\tbreak;",
       "}"
     ],
     "description": "Switch statement"
@@ -362,9 +362,9 @@
     "prefix": "mainn",
     "body": [
       "int main() {",
-      "    $0",
+      "\t$0",
       "",
-      "    return 0;",
+      "\treturn 0;",
       "}"
     ],
     "description": "Main function"
@@ -373,7 +373,7 @@
     "prefix": "func",
     "body": [
       "${1:returnType} ${2:functionName}(${3:parameters}) {",
-      "    $0",
+      "\t$0",
       "}"
     ],
     "description": "Function definition"
@@ -383,11 +383,11 @@
     "body": [
       "class ${1:ClassName} {",
       "public:",
-      "    ${1:ClassName}();",
-      "    ~${1:ClassName}();",
+      "\t${1:ClassName}();",
+      "\t~${1:ClassName}();",
       "",
       "private:",
-      "    $0",
+      "\t$0",
       "};"
     ],
     "description": "Basic class definition - ClassName appears multiple times"
@@ -396,7 +396,7 @@
     "prefix": "structt",
     "body": [
       "struct ${1:StructName} {",
-      "    $0",
+      "\t$0",
       "};"
     ],
     "description": "Struct definition"
@@ -424,9 +424,9 @@
     "prefix": "tryc",
     "body": [
       "try {",
-      "    $1",
+      "\t$1",
       "} catch (const std::exception& ${2:e}) {",
-      "    $0",
+      "\t$0",
       "}"
     ],
     "description": "Try-catch block"
@@ -436,7 +436,7 @@
     "body": [
       "template<typename ${1:T}>",
       "${2:returnType} ${3:functionName}(${1:T} ${4:param}) {",
-      "    $0",
+      "\t$0",
       "}"
     ],
     "description": "Template function - T appears multiple times"
@@ -447,7 +447,7 @@
       "template<typename ${1:T}>",
       "class ${2:ClassName} {",
       "public:",
-      "    $0",
+      "\t$0",
       "private:",
       "",
       "};"
@@ -485,7 +485,7 @@
     "prefix": "opeq",
     "body": [
       "bool operator==(const ${1:ClassName}& ${2:other}) const {",
-      "    return ${0:true};",
+      "\treturn ${0:true};",
       "}"
     ],
     "description": "Equality operator"
@@ -534,8 +534,8 @@
     "prefix": "enuma",
     "body": [
       "enum class ${1:EnumName} {",
-      "    ${2:Value1},",
-      "    ${3:Value2}",
+      "\t${2:Value1},",
+      "\t${3:Value2}",
       "};"
     ],
     "description": "Enum class"
@@ -544,8 +544,8 @@
     "prefix": "enumo",
     "body": [
       "enum ${1:EnumName} {",
-      "    ${2:VALUE1},",
-      "    ${3:VALUE2}",
+      "\t${2:VALUE1},",
+      "\t${3:VALUE2}",
       "};"
     ],
     "description": "Old style enum"
@@ -555,10 +555,10 @@
     "body": [
       "class ${1:RAIIClass} {",
       "public:",
-      "    ${1:RAIIClass}() { /* acquire */ }",
-      "    ~${1:RAIIClass}() { /* release */ }",
-      "    ${1:RAIIClass}(const ${1:RAIIClass}&) = delete;",
-      "    ${1:RAIIClass}& operator=(const ${1:RAIIClass}&) = delete;",
+      "\t${1:RAIIClass}() { /* acquire */ }",
+      "\t~${1:RAIIClass}() { /* release */ }",
+      "\t${1:RAIIClass}(const ${1:RAIIClass}&) = delete;",
+      "\t${1:RAIIClass}& operator=(const ${1:RAIIClass}&) = delete;",
       "};"
     ],
     "description": "RAII pattern - RAIIClass appears multiple times"
@@ -568,14 +568,14 @@
     "body": [
       "class ${1:Singleton} {",
       "public:",
-      "    static ${1:Singleton}& getInstance() {",
-      "        static ${1:Singleton} instance;",
-      "        return instance;",
-      "    }",
+      "\tstatic ${1:Singleton}& getInstance() {",
+      "\t\tstatic ${1:Singleton} instance;",
+      "\t\treturn instance;",
+      "\t}",
       "private:",
-      "    ${1:Singleton}() = default;",
-      "    ${1:Singleton}(const ${1:Singleton}&) = delete;",
-      "    ${1:Singleton}& operator=(const ${1:Singleton}&) = delete;",
+      "\t${1:Singleton}() = default;",
+      "\t${1:Singleton}(const ${1:Singleton}&) = delete;",
+      "\t${1:Singleton}& operator=(const ${1:Singleton}&) = delete;",
       "};"
     ],
     "description": "Singleton pattern - Singleton appears multiple times"
@@ -599,7 +599,7 @@
     "prefix": "thread",
     "body": [
       "std::thread ${1:t}([]() {",
-      "    // ${2:thread work}",
+      "\t// ${2:thread work}",
       "});",
       "${1:t}.join();$0"
     ],
@@ -627,7 +627,7 @@
     "prefix": "transf",
     "body": [
       "std::transform(${1:input}.begin(), ${1:input}.end(), ${2:output}.begin(), [](const auto& ${3:item}) {",
-      "    return ${0:transformation};",
+      "\treturn ${0:transformation};",
       "});"
     ],
     "description": "Transform algorithm - input appears multiple times"
@@ -636,7 +636,7 @@
     "prefix": "filte",
     "body": [
       "auto ${1:result} = std::find_if(${2:container}.begin(), ${2:container}.end(), [](const auto& ${3:item}) {",
-      "    return ${0:condition};",
+      "\treturn ${0:condition};",
       "});"
     ],
     "description": "Find if algorithm - container appears multiple times"
@@ -646,7 +646,7 @@
     "body": [
       "std::ifstream ${1:file}(\"${2:filename}\");",
       "if (!${1:file}.is_open()) {",
-      "    // ${0:handle error}",
+      "\t// ${0:handle error}",
       "}"
     ],
     "description": "Input file stream - file appears multiple times"

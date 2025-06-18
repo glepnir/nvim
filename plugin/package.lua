@@ -128,9 +128,7 @@ async(function()
 
   use('nvimdev/phoenix.nvim'):ft(vim.g.language):init(function()
     vim.g.phoenix = {
-      snippet = {
-        path = vim.fn.stdpath('config') .. '/snippets',
-      },
+      snippet = vim.fn.stdpath('config') .. '/snippets',
     }
   end)
 

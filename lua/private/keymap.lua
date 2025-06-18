@@ -65,13 +65,7 @@ local mt = {
 
   -- Make the keymap table directly callable
   __call = function(_, modes, lhs, rhs, opts)
-    if type(modes) == 'string' then
-      -- Convert string to mode list
-      return perform_mapping(parse_modes(modes), lhs, rhs, opts)
-    else
-      -- Assume modes is already a list
-      return perform_mapping(modes, lhs, rhs, opts)
-    end
+    return perform_mapping(type(modes) == 'string' and parse_modes(modes) or modes, lhs, rhs, opts)
   end,
 }
 
@@ -241,11 +235,7 @@ map.i('<CR>', function()
 end, { expr = true })
 
 map.i('<C-e>', function()
-  if vim.fn.pumvisible() == 1 then
-    return '<C-e>'
-  else
-    return '<End>'
-  end
+  return vim.fn.pumvisible() == 1 and '<C-e>' or '<End>'
 end, { expr = true })
 
 local ns_id, mark_id = vim.api.nvim_create_namespace('my_marks'), nil
