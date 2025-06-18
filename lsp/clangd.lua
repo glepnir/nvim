@@ -40,9 +40,9 @@ return {
     textDocument = {
       completion = {
         editsNearCursor = true,
-        -- completionItem = {
-        --   snippetSupport = false,
-        -- },
+        completionItem = {
+          snippetSupport = false,
+        },
       },
     },
     -- Off-spec, but clangd and vim.lsp support UTF-8, which is more efficient.
