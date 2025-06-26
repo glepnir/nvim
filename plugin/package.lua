@@ -152,5 +152,9 @@ async(function()
     })
     :load_path()
 
-  use('nvimdev/visualizer.nvim'):on('LspAttach')
+  use('nvimdev/visualizer.nvim'):cmd({
+    'VisualizerFull',
+    'VisualizerIncoming',
+    'VisualizerOutgoing',
+  })
 end)()
