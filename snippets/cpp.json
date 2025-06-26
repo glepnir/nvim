@@ -283,11 +283,6 @@
     "body": "[${1:}](${2:}) ${3:-> auto} {$0}",
     "description": "Code snippet for lambda expression"
   },
-  "auto": {
-    "prefix": "auto",
-    "body": "auto ${1:var} = ${2:value};",
-    "description": "Code snippet for auto variable"
-  },
   "constexpr": {
     "prefix": "constexpr",
     "body": "constexpr ${1:auto} ${2:var} = ${3:value};",
@@ -296,7 +291,7 @@
   "template": {
     "prefix": "template",
     "body": [
-      "template <${1:typename T}>",
+      "template <typename ${1:T}>",
       "$0"
     ],
     "description": "Code snippet for template"
@@ -432,7 +427,7 @@
     "description": "Try-catch block"
   },
   "template_function": {
-    "prefix": "templ",
+    "prefix": "templf",
     "body": [
       "template<typename ${1:T}>",
       "${2:returnType} ${3:functionName}(${1:T} ${4:param}) {",

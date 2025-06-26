@@ -53,6 +53,10 @@ async(function()
       local ft = require('guard.filetype')
       ft('c,cpp'):fmt({
         cmd = 'clang-format',
+        args = function(bufnr)
+          local f = vim.bo[bufnr].filetype == 'cpp' and '.cpp.clang-format' or '.clang-format'
+          return { ('--style=file:%s/%s'):format(vim.env.HOME, f) }
+        end,
         stdin = true,
         ignore_patterns = { 'neovim', 'vim' },
       })
@@ -147,4 +151,6 @@ async(function()
       },
     })
     :load_path()
+
+  use('nvimdev/visualizer.nvim'):on('LspAttach')
 end)()

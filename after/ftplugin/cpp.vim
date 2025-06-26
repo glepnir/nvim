@@ -15,7 +15,6 @@ iabbrev <buffer> mapint std::map<int, int> mp;
 iabbrev <buffer> mapstr std::map<std::string, int> mp;
 
 " === Simple Statements ===
-iabbrev <buffer> cou std::cout << condition << std::endl;<Esc>?condition<CR>ciw
 iabbrev <buffer> cinn std::cin >> variable;<Esc>?variable<CR>ciw
 iabbrev <buffer> prf printf("format\\n", args);<Esc>?format<CR>ciw
 iabbrev <buffer> dbg std::cout << "DEBUG: " << variable << std::endl;<Esc>?variable<CR>ciw
