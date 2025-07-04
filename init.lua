@@ -100,8 +100,11 @@ o.textwidth = 80
 o.colorcolumn = '+0'
 o.winborder = 'rounded'
 
+o.splitright = true
+
 o.cot = 'menu,menuone,noinsert,fuzzy,popup'
 o.cia = 'kind,abbr,menu'
+vim.opt.guicursor:remove({ 't:block-blinkon500-blinkoff500-TermCursor' })
 
 vim.cmd.colorscheme(vim.env.NVIMTHEME and vim.env.NVIMTHEME or 'solarized')
 vim.g.health = { style = 'float' }
