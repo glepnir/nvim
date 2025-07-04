@@ -38,14 +38,9 @@ async(function()
     },
   })
   use('nvimdev/dired.nvim'):cmd('Dired')
-  use('nvimdev/indentmini.nvim')
-    :on('BufEnter */*')
-    :init(function()
-      vim.opt.listchars:append({ tab = '  ' })
-    end)
-    :setup({
-      only_current = true,
-    })
+  use('nvimdev/indentmini.nvim'):on('BufEnter */*'):setup({
+    only_current = true,
+  })
 
   use('nvimdev/guard.nvim')
     :on('BufReadPost')
@@ -152,9 +147,5 @@ async(function()
     })
     :load_path()
 
-  use('nvimdev/visualizer.nvim'):cmd({
-    'VisualizerFull',
-    'VisualizerIncoming',
-    'VisualizerOutgoing',
-  })
+  use('nvimdev/visualizer.nvim'):cmd('Visualizer')
 end)()

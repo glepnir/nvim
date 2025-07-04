@@ -125,6 +125,7 @@
     "prefix": "class", 
     "body": [
       "class ${1:MyClass} {",
+      "\t$2",
       "public:",
       "\t$0",
       "};"
