@@ -312,7 +312,7 @@ map.n({
   ['gd'] = cmd('Lspsaga peek_definition'),
   ['gp'] = cmd('Lspsaga goto_definition'),
   ['gh'] = cmd('Lspsaga finder'),
-  ['gl'] = cmd('VisualizerFull'),
+  ['gl'] = cmd('Visualizer full'),
   -- dbsession
   ['<Leader>ss'] = cmd('SessionSave'),
   ['<Leader>sl'] = cmd('SessionLoad'),
