@@ -1,8 +1,7 @@
 -- Minimal asynchronous fast jump based on rg
 
-local api = vim.api
 local M = {}
-local FORWARD, BACKWARD = 1, -1
+local api, FORWARD, BACKWARD = vim.api, 1, -1
 
 local state = {
   active = false,
@@ -45,12 +44,37 @@ local function generate_keys(count)
   return result
 end
 
+local function dim_buffer()
+  if not state.ns_id then
+    state.ns_id = api.nvim_create_namespace('jumpmotion')
+  end
+
+  -- Get visible lines range
+  local first_line = vim.fn.line('w0') - 1
+  local last_line = vim.fn.line('w$') - 1
+
+  -- Apply dimming to all visible lines
+  for line_num = first_line, last_line do
+    local line_text = api.nvim_buf_get_lines(0, line_num, line_num + 1, false)[1]
+    if line_text and line_text ~= '' then
+      api.nvim_buf_set_extmark(0, state.ns_id, line_num, 0, {
+        end_col = #line_text,
+        hl_group = 'JumpMotionDim',
+        priority = 200,
+      })
+    end
+  end
+end
+
 local function mark_targets(targets)
   if not state.ns_id then
     state.ns_id = api.nvim_create_namespace('jumpmotion')
   end
 
   api.nvim_buf_clear_namespace(0, state.ns_id, 0, -1)
+
+  -- Dim the entire buffer first
+  dim_buffer()
 
   local keys = generate_keys(#targets)
   state.key_map = {}
@@ -60,10 +84,17 @@ local function mark_targets(targets)
       local key = keys[i]
       state.key_map[key] = target
 
+      -- Clear the dimming at target position and add the jump key
+      api.nvim_buf_set_extmark(0, state.ns_id, target.row, target.col, {
+        end_col = target.col + 1,
+        hl_group = 'JumpMotionTargetBg',
+        priority = 250,
+      })
+
       api.nvim_buf_set_extmark(0, state.ns_id, target.row, target.col, {
         virt_text = { { key, 'JumpMotionTarget' } },
         virt_text_pos = 'overlay',
-        priority = 100,
+        priority = 300,
       })
     end
   end
@@ -80,7 +111,9 @@ local function mark_targets(targets)
 
     local target = state.key_map[typed]
     if target then
-      api.nvim_win_set_cursor(0, { target.row + 1, target.col })
+      vim.schedule(function()
+        api.nvim_win_set_cursor(0, { target.row + 1, target.col })
+      end)
       cleanup()
       return ''
     end
@@ -104,7 +137,7 @@ function M.char(direction)
   end
 
   return function()
-    async(function()
+    vim.schedule(function()
       if state.active then
         cleanup()
       end
@@ -113,7 +146,7 @@ function M.char(direction)
         return vim.fn.nr2char(vim.fn.getchar())
       end)
       if not ok or not char or char == '' or char == vim.fn.nr2char(27) then
-        return false
+        return
       end
       local char_input = char
 
@@ -152,68 +185,76 @@ function M.char(direction)
         char_input,
       }
 
-      local result = await(asystem(cmd, { stdin = visible_text }))
+      vim.system(cmd, {
+        stdin = visible_text,
+      }, function(result)
+        vim.schedule(function()
+          local targets = {}
+          local count = 0
 
-      local targets = {}
-      local count = 0
+          if result.stdout then
+            for line in string.gmatch(result.stdout, '[^\r\n]+') do
+              if line:find('"type":"match"') then
+                local ok_json, json = pcall(vim.json.decode, line)
+                if ok_json and json and json.type == 'match' and json.data then
+                  local row = json.data.line_number - 1
 
-      if result.stdout then
-        for line in string.gmatch(result.stdout, '[^\r\n]+') do
-          if line:find('"type":"match"') then
-            local ok, json = pcall(vim.json.decode, line)
-            if ok and json and json.type == 'match' and json.data then
-              local row = json.data.line_number - 1
+                  if json.data.submatches and #json.data.submatches > 0 then
+                    for _, submatch in ipairs(json.data.submatches) do
+                      local col = submatch.start
 
-              if json.data.submatches and #json.data.submatches > 0 then
-                for _, submatch in ipairs(json.data.submatches) do
-                  local col = submatch.start
+                      local actual_row
+                      if direction == FORWARD then
+                        actual_row = base_row + row
+                      else
+                        actual_row = curow - 1 - row
+                      end
 
-                  local actual_row
-                  if direction == FORWARD then
-                    actual_row = base_row + row
-                  else
-                    actual_row = curow - 1 - row
+                      table.insert(targets, {
+                        row = actual_row,
+                        col = col,
+                      })
+
+                      count = count + 1
+                      if count >= state.max_targets then
+                        break
+                      end
+                    end
                   end
 
-                  table.insert(targets, {
-                    row = actual_row,
-                    col = col,
-                  })
-
-                  count = count + 1
                   if count >= state.max_targets then
                     break
                   end
                 end
               end
-
-              if count >= state.max_targets then
-                break
-              end
             end
           end
-        end
-      end
 
-      if direction == BACKWARD then
-        table.sort(targets, function(a, b)
-          return a.row < b.row
+          if direction == BACKWARD then
+            table.sort(targets, function(a, b)
+              return a.row < b.row
+            end)
+          end
+
+          if #targets == 0 then
+            cleanup()
+            return
+          end
+
+          mark_targets(targets)
         end)
-      end
-
-      if #targets == 0 then
-        cleanup()
-        return
-      end
-
-      mark_targets(targets)
-    end)()
+      end)
+    end)
   end
 end
 
 api.nvim_set_hl(0, 'JumpMotionTarget', {
   fg = '#ff4800',
   bold = true,
+})
+
+api.nvim_set_hl(0, 'JumpMotionDim', {
+  fg = '#555555',
 })
 
 return { charForward = M.char(FORWARD), charBackward = M.char(BACKWARD) }

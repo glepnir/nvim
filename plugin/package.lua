@@ -38,9 +38,14 @@ async(function()
     },
   })
   use('nvimdev/dired.nvim'):cmd('Dired')
-  use('nvimdev/indentmini.nvim'):on('BufEnter */*'):setup({
-    only_current = true,
-  })
+  use('nvimdev/indentmini.nvim')
+    :on('BufEnter */*')
+    :init(function()
+      vim.opt.listchars:append({ tab = '  ' })
+    end)
+    :setup({
+      only_current = true,
+    })
 
   use('nvimdev/guard.nvim')
     :on('BufReadPost')
