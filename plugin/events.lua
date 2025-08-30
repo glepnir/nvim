@@ -19,18 +19,6 @@ au('ExitPre', {
   desc = 'Set cursor back to beam when leaving Neovim.',
 })
 
---disable diagnostic in neovim test file *_spec.lua
-au('FileType', {
-  group = group,
-  pattern = 'lua',
-  callback = function(opt)
-    local fname = vim.api.nvim_buf_get_name(opt.buf)
-    if fname:find('%w_spec%.lua') then
-      -- vim.diagnostic.enable(not vim.diagnostic.is_enabled({ bufnr = opt.buf }))
-    end
-  end,
-})
-
 au('TermOpen', {
   group = group,
   command = 'setl stc= nonumber | startinsert!',
@@ -42,9 +30,6 @@ au('LspAttach', {
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     if vim.bo[args.buf].filetype == 'lua' and api.nvim_buf_get_name(args.buf):find('_spec') then
       vim.diagnostic.enable(false, { bufnr = args.buf })
-    end
-    if client and client:supports_method('textDocument/documentColor') then
-      vim.lsp.document_color.enable(true, args.buf)
     end
 
     if client then
@@ -103,7 +88,8 @@ au('UIEnter', {
       require('private.keymap')
 
       vim.lsp.enable({
-        'luals',
+        -- 'luals',
+        'emmylua_ls',
         'clangd',
         'rust_analyzer',
         'basedpyright',
@@ -116,6 +102,10 @@ au('UIEnter', {
       vim.lsp.log.set_level(vim.log.levels.OFF)
 
       vim.diagnostic.config({
+        float = {
+          title = '',
+          header = '',
+        },
         virtual_text = { current_line = true },
         signs = {
           text = { '●', '●', '●', '●' },

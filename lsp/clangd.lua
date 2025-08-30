@@ -29,6 +29,9 @@ return {
     'compile_flags.txt',
     'configure.ac', -- GNU Autotools.
   },
+  reuse_client = function(client, config)
+    return client.name == config.name
+  end,
   settings = {
     clangd = {
       Completion = {

@@ -38,7 +38,6 @@ au('LspAttach', {
       convert = function(item)
         local kind = lsp.protocol.CompletionItemKind[item.kind] or 'u'
         return {
-          abbr = item.label:gsub('%b()', ''),
           kind = kind:sub(1, 1):lower(),
           menu = '',
         }

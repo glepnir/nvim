@@ -54,7 +54,7 @@ async(function()
       ft('c,cpp'):fmt({
         cmd = 'clang-format',
         args = function(bufnr)
-          local f = vim.bo[bufnr].filetype == 'cpp' and '.cpp.clang-format' or '.clang-format'
+          local f = vim.bo[bufnr].filetype == 'cpp' and '.cc-format' or '.c-format'
           return { ('--style=file:%s/%s'):format(vim.env.HOME, f) }
         end,
         stdin = true,
