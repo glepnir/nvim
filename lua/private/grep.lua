@@ -251,7 +251,7 @@ local grep = async(function(t, ...)
       end
 
       vim.schedule(function()
-        if #process > 0 or not data then
+        if #process > 0 or data ~= nil then
           qf_fn({}, 'a', {
             lines = not data and chunk or process,
             id = id,

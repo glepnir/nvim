@@ -82,7 +82,7 @@ o.fillchars = 'trunc:…'
 o.foldtext = ''
 o.foldlevelstart = 99
 
--- o.undofile = true
+o.undofile = true
 o.linebreak = true
 o.smoothscroll = true
 

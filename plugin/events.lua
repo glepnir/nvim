@@ -28,11 +28,7 @@ au('LspAttach', {
   group = group,
   callback = function(args)
     local client = vim.lsp.get_client_by_id(args.data.client_id)
-    if vim.bo[args.buf].filetype == 'lua' and api.nvim_buf_get_name(args.buf):find('_spec') then
-      vim.diagnostic.enable(false, { bufnr = args.buf })
-    end
-
-    if client then
+    if client and client.server_capabilities then
       client.server_capabilities.semanticTokensProvider = nil
     end
   end,
@@ -120,7 +116,7 @@ au('UIEnter', {
       })
 
       api.nvim_create_user_command('LspLog', function()
-        vim.cmd(string.format('tabnew %s', vim.lsp.get_log_path()))
+        vim.cmd(string.format('tabnew %s', vim.lsp.log.get_filename()))
       end, {
         desc = 'Opens the Nvim LSP client log.',
       })
