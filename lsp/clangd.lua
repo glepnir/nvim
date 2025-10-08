@@ -19,7 +19,9 @@ local function switch_source_header(client, buf)
 end
 
 return {
-  cmd = { 'clangd' },
+  cmd = {
+    vim.uv.os_uname().sysname:match('Darwin') and '/opt/homebrew/opt/llvm/bin/clangd' or 'clangd',
+  },
   filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda', 'proto' },
   root_markers = {
     '.clangd',

@@ -307,6 +307,7 @@ function M.show()
   vim.o.showtabline = 0
 
   vim.api.nvim_create_autocmd('VimResized', {
+    buffer = buf,
     group = group,
     callback = function()
       if vim.bo.buftype == 'nofile' and vim.bo.filetype == '' then
