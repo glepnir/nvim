@@ -9,16 +9,6 @@ au('TextYankPost', {
   end,
 })
 
-au('ExitPre', {
-  group = group,
-  callback = function()
-    if vim.env.TERM == 'alacritty' then
-      vim.o.guicursor = 'a:ver90'
-    end
-  end,
-  desc = 'Set cursor back to beam when leaving Neovim.',
-})
-
 au('TermOpen', {
   group = group,
   command = 'setl stc= nonumber | startinsert!',
