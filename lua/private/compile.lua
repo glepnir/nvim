@@ -6,9 +6,9 @@ local last_cmd = nil
 --- eg: COMPILE_COMMAND=g++ --std=c++23 %s
 --- %s mean current file
 
-local function parse_compiler_output(output, code, duration)
-  local qf_list = {}
-  local lines = vim.split(output, '\n', { plain = true })
+local function parse_err(stderr)
+  local list = {}
+  local lines = vim.split(stderr, '\n', { plain = true })
 
   local i = 1
   local prev_item = nil
@@ -27,7 +27,7 @@ local function parse_compiler_output(output, code, duration)
         text = msg,
         bufnr = bufnr,
       }
-      table.insert(qf_list, prev_item)
+      table.insert(list, prev_item)
 
       local j = i + 1
 
@@ -40,7 +40,7 @@ local function parse_compiler_output(output, code, duration)
           or next_line:match('^%s*%^')
           or next_line:match('generated')
         then
-          table.insert(qf_list, {
+          table.insert(list, {
             filename = prev_item.filename,
             bufnr = prev_item.bufnr,
             text = next_line,
@@ -56,6 +56,21 @@ local function parse_compiler_output(output, code, duration)
       i = i + 1
     end
   end
+  return list
+end
+
+local function parse_compiler_output(out, duration)
+  local qf_list = {}
+  if out.code ~= 0 then
+    qf_list = parse_err(out.stderr)
+  else
+    for _, line in ipairs(vim.split(out.stdout, '\n', { trimempty = true })) do
+      table.insert(qf_list, {
+        text = line,
+        user_data = 'compile_info',
+      })
+    end
+  end
   local info = {
     start = {
       user_data = 'compile_info',
@@ -68,7 +83,7 @@ local function parse_compiler_output(output, code, duration)
     _end = {
       user_data = 'compile_info',
       text = ('Compilation %s at %s, duration %fs'):format(
-        code ~= 0 and 'exited abnormally with code ' .. code or 'finished',
+        out.code ~= 0 and 'exited abnormally with code ' .. out.code or 'finished',
         os.date('%a %b %H:%M:%S'),
         duration
       ) or '',
@@ -80,8 +95,8 @@ local function parse_compiler_output(output, code, duration)
   return qf_list
 end
 
-local function open_qf(stderr, code, duration)
-  local qf_list = parse_compiler_output(stderr, code, duration)
+local function open_qf(out, duration)
+  local qf_list = parse_compiler_output(out, duration)
   vim.fn.setqflist({}, 'r', {
     items = qf_list,
     quickfixtextfunc = function(info)
@@ -131,7 +146,7 @@ local function open_qf(stderr, code, duration)
   vim.opt_local.number = false
   vim.opt_local.signcolumn = 'no'
   vim.opt_local.list = false
-  vim.opt_local.colorcolumn = false
+  vim.bo.textwidth = 0
 end
 
 local function compiler(compile_cmd, bufname, b_changedtick)
@@ -140,14 +155,14 @@ local function compiler(compile_cmd, bufname, b_changedtick)
   end
   last_cmd = compile_cmd
   local start_time = vim.uv.hrtime()
-  vim.system(vim.split(compile_cmd, '%s'), { text = true }, function(out)
+  vim.system({ 'sh', '-c', compile_cmd }, { text = true }, function(out)
     local duration = (vim.uv.hrtime() - start_time) / 1e9
     vim.schedule(function()
       if api.nvim_buf_get_changedtick(0) ~= b_changedtick then
         return
       end
-      if out.code ~= 0 and #out.stderr > 0 then
-        open_qf(out.stderr, out.code, duration)
+      if out.code > 0 or #out.stdout > 0 then
+        open_qf(out, duration)
       end
     end)
   end)
