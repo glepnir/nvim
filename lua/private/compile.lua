@@ -1,6 +1,12 @@
 local api = vim.api
+local last_cmd = nil
 
-local function parse_compiler_output(output)
+--- Usage:
+--- create .env file with COMPILE_COMMAND
+--- eg: COMPILE_COMMAND=g++ --std=c++23 %s
+--- %s mean current file
+
+local function parse_compiler_output(output, code, duration)
   local qf_list = {}
   local lines = vim.split(output, '\n', { plain = true })
 
@@ -50,12 +56,32 @@ local function parse_compiler_output(output)
       i = i + 1
     end
   end
+  local info = {
+    start = {
+      user_data = 'compile_info',
+      text = ('Compilation started at %s'):format(os.date('%a %b %H:%M:%S')),
+    },
+    fill = {
+      user_data = 'compile_info',
+      text = ' ',
+    },
+    _end = {
+      user_data = 'compile_info',
+      text = ('Compilation %s at %s, duration %fs'):format(
+        code ~= 0 and 'exited abnormally with code ' .. code or 'finished',
+        os.date('%a %b %H:%M:%S'),
+        duration
+      ) or '',
+    },
+  }
+  qf_list = vim.list_extend({ info.start, info.fill }, qf_list)
+  qf_list = vim.list_extend(qf_list, { info.fill, info._end })
 
   return qf_list
 end
 
-local function open_qf(stderr)
-  local qf_list = parse_compiler_output(stderr)
+local function open_qf(stderr, code, duration)
+  local qf_list = parse_compiler_output(stderr, code, duration)
   vim.fn.setqflist({}, 'r', {
     items = qf_list,
     quickfixtextfunc = function(info)
@@ -65,8 +91,10 @@ local function open_qf(stderr)
       local last_bufnr = -1
       for i = info.start_idx, info.end_idx do
         local item = items[i]
-        local filename = vim.fn.bufname(item.bufnr)
-        if item.bufnr ~= last_bufnr then
+        if item.user_data and item.user_data == 'compile_info' then
+          table.insert(lines, item.text)
+        elseif item.bufnr ~= last_bufnr then
+          local filename = vim.fn.bufname(item.bufnr)
           table.insert(
             lines,
             string.format('▸ %s %d:%d %s', filename, item.lnum, item.col, item.text)
@@ -86,28 +114,40 @@ local function open_qf(stderr)
     syntax match QfLineCol / \d\+:\d\+/
     syntax match QfErrorMsg /use.*$/
     syntax match QfContext /^  .*/
+    syntax match QfFinish /\<finished\>/
+    syntax match QfExit /\<exited abnormally\>/
+    syntax match QfCode /\vcode\s+\zs\d+/
 
-    highlight QfFileName guifg=#e5c07b ctermfg=Yellow
-    highlight QfLineCol guifg=#5c6370 ctermfg=DarkGray
+
+    highlight QfFileName guifg=#992c3d ctermfg=Red gui=bold,underline
+    highlight QfLineCol guifg=#c7c938 ctermfg=Yellow
     highlight QfErrorMsg guifg=#abb2bf ctermfg=White
     highlight QfContext guifg=#abb2bf ctermfg=White
+    highlight QfFinish guifg=#62c92a ctermfg=Green
+    highlight QfExit guifg=#992c3d ctermfg=Red gui=bold
+    highlight QfCode guifg=#992c3d ctermfg=Red gui=bold
   ]])
 
   vim.opt_local.number = false
   vim.opt_local.signcolumn = 'no'
+  vim.opt_local.list = false
+  vim.opt_local.colorcolumn = false
 end
 
 local function compiler(compile_cmd, bufname, b_changedtick)
   if compile_cmd:find('%%s') then
     compile_cmd = compile_cmd:gsub('%%s', bufname)
   end
+  last_cmd = compile_cmd
+  local start_time = vim.uv.hrtime()
   vim.system(vim.split(compile_cmd, '%s'), { text = true }, function(out)
+    local duration = (vim.uv.hrtime() - start_time) / 1e9
     vim.schedule(function()
       if api.nvim_buf_get_changedtick(0) ~= b_changedtick then
         return
       end
       if out.code ~= 0 and #out.stderr > 0 then
-        open_qf(out.stderr)
+        open_qf(out.stderr, out.code, duration)
       end
     end)
   end)
@@ -154,4 +194,12 @@ end
 
 api.nvim_create_user_command('Compile', function()
   env_with_compile()
+end, {})
+
+api.nvim_create_user_command('Recompile', function()
+  if last_cmd then
+    local bufname = api.nvim_buf_get_name(0)
+    local b_changedtick = api.nvim_buf_get_changedtick(0)
+    compiler(last_cmd, bufname, b_changedtick)
+  end
 end, {})
