@@ -80,6 +80,10 @@ local function parse_compiler_output(out, duration)
       user_data = 'compile_info',
       text = ' ',
     },
+    cmd = {
+      user_data = 'compile_info',
+      text = out.cmd,
+    },
     _end = {
       user_data = 'compile_info',
       text = ('Compilation %s at %s, duration %fs'):format(
@@ -89,7 +93,7 @@ local function parse_compiler_output(out, duration)
       ) or '',
     },
   }
-  qf_list = vim.list_extend({ info.start, info.fill }, qf_list)
+  qf_list = vim.list_extend({ info.start, info.fill, info.cmd }, qf_list)
   qf_list = vim.list_extend(qf_list, { info.fill, info._end })
 
   return qf_list
@@ -151,6 +155,10 @@ end
 
 local function compiler(compile_cmd, bufname, b_changedtick)
   if compile_cmd:find('%%s') then
+    local cwd = vim.uv.cwd()
+    if bufname:find(cwd) then
+      bufname = bufname:sub(#cwd + 2)
+    end
     compile_cmd = compile_cmd:gsub('%%s', bufname)
   end
   last_cmd = compile_cmd
@@ -162,6 +170,7 @@ local function compiler(compile_cmd, bufname, b_changedtick)
         return
       end
       if out.code > 0 or #out.stdout > 0 then
+        out.cmd = compile_cmd
         open_qf(out, duration)
       end
     end)
