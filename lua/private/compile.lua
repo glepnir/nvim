@@ -3,7 +3,7 @@ local last_cmd = nil
 
 --- Usage:
 --- create .env file with COMPILE_COMMAND
---- eg: COMPILE_COMMAND=g++ --std=c++23 %s
+--- eg: COMPILE_COMMAND=xxx
 --- %s mean current file
 
 local function parse_err(stderr)
