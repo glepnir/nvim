@@ -370,12 +370,11 @@
     "prefix": "classs",
     "body": [
       "class ${1:ClassName} {",
+      "private:",
+      "\t$0",
       "public:",
       "\t${1:ClassName}();",
       "\t~${1:ClassName}();",
-      "",
-      "private:",
-      "\t$0",
       "};"
     ],
     "description": "Basic class definition - ClassName appears multiple times"

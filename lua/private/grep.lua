@@ -178,28 +178,6 @@ local function update_title()
   })
 end
 
-function _G.compact_quickfix_format(info)
-  local lines = {}
-  local list = info.quickfix == 1 and vim.fn.getqflist() or vim.fn.getloclist(info.winid)
-  local last_bufnr = nil
-
-  for i = info.start_idx, info.end_idx do
-    local item = list[i]
-    if item and item.valid == 1 and item.lnum > 0 and item.text ~= '' then
-      local filename = item.bufnr > 0 and vim.fn.bufname(item.bufnr) or ''
-      local text = item.text or ''
-
-      if item.bufnr ~= last_bufnr then
-        table.insert(lines, string.format('▸ %s', filename))
-        last_bufnr = item.bufnr
-      end
-
-      table.insert(lines, string.format('  %4d:%-3d │ %s', item.lnum, item.col, text))
-    end
-  end
-  return lines
-end
-
 local grep = async(function(t, ...)
   local args = { ... }
   local grepprg = vim.o.grepprg
@@ -256,8 +234,29 @@ local grep = async(function(t, ...)
             lines = not data and chunk or process,
             id = id,
             efm = vim.o.errorformat,
-            quickfixtextfunc = 'v:lua.compact_quickfix_format',
             title = 'Grep',
+            quickfixtextfunc = function(info)
+              local lines = {}
+              local list = info.quickfix == 1 and vim.fn.getqflist()
+                or vim.fn.getloclist(info.winid)
+              local last_bufnr = nil
+
+              for i = info.start_idx, info.end_idx do
+                local item = list[i]
+                if item and item.valid == 1 and item.lnum > 0 and item.text ~= '' then
+                  local filename = item.bufnr > 0 and vim.fn.bufname(item.bufnr) or ''
+                  local text = item.text or ''
+
+                  if item.bufnr ~= last_bufnr then
+                    table.insert(lines, string.format('▸ %s', filename))
+                    last_bufnr = item.bufnr
+                  end
+
+                  table.insert(lines, string.format('  %4d:%-3d │ %s', item.lnum, item.col, text))
+                end
+              end
+              return lines
+            end,
           })
 
           if not opened then

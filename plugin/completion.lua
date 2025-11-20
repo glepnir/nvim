@@ -1,6 +1,7 @@
 local api = vim.api
 local au = api.nvim_create_autocmd
 local g = api.nvim_create_augroup('glepnir.completion', { clear = true })
+local phoenix_id = 0
 
 au('LspAttach', {
   group = g,
@@ -8,11 +9,15 @@ au('LspAttach', {
     local lsp = vim.lsp
     local completion = lsp.completion
     local ms = lsp.protocol.Methods
+    local CompletionItemKind = lsp.protocol.CompletionItemKind
 
     local bufnr = args.buf
     local client = lsp.get_client_by_id(args.data.client_id)
     if not client or not client:supports_method(ms.textDocument_completion) then
       return
+    end
+    if client.name == 'phoenix' then
+      phoenix_id = client.id
     end
 
     if not vim.env.DEBUG_COMPLETION then
@@ -37,10 +42,32 @@ au('LspAttach', {
       autotrigger = true,
       convert = function(item)
         local kind = lsp.protocol.CompletionItemKind[item.kind] or 'u'
-        return {
+        local cpp = vim.bo.filetype == 'c' or vim.bo.filetype == 'cpp'
+        local res = {
           kind = kind:sub(1, 1):lower(),
           menu = '',
         }
+        -- hack for c/cpp
+        if
+          (item.kind == CompletionItemKind.Function or item.kind == CompletionItemKind.Method)
+          and cpp
+          and not item.textEdit.newText:find('%)$')
+        then
+          res.word = item.insertText .. '()'
+        end
+        return res
+      end,
+      cmp = function(a, b)
+        local client_a = a.user_data.nvim.lsp.client_id
+        local client_b = b.user_data.nvim.lsp.client_id
+        local prio_a = client_a == phoenix_id and 999 or 1
+        local prio_b = client_b == phoenix_id and 999 or 1
+        if prio_a ~= prio_b then
+          return prio_a < prio_b
+        end
+        local item_a = a.user_data.nvim.lsp.completion_item
+        local item_b = b.user_data.nvim.lsp.completion_item
+        return (item_a.sortText or item_a.label) < (item_b.sortText or item_b.label)
       end,
     })
 
@@ -72,6 +99,24 @@ au('LspAttach', {
             vim.tbl_get(vim.v.completed_item, 'user_data', 'nvim', 'lsp', 'completion_item')
           if not item then
             return
+          end
+
+          -- hack for c/cpp
+          local cpp = vim.bo.filetype == 'c' or vim.bo.filetype == 'cpp'
+          local has_params = false
+          if item.label then
+            local params = item.label:match('%b()')
+            if params and not params:match('^%(%s*%)$') then
+              has_params = true
+            end
+          end
+
+          if
+            (item.kind == CompletionItemKind.Function or item.kind == CompletionItemKind.Method)
+            and cpp
+            and has_params
+          then
+            api.nvim_feedkeys(api.nvim_replace_termcodes('<Left>', true, false, true), 'n', false)
           end
 
           if

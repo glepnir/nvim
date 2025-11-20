@@ -5,7 +5,7 @@ local group = api.nvim_create_augroup('GlepnirGroup', {})
 au('TextYankPost', {
   group = group,
   callback = function()
-    vim.highlight.on_yank({ higroup = 'IncSearch', timeout = 400 })
+    vim.hl.on_yank({ higroup = 'IncSearch', timeout = 400 })
   end,
 })
 
@@ -21,12 +21,6 @@ au('LspAttach', {
     if client and client.server_capabilities then
       client.server_capabilities.semanticTokensProvider = nil
     end
-  end,
-})
-
-au('VimEnter', {
-  callback = function()
-    vim.fn.setreg('"0', '')
   end,
 })
 
@@ -74,8 +68,8 @@ au('UIEnter', {
       require('private.keymap')
 
       vim.lsp.enable({
-        -- 'luals',
-        'emmylua_ls',
+        'luals',
+        -- 'emmylua_ls',
         'clangd',
         'rust_analyzer',
         'basedpyright',
@@ -116,8 +110,10 @@ au('UIEnter', {
       end, { desc = 'enable lsp log' })
 
       require('private.grep')
+      require('private.compile')
 
       vim.cmd.packadd('nohlsearch')
+      vim.cmd.packadd('nvim.undotree')
     end)
   end,
   desc = 'Initializer',

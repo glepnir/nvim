@@ -325,6 +325,7 @@ map.n({
   ['<Leader>fo'] = cmd('FzfLua oldfiles'),
   ['<Leader>fg'] = cmd('FzfLua git_files'),
   ['<Leader>gc'] = cmd('FzfLua git_commits'),
+  ['<Leader>gb'] = cmd('FzfLua git_bcommits'),
   ['<Leader>o'] = cmd('FzfLua lsp_document_symbols'),
   ['<Leader>fc'] = cmd('FzfLua files cwd=$HOME/.config'),
   -- flybuf.nvim

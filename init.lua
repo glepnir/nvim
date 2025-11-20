@@ -1,7 +1,7 @@
 local g = vim.g
 vim.loader.enable()
 g.mapleader = vim.keycode('<space>')
-vim.g.language = {
+g.language = {
   'c',
   'cpp',
   'rust',
@@ -102,9 +102,10 @@ o.winborder = 'rounded'
 
 o.splitright = true
 
-o.cot = 'menu,menuone,noinsert,fuzzy,popup'
+o.cot = 'menu,menuone,noinsert,fuzzy,nosort,popup'
 o.cia = 'kind,abbr,menu'
 vim.opt.guicursor:remove({ 't:block-blinkon500-blinkoff500-TermCursor' })
 
 vim.cmd.colorscheme(vim.env.NVIMTHEME and vim.env.NVIMTHEME or 'solarized')
-vim.g.health = { style = 'float' }
+g.health = { style = 'float' }
+g.editorconfig = false
