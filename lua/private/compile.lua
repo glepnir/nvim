@@ -1,6 +1,7 @@
 local api = vim.api
 local last_cmd = nil
 local qf_id = nil
+local ansi_ns = nil
 
 local function parse_err(stderr, save_item)
   local list = {}
@@ -104,19 +105,53 @@ local info_list = {
 }
 
 local function update_qf(qf_list, over)
+  local line_colors = {}
+  local ansi_colors = {
+    ['30'] = 'Black',
+    ['31'] = 'Red',
+    ['32'] = 'Green',
+    ['33'] = 'Yellow',
+    ['34'] = 'Blue',
+    ['35'] = 'Magenta',
+    ['36'] = 'Cyan',
+    ['37'] = 'White',
+  }
+
   vim.fn.setqflist({}, 'a', {
     items = qf_list,
     title = over and 'Compilation' or 'Compiling',
     quickfixtextfunc = function(info)
       local lines = {}
       qf_id = info.id
-      local items = vim.fn.getqflist({ id = info.id, items = 1 }).items
+      local res = vim.fn.getqflist({ id = info.id, items = 1, winid = 0 })
+      local items = res.items
       local last_bufnr = -1
 
       for i = info.start_idx, info.end_idx do
         local item = items[i]
         if item.user_data and item.user_data == 'compile_info' then
-          table.insert(lines, item.text)
+          if item.text:find('\27%[%d+m') then
+            local plain = ''
+            local pos = 1
+
+            for match_start, code, match_end in item.text:gmatch('()\27%[(%d+)m()') do
+              plain = plain .. item.text:sub(pos, match_start - 1)
+              if ansi_colors[tostring(code)] then
+                table.insert(line_colors, {
+                  lnum = i,
+                  start = match_start,
+                  _end = match_end,
+                  color = ansi_colors[tostring(code)],
+                })
+              end
+              pos = match_end
+            end
+            plain = plain .. item.text:sub(pos)
+
+            table.insert(lines, plain)
+          else
+            table.insert(lines, item.text)
+          end
         elseif item.bufnr ~= last_bufnr then
           local filename = vim.fn.bufname(item.bufnr)
           table.insert(
@@ -128,6 +163,22 @@ local function update_qf(qf_list, over)
           table.insert(lines, string.format('  %s', item.text))
         end
       end
+      local buf = api.nvim_win_get_buf(res.winid)
+      if #line_colors > 0 then
+        vim.schedule(function()
+          for _, conf in ipairs(line_colors) do
+            api.nvim_set_hl(
+              ansi_ns,
+              'ANSI' .. conf.color,
+              { ctermfg = tonumber(conf.code), fg = 'Green' }
+            )
+            api.nvim_buf_set_extmark(buf, ansi_ns, conf.lnum - 1, conf.start - 1, {
+              end_col = conf._end - 1,
+              hl_group = 'ANSI' .. conf.color,
+            })
+          end
+        end)
+      end
       return lines
     end,
   })
@@ -138,6 +189,7 @@ local function update_qf(qf_list, over)
     curwin = api.nvim_get_current_win()
     vim.cmd.copen()
     qf_win = api.nvim_get_current_win()
+    api.nvim_win_set_hl_ns(qf_win, ansi_ns)
     vim.opt_local.number = false
     vim.opt_local.signcolumn = 'no'
     vim.opt_local.list = false
@@ -159,6 +211,9 @@ local function update_qf(qf_list, over)
 end
 
 local function compiler(compile_cmd, bufname)
+  if not ansi_ns then
+    ansi_ns = api.nvim_create_namespace('ansi_colors')
+  end
   if compile_cmd:find('%%s') then
     local cwd = vim.uv.cwd()
     if bufname:find(cwd) then
