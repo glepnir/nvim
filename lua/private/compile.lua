@@ -211,9 +211,6 @@ local function update_qf(qf_list, over)
 end
 
 local function compiler(compile_cmd, bufname)
-  if not ansi_ns then
-    ansi_ns = api.nvim_create_namespace('ansi_colors')
-  end
   if compile_cmd:find('%%s') then
     local cwd = vim.uv.cwd()
     if bufname:find(cwd) then
@@ -381,6 +378,9 @@ local function env_with_compile()
 end
 
 api.nvim_create_user_command('Compile', function()
+  if not ansi_ns then
+    ansi_ns = api.nvim_create_namespace('ansi_colors')
+  end
   env_with_compile()
 end, {})
 
