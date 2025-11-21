@@ -123,78 +123,100 @@ local function update_qf(qf_list, over)
     quickfixtextfunc = function(info)
       local lines = {}
       qf_id = info.id
+
       local res = vim.fn.getqflist({ id = info.id, items = 1, winid = 0 })
       local items = res.items
       local last_bufnr = -1
 
+      local lpeg = vim.lpeg
+      local P, R, C, Ct = lpeg.P, lpeg.R, lpeg.C, lpeg.Ct
+
+      -- ESC [digits m
+      local esc = P('\27')
+      local digits = R('09') ^ 0
+      local code = esc
+        * '['
+        * C(digits)
+        * 'm'
+        / function(d)
+          return { type = 'code', value = d }
+        end
+
+      local text = C((1 - esc) ^ 1)
+        / function(t)
+          return { type = 'text', value = t }
+        end
+
+      local grammar = Ct((code + text) ^ 0)
+
       for i = info.start_idx, info.end_idx do
         local item = items[i]
-        if item.user_data and item.user_data == 'compile_info' then
-          if item.text:find('\27%[%d*m') then
-            local plain = ''
-            local pos = 1
-            local active_hl = nil
 
-            for match_start, code, match_end in item.text:gmatch('()\27%[(%d*)m()') do
-              plain = plain .. item.text:sub(pos, match_start - 1)
-              if code ~= '' and code ~= '0' and ansi_colors[code] then
-                if active_hl then
-                  active_hl._end = #plain
+        if item.user_data == 'compile_info' then
+          local segs = grammar:match(item.text)
+          local plain = {}
+          local active = nil
+
+          for _, seg in ipairs(segs) do
+            if seg.type == 'code' then
+              local c = seg.value
+              if c ~= '' and c ~= '0' and ansi_colors[c] then
+                if active then
+                  active._end = #table.concat(plain)
                 end
-
-                active_hl = {
+                active = {
                   lnum = i,
-                  start = #plain,
-                  color = ansi_colors[code],
-                  code = tonumber(code),
+                  start = #table.concat(plain),
+                  color = ansi_colors[c],
+                  code = tonumber(c),
                 }
-                table.insert(line_colors, active_hl)
-              elseif code == '' or code == '0' then
-                if active_hl then
-                  active_hl._end = #plain
-                  active_hl = nil
+                table.insert(line_colors, active)
+              else
+                if active then
+                  active._end = #table.concat(plain)
+                  active = nil
                 end
               end
-
-              pos = match_end
+            else
+              table.insert(plain, seg.value)
             end
-
-            plain = plain .. item.text:sub(pos)
-            if active_hl then
-              active_hl._end = #plain
-            end
-
-            if active_hl and not vim.tbl_isempty(active_hl) then
-              table.insert(line_colors, active_hl)
-            end
-
-            table.insert(lines, plain)
-          else
-            table.insert(lines, item.text)
           end
+
+          if active then
+            active._end = #table.concat(plain)
+          end
+          table.insert(lines, table.concat(plain))
         elseif item.bufnr ~= last_bufnr then
-          local filename = vim.fn.bufname(item.bufnr)
           table.insert(
             lines,
-            string.format('▸ %s %d:%d %s', filename, item.lnum, item.col, item.text)
+            string.format(
+              '▸ %s %d:%d %s',
+              vim.fn.bufname(item.bufnr),
+              item.lnum,
+              item.col,
+              item.text
+            )
           )
           last_bufnr = item.bufnr
         else
-          table.insert(lines, string.format('  %s', item.text))
+          table.insert(lines, '  ' .. item.text)
         end
       end
-      local buf = api.nvim_win_get_buf(res.winid)
+
+      local buf = vim.api.nvim_win_get_buf(res.winid)
+
       if #line_colors > 0 then
         vim.schedule(function()
-          for _, conf in ipairs(line_colors) do
-            api.nvim_set_hl(ansi_ns, 'ANSI' .. conf.color, { ctermfg = conf.code, fg = conf.color })
-            api.nvim_buf_set_extmark(buf, ansi_ns, conf.lnum - 1, conf.start, {
-              end_col = conf._end,
-              hl_group = 'ANSI' .. conf.color,
+          for _, c in ipairs(line_colors) do
+            vim.api.nvim_set_hl(ansi_ns, 'ANSI' .. c.color, { ctermfg = c.code, fg = c.color })
+            vim.api.nvim_buf_set_extmark(buf, ansi_ns, c.lnum - 1, c.start, {
+              end_col = c._end,
+              hl_group = 'ANSI' .. c.color,
             })
           end
         end)
       end
+
       return lines
     end,
   })
