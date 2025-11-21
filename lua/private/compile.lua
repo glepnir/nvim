@@ -173,7 +173,7 @@ local function update_qf(qf_list, over)
               { ctermfg = tonumber(conf.code), fg = 'Green' }
             )
             api.nvim_buf_set_extmark(buf, ansi_ns, conf.lnum - 1, conf.start - 1, {
-              end_col = conf._end - 1,
+              end_col = conf._end,
               hl_group = 'ANSI' .. conf.color,
             })
           end
