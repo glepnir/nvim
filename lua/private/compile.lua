@@ -130,23 +130,43 @@ local function update_qf(qf_list, over)
       for i = info.start_idx, info.end_idx do
         local item = items[i]
         if item.user_data and item.user_data == 'compile_info' then
-          if item.text:find('\27%[%d+m') then
+          if item.text:find('\27%[%d*m') then
             local plain = ''
             local pos = 1
+            local active_hl = nil
 
-            for match_start, code, match_end in item.text:gmatch('()\27%[(%d+)m()') do
+            for match_start, code, match_end in item.text:gmatch('()\27%[(%d*)m()') do
               plain = plain .. item.text:sub(pos, match_start - 1)
-              if ansi_colors[tostring(code)] then
-                table.insert(line_colors, {
+              if code ~= '' and code ~= '0' and ansi_colors[code] then
+                if active_hl then
+                  active_hl._end = #plain
+                end
+
+                active_hl = {
                   lnum = i,
-                  start = match_start,
-                  _end = match_end,
-                  color = ansi_colors[tostring(code)],
-                })
+                  start = #plain,
+                  color = ansi_colors[code],
+                  code = tonumber(code),
+                }
+                table.insert(line_colors, active_hl)
+              elseif code == '' or code == '0' then
+                if active_hl then
+                  active_hl._end = #plain
+                  active_hl = nil
+                end
               end
+
               pos = match_end
             end
+
             plain = plain .. item.text:sub(pos)
+            if active_hl then
+              active_hl._end = #plain
+            end
+
+            if active_hl and not vim.tbl_isempty(active_hl) then
+              table.insert(line_colors, active_hl)
+            end
 
             table.insert(lines, plain)
           else
@@ -167,12 +187,8 @@ local function update_qf(qf_list, over)
       if #line_colors > 0 then
         vim.schedule(function()
           for _, conf in ipairs(line_colors) do
-            api.nvim_set_hl(
-              ansi_ns,
-              'ANSI' .. conf.color,
-              { ctermfg = tonumber(conf.code), fg = 'Green' }
-            )
-            api.nvim_buf_set_extmark(buf, ansi_ns, conf.lnum - 1, conf.start - 1, {
+            api.nvim_set_hl(ansi_ns, 'ANSI' .. conf.color, { ctermfg = conf.code, fg = conf.color })
+            api.nvim_buf_set_extmark(buf, ansi_ns, conf.lnum - 1, conf.start, {
               end_col = conf._end,
               hl_group = 'ANSI' .. conf.color,
             })
