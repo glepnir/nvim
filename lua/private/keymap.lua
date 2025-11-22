@@ -95,8 +95,8 @@ map.n({
   [']t'] = cmd('set splitbelow | sp | set nosplitbelow | resize -5 | terminal'),
   ['<C-x>t'] = cmd('tabnew | terminal'),
   ['gV'] = '`[v`]',
-  ['<C-c>c'] = cmd('Compile'),
-  ['<C-c>r'] = cmd('Recompile'),
+  ['<C-x>c'] = cmd('Compile'),
+  ['<C-x>r'] = cmd('Recompile'),
 })
 
 map.i({

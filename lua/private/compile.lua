@@ -2,6 +2,7 @@ local api = vim.api
 local last_cmd = nil
 local qf_id = nil
 local ansi_ns = nil
+local job = nil ---@type vim.SystemObj?
 
 local function parse_err(stderr, save_item)
   local list = {}
@@ -288,7 +289,7 @@ local function compiler(compile_cmd, bufname)
     end
   end)
 
-  vim.system({ 'sh', '-c', compile_cmd }, {
+  job = vim.system({ 'sh', '-c', compile_cmd }, {
     text = true,
     stdout = function(err, data)
       if err or not data then
@@ -415,14 +416,24 @@ local function env_with_compile()
   end)()
 end
 
+local function close_running()
+  if job and not job:is_closing() then
+    job:kill('sigterm')
+    vim.notify('close running job ' .. job.pid, vim.log.levels.WARN)
+    job = nil
+  end
+end
+
 api.nvim_create_user_command('Compile', function()
   if not ansi_ns then
     ansi_ns = api.nvim_create_namespace('ansi_colors')
   end
+  close_running()
   env_with_compile()
 end, {})
 
 api.nvim_create_user_command('Recompile', function()
+  close_running()
   if last_cmd then
     local bufname = api.nvim_buf_get_name(0)
     compiler(last_cmd, bufname)
