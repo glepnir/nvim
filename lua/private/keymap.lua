@@ -307,17 +307,14 @@ end)
 
 map.n({
   -- Lspsaga
-  ['[d'] = cmd('Lspsaga diagnostic_jump_next'),
-  [']d'] = cmd('Lspsaga diagnostic_jump_prev'),
-  ['ga'] = cmd('Lspsaga code_action'),
-  ['gr'] = cmd('Lspsaga rename'),
-  ['gd'] = cmd('Lspsaga peek_definition'),
-  ['gp'] = cmd('Lspsaga goto_definition'),
-  ['gh'] = cmd('Lspsaga finder'),
-  ['gl'] = cmd('Visualizer full'),
-  -- dbsession
-  ['<Leader>ss'] = cmd('SessionSave'),
-  ['<Leader>sl'] = cmd('SessionLoad'),
+  -- ['[d'] = cmd('Lspsaga diagnostic_jump_next'),
+  -- [']d'] = cmd('Lspsaga diagnostic_jump_prev'),
+  -- ['ga'] = cmd('Lspsaga code_action'),
+  -- ['gr'] = cmd('Lspsaga rename'),
+  -- ['gd'] = cmd('Lspsaga peek_definition'),
+  -- ['gp'] = cmd('Lspsaga goto_definition'),
+  -- ['gh'] = cmd('Lspsaga finder'),
+  -- ['gl'] = cmd('Visualizer full'),
   -- FzfLua
   ['<Leader>b'] = cmd('FzfLua buffers'),
   ['<Leader>fa'] = cmd('FzfLua live_grep_native'),
@@ -330,8 +327,6 @@ map.n({
   ['<Leader>gb'] = cmd('FzfLua git_bcommits'),
   ['<Leader>o'] = cmd('FzfLua lsp_document_symbols'),
   ['<Leader>fc'] = cmd('FzfLua files cwd=$HOME/.config'),
-  -- flybuf.nvim
-  ['<Leader>j'] = cmd('FlyBuf'),
   --gitsign
   [']g'] = cmd('lua require"gitsigns".next_hunk()<CR>'),
   ['[g'] = cmd('lua require"gitsigns".prev_hunk()<CR>'),
@@ -340,9 +335,8 @@ map.n({
 map.n('<C-X><C-f>', cmd('Dired'))
 
 -- Lspsaga floaterminal
-map.nt('<A-d>', cmd('Lspsaga term_toggle'))
-
-map.nx('ga', cmd('Lspsaga code_action'))
+-- map.nt('<A-d>', cmd('Lspsaga term_toggle'))
+-- map.nx('ga', cmd('Lspsaga code_action'))
 
 map.n('f', function()
   require('private.jump').charForward()
