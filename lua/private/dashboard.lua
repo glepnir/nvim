@@ -26,7 +26,11 @@ local config = {
     { key = 'o', desc = 'Recent Files', action = '<cmd>FzfLua oldfiles<CR>' },
     { key = 'd', desc = 'Dotfiles', action = '<cmd>FzfLua files cwd=$HOME/.config<CR>' },
     { key = 'e', desc = 'New File', action = '<cmd>enew<CR>' },
-    { key = 'u', desc = 'Update Plugins', action = '<cmd>Strive update<CR>' },
+    {
+      key = 'u',
+      desc = 'Update Plugins',
+      action = '<cmd>lua vim.pack.update(nil, { force = true})<CR>',
+    },
     { key = 'q', desc = 'Quit', action = '<cmd>qa<CR>' },
   },
 
@@ -171,13 +175,16 @@ local function render_dashboard(buf)
     })
   end
 
-  local startup_time = vim.g.strive_startup_time or '0'
-  local plugin_info_str = string.format(
-    'load %d/%d plugins in %sms',
-    vim.g.strive_loaded or 0,
-    vim.g.strive_count or 0,
-    startup_time
-  )
+  local plugins = vim.pack.get()
+  local loaded = vim
+    .iter(plugins)
+    :map(function(p)
+      return p.active
+    end)
+    :totable()
+  local startup_time = vim.g.nvim_startup_time or '0'
+  local plugin_info_str =
+    string.format('load %d/%d plugins in %sms', #loaded or 0, #plugins or 0, startup_time)
 
   if plugin_info_line_idx <= #lines then
     local current_line = lines[plugin_info_line_idx] or ''

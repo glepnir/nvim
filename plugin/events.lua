@@ -59,28 +59,42 @@ au('CmdlineEnter', {
   end,
 })
 
+local function startuptime()
+  if vim.g.strive_startup_time ~= nil then
+    return
+  end
+  vim.g.strive_startup_time = 0
+  local usage = vim.uv.getrusage()
+  if usage then
+    -- Calculate time in milliseconds (user + system time)
+    local user_time = (usage.utime.sec * 1000) + (usage.utime.usec / 1000)
+    local sys_time = (usage.stime.sec * 1000) + (usage.stime.usec / 1000)
+    vim.g.nvim_startup_time = user_time + sys_time
+  end
+end
+
+vim.lsp.enable({
+  'luals',
+  -- 'emmylua_ls',
+  'clangd',
+  'rust_analyzer',
+  'basedpyright',
+  'ruff',
+  'zls',
+  'cmake',
+  'tsls',
+})
+
 au('UIEnter', {
   group = group,
   once = true,
   callback = function()
+    startuptime()
     vim.schedule(function()
       require('private.dashboard').show()
       require('private.keymap')
 
-      vim.lsp.enable({
-        'luals',
-        -- 'emmylua_ls',
-        'clangd',
-        'rust_analyzer',
-        'basedpyright',
-        'ruff',
-        'zls',
-        'cmake',
-        'tsls',
-      })
-
       vim.lsp.log.set_level(vim.log.levels.OFF)
-
       vim.diagnostic.config({
         float = {
           title = '',
@@ -109,6 +123,7 @@ au('UIEnter', {
         vim.lsp.log.set_level(vim.log.levels.WARN)
       end, { desc = 'enable lsp log' })
 
+      require('private.async')
       require('private.grep')
       require('private.compile')
 
@@ -125,6 +140,5 @@ au('FileType', {
     vim.treesitter.start()
     vim.wo.foldmethod = 'expr'
     vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-    -- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
   end,
 })
