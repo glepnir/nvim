@@ -88,7 +88,8 @@ o.textwidth = 80
 o.colorcolumn = '+0'
 o.winborder = 'rounded'
 o.splitright = true
-
+-- reset to 2 in dashboard.lua lnum 273
+o.laststatus = 0
 o.cot = 'menu,menuone,noinsert,fuzzy,nosort,popup'
 o.cia = 'kind,abbr,menu'
 vim.opt.guicursor:remove({ 't:block-blinkon500-blinkoff500-TermCursor' })

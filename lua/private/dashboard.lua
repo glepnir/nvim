@@ -270,7 +270,7 @@ local function opt_handler()
   save_opts.colorcolumn = vim.wo.colorcolumn
   save_opts.signcolumn = vim.wo.signcolumn
   save_opts.wrap = vim.wo.wrap
-  save_opts.laststatus = vim.o.laststatus
+  save_opts.laststatus = 2
   save_opts.showtabline = vim.o.showtabline
   save_opts.listchars = vim.o.listchars
 
