@@ -123,8 +123,9 @@ au('UIEnter', {
         vim.lsp.log.set_level(vim.log.levels.WARN)
       end, { desc = 'enable lsp log' })
 
-      require('private.async')
-      require('private.grep')
+      if vim.version().minor >= 12 then
+        require('private.grep')
+      end
       require('private.compile')
 
       vim.cmd.packadd('nohlsearch')
