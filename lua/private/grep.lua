@@ -1,6 +1,8 @@
 local api, QUICK, LOCAL, FORWARD, BACKWARD, mapset = vim.api, 1, 2, 1, 2, vim.keymap.set
 local treesitter, fn = vim.treesitter, vim.fn
 
+local async = require('vim._async')
+
 local state = {
   preview = {
     win = nil,
@@ -8,6 +10,9 @@ local state = {
   },
   count = 0,
   match_ids = {},
+  done = false,
+  win = nil,
+  buf = nil,
 }
 
 local function create_preview_window(bufnr)
@@ -178,110 +183,127 @@ local function update_title()
   })
 end
 
-local grep = async(function(t, ...)
+local function grep(t, ...)
   local args = { ... }
-  local grepprg = vim.o.grepprg
-  local cmd = vim.split(grepprg, '%s+', { trimempty = true })
-  local qf_fn = t == QUICK and function(...)
-    fn.setqflist(...)
-  end or function(...)
-    fn.setloclist(0, ...)
-  end
 
-  for _, arg in ipairs(args) do
-    table.insert(cmd, arg)
-  end
-  table.insert(cmd, '--fixed-strings')
+  -- Use async.run to run the async function
+  async.run(function()
+    local grepprg = vim.o.grepprg
+    local cmd = vim.split(grepprg, '%s+', { trimempty = true })
+    local qf_fn = t == QUICK and function(...)
+      fn.setqflist(...)
+    end or function(...)
+      fn.setloclist(0, ...)
+    end
 
-  local opened = false
-  local id = nil
-  local batch_size = 200
-  local chunk = {}
-  local seen_files = {}
-  local result = try_await(asystem(cmd, {
-    text = true,
-    stdout = function(err, data)
-      assert(not err)
-      state.done = not data
-      local process = {}
-      if data then
-        local lines = vim.split(data, '\n', { trimempty = true })
-        if #lines > 0 then
-          for _, line in ipairs(lines) do
-            -- parse format: filename:lnum:col:text
-            local filename, lnum, col, text = line:match('^([^:]+):(%d+):(%d+):(.*)$')
-            if filename and lnum and col and text then
-              -- check is new file
-              if not seen_files[filename] then
-                -- insert header for it
-                table.insert(chunk, string.format('%s:0:0:', filename))
-                seen_files[filename] = true
-              end
-            end
-            table.insert(chunk, line)
-          end
-        end
-      end
+    for _, arg in ipairs(args) do
+      table.insert(cmd, arg)
+    end
+    table.insert(cmd, '--fixed-strings')
 
-      if #chunk >= batch_size then
-        process = { unpack(chunk, 1, batch_size) }
-        chunk = { unpack(chunk, batch_size + 1, #chunk) }
-      end
+    local opened = false
+    local id = nil
+    local batch_size = 200
+    local chunk = {}
+    local seen_files = {}
 
-      vim.schedule(function()
-        if #process > 0 or data ~= nil then
-          qf_fn({}, 'a', {
-            lines = not data and chunk or process,
-            id = id,
-            efm = vim.o.errorformat,
-            title = 'Grep',
-            quickfixtextfunc = function(info)
-              local lines = {}
-              local list = info.quickfix == 1 and vim.fn.getqflist()
-                or vim.fn.getloclist(info.winid)
-              local last_bufnr = nil
-
-              for i = info.start_idx, info.end_idx do
-                local item = list[i]
-                if item and item.valid == 1 and item.lnum > 0 and item.text ~= '' then
-                  local filename = item.bufnr > 0 and vim.fn.bufname(item.bufnr) or ''
-                  local text = item.text or ''
-
-                  if item.bufnr ~= last_bufnr then
-                    table.insert(lines, string.format('▸ %s', filename))
-                    last_bufnr = item.bufnr
-                  end
-
-                  table.insert(lines, string.format('  %4d:%-3d │ %s', item.lnum, item.col, text))
+    local result = async.await(3, vim.system, cmd, {
+      text = true,
+      stdout = function(err, data)
+        assert(not err)
+        state.done = not data
+        local process = {}
+        if data then
+          local lines = vim.split(data, '\n', { trimempty = true })
+          if #lines > 0 then
+            for _, line in ipairs(lines) do
+              -- parse format: filename:lnum:col:text
+              local filename, lnum, col, text = line:match('^([^:]+):(%d+):(%d+):(.*)$')
+              if filename and lnum and col and text then
+                -- check is new file
+                if not seen_files[filename] then
+                  -- insert header for it
+                  table.insert(chunk, string.format('%s:0:0:', filename))
+                  seen_files[filename] = true
                 end
               end
-              return lines
-            end,
-          })
+              table.insert(chunk, line)
+            end
+          end
+        end
 
-          if not opened then
-            vim.cmd(t == QUICK and 'copen' or 'lopen')
-            local buf = api.nvim_get_current_buf()
-            state.win = api.nvim_get_current_win()
-            setup_init(buf, t == QUICK)
-            opened = true
+        if #chunk >= batch_size then
+          -- Fix the unpack issue by using loops instead
+          process = {}
+          for i = 1, batch_size do
+            process[i] = chunk[i]
           end
 
-          state.count = state.count + (not data and #chunk or #process)
-          update_title()
+          local new_chunk = {}
+          for i = batch_size + 1, #chunk do
+            table.insert(new_chunk, chunk[i])
+          end
+          chunk = new_chunk
         end
-      end)
-    end,
-  }))
 
-  if result.error then
-    return vim.notify('Grep failed: ' .. tostring(result.error.message or ''), vim.log.levels.ERROR)
-  end
-end)
+        vim.schedule(function()
+          if #process > 0 or data ~= nil then
+            qf_fn({}, 'a', {
+              lines = not data and chunk or process,
+              id = id,
+              efm = vim.o.errorformat,
+              title = 'Grep',
+              quickfixtextfunc = function(info)
+                local lines = {}
+                local list = info.quickfix == 1 and vim.fn.getqflist()
+                  or vim.fn.getloclist(info.winid)
+                local last_bufnr = nil
+
+                for i = info.start_idx, info.end_idx do
+                  local item = list[i]
+                  if item and item.valid == 1 and item.lnum > 0 and item.text ~= '' then
+                    local filename = item.bufnr > 0 and vim.fn.bufname(item.bufnr) or ''
+                    local text = item.text or ''
+
+                    if item.bufnr ~= last_bufnr then
+                      table.insert(lines, string.format('▸ %s', filename))
+                      last_bufnr = item.bufnr
+                    end
+
+                    table.insert(
+                      lines,
+                      string.format('  %4d:%-3d │ %s', item.lnum, item.col, text)
+                    )
+                  end
+                end
+                return lines
+              end,
+            })
+
+            if not opened then
+              vim.cmd(t == QUICK and 'copen' or 'lopen')
+              local buf = api.nvim_get_current_buf()
+              state.win = api.nvim_get_current_win()
+              setup_init(buf, t == QUICK)
+              opened = true
+            end
+
+            state.count = state.count + (not data and #chunk or #process)
+            update_title()
+          end
+        end)
+      end,
+    })
+
+    if result.code ~= 0 then
+      vim.notify('Grep failed with exit code: ' .. result.code, vim.log.levels.ERROR)
+    end
+  end)
+end
 
 api.nvim_create_user_command('Grep', function(opts)
   grep(LOCAL, opts.args)
-end, { nargs = '+', complete = 'file_in_path', desc = 'Search using localtion list' })
+end, { nargs = '+', complete = 'file_in_path', desc = 'Search using location list' })
 
 api.nvim_create_user_command('GREP', function(opts)
   grep(QUICK, opts.args)
