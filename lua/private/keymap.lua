@@ -73,7 +73,7 @@ local map = setmetatable(keymap, mt)
 
 -- Helper function for command mappings
 local cmd = function(command)
-  return '<cmd>' .. command .. '<CR>'
+  return ('<cmd>%s<CR>'):format(command)
 end
 
 map.n({
@@ -97,6 +97,7 @@ map.n({
   ['gV'] = '`[v`]',
   ['<C-x>c'] = cmd('Compile'),
   ['<C-x>r'] = cmd('Recompile'),
+  ['<C-W>['] = cmd('vertical wincmd ]'),
 })
 
 map.i({

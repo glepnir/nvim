@@ -290,6 +290,7 @@ end
 
 function M.show()
   if vim.fn.argc() > 0 or vim.fn.line2byte('$') ~= -1 then
+    vim.o.laststatus = 2
     return
   end
 
@@ -338,6 +339,7 @@ vim.api.nvim_create_autocmd('VimEnter', {
     if vim.fn.argc() == 0 and vim.fn.line2byte('$') == -1 then
       M.show()
     end
+    vim.o.laststatus = 2
   end,
 })
 

@@ -5,7 +5,7 @@
       "src": "https://github.com/nvimdev/dired.nvim"
     },
     "fzf-lua": {
-      "rev": "9a0704e8af8f8442110ff22a83b5608366b235df",
+      "rev": "f6d949549cc43fb5d35ef43db56f03131da469a7",
       "src": "https://github.com/ibhagwan/fzf-lua"
     },
     "gitsigns.nvim": {
@@ -25,16 +25,16 @@
       "src": "https://github.com/nvimdev/indentmini.nvim"
     },
     "modeline.nvim": {
-      "rev": "e65fa5045d8b8cf2329398ef129f68f8b810e1c5",
+      "rev": "20dfecf989682ac1cf5733d9258056130c511a54",
       "src": "https://github.com/nvimdev/modeline.nvim"
     },
     "nvim-treesitter": {
-      "rev": "17885756e63df73ed90db62e4630f744ceda6514",
+      "rev": "75797cdd8ac125c7ace065b17788b439dcf89a71",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter",
       "version": "'main'"
     },
     "nvim-treesitter-textobjects": {
-      "rev": "63c4dce4a56312ef1bdeafd16bdefa008fcc950a",
+      "rev": "dfbf9596f8aa8b4bed5301647485594ff7252955",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
       "version": "'main'"
     },

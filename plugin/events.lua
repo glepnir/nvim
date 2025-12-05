@@ -96,10 +96,7 @@ au('UIEnter', {
 
       vim.lsp.log.set_level(vim.log.levels.OFF)
       vim.diagnostic.config({
-        float = {
-          title = '',
-          header = '',
-        },
+        float = true,
         virtual_text = { current_line = true },
         signs = {
           text = { '●', '●', '●', '●' },
