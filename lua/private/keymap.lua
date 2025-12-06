@@ -335,8 +335,9 @@ map.n({
 
 map.n('<C-X><C-f>', cmd('Dired'))
 
--- Lspsaga floaterminal
--- map.nt('<A-d>', cmd('Lspsaga term_toggle'))
+map.nt('<A-d>', function()
+  require('private.term').toggle()
+end)
 -- map.nx('ga', cmd('Lspsaga code_action'))
 
 map.n('f', function()

@@ -5,7 +5,7 @@
       "src": "https://github.com/nvimdev/dired.nvim"
     },
     "fzf-lua": {
-      "rev": "f6d949549cc43fb5d35ef43db56f03131da469a7",
+      "rev": "bbff1efa2f72ddd1cb3fed2ca38a9b273aef4a9b",
       "src": "https://github.com/ibhagwan/fzf-lua"
     },
     "gitsigns.nvim": {
