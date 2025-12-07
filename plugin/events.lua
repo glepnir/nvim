@@ -133,10 +133,16 @@ au('UIEnter', {
 })
 
 au('FileType', {
-  pattern = vim.g.language,
+  group = group,
   callback = function()
-    vim.treesitter.start()
-    vim.wo.foldmethod = 'expr'
-    vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+    local ok = pcall(function()
+      vim.treesitter.start()
+    end)
+    if ok then
+      vim.treesitter.start()
+      vim.wo.foldmethod = 'expr'
+      vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+    end
   end,
+  desc = 'try start treesitter highlight',
 })

@@ -1,32 +1,6 @@
 local g = vim.g
 vim.loader.enable()
 g.mapleader = vim.keycode('<space>')
-g.language = {
-  'c',
-  'cpp',
-  'rust',
-  'zig',
-  'lua',
-  'python',
-  'proto',
-  'typescript',
-  'javascript',
-  'tsx',
-  'css',
-  'scss',
-  'diff',
-  'dockerfile',
-  'graphql',
-  'html',
-  'sql',
-  'markdown',
-  'markdown_inline',
-  'json',
-  'jsonc',
-  'vimdoc',
-  'vim',
-  'cmake',
-}
 
 g.loaded_gzip = 1
 g.loaded_tar = 1
@@ -106,7 +80,33 @@ vim.api.nvim_create_autocmd('PackChanged', {
         vim.cmd.packadd('nvim-treesitter')
       end
       vim.schedule(function()
-        require('nvim-treesitter').install(vim.g.language)
+        local lang = {
+          'c',
+          'cpp',
+          'rust',
+          'zig',
+          'lua',
+          'python',
+          'proto',
+          'typescript',
+          'javascript',
+          'tsx',
+          'css',
+          'scss',
+          'diff',
+          'dockerfile',
+          'graphql',
+          'html',
+          'sql',
+          'markdown',
+          'markdown_inline',
+          'json',
+          'jsonc',
+          'vimdoc',
+          'vim',
+          'cmake',
+        }
+        require('nvim-treesitter').install(lang)
       end)
     end
   end,
