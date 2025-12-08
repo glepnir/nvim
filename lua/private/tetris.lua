@@ -13,6 +13,7 @@ local state = {
   current_piece = nil,
   current_x = 0,
   current_y = 0,
+  ns_id = nil,
   score = 0,
   game_over = false,
   win = nil,
@@ -42,13 +43,13 @@ local pieces = {
   },
   T = {
     shapes = {
-      { 0b010, 0b111 }, -- ·█·
+      { 0b010, 0b111 }, -- ·█
       -- ███
-      { 0b10, 0b11, 0b10 }, -- █·
+      { 0b10, 0b11, 0b10 }, -- █
       -- ██
-      -- █·
+      -- █
       { 0b111, 0b010 }, -- ███
-      -- ·█·
+      -- ·█
       { 0b01, 0b11, 0b01 }, -- ·█
       -- ██
       -- ·█
@@ -60,8 +61,8 @@ local pieces = {
   S = {
     shapes = {
       { 0b011, 0b110 }, -- ·██
-      -- ██·
-      { 0b10, 0b11, 0b01 }, -- █·
+      -- ██
+      { 0b10, 0b11, 0b01 }, -- █
       -- ██
       -- ·█
     },
@@ -71,11 +72,11 @@ local pieces = {
   },
   Z = {
     shapes = {
-      { 0b110, 0b011 }, -- ██·
+      { 0b110, 0b011 }, -- ██
       -- ·██
       { 0b01, 0b11, 0b10 }, -- ·█
       -- ██
-      -- █·
+      -- █
     },
     color = 'TetrisZ',
     width = { 3, 2 },
@@ -83,7 +84,7 @@ local pieces = {
   },
   J = {
     shapes = {
-      { 0b100, 0b111 }, -- █··
+      { 0b100, 0b111 }, -- █
       -- ███
       { 0b11, 0b10, 0b10 }, -- ██
       -- █·
@@ -102,11 +103,11 @@ local pieces = {
     shapes = {
       { 0b001, 0b111 }, -- ··█
       -- ███
-      { 0b10, 0b10, 0b11 }, -- █·
+      { 0b10, 0b10, 0b11 }, -- █
       -- █·
       -- ██
       { 0b111, 0b100 }, -- ███
-      -- █··
+      -- █
       { 0b11, 0b01, 0b01 }, -- ██
       -- ·█
       -- ·█
@@ -331,13 +332,13 @@ local function render()
   vim.api.nvim_buf_set_lines(state.buf, 0, -1, false, lines)
   vim.bo[state.buf].modifiable = false
 
-  local ns_id = api.nvim_create_namespace('tetris_bitwise')
-  api.nvim_buf_clear_namespace(state.buf, ns_id, 0, -1)
+  state.ns_id = state.ns_id or api.nvim_create_namespace('tetris')
+  api.nvim_buf_clear_namespace(state.buf, state.ns_id, 0, -1)
 
   for _, hl in ipairs(highlights) do
     vim.hl.range(
       state.buf,
-      ns_id,
+      state.ns_id,
       hl.hl_group,
       { hl.line, hl.col_start },
       { hl.line, hl.col_end },
