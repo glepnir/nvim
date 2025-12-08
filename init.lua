@@ -100,8 +100,6 @@ vim.api.nvim_create_autocmd('PackChanged', {
           'sql',
           'markdown',
           'markdown_inline',
-          'json',
-          'jsonc',
           'vimdoc',
           'vim',
           'cmake',
