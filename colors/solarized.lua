@@ -20,7 +20,7 @@ local colors = {
   green = '#84a800',
   magenta = '#d33682',
   -- Custom modifications
-  fg = '#b6b6b6', -- Brighter foreground
+  fg = '#b3b3b3', -- Brighter foreground
 }
 
 vim.g.colors_name = 'solarized'
@@ -41,7 +41,7 @@ local function load_solarized()
   shl('Function', { fg = colors.blue })
   shl('Keyword', { fg = colors.green, bold = true })
   shl('Constant', { fg = colors.violet })
-  shl('Identifier', { fg = colors.blue })
+  shl('Identifier', { fg = colors.fg })
   shl('Statement', { fg = colors.green })
   shl('Number', { link = 'Constant' })
   shl('PreProc', { fg = colors.orange })
@@ -86,8 +86,8 @@ local function load_solarized()
   -- Treesitter highlights
   shl('@function', { fg = colors.blue })
   shl('@function.builtin', { fg = colors.blue })
-  shl('@variable', { fg = colors.fg })
-  shl('@variable.builtin', { fg = colors.fg })
+  shl('@variable', { link = 'Identifier' })
+  shl('@variable.builtin', { link = '@variable' })
   shl('@keyword', { fg = colors.green })
   shl('@keyword.import', { link = 'PreProc' })
   shl('@string', { fg = colors.cyan })
