@@ -79,33 +79,32 @@ vim.api.nvim_create_autocmd('PackChanged', {
       if not active then
         vim.cmd.packadd('nvim-treesitter')
       end
-      vim.schedule(function()
-        local lang = {
-          'c',
-          'cpp',
-          'rust',
-          'zig',
-          'lua',
-          'python',
-          'proto',
-          'typescript',
-          'javascript',
-          'tsx',
-          'css',
-          'scss',
-          'diff',
-          'dockerfile',
-          'graphql',
-          'html',
-          'sql',
-          'markdown',
-          'markdown_inline',
-          'vimdoc',
-          'vim',
-          'cmake',
-        }
-        require('nvim-treesitter').install(lang)
-      end)
+      local nts = require('nvim-treesitter')
+      nts.install({
+        'c',
+        'cpp',
+        'rust',
+        'zig',
+        'lua',
+        'python',
+        'proto',
+        'typescript',
+        'javascript',
+        'tsx',
+        'css',
+        'scss',
+        'diff',
+        'dockerfile',
+        'graphql',
+        'html',
+        'sql',
+        'markdown',
+        'markdown_inline',
+        'vimdoc',
+        'vim',
+        'cmake',
+      }, { summary = true })
+      nts.update(nil, { summary = true })
     end
   end,
 })
