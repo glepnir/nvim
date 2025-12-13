@@ -20,7 +20,7 @@ local colors = {
   green = '#84a800',
   magenta = '#d33682',
   -- Custom modifications
-  fg = '#b3b3b3', -- Brighter foreground
+  fg = '#b0b0b0', -- Brighter foreground
 }
 
 vim.g.colors_name = 'solarized'
