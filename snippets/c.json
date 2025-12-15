@@ -1,135 +1,455 @@
 {
-	"for": {
-		"prefix": "for",
-		"body": [
-			"for (int ${1:i} = ${2:0}; ${1:i} < ${3:n}; ${1:i}++) {",
-			"\t$0",
-			"}"
-		],
-		"description": "Code snippet for 'for' loop"
-	},
-	"forr": {
-		"prefix": "forr",
-		"body": [
-			"for (int ${1:i} = ${2:length} - 1; ${1:i} >= ${3:0}; ${1:i}--) {",
-			"\t$0",
-			"}"
-		],
-		"description": "Code snippet for reverse 'for' loop"
-	},
-	"while": {
-		"prefix": "while",
-		"body": [
-			"while (${1:condition}) {",
-			"\t$0",
-			"}"
-		],
-		"description": "Code snippet for while loop"
-	},
-	"if": {
-		"prefix": "if",
-		"body": [
-			"if (${1:condition}) {",
-			"\t$0",
-			"}"
-		],
-		"description": "Code snippet for if statement"
-	},
-	"else": {
-		"prefix": "else",
-		"body": [
-			"else {",
-			"\t$0",
-			"}"
-		],
-		"description": "Code snippet for else statement"
-	},
-	"enum": {
-		"prefix": "enum",
-		"body": [
-			"enum ${1:MyEnum} {",
-			"\t$0",
-			"};"
-		],
-		"description": "Code snippet for enum"
-	},
-	"#ifdef": {
-		"prefix": "#ifdef",
-		"body": [
-			"#ifdef ${1:DEBUG}",
-			"$0",
-			"#endif // ${1:DEBUG}"
-		],
-		"description": "Code snippet for #ifdef"
-	},
-	"#ifndef": {
-		"prefix": "#ifndef",
-		"body": [
-			"#ifndef ${1:HEADER_H}",
-			"$0",
-			"#endif // !${1:HEADER_H}"
-		],
-		"description": "Code snippet for #ifndef"
-	},
-	"#if": {
-		"prefix": "#if",
-		"body": [
-			"#if ${1:0}",
-			"$0",
-			"#endif // ${1:0}"
-		],
-		"description": "Code snippet for #if"
-	},
-	"struct": {
-		"prefix": "struct",
-		"body": [
-			"struct ${1:MyStruct} {",
-			"\t$0",
-			"};"
-		],
-		"description": "Code snippet for struct"
-	},
-	"switch": {
-		"prefix": "switch",
-		"body": [
-			"switch (${1:expression}) {",
-			"case ${2:value}:",
-			"\t$0",
-			"\tbreak;",
-			"default:",
-			"\tbreak;",
-			"}"
-		],
-		"description": "Code snippet for switch statement"
-	},
-	"union": {
-		"prefix": "union",
-		"body": [
-			"union ${1:MyUnion} {",
-			"\t$0",
-			"};"
-		],
-		"description": "Code snippet for union"
-	},
-	"#inc": {
-		"prefix": "#inc",
-		"body": [
-			"#include \"${1:header.h}\""
-		],
-		"description": "Code snippet for #include with quotes"
-	},
-	"#inc<": {
-		"prefix": "#inc<",
-		"body": [
-			"#include <${1:stdio.h}>"
-		],
-		"description": "Code snippet for #include with angle brackets"
-	},
-	"#def": {
-		"prefix": "#def",
-		"body": [
-			"#define ${1:MACRO} ${2:value}"
-		],
-		"description": "Code snippet for #define"
-	}
+  "for_i": {
+    "prefix": "fori",
+    "body": [
+      "for (int ${1:i} = 0; ${1:i} < ${2:n}; ${1:i}++) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Integer for loop (C99)"
+  },
+  "for_size_t": {
+    "prefix": "forz",
+    "body": [
+      "for (size_t ${1:i} = 0; ${1:i} < ${2:n}; ${1:i}++) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Size_t for loop"
+  },
+  "while": {
+    "prefix": "while",
+    "body": [
+      "while (${1:condition}) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "While loop"
+  },
+  "do_while": {
+    "prefix": "do",
+    "body": [
+      "do {",
+      "\t$0",
+      "} while (${1:condition});"
+    ],
+    "description": "Do-while loop"
+  },
+  "if": {
+    "prefix": "if",
+    "body": [
+      "if (${1:condition}) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "If statement"
+  },
+  "if_else": {
+    "prefix": "ife",
+    "body": [
+      "if (${1:condition}) {",
+      "\t$2",
+      "} else {",
+      "\t$0",
+      "}"
+    ],
+    "description": "If-else statement"
+  },
+  "elif": {
+    "prefix": "elif",
+    "body": [
+      "else if (${1:condition}) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Else-if statement"
+  },
+  "switch": {
+    "prefix": "switch",
+    "body": [
+      "switch (${1:expr}) {",
+      "\tcase ${2:value}:",
+      "\t\t$0",
+      "\t\tbreak;",
+      "\tdefault:",
+      "\t\tbreak;",
+      "}"
+    ],
+    "description": "Switch statement"
+  },
+  "ternary": {
+    "prefix": "?",
+    "body": "${1:condition} ? ${2:true_val} : ${3:false_val}",
+    "description": "Ternary operator"
+  },
+  "struct": {
+    "prefix": "struct",
+    "body": [
+      "typedef struct {",
+      "\t$0",
+      "} ${1:Name};"
+    ],
+    "description": "Struct with typedef"
+  },
+  "struct_named": {
+    "prefix": "structs",
+    "body": [
+      "struct ${1:name} {",
+      "\t$0",
+      "};"
+    ],
+    "description": "Named struct"
+  },
+  "enum": {
+    "prefix": "enum",
+    "body": [
+      "typedef enum {",
+      "\t$0",
+      "} ${1:Name};"
+    ],
+    "description": "Enum with typedef"
+  },
+  "union": {
+    "prefix": "union",
+    "body": [
+      "typedef union {",
+      "\t$0",
+      "} ${1:Name};"
+    ],
+    "description": "Union with typedef"
+  },
+  "function": {
+    "prefix": "fn",
+    "body": [
+      "${1:void} ${2:name}(${3:void}) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Function definition"
+  },
+  "static_function": {
+    "prefix": "sfn",
+    "body": [
+      "static ${1:void} ${2:name}(${3:void}) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Static function"
+  },
+  "inline_function": {
+    "prefix": "ifn",
+    "body": [
+      "static inline ${1:void} ${2:name}(${3:void}) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Inline function (C99)"
+  },
+  "main": {
+    "prefix": "main",
+    "body": [
+      "int main(int argc, char *argv[]) {",
+      "\t$0",
+      "\treturn 0;",
+      "}"
+    ],
+    "description": "Main function"
+  },
+  "main_simple": {
+    "prefix": "mains",
+    "body": [
+      "int main(void) {",
+      "\t$0",
+      "\treturn 0;",
+      "}"
+    ],
+    "description": "Simple main function"
+  },
+  "malloc": {
+    "prefix": "malloc",
+    "body": [
+      "${1:Type} *${2:ptr} = malloc(${3:n} * sizeof(${1:Type}));",
+      "if (${2:ptr} == NULL) {",
+      "\t${0:// handle error}",
+      "}"
+    ],
+    "description": "Malloc with error check"
+  },
+  "calloc": {
+    "prefix": "calloc",
+    "body": [
+      "${1:Type} *${2:ptr} = calloc(${3:n}, sizeof(${1:Type}));",
+      "if (${2:ptr} == NULL) {",
+      "\t${0:// handle error}",
+      "}"
+    ],
+    "description": "Calloc with error check"
+  },
+  "realloc": {
+    "prefix": "realloc",
+    "body": [
+      "${1:Type} *${2:tmp} = realloc(${3:ptr}, ${4:new_size} * sizeof(${1:Type}));",
+      "if (${2:tmp} == NULL) {",
+      "\t${0:// handle error}",
+      "} else {",
+      "\t${3:ptr} = ${2:tmp};",
+      "}"
+    ],
+    "description": "Realloc with error check"
+  },
+  "free": {
+    "prefix": "free",
+    "body": [
+      "free(${1:ptr});",
+      "${1:ptr} = NULL;$0"
+    ],
+    "description": "Free and nullify pointer"
+  },
+  "null_check": {
+    "prefix": "ifnull",
+    "body": [
+      "if (${1:ptr} == NULL) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Null pointer check"
+  },
+  "not_null_check": {
+    "prefix": "ifnn",
+    "body": [
+      "if (${1:ptr} != NULL) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Not null pointer check"
+  },
+  "strlen": {
+    "prefix": "strlen",
+    "body": "size_t ${1:len} = strlen(${2:str});$0",
+    "description": "String length"
+  },
+  "strcpy": {
+    "prefix": "strcpy",
+    "body": "strcpy(${1:dest}, ${2:src});$0",
+    "description": "String copy"
+  },
+  "strncpy": {
+    "prefix": "strncpy",
+    "body": [
+      "strncpy(${1:dest}, ${2:src}, ${3:n});",
+      "${1:dest}[${3:n} - 1] = '\\0';$0"
+    ],
+    "description": "Safe string copy"
+  },
+  "strcmp": {
+    "prefix": "strcmp",
+    "body": "strcmp(${1:s1}, ${2:s2}) == 0",
+    "description": "String comparison"
+  },
+  "strdup": {
+    "prefix": "strdup",
+    "body": [
+      "char *${1:copy} = strdup(${2:str});",
+      "if (${1:copy} == NULL) {",
+      "\t${0:// handle error}",
+      "}"
+    ],
+    "description": "String duplicate"
+  },
+  "fopen": {
+    "prefix": "fopen",
+    "body": [
+      "FILE *${1:fp} = fopen(\"${2:filename}\", \"${3:r}\");",
+      "if (${1:fp} == NULL) {",
+      "\t${0:// handle error}",
+      "}"
+    ],
+    "description": "File open with error check"
+  },
+  "fclose": {
+    "prefix": "fclose",
+    "body": [
+      "if (${1:fp} != NULL) {",
+      "\tfclose(${1:fp});",
+      "\t${1:fp} = NULL;",
+      "}$0"
+    ],
+    "description": "Safe file close"
+  },
+  "fprintf": {
+    "prefix": "fprintf",
+    "body": "fprintf(${1:fp}, \"${2:%s}\\n\", ${3:arg});$0",
+    "description": "Formatted file write"
+  },
+  "fscanf": {
+    "prefix": "fscanf",
+    "body": "fscanf(${1:fp}, \"${2:%d}\", &${3:var});$0",
+    "description": "Formatted file read"
+  },
+  "fread": {
+    "prefix": "fread",
+    "body": "fread(${1:ptr}, sizeof(${2:Type}), ${3:count}, ${4:fp});$0",
+    "description": "Binary file read"
+  },
+  "fwrite": {
+    "prefix": "fwrite",
+    "body": "fwrite(${1:ptr}, sizeof(${2:Type}), ${3:count}, ${4:fp});$0",
+    "description": "Binary file write"
+  },
+  "printf": {
+    "prefix": "printf",
+    "body": "printf(\"${1:%d}\\n\", ${2:arg});$0",
+    "description": "Printf"
+  },
+  "scanf": {
+    "prefix": "scanf",
+    "body": "scanf(\"${1:%d}\", &${2:var});$0",
+    "description": "Scanf"
+  },
+  "puts": {
+    "prefix": "puts",
+    "body": "puts(${1:str});$0",
+    "description": "Puts"
+  },
+  "getchar": {
+    "prefix": "getchar",
+    "body": "int ${1:ch} = getchar();$0",
+    "description": "Get character"
+  },
+  "include": {
+    "prefix": "#inc",
+    "body": "#include <${1:stdio.h}>",
+    "description": "Include header"
+  },
+  "include_local": {
+    "prefix": "#incl",
+    "body": "#include \"${1:header.h}\"",
+    "description": "Include local header"
+  },
+  "define": {
+    "prefix": "#def",
+    "body": "#define ${1:MACRO} ${2:value}",
+    "description": "Define macro"
+  },
+  "define_function": {
+    "prefix": "#deff",
+    "body": "#define ${1:MACRO}(${2:x}) ${3:(x)}",
+    "description": "Define function macro"
+  },
+  "ifndef": {
+    "prefix": "#guard",
+    "body": [
+      "#ifndef ${1:HEADER}_H",
+      "#define ${1:HEADER}_H",
+      "",
+      "$0",
+      "",
+      "#endif  /* ${1:HEADER}_H */"
+    ],
+    "description": "Header guard"
+  },
+  "ifdef": {
+    "prefix": "#ifdef",
+    "body": [
+      "#ifdef ${1:MACRO}",
+      "$0",
+      "#endif  /* ${1:MACRO} */"
+    ],
+    "description": "Ifdef block"
+  },
+  "ifndef_block": {
+    "prefix": "#ifndef",
+    "body": [
+      "#ifndef ${1:MACRO}",
+      "$0",
+      "#endif  /* !${1:MACRO} */"
+    ],
+    "description": "Ifndef block"
+  },
+  "perror": {
+    "prefix": "perror",
+    "body": "perror(\"${1:error}\");$0",
+    "description": "Print error"
+  },
+  "errno": {
+    "prefix": "errno",
+    "body": [
+      "if (${1:result} == -1) {",
+      "\tperror(\"${2:operation}\");",
+      "\treturn ${3:EXIT_FAILURE};",
+      "}$0"
+    ],
+    "description": "Errno check"
+  },
+  "assert": {
+    "prefix": "assert",
+    "body": "assert(${1:condition});$0",
+    "description": "Assert"
+  },
+  "bool": {
+    "prefix": "bool",
+    "body": [
+      "#include <stdbool.h>",
+      "",
+      "bool ${1:var} = ${2:true};$0"
+    ],
+    "description": "Boolean type (C99)"
+  },
+  "restrict": {
+    "prefix": "restrict",
+    "body": "${1:Type} *restrict ${2:ptr}$0",
+    "description": "Restrict pointer (C99)"
+  },
+  "inline": {
+    "prefix": "inline",
+    "body": "inline ${1:Type} ${2:name}(${3:}) { $0 }",
+    "description": "Inline function (C99)"
+  },
+  "designated_init": {
+    "prefix": ".=",
+    "body": ".${1:field} = ${2:value}",
+    "description": "Designated initializer (C99)"
+  },
+  "compound_literal": {
+    "prefix": "(type)",
+    "body": "(${1:Type}){ ${2:values} }",
+    "description": "Compound literal (C99)"
+  },
+  "vla": {
+    "prefix": "vla",
+    "body": "${1:Type} ${2:array}[${3:n}];$0",
+    "description": "Variable length array (C99)"
+  },
+  "array_loop": {
+    "prefix": "fora",
+    "body": [
+      "for (size_t ${1:i} = 0; ${1:i} < ${2:arr}_len; ${1:i}++) {",
+      "\t${3:// process} ${2:arr}[${1:i}]$0",
+      "}"
+    ],
+    "description": "Array iteration"
+  },
+  "linked_list_traverse": {
+    "prefix": "forll",
+    "body": [
+      "for (${1:Node} *${2:curr} = ${3:head}; ${2:curr} != NULL; ${2:curr} = ${2:curr}->next) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Linked list traversal"
+  },
+  "swap": {
+    "prefix": "swap",
+    "body": [
+      "${1:Type} ${2:tmp} = ${3:a};",
+      "${3:a} = ${4:b};",
+      "${4:b} = ${2:tmp};$0"
+    ],
+    "description": "Swap values"
+  },
+  "min_max": {
+    "prefix": "min",
+    "body": "#define MIN(a, b) ((a) < (b) ? (a) : (b))",
+    "description": "Min macro"
+  }
 }

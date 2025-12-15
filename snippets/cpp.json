@@ -4,41 +4,41 @@
     "body": "${1:container}.begin(), ${1:container}.end()",
     "description": "Snippet for begin/end iterator pair"
   },
-  "for": {
+  "for_i": {
     "prefix": "fori",
     "body": [
-      "for (int i = ${1:0}; i < ${2:length}; i++) {",
+      "for (int ${1:i} = 0; ${1:i} < ${2:n}; ${1:i}++) {",
       "\t$0",
       "}"
     ],
-    "description": "Code snippet for integer 'for' loop"
+    "description": "Integer for loop"
   },
-  "forj": {
-    "prefix": "forj",
+  "for_range": {
+    "prefix": "for",
     "body": [
-      "for (int j = ${1:0}; j < ${2:length}; j++) {",
+      "for (const auto& ${1:item} : ${2:container}) {",
       "\t$0",
       "}"
     ],
-    "description": "Code snippet for integer 'for' loop"
+    "description": "Range-based for loop (const ref)"
   },
-  "forr": {
-    "prefix": "forr",
+  "for_range_mut": {
+    "prefix": "form",
     "body": [
-      "for (int i = ${1:0}; i < ${2:length}; i--) {",
+      "for (auto& ${1:item} : ${2:container}) {",
       "\t$0",
       "}"
     ],
-    "description": "Code snippet for integer 'for' loop"
+    "description": "Range-based for loop (mutable)"
   },
-  "do": {
-    "prefix": "do",
+  "for_iter": {
+    "prefix": "forit",
     "body": [
-      "do {",
+      "for (auto ${1:it} = ${2:vec}.begin(); ${1:it} != ${2:vec}.end(); ++${1:it}) {",
       "\t$0",
-      "} while (${1:condition});"
+      "}"
     ],
-    "description": "Code snippet for do...while loop"
+    "description": "Iterator for loop"
   },
   "while": {
     "prefix": "while",
@@ -47,34 +47,16 @@
       "\t$0",
       "}"
     ],
-    "description": "Code snippet for while loop"
+    "description": "While loop"
   },
-  "foreach": {
-    "prefix": "foreach",
+  "do_while": {
+    "prefix": "do",
     "body": [
-      "for (const auto& ${1:item} : ${2:container}) {",
+      "do {",
       "\t$0",
-      "}"
+      "} while (${1:condition});"
     ],
-    "description": "Code snippet for range-based for loop (const ref)"
-  },
-  "foreachmut": {
-    "prefix": "foreachmut",
-    "body": [
-      "for (auto& ${1:item} : ${2:container}) {",
-      "\t$0",
-      "}"
-    ],
-    "description": "Code snippet for range-based for loop (mutable ref)"
-  },
-  "foreachval": {
-    "prefix": "foreachval",
-    "body": [
-      "for (auto ${1:item} : ${2:container}) {",
-      "\t$0",
-      "}"
-    ],
-    "description": "Code snippet for range-based for loop (by value)"
+    "description": "Do-while loop"
   },
   "if": {
     "prefix": "if",
@@ -83,243 +65,7 @@
       "\t$0",
       "}"
     ],
-    "description": "Code snippet for if statement"
-  },
-  "else": {
-    "prefix": "else",
-    "body": [
-      "else {",
-      "\t$0",
-      "}"
-    ],
-    "description": "Code snippet for else statement"
-  },
-  "elseif": {
-    "prefix": "elseif",
-    "body": [
-      "else if (${1:condition}) {",
-      "\t$0",
-      "}"
-    ],
-    "description": "Code snippet for else if statement"
-  },
-  "enum": {
-    "prefix": "enum",
-    "body": [
-      "enum class ${1:MyEnum} {",
-      "\t$0",
-      "};"
-    ],
-    "description": "Code snippet for scoped enum (enum class)"
-  },
-  "enumlegacy": {
-    "prefix": "enumlegacy",
-    "body": [
-      "enum ${1:MyEnum} {",
-      "\t$0",
-      "};"
-    ],
-    "description": "Code snippet for legacy enum"
-  },
-  "class": {
-    "prefix": "class", 
-    "body": [
-      "class ${1:MyClass} {",
-      "\t$2",
-      "public:",
-      "\t$0",
-      "};"
-    ],
-    "description": "Modern C++ class with rule of five"
-  },
-  "namespace": {
-    "prefix": "namespace",
-    "body": [
-      "namespace ${1:name} {",
-      "",
-      "$0",
-      "",
-      "}  // namespace ${1:name}"
-    ],
-    "description": "Code snippet for namespace"
-  },
-  "#ifdef": {
-    "prefix": "#ifdef",
-    "body": [
-      "#ifdef ${1:MACRO}",
-      "$0",
-      "#endif  // ${1:MACRO}"
-    ],
-    "description": "Code snippet for #ifdef"
-  },
-  "#ifndef": {
-    "prefix": "#ifndef",
-    "body": [
-      "#ifndef ${1:MACRO}",
-      "$0",
-      "#endif  // !${1:MACRO}"
-    ],
-    "description": "Code snippet for #ifndef"
-  },
-  "#if": {
-    "prefix": "#if",
-    "body": [
-      "#if ${1:condition}",
-      "$0",
-      "#endif  // ${1:condition}"
-    ],
-    "description": "Code snippet for #if"
-  },
-  "struct": {
-    "prefix": "struct",
-    "body": [
-      "struct ${1:MyStruct} {",
-      "\t$0",
-      "};"
-    ],
-    "description": "Code snippet for struct"
-  },
-  "switch": {
-    "prefix": "switch",
-    "body": [
-      "switch (${1:expr}) {",
-      "case ${2:value}:",
-      "\t$0",
-      "\tbreak;",
-      "default:",
-      "\tbreak;",
-      "}"
-    ],
-    "description": "Code snippet for switch statement"
-  },
-  "case": {
-    "prefix": "case",
-    "body": [
-      "case ${1:value}:",
-      "\t$0",
-      "\tbreak;"
-    ],
-    "description": "Code snippet for case statement"
-  },
-  "try": {
-    "prefix": "try",
-    "body": [
-      "try {",
-      "\t$0",
-      "} catch (const ${1:std::exception}& ${2:e}) {",
-      "\t$3",
-      "}"
-    ],
-    "description": "Code snippet for try catch"
-  },
-  "union": {
-    "prefix": "union",
-    "body": [
-      "union ${1:MyUnion} {",
-      "\t$0",
-      "};"
-    ],
-    "description": "Code snippet for union"
-  },
-  "cout": {
-    "prefix": "cout",
-    "body": "std::cout << ${1:\"message\"} << '\\n';",
-    "description": "Code snippet for std::cout"
-  },
-  "cerr": {
-    "prefix": "cerr",
-    "body": "std::cerr << ${1:\"error\"} << '\\n';",
-    "description": "Code snippet for std::cerr"
-  },
-  "#inc": {
-    "prefix": "#inc",
-    "body": "#include \"${1:header.h}\"",
-    "description": "Code snippet for #include with quotes"
-  },
-  "#inc<": {
-    "prefix": "#inc<",
-    "body": "#include <${1:header}>",
-    "description": "Code snippet for #include with angle brackets"
-  },
-  "#def": {
-    "prefix": "#def",
-    "body": "#define ${1:MACRO} ${2:value}",
-    "description": "Code snippet for #define"
-  },
-  "#pragma": {
-    "prefix": "#pragma",
-    "body": "#pragma ${1:once}",
-    "description": "Code snippet for #pragma"
-  },
-  "main": {
-    "prefix": "main",
-    "body": [
-      "int main(int argc, char* argv[]) {",
-      "\t$0",
-      "\treturn 0;",
-      "}"
-    ],
-    "description": "Code snippet for main function"
-  },
-  "mainsimple": {
-    "prefix": "mains",
-    "body": [
-      "int main() {",
-      "\t$0",
-      "\treturn 0;",
-      "}"
-    ],
-    "description": "Code snippet for simple main function"
-  },
-  "lambda": {
-    "prefix": "lambda",
-    "body": "[${1:}](${2:}) ${3:-> auto} {$0}",
-    "description": "Code snippet for lambda expression"
-  },
-  "constexpr": {
-    "prefix": "constexpr",
-    "body": "constexpr ${1:auto} ${2:var} = ${3:value};",
-    "description": "Code snippet for constexpr variable"
-  },
-  "template": {
-    "prefix": "template",
-    "body": [
-      "template <typename ${1:T}>",
-      "$0"
-    ],
-    "description": "Code snippet for template"
-  },
-  "using": {
-    "prefix": "using",
-    "body": "using ${1:alias} = ${2:type};",
-    "description": "Code snippet for type alias"
-  },
-  "for_iterator": {
-    "prefix": "forit",
-    "body": [
-      "for (auto ${1:it} = ${2:container}.begin(); ${1:it} != ${2:container}.end(); ${1:it}++) {",
-      "\t$0",
-      "}"
-    ],
-    "description": "For loop with iterator - it and container appear multiple times"
-  },
-  "for_const_iterator": {
-    "prefix": "forci",
-    "body": [
-      "for (auto ${1:it} = ${2:container}.cbegin(); ${1:it} != ${2:container}.cend(); ++${1:it}) {",
-      "\t$0",
-      "}"
-    ],
-    "description": "For loop with const iterator - it and container appear multiple times"
-  },
-  "for_reverse_iterator": {
-    "prefix": "forri",
-    "body": [
-      "for (auto ${1:it} = ${2:container}.rbegin(); ${1:it} != ${2:container}.rend(); ++${1:it}) {",
-      "\t$0",
-      "}"
-    ],
-    "description": "For loop with reverse iterator - it and container appear multiple times"
+    "description": "If statement"
   },
   "if_else": {
     "prefix": "ife",
@@ -332,339 +78,251 @@
     ],
     "description": "If-else statement"
   },
-  "switch_statement": {
-    "prefix": "swi",
+  "elif": {
+    "prefix": "elif",
     "body": [
-      "switch (${1:variable}) {",
-      "case ${2:value}:",
-      "\t$3",
-      "\tbreak;",
-      "default:",
+      "else if (${1:condition}) {",
       "\t$0",
-      "\tbreak;",
+      "}"
+    ],
+    "description": "Else-if statement"
+  },
+  "switch": {
+    "prefix": "switch",
+    "body": [
+      "switch (${1:expr}) {",
+      "\tcase ${2:value}:",
+      "\t\t$0",
+      "\t\tbreak;",
+      "\tdefault:",
+      "\t\tbreak;",
       "}"
     ],
     "description": "Switch statement"
   },
-  "main_function": {
-    "prefix": "mainn",
-    "body": [
-      "int main() {",
-      "\t$0",
-      "",
-      "\treturn 0;",
-      "}"
-    ],
-    "description": "Main function"
-  },
-  "function_definition": {
-    "prefix": "func",
-    "body": [
-      "${1:returnType} ${2:functionName}(${3:parameters}) {",
-      "\t$0",
-      "}"
-    ],
-    "description": "Function definition"
-  },
-  "class_definition": {
-    "prefix": "classs",
+  "class": {
+    "prefix": "class",
     "body": [
       "class ${1:ClassName} {",
+      "public:",
+      "\t${1:ClassName}() = default;",
+      "\t~${1:ClassName}() = default;",
+      "\t",
       "private:",
       "\t$0",
-      "public:",
-      "\t${1:ClassName}();",
-      "\t~${1:ClassName}();",
       "};"
     ],
-    "description": "Basic class definition - ClassName appears multiple times"
+    "description": "Class definition"
   },
-  "struct_definition": {
-    "prefix": "structt",
+  "struct": {
+    "prefix": "struct",
     "body": [
-      "struct ${1:StructName} {",
+      "struct ${1:Name} {",
       "\t$0",
       "};"
     ],
     "description": "Struct definition"
   },
-  "comment_block": {
-    "prefix": "comm",
+  "enum_class": {
+    "prefix": "enum",
     "body": [
-      "/*",
-      " * ${1:comment}",
-      " */"
+      "enum class ${1:Name} {",
+      "\t$0",
+      "};"
     ],
-    "description": "Comment block"
+    "description": "Enum class (scoped)"
   },
-  "unique_ptr": {
-    "prefix": "uniq",
-    "body": "std::unique_ptr<${1:Type}> ${2:ptr} = std::make_unique<${1:Type}>();$0",
-    "description": "Unique pointer - Type appears multiple times"
-  },
-  "shared_ptr": {
-    "prefix": "shar",
-    "body": "std::shared_ptr<${1:Type}> ${2:ptr} = std::make_shared<${1:Type}>();$0",
-    "description": "Shared pointer - Type appears multiple times"
-  },
-  "try_catch": {
-    "prefix": "tryc",
+  "namespace": {
+    "prefix": "ns",
     "body": [
-      "try {",
-      "\t$1",
-      "} catch (const std::exception& ${2:e}) {",
+      "namespace ${1:name} {",
+      "",
+      "$0",
+      "",
+      "}  // namespace ${1:name}"
+    ],
+    "description": "Namespace"
+  },
+  "function": {
+    "prefix": "fn",
+    "body": [
+      "${1:void} ${2:name}(${3:}) {",
       "\t$0",
       "}"
     ],
-    "description": "Try-catch block"
+    "description": "Function definition"
   },
-  "template_function": {
-    "prefix": "templf",
+  "main": {
+    "prefix": "main",
     "body": [
-      "template<typename ${1:T}>",
-      "${2:returnType} ${3:functionName}(${1:T} ${4:param}) {",
+      "int main() {",
       "\t$0",
+      "\treturn 0;",
       "}"
     ],
-    "description": "Template function - T appears multiple times"
+    "description": "Main function"
+  },
+  "lambda": {
+    "prefix": "lam",
+    "body": "[${1:}](${2:}) { $0 }",
+    "description": "Lambda expression"
+  },
+  "template": {
+    "prefix": "temp",
+    "body": [
+      "template <typename ${1:T}>",
+      "$0"
+    ],
+    "description": "Template"
   },
   "template_class": {
-    "prefix": "templc",
+    "prefix": "tempc",
     "body": [
-      "template<typename ${1:T}>",
-      "class ${2:ClassName} {",
+      "template <typename ${1:T}>",
+      "class ${2:Name} {",
       "public:",
       "\t$0",
-      "private:",
-      "",
       "};"
     ],
     "description": "Template class"
   },
-  "sort_find": {
-    "prefix": "sortv",
-    "body": "std::sort(${1:container}.begin(), ${1:container}.end());$0",
-    "description": "Sort container - container appears multiple times"
+  "unique_ptr": {
+    "prefix": "uptr",
+    "body": "auto ${1:ptr} = std::make_unique<${2:Type}>(${3:});$0",
+    "description": "Unique pointer"
   },
-  "find_in_container": {
-    "prefix": "findd",
-    "body": "auto ${1:it} = std::find(${2:container}.begin(), ${2:container}.end(), ${3:value});$0",
-    "description": "Find in container - container appears multiple times"
+  "shared_ptr": {
+    "prefix": "sptr",
+    "body": "auto ${1:ptr} = std::make_shared<${2:Type}>(${3:});$0",
+    "description": "Shared pointer"
   },
-  "lambda_expression": {
-    "prefix": "lamb",
-    "body": "auto ${1:lambda} = [](${2:parameters}) { return ${3:expression}; };$0",
-    "description": "Lambda expression"
+  "vector": {
+    "prefix": "vec",
+    "body": "std::vector<${1:int}> ${2:v}${3:;}$0",
+    "description": "Vector declaration"
   },
-  "header_guard": {
-    "prefix": "ifnd",
+  "map": {
+    "prefix": "map",
+    "body": "std::map<${1:KeyType}, ${2:ValueType}> ${3:m}${4:;}$0",
+    "description": "Map declaration"
+  },
+  "unordered_map": {
+    "prefix": "umap",
+    "body": "std::unordered_map<${1:KeyType}, ${2:ValueType}> ${3:m}${4:;}$0",
+    "description": "Unordered map declaration"
+  },
+  "set": {
+    "prefix": "set",
+    "body": "std::set<${1:Type}> ${2:s}${3:;}$0",
+    "description": "Set declaration"
+  },
+  "sort": {
+    "prefix": "sort",
+    "body": "std::sort(${1:vec}.begin(), ${1:vec}.end());$0",
+    "description": "Sort container"
+  },
+  "find": {
+    "prefix": "find",
+    "body": "auto ${1:it} = std::find(${2:vec}.begin(), ${2:vec}.end(), ${3:val});$0",
+    "description": "Find in container"
+  },
+  "find_if": {
+    "prefix": "findif",
     "body": [
-      "#ifndef ${1:HEADER_NAME_H}",
-      "#define ${1:HEADER_NAME_H}",
+      "auto ${1:it} = std::find_if(${2:vec}.begin(), ${2:vec}.end(),",
+      "\t[](const auto& ${3:x}) { return ${0:condition}; });"
+    ],
+    "description": "Find if in container"
+  },
+  "transform": {
+    "prefix": "transform",
+    "body": [
+      "std::transform(${1:in}.begin(), ${1:in}.end(), ${2:out}.begin(),",
+      "\t[](const auto& ${3:x}) { return ${0:expr}; });"
+    ],
+    "description": "Transform algorithm"
+  },
+  "include": {
+    "prefix": "#inc",
+    "body": "#include <${1:iostream}>",
+    "description": "Include header"
+  },
+  "include_local": {
+    "prefix": "#incl",
+    "body": "#include \"${1:header.h}\"",
+    "description": "Include local header"
+  },
+  "pragma_once": {
+    "prefix": "#pragma",
+    "body": "#pragma once",
+    "description": "Pragma once"
+  },
+  "ifndef": {
+    "prefix": "#guard",
+    "body": [
+      "#ifndef ${1:HEADER}_H",
+      "#define ${1:HEADER}_H",
       "",
       "$0",
       "",
-      "#endif // ${1:HEADER_NAME_H}"
+      "#endif  // ${1:HEADER}_H"
     ],
-    "description": "Header guard - HEADER_NAME_H appears multiple times"
+    "description": "Header guard"
   },
-  "operator_equal": {
-    "prefix": "opeq",
+  "cout": {
+    "prefix": "cout",
+    "body": "std::cout << ${1:} << '\\n';$0",
+    "description": "Console output"
+  },
+  "cerr": {
+    "prefix": "cerr",
+    "body": "std::cerr << ${1:} << '\\n';$0",
+    "description": "Error output"
+  },
+  "cin": {
+    "prefix": "cin",
+    "body": "std::cin >> ${1:var};$0",
+    "description": "Console input"
+  },
+  "try_catch": {
+    "prefix": "try",
     "body": [
-      "bool operator==(const ${1:ClassName}& ${2:other}) const {",
-      "\treturn ${0:true};",
+      "try {",
+      "\t$0",
+      "} catch (const std::exception& ${1:e}) {",
+      "\t${2:// handle}",
       "}"
     ],
-    "description": "Equality operator"
+    "description": "Try-catch block"
   },
-  "ifdef_block": {
-    "prefix": "ifdef",
-    "body": [
-      "#ifdef ${1:CONDITION}",
-      "$0",
-      "#endif // ${1:CONDITION}"
-    ],
-    "description": "Ifdef block - CONDITION appears multiple times"
+  "auto": {
+    "prefix": "auto",
+    "body": "auto ${1:var} = ${2:value};$0",
+    "description": "Auto variable"
   },
-  "if_defined": {
-    "prefix": "ifd",
-    "body": [
-      "#if defined(${1:CONDITION})",
-      "$0",
-      "#endif // ${1:CONDITION}"
-    ],
-    "description": "If defined block - CONDITION appears multiple times"
+  "constexpr": {
+    "prefix": "constexpr",
+    "body": "constexpr ${1:auto} ${2:var} = ${3:value};$0",
+    "description": "Constexpr variable"
   },
-  "namespace_definition": {
-    "prefix": "nspace",
-    "body": [
-      "namespace ${1:Name} {",
-      "",
-      "$0",
-      "",
-      "} // namespace ${1:Name}"
-    ],
-    "description": "Namespace definition - Name appears multiple times"
+  "nullptr": {
+    "prefix": "nullptr",
+    "body": "nullptr",
+    "description": "Null pointer"
   },
-  "anonymous_namespace": {
-    "prefix": "nspac",
-    "body": [
-      "namespace {",
-      "",
-      "$0",
-      "",
-      "} // anonymous namespace"
-    ],
-    "description": "Anonymous namespace"
-  },
-  "enum_class": {
-    "prefix": "enuma",
-    "body": [
-      "enum class ${1:EnumName} {",
-      "\t${2:Value1},",
-      "\t${3:Value2}",
-      "};"
-    ],
-    "description": "Enum class"
-  },
-  "enum_old": {
-    "prefix": "enumo",
-    "body": [
-      "enum ${1:EnumName} {",
-      "\t${2:VALUE1},",
-      "\t${3:VALUE2}",
-      "};"
-    ],
-    "description": "Old style enum"
-  },
-  "raii_class": {
-    "prefix": "raii",
-    "body": [
-      "class ${1:RAIIClass} {",
-      "public:",
-      "\t${1:RAIIClass}() { /* acquire */ }",
-      "\t~${1:RAIIClass}() { /* release */ }",
-      "\t${1:RAIIClass}(const ${1:RAIIClass}&) = delete;",
-      "\t${1:RAIIClass}& operator=(const ${1:RAIIClass}&) = delete;",
-      "};"
-    ],
-    "description": "RAII pattern - RAIIClass appears multiple times"
-  },
-  "singleton_pattern": {
-    "prefix": "single",
-    "body": [
-      "class ${1:Singleton} {",
-      "public:",
-      "\tstatic ${1:Singleton}& getInstance() {",
-      "\t\tstatic ${1:Singleton} instance;",
-      "\t\treturn instance;",
-      "\t}",
-      "private:",
-      "\t${1:Singleton}() = default;",
-      "\t${1:Singleton}(const ${1:Singleton}&) = delete;",
-      "\t${1:Singleton}& operator=(const ${1:Singleton}&) = delete;",
-      "};"
-    ],
-    "description": "Singleton pattern - Singleton appears multiple times"
-  },
-  "make_unique": {
-    "prefix": "makeun",
-    "body": "auto ${1:ptr} = std::make_unique<${2:Type}>(${3:args});$0",
-    "description": "Make unique pointer"
-  },
-  "make_shared": {
-    "prefix": "makesh",
-    "body": "auto ${1:ptr} = std::make_shared<${2:Type}>(${3:args});$0",
-    "description": "Make shared pointer"
+  "static_cast": {
+    "prefix": "scast",
+    "body": "static_cast<${1:Type}>(${2:expr})$0",
+    "description": "Static cast"
   },
   "dynamic_cast": {
-    "prefix": "dyncast",
-    "body": "auto ${1:derived} = std::dynamic_pointer_cast<${2:DerivedType}>(${3:basePtr});$0",
-    "description": "Dynamic pointer cast"
-  },
-  "thread_creation": {
-    "prefix": "thread",
-    "body": [
-      "std::thread ${1:t}([]() {",
-      "\t// ${2:thread work}",
-      "});",
-      "${1:t}.join();$0"
-    ],
-    "description": "Thread creation - t appears multiple times"
-  },
-  "lock_guard": {
-    "prefix": "mutex",
-    "body": [
-      "std::mutex ${1:mtx};",
-      "std::lock_guard<std::mutex> ${2:lock}(${1:mtx});$0"
-    ],
-    "description": "Mutex with lock guard - mtx appears multiple times"
+    "prefix": "dcast",
+    "body": "dynamic_cast<${1:Type}>(${2:expr})$0",
+    "description": "Dynamic cast"
   },
   "structured_binding": {
-    "prefix": "autob",
-    "body": "auto [${1:var1}, ${2:var2}] = ${3:expression};$0",
-    "description": "Structured binding (C++17)"
-  },
-  "initializer_list": {
-    "prefix": "initl",
-    "body": ": ${1:member1}(${2:value1}), ${3:member2}(${4:value2}) {$0}",
-    "description": "Initializer list"
-  },
-  "transform_algorithm": {
-    "prefix": "transf",
-    "body": [
-      "std::transform(${1:input}.begin(), ${1:input}.end(), ${2:output}.begin(), [](const auto& ${3:item}) {",
-      "\treturn ${0:transformation};",
-      "});"
-    ],
-    "description": "Transform algorithm - input appears multiple times"
-  },
-  "find_if_algorithm": {
-    "prefix": "filte",
-    "body": [
-      "auto ${1:result} = std::find_if(${2:container}.begin(), ${2:container}.end(), [](const auto& ${3:item}) {",
-      "\treturn ${0:condition};",
-      "});"
-    ],
-    "description": "Find if algorithm - container appears multiple times"
-  },
-  "file_operations": {
-    "prefix": "ifstm",
-    "body": [
-      "std::ifstream ${1:file}(\"${2:filename}\");",
-      "if (!${1:file}.is_open()) {",
-      "\t// ${0:handle error}",
-      "}"
-    ],
-    "description": "Input file stream - file appears multiple times"
-  },
-  "stringstream": {
-    "prefix": "sstream",
-    "body": [
-      "std::stringstream ${1:ss};",
-      "${1:ss} << ${2:value};",
-      "std::string ${3:result} = ${1:ss}.str();$0"
-    ],
-    "description": "String stream - ss appears multiple times"
-  },
-  "chrono_timing": {
-    "prefix": "chrono",
-    "body": [
-      "auto ${1:start} = std::chrono::high_resolution_clock::now();",
-      "// ${2:code to time}",
-      "auto ${3:end} = std::chrono::high_resolution_clock::now();",
-      "auto ${4:duration} = std::chrono::duration_cast<std::chrono::milliseconds>(${3:end} - ${1:start});$0"
-    ],
-    "description": "Chrono timing - start/end variables appear multiple times"
-  },
-  "type_alias": {
-    "prefix": "usinga",
-    "body": "using ${1:AliasName} = ${2:OriginalType};$0",
-    "description": "Type alias"
-  },
-  "typedef": {
-    "prefix": "typedefi",
-    "body": "typedef ${1:OriginalType} ${2:AliasName};$0",
-    "description": "Typedef"
+    "prefix": "auto[]",
+    "body": "auto [${1:a}, ${2:b}] = ${3:pair};$0",
+    "description": "Structured binding"
   }
 }
