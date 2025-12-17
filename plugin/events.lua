@@ -133,9 +133,13 @@ au('UIEnter', {
 })
 
 au('FileType', {
+  pattern = vim.g._lang,
   group = group,
   callback = function(opts)
     local lang = vim.treesitter.language.get_lang(vim.bo[opts.buf].filetype)
+    if not lang then
+      return
+    end
     if vim.treesitter.language.add(lang) then
       vim.treesitter.start(opts.buf, lang)
       vim.wo[0][0].foldmethod = 'expr'

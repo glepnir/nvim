@@ -72,6 +72,31 @@ vim.cmd.colorscheme(vim.env.NVIMTHEME or 'solarized')
 g.health = { style = 'float' }
 g.editorconfig = false
 
+g._lang = {
+  'c',
+  'cpp',
+  'rust',
+  'zig',
+  'lua',
+  'python',
+  'proto',
+  'typescript',
+  'javascript',
+  'tsx',
+  'css',
+  'scss',
+  'diff',
+  'dockerfile',
+  'graphql',
+  'html',
+  'sql',
+  'markdown',
+  'markdown_inline',
+  'vimdoc',
+  'vim',
+  'cmake',
+}
+
 vim.api.nvim_create_autocmd('PackChanged', {
   callback = function(ev)
     local name, active = ev.data.spec.name, ev.data.active
@@ -80,30 +105,7 @@ vim.api.nvim_create_autocmd('PackChanged', {
         vim.cmd.packadd('nvim-treesitter')
       end
       local nts = require('nvim-treesitter')
-      nts.install({
-        'c',
-        'cpp',
-        'rust',
-        'zig',
-        'lua',
-        'python',
-        'proto',
-        'typescript',
-        'javascript',
-        'tsx',
-        'css',
-        'scss',
-        'diff',
-        'dockerfile',
-        'graphql',
-        'html',
-        'sql',
-        'markdown',
-        'markdown_inline',
-        'vimdoc',
-        'vim',
-        'cmake',
-      }, { summary = true })
+      nts.install(g.lang, { summary = true })
       nts.update(nil, { summary = true })
     end
   end,
