@@ -138,7 +138,7 @@ h('@number', { link = 'Number' })
 h('@number.float', { link = 'Float' })
 
 h('@type', { link = 'Type' })
-h('@type.builtin', { link = 'Special' })
+h('@type.builtin', { link = 'Type' })
 h('@type.definition', { link = 'Type' })
 
 h('@attribute', { link = 'Macro' })
