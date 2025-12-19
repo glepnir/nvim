@@ -68,10 +68,9 @@ o.cot = 'menu,menuone,noinsert,fuzzy,nosort,popup'
 o.cia = 'kind,abbr,menu'
 vim.opt.guicursor:remove({ 't:block-blinkon500-blinkoff500-TermCursor' })
 
-vim.cmd.colorscheme(vim.env.NVIMTHEME or 'solarized')
+vim.cmd.colorscheme('solarized')
 g.health = { style = 'float' }
 g.editorconfig = false
-
 g._lang = {
   'c',
   'cpp',
@@ -111,7 +110,7 @@ vim.api.nvim_create_autocmd('PackChanged', {
   end,
 })
 
-vim.g.phoenix = {
+g.phoenix = {
   snippet = vim.fn.stdpath('config') .. '/snippets',
 }
 

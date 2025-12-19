@@ -29,6 +29,29 @@ local function h(group, properties)
   vim.api.nvim_set_hl(0, group, properties)
 end
 
+local function hex_to_rgb(hex)
+  hex = hex:gsub('#', '')
+  return {
+    tonumber(hex:sub(1, 2), 16),
+    tonumber(hex:sub(3, 4), 16),
+    tonumber(hex:sub(5, 6), 16),
+  }
+end
+
+local function rgb_to_hex(c)
+  return string.format('#%02x%02x%02x', c[1], c[2], c[3])
+end
+
+local function blend(fg, bg, t)
+  local a, b = hex_to_rgb(fg), hex_to_rgb(bg)
+  local c = {
+    math.floor(a[1] * (1 - t) + b[1] * t + 0.5),
+    math.floor(a[2] * (1 - t) + b[2] * t + 0.5),
+    math.floor(a[3] * (1 - t) + b[3] * t + 0.5),
+  }
+  return rgb_to_hex(c)
+end
+
 -- General editor highlights
 h('Normal', { fg = colors.fg, bg = colors.base03 })
 h('EndOfBuffer', { fg = colors.base03 })
@@ -255,6 +278,9 @@ h('DiagnosticError', { fg = colors.red })
 h('DiagnosticWarn', { fg = colors.yellow })
 h('DiagnosticInfo', { fg = colors.blue })
 h('DiagnosticHint', { fg = colors.cyan })
+h('DiagnosticVirtualTextError', { bg = blend(colors.red, colors.base03, 0.5) })
+h('DiagnosticVirtualTextWarn', { bg = blend(colors.yellow, colors.base03, 0.5) })
+h('DiagnosticVirtualTextInfo', { bg = blend(colors.blue, colors.base03, 0.5) })
 h('DiagnosticUnderlineError', { undercurl = true, sp = colors.red })
 h('DiagnosticUnderlineWarn', { undercurl = true, sp = colors.yellow })
 h('DiagnosticUnderlineInfo', { undercurl = true, sp = colors.blue })

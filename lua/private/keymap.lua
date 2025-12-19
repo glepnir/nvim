@@ -317,6 +317,8 @@ map.n({
   -- ['gh'] = cmd('Lspsaga finder'),
   -- ['gl'] = cmd('Visualizer full'),
   -- FzfLua
+  ['<Leader>d'] = cmd('FzfLua diagnostic_document'),
+  ['<Leader>D'] = cmd('FzfLua diagnostic_workspace'),
   ['<Leader>b'] = cmd('FzfLua buffers'),
   ['<Leader>fa'] = cmd('FzfLua live_grep_native'),
   ['<Leader>fs'] = cmd('FzfLua grep_cword'),
