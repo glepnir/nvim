@@ -103,6 +103,7 @@ au('UIEnter', {
           prefix = function(d, _, _)
             return ' ■', 'DiagnosticPrefix' .. vim.diagnostic.severity[d.severity]
           end,
+          virt_text_pos = 'eol_right_align',
         },
         signs = {
           text = { '●', '●', '●', '●' },
