@@ -1,9 +1,6 @@
--- orange    #cb4b16
--- violet    #6c71c4
 local colors = {
   base04 = '#00202b',
   base03 = '#002838',
-  -- base03 = '#002937',
   base02 = '#073642',
   base01 = '#586e75',
   base00 = '#657b83',
@@ -17,10 +14,9 @@ local colors = {
   violet = '#887ec8',
   blue = '#268bd2',
   cyan = '#2aa198',
-  green = '#84a800',
+  green = '#87a828', -- L=64.4, C=64.8, Contrast=5.63
   magenta = '#d33682',
-  -- Custom modifications
-  fg = '#b2b2b2', -- Brighter foreground
+  fg = '#a8a8a8',
 }
 
 vim.g.colors_name = 'solarized'
@@ -51,6 +47,597 @@ local function blend(fg, bg, t)
   }
   return rgb_to_hex(c)
 end
+
+-- ============================================================================
+-- Scientific Color Analysis Functions
+-- ============================================================================
+local function relative_luminance(hex)
+  local rgb = hex_to_rgb(hex)
+  local function adjust(c)
+    c = c / 255
+    return c <= 0.03928 and c / 12.92 or math.pow((c + 0.055) / 1.055, 2.4)
+  end
+  return 0.2126 * adjust(rgb[1]) + 0.7152 * adjust(rgb[2]) + 0.0722 * adjust(rgb[3])
+end
+
+local function contrast_ratio(fg, bg)
+  local l1 = relative_luminance(fg)
+  local l2 = relative_luminance(bg)
+  local lighter = math.max(l1, l2)
+  local darker = math.min(l1, l2)
+  return (lighter + 0.05) / (darker + 0.05)
+end
+
+local function rgb_to_xyz(hex)
+  local rgb = hex_to_rgb(hex)
+  local function linearize(c)
+    c = c / 255
+    return c <= 0.04045 and c / 12.92 or math.pow((c + 0.055) / 1.055, 2.4)
+  end
+  local r, g, b = linearize(rgb[1]), linearize(rgb[2]), linearize(rgb[3])
+  return {
+    x = r * 0.4124564 + g * 0.3575761 + b * 0.1804375,
+    y = r * 0.2126729 + g * 0.7151522 + b * 0.0721750,
+    z = r * 0.0193339 + g * 0.1191920 + b * 0.9503041,
+  }
+end
+
+local function xyz_to_lab(xyz)
+  local Xn, Yn, Zn = 0.95047, 1.00000, 1.08883
+  local x, y, z = xyz.x / Xn, xyz.y / Yn, xyz.z / Zn
+  local delta = 6.0 / 29.0
+  local function f(t)
+    return t > delta ^ 3 and t ^ (1 / 3) or t / (3 * delta ^ 2) + 4 / 29
+  end
+  local fx, fy, fz = f(x), f(y), f(z)
+  return {
+    L = 116 * fy - 16,
+    a = 500 * (fx - fy),
+    b = 200 * (fy - fz),
+  }
+end
+
+local function lab_to_lch(lab)
+  local C = math.sqrt(lab.a ^ 2 + lab.b ^ 2)
+  local H = math.atan2(lab.b, lab.a) * 180 / math.pi
+  if H < 0 then
+    H = H + 360
+  end
+  return { L = lab.L, C = C, H = H }
+end
+
+local function rgb_to_lch(hex)
+  return lab_to_lch(xyz_to_lab(rgb_to_xyz(hex)))
+end
+
+local function lch_to_lab(lch)
+  local h_rad = lch.H * math.pi / 180
+  return {
+    L = lch.L,
+    a = lch.C * math.cos(h_rad),
+    b = lch.C * math.sin(h_rad),
+  }
+end
+
+local function lab_to_xyz(lab)
+  local Xn, Yn, Zn = 0.95047, 1.00000, 1.08883
+  local fy = (lab.L + 16) / 116
+  local fx = lab.a / 500 + fy
+  local fz = fy - lab.b / 200
+  local delta = 6.0 / 29.0
+  local function finv(t)
+    return t > delta and t ^ 3 or 3 * delta ^ 2 * (t - 4 / 29)
+  end
+  return {
+    x = Xn * finv(fx),
+    y = Yn * finv(fy),
+    z = Zn * finv(fz),
+  }
+end
+
+local function xyz_to_rgb(xyz)
+  local r = xyz.x * 3.2404542 + xyz.y * -1.5371385 + xyz.z * -0.4985314
+  local g = xyz.x * -0.9692660 + xyz.y * 1.8760108 + xyz.z * 0.0415560
+  local b = xyz.x * 0.0556434 + xyz.y * -0.2040259 + xyz.z * 1.0572252
+  local function gamma(c)
+    return c <= 0.0031308 and c * 12.92 or 1.055 * c ^ (1 / 2.4) - 0.055
+  end
+  local function clamp(c)
+    return math.max(0, math.min(255, math.floor(gamma(c) * 255 + 0.5)))
+  end
+  return { clamp(r), clamp(g), clamp(b) }
+end
+
+local function lch_to_rgb(lch)
+  return rgb_to_hex(xyz_to_rgb(lab_to_xyz(lch_to_lab(lch))))
+end
+
+-- ============================================================================
+-- Detailed Color Testing
+-- ============================================================================
+local function test_color_detailed(hex)
+  local results = {}
+
+  if not hex:match('^#[0-9a-fA-F]+$') then
+    return { 'Error: Invalid hex format. Use #rrggbb (e.g., #84a800)' }
+  end
+
+  table.insert(results, string.format('=== Color Analysis: %s ===', hex))
+  table.insert(results, '')
+
+  -- LCH analysis
+  local lch = rgb_to_lch(hex)
+  local contrast = contrast_ratio(hex, colors.base03)
+
+  -- Detect if this is a neutral gray (C ≈ 0)
+  local is_gray = lch.C < 5
+
+  table.insert(results, 'LCH Color Space Values:')
+  table.insert(results, string.format('  Lightness (L): %.1f', lch.L))
+  table.insert(results, string.format('    - 0 = black, 100 = white'))
+
+  if is_gray then
+    table.insert(results, string.format('    - For normal text: 65-75 recommended'))
+  else
+    table.insert(results, string.format('    - For syntax colors: 55-65 recommended'))
+  end
+
+  table.insert(results, string.format('  Chroma (C):    %.1f', lch.C))
+  table.insert(results, string.format('    - 0 = gray, higher = more saturated'))
+
+  if is_gray then
+    table.insert(results, string.format('    - This is a neutral gray (C≈0) ✓'))
+  else
+    table.insert(results, string.format('    - Recommended: 40-70 (moderate)'))
+  end
+
+  table.insert(results, string.format('  Hue (H):       %.1f°', lch.H))
+  if not is_gray then
+    table.insert(results, string.format('    - 0°=red, 90°=yellow, 180°=green, 270°=blue'))
+  else
+    table.insert(results, string.format('    - (Hue irrelevant for neutral gray)'))
+  end
+  table.insert(results, '')
+
+  -- Contrast analysis
+  table.insert(results, string.format('WCAG Contrast vs background (%s):', colors.base03))
+  table.insert(results, string.format('  Ratio: %.2f:1', contrast))
+  table.insert(
+    results,
+    string.format('  Level AA (≥4.5:1):  %s', contrast >= 4.5 and '✓ PASS' or '✗ FAIL')
+  )
+  table.insert(
+    results,
+    string.format('  Level AAA (≥7:1):   %s', contrast >= 7 and '✓ PASS' or '✗ FAIL')
+  )
+  table.insert(
+    results,
+    string.format(
+      '  Comfortable (4.5-6.5): %s',
+      contrast >= 4.5 and contrast <= 6.5 and '✓ Yes' or '~ Outside range'
+    )
+  )
+  table.insert(results, '')
+
+  -- Ergonomic assessment
+  table.insert(results, 'Ergonomic Assessment:')
+
+  if is_gray then
+    -- For normal text (gray)
+    local L_ok = lch.L >= 65 and lch.L <= 75
+    table.insert(results, string.format('  Type: Normal text (neutral gray)'))
+    table.insert(
+      results,
+      string.format(
+        '  Lightness: %s',
+        L_ok and '✓ Optimal for body text'
+          or lch.L < 65 and '⚠ Too dark for extended reading'
+          or '⚠ Too bright (may cause glare)'
+      )
+    )
+    table.insert(results, string.format('  Saturation: ✓ Neutral (correct for text)'))
+  else
+    -- For syntax colors
+    local L_ok = lch.L >= 55 and lch.L <= 65
+    local C_ok = lch.C >= 40 and lch.C <= 70
+
+    table.insert(results, string.format('  Type: Syntax highlight color'))
+    table.insert(
+      results,
+      string.format(
+        '  Lightness: %s',
+        L_ok and '✓ Optimal' or lch.L < 55 and '⚠ Too dark' or '⚠ Too bright'
+      )
+    )
+    table.insert(
+      results,
+      string.format(
+        '  Saturation: %s',
+        C_ok and '✓ Moderate' or lch.C < 40 and '⚠ Low (washed out)' or '⚠ High (fatiguing)'
+      )
+    )
+  end
+  table.insert(results, '')
+
+  -- Optimization suggestion - FIXED LOGIC
+  local needs_optimization = false
+
+  if is_gray then
+    if lch.L < 65 or lch.L > 75 or contrast < 4.5 or contrast > 6.5 then
+      needs_optimization = true
+    end
+  else
+    -- Need optimization if:
+    -- 1. L or C out of range, OR
+    -- 2. Contrast too low (< 4.5), OR
+    -- 3. Contrast too high (> 6.5)
+    local L_ok = lch.L >= 55 and lch.L <= 65
+    local C_ok = lch.C >= 40 and lch.C <= 70
+    local contrast_ok = contrast >= 4.5 and contrast <= 6.5
+
+    if not (L_ok and C_ok and contrast_ok) then
+      needs_optimization = true
+    end
+  end
+
+  if needs_optimization then
+    table.insert(results, '【Optimization Suggestion】')
+
+    if is_gray then
+      -- For gray, only adjust L
+      local opt_L = math.max(65, math.min(75, lch.L))
+      if lch.L < 65 then
+        opt_L = 68
+      elseif lch.L > 75 then
+        opt_L = 72
+      end
+
+      -- Adjust L for contrast
+      if contrast < 4.5 then
+        -- Increase L to achieve 4.5:1 contrast
+        for test_L = opt_L, 85, 0.5 do
+          local test_val = math.floor((test_L / 100) * 255 + 0.5)
+          local test_hex = string.format('#%02x%02x%02x', test_val, test_val, test_val)
+          if contrast_ratio(test_hex, colors.base03) >= 4.5 then
+            opt_L = test_L
+            break
+          end
+        end
+      end
+
+      local opt_lch = { L = opt_L, C = 0, H = 0 }
+      local opt_val = math.floor((opt_lch.L / 100) * 255 + 0.5)
+      local opt_hex = string.format('#%02x%02x%02x', opt_val, opt_val, opt_val)
+      local opt_contrast = contrast_ratio(opt_hex, colors.base03)
+
+      table.insert(results, string.format('  Suggested: %s (neutral gray)', opt_hex))
+      table.insert(
+        results,
+        string.format(
+          '  Changes:   L: %.1f→%.1f (C and H preserved as neutral)',
+          lch.L,
+          opt_lch.L
+        )
+      )
+      table.insert(results, string.format('  Contrast:  %.2f→%.2f:1', contrast, opt_contrast))
+    else
+      -- For colors, adjust L and C
+      local opt_L = lch.L
+      local opt_C = lch.C
+
+      -- Step 1: Adjust L to target range
+      if lch.L < 55 then
+        opt_L = 58
+      elseif lch.L > 65 then
+        opt_L = 62
+      end
+
+      -- Step 2: Adjust C to target range
+      if lch.C < 40 then
+        opt_C = 50
+      elseif lch.C > 70 then
+        opt_C = 60
+      end
+
+      -- Step 3: CRITICAL - Ensure minimum contrast of 4.5:1
+      if contrast < 4.5 then
+        -- Binary search for minimum L that achieves 4.5:1
+        local low, high = opt_L, 75
+        for _ = 1, 30 do
+          local mid = (low + high) / 2
+          local test_lch = { L = mid, C = opt_C, H = lch.H }
+          local test_hex = lch_to_rgb(test_lch)
+          local test_contrast = contrast_ratio(test_hex, colors.base03)
+
+          if test_contrast >= 4.5 then
+            opt_L = mid
+            high = mid - 0.1
+          else
+            low = mid + 0.1
+          end
+        end
+      elseif contrast > 6.5 then
+        -- Too bright, reduce L slightly
+        opt_L = opt_L * 0.95
+      end
+
+      local opt_lch = {
+        L = opt_L,
+        C = opt_C,
+        H = lch.H,
+      }
+
+      local opt_hex = lch_to_rgb(opt_lch)
+      local opt_contrast = contrast_ratio(opt_hex, colors.base03)
+
+      table.insert(results, string.format('  Suggested: %s', opt_hex))
+      table.insert(
+        results,
+        string.format(
+          '  Changes:   L: %.1f→%.1f  C: %.1f→%.1f  H: %.1f° (preserved)',
+          lch.L,
+          opt_lch.L,
+          lch.C,
+          opt_lch.C,
+          lch.H
+        )
+      )
+      table.insert(results, string.format('  Contrast:  %.2f→%.2f:1', contrast, opt_contrast))
+    end
+    table.insert(results, '')
+  else
+    table.insert(results, '✓ Color is already well-optimized!')
+    table.insert(results, '')
+  end
+
+  -- RGB breakdown
+  local rgb = hex_to_rgb(hex)
+  table.insert(results, 'RGB Components:')
+  table.insert(
+    results,
+    string.format('  Red:   %3d (0x%02x) %.1f%%', rgb[1], rgb[1], rgb[1] / 255 * 100)
+  )
+  table.insert(
+    results,
+    string.format('  Green: %3d (0x%02x) %.1f%%', rgb[2], rgb[2], rgb[2] / 255 * 100)
+  )
+  table.insert(
+    results,
+    string.format('  Blue:  %3d (0x%02x) %.1f%%', rgb[3], rgb[3], rgb[3] / 255 * 100)
+  )
+
+  if is_gray then
+    table.insert(results, '  Note: Equal RGB values = neutral gray')
+  end
+
+  return results
+end
+
+-- ============================================================================
+-- Theme Analysis
+-- ============================================================================
+local function analyze_theme_simple()
+  local results = {}
+
+  table.insert(results, '=== Scientific Theme Analysis ===')
+  table.insert(results, 'Principles: LAB Uniformity + Comfortable Contrast + Moderate Saturation')
+  table.insert(results, '')
+
+  local color_list = {
+    { 'cyan', 'String' },
+    { 'green', 'Keyword' },
+    { 'blue', 'Function' },
+    { 'yellow', 'Type' },
+    { 'violet', 'Constant' },
+    { 'orange', 'Special' },
+    { 'red', 'Error' },
+    { 'magenta', 'Todo' },
+  }
+
+  -- Calculate L* uniformity
+  local L_values = {}
+  for _, item in ipairs(color_list) do
+    local lch = rgb_to_lch(colors[item[1]])
+    table.insert(L_values, lch.L)
+  end
+
+  local sum_L = 0
+  for _, L in ipairs(L_values) do
+    sum_L = sum_L + L
+  end
+  local mean_L = sum_L / #L_values
+
+  local variance = 0
+  for _, L in ipairs(L_values) do
+    variance = variance + (L - mean_L) ^ 2
+  end
+  local std_dev = math.sqrt(variance / #L_values)
+
+  table.insert(results, '【1. Lightness Uniformity】')
+  table.insert(results, string.format('  Average L*: %.1f', mean_L))
+  table.insert(results, string.format('  Std Dev:    %.1f', std_dev))
+  if std_dev < 8 then
+    table.insert(results, '  ✓ Excellent uniformity (low eye strain)')
+  elseif std_dev < 12 then
+    table.insert(results, '  ~ Good uniformity')
+  else
+    table.insert(results, '  ⚠ High variance (may cause fatigue)')
+  end
+  table.insert(results, '')
+
+  -- Individual color analysis
+  table.insert(results, '【2. Individual Colors】')
+  table.insert(results, 'Color    L*    C*    H°    Contrast  Assessment')
+  table.insert(
+    results,
+    '────────────────────────────────────────────────────'
+  )
+
+  local needs_adjustment = {}
+
+  for _, item in ipairs(color_list) do
+    local name, label = item[1], item[2]
+    local hex = colors[name]
+    local lch = rgb_to_lch(hex)
+    local contrast = contrast_ratio(hex, colors.base03)
+
+    local issues = {}
+    if lch.L < 50 then
+      table.insert(issues, 'dark')
+    elseif lch.L > 70 then
+      table.insert(issues, 'bright')
+    end
+    if lch.C < 35 then
+      table.insert(issues, 'low sat')
+    elseif lch.C > 75 then
+      table.insert(issues, 'high sat')
+    end
+    if contrast < 4 then
+      table.insert(issues, 'low contrast')
+    elseif contrast > 7 then
+      table.insert(issues, 'high contrast')
+    end
+
+    local status = #issues == 0 and '✓' or table.concat(issues, ',')
+
+    table.insert(
+      results,
+      string.format(
+        '%-8s %5.1f %5.1f %5.0f° %5.2f:1  %s',
+        label,
+        lch.L,
+        lch.C,
+        lch.H,
+        contrast,
+        status
+      )
+    )
+
+    if #issues > 0 then
+      table.insert(needs_adjustment, {
+        name = name,
+        label = label,
+        lch = lch,
+        issues = issues,
+      })
+    end
+  end
+
+  table.insert(
+    results,
+    '────────────────────────────────────────────────────'
+  )
+  table.insert(results, '')
+
+  -- Optimization suggestions
+  if #needs_adjustment == 0 then
+    table.insert(results, '【3. Result】')
+    table.insert(results, '  ✓ Your palette is well-balanced!')
+  else
+    table.insert(results, '【3. Suggested Micro-adjustments】')
+    table.insert(results, '')
+
+    for _, item in ipairs(needs_adjustment) do
+      local current_hex = colors[item.name]
+      local current_lch = item.lch
+
+      local target_L = math.max(55, math.min(65, current_lch.L))
+      if current_lch.L < 55 then
+        target_L = 58
+      elseif current_lch.L > 65 then
+        target_L = 62
+      end
+
+      local target_C = math.max(40, math.min(70, current_lch.C))
+      if current_lch.C < 40 then
+        target_C = 50
+      elseif current_lch.C > 70 then
+        target_C = 60
+      end
+
+      local new_lch = {
+        L = current_lch.L + (target_L - current_lch.L) * 0.3,
+        C = current_lch.C + (target_C - current_lch.C) * 0.3,
+        H = current_lch.H,
+      }
+
+      local new_hex = lch_to_rgb(new_lch)
+      local new_contrast = contrast_ratio(new_hex, colors.base03)
+
+      table.insert(results, string.format('%s (%s):', item.label, item.name))
+      table.insert(results, string.format('  %s → %s', current_hex, new_hex))
+      table.insert(
+        results,
+        string.format(
+          '  L: %.1f→%.1f  C: %.1f→%.1f  Contrast: %.2f→%.2f',
+          current_lch.L,
+          new_lch.L,
+          current_lch.C,
+          new_lch.C,
+          contrast_ratio(current_hex, colors.base03),
+          new_contrast
+        )
+      )
+      table.insert(results, '')
+    end
+  end
+
+  return results
+end
+
+local function calculate_standard_fg(background, target_contrast)
+  target_contrast = target_contrast or 6.3
+
+  local low, high = 50, 90
+  local best_L = 70
+  local best_diff = 999
+
+  for _ = 1, 50 do
+    local mid = (low + high) / 2
+    local test_val = math.floor((mid / 100) * 255 + 0.5)
+    local test_hex = string.format('#%02x%02x%02x', test_val, test_val, test_val)
+    local test_contrast = contrast_ratio(test_hex, background)
+
+    local diff = math.abs(test_contrast - target_contrast)
+    if diff < best_diff then
+      best_diff = diff
+      best_L = mid
+    end
+
+    if test_contrast < target_contrast then
+      low = mid
+    else
+      high = mid
+    end
+
+    if diff < 0.01 then
+      break
+    end
+  end
+
+  local optimal_val = math.floor((best_L / 100) * 255 + 0.5)
+  local optimal_hex = string.format('#%02x%02x%02x', optimal_val, optimal_val, optimal_val)
+
+  return {
+    hex = optimal_hex,
+    L = best_L,
+    contrast = contrast_ratio(optimal_hex, background),
+  }
+end
+
+vim.api.nvim_create_user_command('ColorForeground', function(opts)
+  print(vim.inspect(calculate_standard_fg(colors.base03, tonumber(opts.args))))
+end, { desc = 'Analyze theme with scientific principles', nargs = '?' })
+
+vim.api.nvim_create_user_command('ColorAnalyze', function()
+  local results = analyze_theme_simple()
+  vim.api.nvim_echo({ { table.concat(results, '\n'), 'Normal' } }, true, {})
+end, { desc = 'Analyze theme with scientific principles' })
+
+vim.api.nvim_create_user_command('ColorTest', function(opts)
+  local results = test_color_detailed(opts.args)
+  vim.api.nvim_echo({ { table.concat(results, '\n'), 'Normal' } }, true, {})
+end, { nargs = 1, desc = 'Test a color with detailed analysis' })
 
 -- General editor highlights
 h('Normal', { fg = colors.fg, bg = colors.base03 })
