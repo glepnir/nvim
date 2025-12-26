@@ -5,3 +5,4 @@
 
 ((identifier) @constant
  (#match? @constant "^FOR_ALL.*"))
+

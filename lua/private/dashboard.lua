@@ -77,11 +77,11 @@ end
 
 local function setup_highlights()
   local highlights = {
-    DashboardLambda = { fg = '#7aa2f7', bold = true },
-    DashboardKey = { fg = '#f7768e', bold = true },
-    DashboardDesc = { fg = '#9ece6a' },
-    DashboardDate = { fg = '#e0af68', bold = true },
-    DashboardFooter = { fg = '#565f89', italic = true },
+    DashboardLambda = { link = 'Function' },
+    DashboardKey = { link = 'KeyWord' },
+    DashboardDesc = { link = 'String' },
+    DashboardDate = { link = 'PreProc' },
+    DashboardFooter = { link = 'Comment' },
   }
 
   for g, opts in pairs(highlights) do

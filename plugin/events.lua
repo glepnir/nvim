@@ -1,11 +1,11 @@
 local api = vim.api
 local au = api.nvim_create_autocmd
-local group = api.nvim_create_augroup('GlepnirGroup', {})
+local group = api.nvim_create_augroup('_my_events', {})
 
 au('TextYankPost', {
   group = group,
   callback = function()
-    vim.hl.on_yank({ higroup = 'IncSearch', timeout = 400 })
+    vim.hl.on_yank({ higroup = 'YankHighlight', timeout = 400 })
   end,
 })
 
