@@ -155,3 +155,13 @@ au('FileType', {
   end,
   desc = 'try start treesitter highlight',
 })
+
+au('BufWritePre', {
+  pattern = '*',
+  callback = function()
+    local view = vim.fn.winsaveview()
+    vim.cmd([[silent! keepjumps keeppatterns %s/\s\+$//e]])
+    vim.fn.winrestview(view)
+  end,
+  desc = 'remove tail space',
+})

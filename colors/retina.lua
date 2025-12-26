@@ -566,6 +566,8 @@ h('NormalFloat', { bg = colors.bg_alt })
 h('FloatBorder', { fg = colors.comment })
 h('Title', { fg = colors.orange, bold = true })
 
+h('DiffAdd', { fg = colors.green })
+
 -- =============================================================================
 -- 5. Diagnostics - Semantic Consistency
 -- =============================================================================
