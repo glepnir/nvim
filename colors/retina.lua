@@ -563,7 +563,7 @@ h('PmenuMatchSel', { fg = colors.yellow, bold = true })
 
 -- Float & Borders
 h('NormalFloat', { bg = colors.bg_alt })
-h('FloatBorder', { fg = colors.fg_dim, bg = colors.bg_alt })
+h('FloatBorder', { fg = colors.comment })
 h('Title', { fg = colors.orange, bold = true })
 
 -- =============================================================================
