@@ -277,7 +277,7 @@ Layer Structure:
   L=0.68: Core Structure (Keywords, Functions, Types)
   L=0.66: Diagnostics (Errors - needs prominence)
   L=0.64: Data (Strings, Numbers, Constants)
-  
+
   ΔL between layers: 0.02 (comfortable threshold)
 =============================================================================
 ]]
@@ -302,12 +302,12 @@ colors.orange = oklab_to_srgb(0.68, 0.055, 0.065)
 colors.blue = oklab_to_srgb(0.68, -0.02, -0.06)
 
 --- Yellow - Types/Definitions
--- Formula: L=0.68, a=0.02, b=0.08
--- Changed: L 0.65→0.68 (+4.6%, CSF optimization - structural prominence)
--- Saturation: s ≈ 0.082
--- Hue: h ≈ 76°
+-- Formula: L=0.68, a=0.0, b=0.08
+-- Saturation: s = 0.09
+-- Hue: h = 90° (pure yellow)
 -- Purpose: Type definitions, declarations
-colors.yellow = oklab_to_srgb(0.68, 0.02, 0.08)
+-- Rationale: a=0 creates clear hue separation from orange (50°→90°, Δh=40°)
+colors.yellow = oklab_to_srgb(0.68, 0.0, 0.08)
 
 --- Layer 2: Diagnostics (L=0.66) - Prominent but not overwhelming
 
