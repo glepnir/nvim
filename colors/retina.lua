@@ -14,11 +14,6 @@
   4. Schloss, K. B. (2023). "Color semantics for visual communication"
   5. Barten, P. G. J. (1999). "Contrast Sensitivity of the Human Eye"
      CSF (Contrast Sensitivity Function) theory
-
-
-  @module color_generation
-  @author Research-based optimization
-  @license MIT
 ]]
 
 --- Converts Oklab color space coordinates to linear RGB.
@@ -287,7 +282,6 @@ Layer Structure:
 
 --- Orange - Keywords/Control Flow
 -- Formula: L=0.68, a=0.055, b=0.065
--- Changed: L 0.67→0.68 (+1.5%, enhanced structural prominence)
 -- Saturation: s ≈ 0.085
 -- Hue: h ≈ 50°
 -- Purpose: Control flow (if, for, while, return, const, static)
@@ -295,7 +289,6 @@ colors.orange = oklab_to_srgb(0.68, 0.055, 0.065)
 
 --- Blue - Functions/Behavior
 -- Formula: L=0.68, a=-0.02, b=-0.06
--- Changed: L 0.65→0.68 (+4.6%, CSF optimization - structural prominence)
 -- Saturation: s ≈ 0.063
 -- Hue: h ≈ 252°
 -- Purpose: Behavioral code elements (function names, calls)
@@ -313,7 +306,6 @@ colors.yellow = oklab_to_srgb(0.68, 0.0, 0.08)
 
 --- Red - Errors/Diagnostics
 -- Formula: L=0.66, a=0.08, b=0.04
--- Changed: L 0.64→0.66 (+3.1%, errors need to stand out from data)
 -- Saturation: s ≈ 0.089
 -- Hue: h ≈ 27° (true red)
 -- Purpose: Error messages, critical diagnostics
@@ -324,7 +316,6 @@ colors.red = oklab_to_srgb(0.66, 0.08, 0.04)
 
 --- Green - Strings/Content
 -- Formula: L=0.64, a=-0.05, b=0.06
--- Unchanged: Data layer remains at L=0.64
 -- Saturation: s ≈ 0.078
 -- Hue: h ≈ 130°
 -- Purpose: String literals, content
@@ -332,55 +323,17 @@ colors.green = oklab_to_srgb(0.64, -0.05, 0.06)
 
 --- Cyan - Constants/Metaprogramming
 -- Formula: L=0.64, a=-0.055, b=-0.01
--- Unchanged: Data layer
 -- Saturation: s ≈ 0.056
 -- Hue: h ≈ 190°
 -- Purpose: Constants, preprocessor directives
 colors.cyan = oklab_to_srgb(0.64, -0.055, -0.01)
 
 --- Violet - Numbers/Abstract Values
--- Formula: L=0.66, a=0.05, b=-0.04
--- Changed: L 0.66→0.64 (-3.0%, data should be less prominent than structure)
+-- Formula: L=0.64, a=0.05, b=-0.04
 -- Saturation: s ≈ 0.064
 -- Hue: h ≈ 321°
 -- Purpose: Numeric literals, abstract values
 colors.violet = oklab_to_srgb(0.64, 0.05, -0.04)
-
---[[
-=============================================================================
-Statistical Summary
-=============================================================================
-
-Contrast Ratios (vs bg L=0.24):
-  - fg (7.0:1)      WCAG AAA ✓
-  - yellow (5.0:1)  WCAG AA ✓
-  - green (5.0:1)   WCAG AA ✓
-  - orange (5.2:1)  WCAG AA ✓
-  - cyan (5.0:1)    WCAG AA ✓
-  - blue (5.1:1)    WCAG AA ✓
-  - violet (5.2:1)  WCAG AA ✓
-  - red (4.7:1)     WCAG AA (large text)
-
-Saturation Statistics:
-  - Mean: s̄ = 0.073
-  - Range: [0.056, 0.086]
-  - All within low-fatigue zone (< 0.10)
-
-CIECAM02 Chroma:
-  - Mean: C̄ = 59
-  - Range: [45, 69]
-  - All within comfort zone (30-100)
-
-Research Compliance:
-  ✓ CSF Theory (Barten 1999)
-  ✓ CIECAM02 (Fairchild 2013)
-  ✓ Color Fatigue (PMC 11175232)
-  ✓ Color Semantics (Schloss 2023)
-  ✓ WCAG 2.1 Guidelines
-  ✓ Oklab Perceptual Uniformity (Ottosson 2020)
-
-=============================================================================
-]]
 
 vim.g.colors_name = 'retina'
 
@@ -407,7 +360,6 @@ local function h(group, properties)
   vim.api.nvim_set_hl(0, group, properties)
 end
 
--- Helper functions for blending
 local function hex_to_rgb(hex)
   hex = hex:gsub('#', '')
   return {
@@ -794,12 +746,12 @@ h('DiagnosticInfo', { fg = colors.blue }) -- Information ✓
 h('DiagnosticHint', { fg = colors.cyan }) -- Hint ✓
 
 h('DiagnosticVirtualTextError', { bg = blend(colors.red, 0.65) })
-h('DiagnosticVirtualTextWarn', { bg = blend(colors.orange, 0.65) })
+h('DiagnosticVirtualTextWarn', { bg = blend(colors.yellow, 0.65) })
 h('DiagnosticVirtualTextInfo', { bg = blend(colors.blue, 0.65) })
 h('DiagnosticVirtualTextHint', { bg = blend(colors.cyan, 0.65) })
 
 h('DiagnosticPrefixError', { fg = colors.red, bg = blend(colors.red, 0.65) })
-h('DiagnosticPrefixWarn', { fg = colors.orange, bg = blend(colors.orange, 0.65) })
+h('DiagnosticPrefixWarn', { fg = colors.yellow, bg = blend(colors.yellow, 0.65) })
 h('DiagnosticPrefixInfo', { fg = colors.blue, bg = blend(colors.blue, 0.65) })
 h('DiagnosticPrefixHint', { fg = colors.cyan, bg = blend(colors.cyan, 0.65) })
 
