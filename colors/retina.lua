@@ -373,8 +373,8 @@ local function rgb_to_hex(c)
   return string.format('#%02x%02x%02x', c[1], c[2], c[3])
 end
 
-local function blend(fg, t)
-  local a, b = hex_to_rgb(fg), hex_to_rgb(colors.bg)
+local function blend(fg, t, target_bg)
+  local a, b = hex_to_rgb(fg), hex_to_rgb(target_bg or colors.bg)
   local c = {
     math.floor(a[1] * (1 - t) + b[1] * t + 0.5),
     math.floor(a[2] * (1 - t) + b[2] * t + 0.5),
@@ -518,8 +518,6 @@ h('NormalFloat', { bg = colors.bg_alt })
 h('FloatBorder', { fg = colors.comment })
 h('Title', { fg = colors.orange, bold = true })
 
-h('DiffAdd', { fg = colors.green })
-
 -- =============================================================================
 -- 5. Diagnostics - Semantic Consistency
 -- =============================================================================
@@ -612,7 +610,7 @@ h('@function.method', { link = '@function' })
 h('@function.method.call', { link = '@function' })
 h('@constructor', { link = 'Function' })
 
--- Operators - Neutral ⭐️
+-- Operators - Neutral
 h('@operator', { link = 'Operator' })
 
 -- Keywords Layer
@@ -620,7 +618,7 @@ h('@keyword', { link = 'Keyword' })
 h('@keyword.coroutine', { link = '@keyword' })
 h('@keyword.function', { link = '@keyword' })
 h('@keyword.operator', { link = '@keyword' })
-h('@keyword.import', { fg = colors.cyan }) -- import = meta-operation ⭐️
+h('@keyword.import', { fg = colors.cyan })
 h('@keyword.type', { link = '@keyword' })
 h('@keyword.modifier', { link = '@keyword' })
 h('@keyword.repeat', { link = '@keyword' })
@@ -671,9 +669,9 @@ h('@markup.list.checked', { fg = colors.green })
 h('@markup.list.unchecked', { link = '@markup.list' })
 
 -- Diff
-h('@diff.plus', { link = 'Added' })
-h('@diff.minus', { link = 'Removed' })
-h('@diff.delta', { link = 'Changed' })
+h('@diff.plus', { fg = blend(colors.green, 0.5, colors.statusline_bg) })
+h('@diff.minus', { fg = blend(colors.red, 0.5, colors.statusline_bg) })
+h('@diff.delta', { fg = blend(colors.yellow, 0.5, colors.statusline_bg) })
 
 -- HTML/XML
 h('@tag', { fg = colors.green })
@@ -715,8 +713,8 @@ h('@lsp.type.modifier', { link = '@type.qualifier' })
 h('@lsp.type.namespace', { link = '@module' })
 h('@lsp.type.number', { link = '@number' })
 h('@lsp.type.operator', { link = '@operator' })
-h('@lsp.type.parameter', { fg = colors.fg }) -- Parameters: neutral ⭐️
-h('@lsp.type.property', { fg = colors.fg }) -- Properties: neutral ⭐️
+h('@lsp.type.parameter', { fg = colors.fg })
+h('@lsp.type.property', { fg = colors.fg })
 h('@lsp.type.regexp', { link = '@string.regexp' })
 h('@lsp.type.string', { link = '@string' })
 h('@lsp.type.struct', { link = '@type' })
@@ -740,10 +738,10 @@ h('@lsp.mod.static', {})
 -- 8. Diagnostics - Semantic Consistency (Schloss 2023)
 -- =============================================================================
 
-h('DiagnosticError', { fg = colors.red }) -- Danger ✓
-h('DiagnosticWarn', { fg = colors.orange }) -- Warning ✓
-h('DiagnosticInfo', { fg = colors.blue }) -- Information ✓
-h('DiagnosticHint', { fg = colors.cyan }) -- Hint ✓
+h('DiagnosticError', { fg = colors.red })
+h('DiagnosticWarn', { fg = colors.orange })
+h('DiagnosticInfo', { fg = colors.blue })
+h('DiagnosticHint', { fg = colors.cyan })
 
 h('DiagnosticVirtualTextError', { bg = blend(colors.red, 0.65) })
 h('DiagnosticVirtualTextWarn', { bg = blend(colors.yellow, 0.65) })
