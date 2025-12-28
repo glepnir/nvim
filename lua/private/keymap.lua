@@ -307,14 +307,6 @@ map.n('gs', function()
 end)
 
 map.n({
-  -- Lspsaga
-  -- ['[d'] = cmd('Lspsaga diagnostic_jump_next'),
-  -- [']d'] = cmd('Lspsaga diagnostic_jump_prev'),
-  -- ['ga'] = cmd('Lspsaga code_action'),
-  -- ['gr'] = cmd('Lspsaga rename'),
-  -- ['gd'] = cmd('Lspsaga peek_definition'),
-  -- ['gp'] = cmd('Lspsaga goto_definition'),
-  -- ['gh'] = cmd('Lspsaga finder'),
   -- ['gl'] = cmd('Visualizer full'),
   -- FzfLua
   ['<Leader>d'] = cmd('FzfLua diagnostic_document'),
