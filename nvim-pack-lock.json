@@ -38,6 +38,10 @@
       "src": "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
       "version": "'main'"
     },
+    "paragon.vim": {
+      "rev": "75e9800c3ba08fd68391faa777f2706695880fae",
+      "src": "https://github.com/seandewar/paragon.vim"
+    },
     "phoenix.nvim": {
       "rev": "71ddba235c57fa8beb139ea554e7269900695abf",
       "src": "https://github.com/nvimdev/phoenix.nvim"

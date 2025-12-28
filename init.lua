@@ -128,6 +128,7 @@ end
 
 P:add('https://github.com/nvimdev/modeline.nvim')
   :add({
+    'https://github.com/seandewar/paragon.vim',
     'https://github.com/lewis6991/gitsigns.nvim',
     'https://github.com/nvimdev/visualizer.nvim',
     'https://github.com/nvimdev/phoenix.nvim',
