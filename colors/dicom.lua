@@ -1,29 +1,29 @@
 -- ╔════════════════════════════════════════════════════════════════════════╗
--- ║ THEORETICAL FOUNDATION                                        ║
+-- ║ THEORETICAL FOUNDATION                                                 ║
 -- ╠════════════════════════════════════════════════════════════════════════╣
--- ║                                                                          ║
--- ║ 1. DICOM PS3.14 Standard                                                ║
--- ║    - Medical imaging grayscale standard                                 ║
--- ║    - Optimized for prolonged viewing                                    ║
+-- ║                                                                        ║
+-- ║ 1. DICOM PS3.14 Standard                                               ║
+-- ║    - Medical imaging grayscale standard                                ║
+-- ║    - Optimized for prolonged viewing                                   ║
 -- ║    - Based on 1023 JND (Just-Noticeable Difference) levels             ║
--- ║    - Luminance range: 0.05 to 4000 cd/m²                                ║
--- ║                                                                          ║
--- ║ 2. Grayscale Luminance Formula                                          ║
+-- ║    - Luminance range: 0.05 to 4000 cd/m²                               ║
+-- ║                                                                        ║
+-- ║ 2. Grayscale Luminance Formula                                         ║
 -- ║    Y = 0.2126*R + 0.7152*G + 0.0722*B  (ITU-R BT.709)                  ║
--- ║    - Based on human photopic sensitivity                                ║
--- ║    - Green weighted highest (cone density)                              ║
--- ║                                                                          ║
--- ║ 3. Neutral Color Theory                                                 ║
+-- ║    - Based on human photopic sensitivity                               ║
+-- ║    - Green weighted highest (cone density)                             ║
+-- ║                                                                        ║
+-- ║ 3. Neutral Color Theory                                                ║
 -- ║    - Zero chromaticity: a = 0, b = 0 in Oklab                          ║
--- ║    - Eliminates chromatic adaptation strain                             ║
--- ║    - Maximizes readability (no color bias)                              ║
--- ║    - Reduces cognitive load from color processing                       ║
--- ║                                                                          ║
--- ║ 4. Research Support                                                     ║
--- ║    - "Color-free environments reduce visual fatigue" (2015)             ║
--- ║    - "Neutral palettes optimize long-duration tasks" (2024)             ║
--- ║    - Medical professionals use grayscale for precision                  ║
--- ║                                                                          ║
+-- ║    - Eliminates chromatic adaptation strain                            ║
+-- ║    - Maximizes readability (no color bias)                             ║
+-- ║    - Reduces cognitive load from color processing                      ║
+-- ║                                                                        ║
+-- ║ 4. Research Support                                                    ║
+-- ║    - "Color-free environments reduce visual fatigue" (2015)            ║
+-- ║    - "Neutral palettes optimize long-duration tasks" (2024)            ║
+-- ║    - Medical professionals use grayscale for precision                 ║
+-- ║                                                                        ║
 -- ╚════════════════════════════════════════════════════════════════════════╝
 --
 -- =============================================================================
@@ -670,7 +670,7 @@ h('DiagnosticPrefixInfo', { fg = colors.blue, bg = blend(colors.blue, 0.65) })
 h('DiagnosticPrefixHint', { fg = colors.cyan, bg = blend(colors.cyan, 0.65) })
 
 h('DiagnosticUnderlineError', { undercurl = true, sp = colors.red })
-h('DiagnosticUnderlineWarn', { undercurl = true, sp = colors.orange })
+h('DiagnosticUnderlineWarn', { undercurl = true, sp = colors.yellow })
 h('DiagnosticUnderlineInfo', { undercurl = true, sp = colors.blue })
 h('DiagnosticUnderlineHint', { undercurl = true, sp = colors.cyan })
 h('YankHighlight', { fg = colors.bg, bg = colors.fg })
