@@ -68,7 +68,7 @@ o.cot = 'menu,menuone,noinsert,fuzzy,nosort,popup'
 o.cia = 'kind,abbr,menu'
 vim.opt.guicursor:remove({ 't:block-blinkon500-blinkoff500-TermCursor' })
 
-vim.cmd.colorscheme('retina')
+vim.cmd.colorscheme('dicom')
 g.health = { style = 'float' }
 g.editorconfig = false
 g._lang = {
@@ -128,7 +128,6 @@ end
 
 P:add('https://github.com/nvimdev/modeline.nvim')
   :add({
-    'https://github.com/seandewar/paragon.vim',
     'https://github.com/lewis6991/gitsigns.nvim',
     'https://github.com/nvimdev/visualizer.nvim',
     'https://github.com/nvimdev/phoenix.nvim',
