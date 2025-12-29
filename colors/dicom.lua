@@ -655,7 +655,7 @@ h('@lsp.mod.static', {})
 -- =============================================================================
 
 h('DiagnosticError', { fg = colors.red })
-h('DiagnosticWarn', { fg = colors.orange })
+h('DiagnosticWarn', { fg = colors.yellow })
 h('DiagnosticInfo', { fg = colors.blue })
 h('DiagnosticHint', { fg = colors.cyan })
 
