@@ -45,27 +45,27 @@ end
 -- ═══════════════════════════════════════════════════════════════════════════
 -- MONOTONE COLORS
 -- ═══════════════════════════════════════════════════════════════════════════
-local base03 = oklab_to_srgb(0.267337, -0.037339, -0.031128) -- #002b36
-local base02 = oklab_to_srgb(0.309207, -0.039852, -0.033029) -- #073642
-local base01 = oklab_to_srgb(0.523013, -0.021953, -0.017864) -- #586e75
-local base00 = oklab_to_srgb(0.568165, -0.021219, -0.019038) -- #657b83
+local base03 = oklab_to_srgb(0.267337, -0.037339, -0.031128)
+local base02 = oklab_to_srgb(0.309207, -0.039852, -0.033029)
+local base01 = oklab_to_srgb(0.523013, -0.021953, -0.017864)
+local base00 = oklab_to_srgb(0.568165, -0.021219, -0.019038)
 
-local base0 = oklab_to_srgb(0.71, -0.017838, -0.008417)
-local base1 = oklab_to_srgb(0.697899, -0.015223, -0.004594) -- #93a1a1
-local base2 = oklab_to_srgb(0.930609, -0.001091, 0.026010) -- #eee8d5
-local base3 = oklab_to_srgb(0.973528, -0.000043, 0.026053) -- #fdf6e3
+local base0 = oklab_to_srgb(0.703236, -0.017838, -0.008417)
+local base1 = oklab_to_srgb(0.697899, -0.015223, -0.004594)
+local base2 = oklab_to_srgb(0.930609, -0.001091, 0.026010)
+local base3 = oklab_to_srgb(0.973528, -0.000043, 0.026053)
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- ACCENT COLORS
 -- ═══════════════════════════════════════════════════════════════════════════
-local yellow = oklab_to_srgb(0.654479, 0.010005, 0.133641) -- #b58900
+local yellow = oklab_to_srgb(0.654479, 0.010005, 0.133641)
 local orange = oklab_to_srgb(0.63, 0.133661 * 0.69, 0.110183 * 0.69)
 local red = oklab_to_srgb(0.63, 0.183749 * 0.72, 0.094099 * 0.72)
-local magenta = oklab_to_srgb(0.592363, 0.201958, -0.014497) -- #d33682
-local violet = oklab_to_srgb(0.582316, 0.019953, -0.124557) -- #6c71c4
-local blue = oklab_to_srgb(0.614879, -0.059069, -0.126255) -- #268bd2
-local cyan = oklab_to_srgb(0.643664, -0.101063, -0.013097) -- #2aa198
-local green = oklab_to_srgb(0.644391, -0.072203, 0.132448) -- #859900
+local magenta = oklab_to_srgb(0.592363, 0.201958, -0.014497)
+local violet = oklab_to_srgb(0.582316, 0.019953, -0.124557)
+local blue = oklab_to_srgb(0.614879, -0.059069, -0.126255)
+local cyan = oklab_to_srgb(0.643664, -0.101063, -0.013097)
+local green = oklab_to_srgb(0.644391, -0.072203, 0.132448)
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- MODE SELECTION
