@@ -50,7 +50,7 @@ local base02 = oklab_to_srgb(0.309207, -0.039852, -0.033029)
 local base01 = oklab_to_srgb(0.523013, -0.021953, -0.017864)
 local base00 = oklab_to_srgb(0.568165, -0.021219, -0.019038)
 
-local base0 = oklab_to_srgb(0.706236, -0.023, -0.013)
+local base0 = oklab_to_srgb(0.706236, -0.023223, -0.013451)
 local base1 = oklab_to_srgb(0.697899, -0.015223, -0.004594)
 local base2 = oklab_to_srgb(0.930609, -0.001091, 0.026010)
 local base3 = oklab_to_srgb(0.973528, -0.000043, 0.026053)

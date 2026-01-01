@@ -21,7 +21,7 @@
       "src": "https://github.com/nvimdev/guard.nvim"
     },
     "indentmini.nvim": {
-      "rev": "e0f1e381a3949ea6757365fa33f8f1722d3eae90",
+      "rev": "a2eb2dcfbe5cc631d9ab12f021d54601877e3656",
       "src": "https://github.com/nvimdev/indentmini.nvim"
     },
     "modeline.nvim": {
