@@ -7,16 +7,16 @@ return {
     '.luacheckrc',
     '.git',
   },
-  root_dir = function(buf, on_root_dir)
-    if vim.fs.root(buf, '.emmyrc.json') then
-      return
-    end
-    on_root_dir(vim.fs.root(buf, {
-      '.luarc.json',
-      '.luarc.jsonc',
-      '.git',
-    }))
-  end,
+  -- root_dir = function(buf, on_root_dir)
+  --   if vim.fs.root(buf, '.emmyrc.json') then
+  --     return
+  --   end
+  --   on_root_dir(vim.fs.root(buf, {
+  --     '.luarc.json',
+  --     '.luarc.jsonc',
+  --     '.git',
+  --   }))
+  -- end,
   on_init = function(client)
     if client.workspace_folders then
       local path = client.workspace_folders[1].name
