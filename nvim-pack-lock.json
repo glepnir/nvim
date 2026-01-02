@@ -25,7 +25,7 @@
       "src": "https://github.com/nvimdev/indentmini.nvim"
     },
     "modeline.nvim": {
-      "rev": "dc099b9716f8d8895fb8304b3223d1f283bfcb68",
+      "rev": "4a15857c979798d4d1bcaded0865ced3ff38cce2",
       "src": "https://github.com/nvimdev/modeline.nvim"
     },
     "nvim-treesitter": {

@@ -204,6 +204,7 @@ h('Comment', { fg = colors.fg_comment, italic = true })
 h('StatusLine', { bg = colors.fg, fg = colors.bg_highlight })
 h('StatusLineNC', { fg = colors.fg_comment, bg = colors.bg_highlight, reverse = true })
 h('WildMenu', { fg = colors.bg, bg = colors.blue })
+h('ColorColumn', { bg = colors.bg_highlight })
 
 -- Popup Menu
 h('Pmenu', { fg = colors.fg, bg = colors.bg_highlight })
@@ -216,7 +217,7 @@ h('PmenuMatchSel', { bg = colors.selection, bold = true, fg = colors.fg_emphasis
 -- Float & Borders
 h('NormalFloat', { bg = colors.bg_highlight })
 h('FloatBorder', { fg = colors.comment })
-h('Title', { fg = colors.orange, bold = true })
+h('Title', { fg = colors.bg_highlight, bold = true })
 
 -- =============================================================================
 -- 5. Diagnostics - Semantic Consistency
