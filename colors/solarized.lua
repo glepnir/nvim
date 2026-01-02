@@ -202,7 +202,7 @@ h('Comment', { fg = colors.fg_comment, italic = true })
 -- =============================================================================
 
 h('StatusLine', { bg = colors.fg, fg = colors.bg_highlight })
-h('StatusLineNC', { fg = colors.fg_comment, bg = colors.bg_highlight, reverse = true })
+h('StatusLineNC', { bg = colors.fg_comment, fg = colors.bg_highlight })
 h('WildMenu', { fg = colors.bg, bg = colors.blue })
 h('ColorColumn', { bg = colors.bg_highlight })
 
