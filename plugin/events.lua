@@ -74,8 +74,8 @@ local function startuptime()
 end
 
 vim.lsp.enable({
-  'luals',
-  -- 'emmylua_ls',
+  -- 'luals',
+  'emmylua_ls',
   'clangd',
   'rust_analyzer',
   'basedpyright',
