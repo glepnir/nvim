@@ -145,7 +145,7 @@ function M.char(direction)
       local ok, char = pcall(function()
         return vim.fn.nr2char(vim.fn.getchar())
       end)
-      if not ok or not char or char == '' or char == vim.fn.nr2char(27) then
+      if not ok or not char or char == '' or char == vim.fn.nr2char(27) or char == ' ' then
         return
       end
       local char_input = char
@@ -249,12 +249,11 @@ function M.char(direction)
 end
 
 api.nvim_set_hl(0, 'JumpMotionTarget', {
-  fg = '#ff4800',
-  bold = true,
+  link = 'Function',
 })
 
 api.nvim_set_hl(0, 'JumpMotionDim', {
-  fg = '#555555',
+  link = 'Comment',
 })
 
 return { charForward = M.char(FORWARD), charBackward = M.char(BACKWARD) }
