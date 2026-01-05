@@ -96,7 +96,9 @@ au('UIEnter', {
 
       vim.lsp.log.set_level(vim.log.levels.OFF)
       vim.diagnostic.config({
-        float = true,
+        float = {
+          header = '',
+        },
         -- i don't like CursorMoved so...
         virtual_text = {
           -- current_line = true,
