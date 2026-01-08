@@ -77,9 +77,9 @@ end
 
 local function setup_highlights()
   local highlights = {
-    DashboardLambda = { link = 'Function' },
-    DashboardKey = { link = 'KeyWord' },
-    DashboardDesc = { link = 'String' },
+    DashboardLambda = { link = 'Keyword' },
+    DashboardKey = { link = 'ErrorMsg' },
+    DashboardDesc = { link = 'Function' },
     DashboardDate = { link = 'PreProc' },
     DashboardFooter = { link = 'Comment' },
   }
