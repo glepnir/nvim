@@ -1,3 +1,41 @@
+vim.g.colors_name = 'eink'
+vim.cmd('highlight clear')
+
+local p = {
+  bg = '#1C1C19',
+  statusline_bg = '#161614',
+  cursorline_bg = '#232320',
+  normalfloat_bg = '#262623',
+  pmenu_bg = '#2a2a27',
+  selection_bg = '#3A3C37',
+  pmenu_thumb = '#3C3E3A',
+
+  fg = '#B9BCB6',
+  comment = '#6A6D66',
+
+  linenr = '#4A4D48',
+  linenr_active = '#A0A49B',
+
+  green = '#8FAF78',
+  orange = '#C99573',
+  yellow = '#B59A64',
+  red = '#B3776F',
+  cyan = '#79AA99',
+  blue = '#91A7BC',
+  violet = '#A98DA6',
+  magenta = '#A98DA6',
+
+  pmenusel_bg = '#668E95',
+  pmenusel_fg = '#10100E',
+}
+
+local d = {
+  error = '#E67E80',
+  warn = '#DBB671',
+  info = '#709FB0',
+  hint = '#8F967A',
+}
+
 local function oklab_to_linear_rgb(L, a, b)
   -- Oklab to LMS conversion
   -- Reference: Björn Ottosson, "A perceptual color space for image processing"
@@ -47,7 +85,6 @@ local function _hex_to_rgb(hex)
 end
 
 local function find_oklab(target_hex)
-  print(vim.inspect(target_hex))
   local tr, tg, tb = _hex_to_rgb(target_hex)
 
   -- Grid search with refinement
@@ -88,88 +125,22 @@ local function find_oklab(target_hex)
   return best_L, best_a, best_b
 end
 
-vim.api.nvim_create_user_command('HexToOKLAB', function(opt)
-  local L, a, b = find_oklab(opt.args)
-  print(
-    string.format('%s -> Oklab(%.6f, %.6f, %.6f) -> %s', opt.args, L, a, b, oklab_to_srgb(L, a, b))
-  )
-end, { nargs = 1 })
-
--- ═══════════════════════════════════════════════════════════════════════════
--- MONOTONE COLORS
--- ═══════════════════════════════════════════════════════════════════════════
-local base03 = oklab_to_srgb(0.267337, -0.037339, -0.031128)
-local base02 = oklab_to_srgb(0.309207, -0.039852, -0.033029)
-local base01 = oklab_to_srgb(0.523013, -0.021953, -0.017864)
-local base00 = oklab_to_srgb(0.568165, -0.021219, -0.019038)
-
-local base0 = oklab_to_srgb(0.709236, -0.023223, -0.013451)
-local base1 = oklab_to_srgb(0.697899, -0.015223, -0.004594)
-local base2 = oklab_to_srgb(0.930609, -0.001091, 0.026010)
-local base3 = oklab_to_srgb(0.973528, -0.000043, 0.026053)
-
--- ═══════════════════════════════════════════════════════════════════════════
--- ACCENT COLORS
--- ═══════════════════════════════════════════════════════════════════════════
-local yellow = oklab_to_srgb(0.654479, 0.010005, 0.133641)
-local orange = oklab_to_srgb(0.63, 0.133661 * 0.69, 0.110183 * 0.69)
-local red = oklab_to_srgb(0.63, 0.183749 * 0.72, 0.094099 * 0.72)
-local magenta = oklab_to_srgb(0.592363, 0.201958, -0.014497)
-local violet = oklab_to_srgb(0.582316, 0.019953, -0.124557)
-local blue = oklab_to_srgb(0.614879, -0.059069, -0.126255)
-local cyan = oklab_to_srgb(0.643664, -0.101063, -0.013097)
-local green = oklab_to_srgb(0.644391, -0.072203, 0.132448)
-
--- ═══════════════════════════════════════════════════════════════════════════
--- MODE SELECTION
--- ═══════════════════════════════════════════════════════════════════════════
-
--- Set to 'dark' or 'light'
-local mode = vim.o.background or 'dark'
-
-local colors = {}
-
-if mode == 'dark' then
-  -- Dark mode: dark background, light text
-  colors.bg = base03
-  colors.bg_highlight = base02
-  colors.fg_comment = base01
-  colors.fg = base0
-  colors.fg_emphasis = base1
-else
-  colors.bg = base3
-  colors.bg_highlight = base2
-  colors.fg_comment = base1
-  colors.fg = base00
-  colors.fg_emphasis = base01
-end
-
--- Accent colors are the same in both modes
-colors.yellow = yellow
-colors.orange = orange
-colors.red = red
-colors.magenta = magenta
-colors.violet = violet
-colors.blue = blue
-colors.cyan = cyan
-colors.green = green
-
-colors.cursorline_bg = colors.bg_highlight
-colors.selection_bg = base02
-colors.statusline_bg = colors.fg
-colors.visual_bg = base02
-
-vim.g.colors_name = 'solarized'
-
-vim.api.nvim_create_user_command('ColorOutPut', function()
-  for k, v in pairs(colors) do
-    print(('%s = "%s"'):format(k, v))
+vim.api.nvim_create_user_command('ColorOkLab', function()
+  for k, v in pairs(p) do
+    local L, a, b = find_oklab(v)
+    print(
+      string.format(
+        '%s, %s -> Oklab(%.6f, %.6f, %.6f) -> %s',
+        k,
+        v,
+        L,
+        a,
+        b,
+        oklab_to_srgb(L, a, b)
+      )
+    )
   end
 end, {})
-
-local function h(group, properties)
-  vim.api.nvim_set_hl(0, group, properties)
-end
 
 local function hex_to_rgb(hex)
   hex = hex:gsub('#', '')
@@ -185,7 +156,7 @@ local function rgb_to_hex(c)
 end
 
 local function blend(fg, t, target_bg)
-  local a, b = hex_to_rgb(fg), hex_to_rgb(target_bg or colors.bg)
+  local a, b = hex_to_rgb(fg), hex_to_rgb(target_bg or p.bg)
   local c = {
     math.floor(a[1] * (1 - t) + b[1] * t + 0.5),
     math.floor(a[2] * (1 - t) + b[2] * t + 0.5),
@@ -194,125 +165,115 @@ local function blend(fg, t, target_bg)
   return rgb_to_hex(c)
 end
 
--- =============================================================================
--- Research-Driven Syntax Highlighting Strategy
--- Based on: Hannebauer et al. (2018), Tonsky (2025), Schloss (2023)
--- =============================================================================
+local function h(group, properties)
+  vim.api.nvim_set_hl(0, group, properties)
+end
 
--- 1. Core Editor Surface
-h('Normal', { fg = colors.fg, bg = colors.bg })
-h('EndOfBuffer', { fg = colors.bg })
-h('CursorLine', { bg = colors.cursorline_bg })
-h('CursorLineNr', { fg = colors.yellow, bold = true })
-h('LineNr', { fg = colors.fg_comment })
-h('WinSeparator', { fg = colors.bg_highlight, bg = colors.bg })
+vim.api.nvim_create_user_command('ColorOutPut', function()
+  for k, v in pairs(p) do
+    print(('%s = "%s"'):format(k, v))
+  end
+end, {})
+
+h('Normal', { fg = p.fg, bg = p.bg })
+h('EndOfBuffer', { fg = p.bg })
+h('CursorLine', { bg = p.cursorline_bg })
+h('LineNr', { fg = p.linenr })
+h('CursorLineNr', { fg = p.linenr_active })
+h('WinSeparator', { fg = p.statusline_bg, bg = p.bg })
 
 -- 2. Visual & Search (High Arousal)
-h('Visual', { bg = colors.selection_bg })
-h('Search', { fg = colors.bg, bg = colors.yellow })
-h('IncSearch', { fg = colors.bg, bg = colors.orange })
+h('Visual', { bg = p.selection_bg })
+h('Search', { fg = p.bg, bg = p.yellow })
+h('IncSearch', { fg = p.bg, bg = p.orange })
 
-h('Keyword', { fg = colors.green })
-h('Statement', { fg = colors.green })
-h('Conditional', { fg = colors.green })
-h('Repeat', { fg = colors.green })
+h('Keyword', { fg = p.fg })
+h('Statement', { fg = p.fg })
+h('Conditional', { fg = p.fg })
+h('Repeat', { fg = p.fg })
 
-h('Function', { fg = colors.blue })
+h('Function', { fg = p.blue })
 
 -- Types
-h('Type', { fg = colors.yellow })
-h('StorageClass', { fg = colors.yellow })
-h('Structure', { fg = colors.yellow })
-h('Typedef', { fg = colors.yellow })
+h('Type', { fg = p.yellow })
+h('StorageClass', { fg = p.yellow })
+h('Structure', { fg = p.yellow })
+h('Typedef', { fg = p.yellow })
 
 -- Constants
-h('Constant', { fg = colors.cyan })
-h('String', { fg = colors.cyan })
-h('Character', { fg = colors.cyan })
-h('Number', { fg = colors.cyan })
-h('Boolean', { fg = colors.cyan })
-h('Float', { fg = colors.cyan })
+h('Constant', { fg = p.cyan })
+h('String', { fg = p.green })
+h('Character', { fg = p.cyan })
+h('Number', { fg = p.cyan })
+h('Boolean', { fg = p.cyan })
+h('Float', { fg = p.cyan })
 
 -- PreProc
-h('PreProc', { fg = colors.orange })
-h('Include', { fg = colors.orange })
-h('Define', { fg = colors.orange })
-h('Macro', { fg = colors.orange })
-h('PreCondit', { fg = colors.orange })
+h('PreProc', { fg = p.orange })
+h('Include', { fg = p.orange })
+h('Define', { fg = p.orange })
+h('Macro', { fg = p.orange })
+h('PreCondit', { fg = p.orange })
 
 -- Special Characters - Cyan (escape/special)
-h('Special', { fg = colors.cyan })
+h('Special', { fg = p.cyan })
 
-h('Identifier', { fg = colors.fg })
-h('Variable', { fg = colors.fg })
-h('Operator', { fg = colors.fg })
+h('Identifier', { fg = p.fg })
+h('Variable', { fg = p.fg })
+h('Operator', { fg = p.fg })
 
-h('Delimiter', { fg = colors.fg })
-h('NonText', { fg = colors.bg_highlight })
+h('Delimiter', { fg = p.fg })
+h('NonText', { fg = p.statusline_bg })
 
 -- -----------------------------------------------------------------------------
 -- Layer 6: COMMENTS
 -- Luminance: L=comment (dimmest)
 -- -----------------------------------------------------------------------------
 
-h('Comment', { fg = colors.fg_comment, italic = true })
+h('Comment', { fg = p.comment, italic = true })
 
 -- =============================================================================
 -- 4. UI Components
 -- =============================================================================
 
-h('StatusLine', { bg = colors.statusline_bg, fg = colors.bg_highlight })
-h('StatusLineNC', { bg = colors.fg_comment, fg = colors.bg_highlight })
-h('WildMenu', { fg = colors.bg, bg = colors.blue })
-h('ColorColumn', { bg = colors.bg_highlight })
+h('StatusLine', { bg = p.statusline_bg, fg = p.fg })
+h('StatusLineNC', { bg = p.normalfloat_bg, fg = p.fg })
+h('WildMenu', { fg = p.bg, bg = p.blue })
+h('ColorColumn', { bg = p.cursorline_bg })
 
 -- Popup Menu
-h('Pmenu', { fg = colors.fg, bg = colors.bg_highlight })
-h('PmenuSel', { fg = colors.fg_emphasis, bg = colors.selection, reverse = true })
-h('PmenuSbar', { bg = colors.bg_highlight })
-h('PmenuThumb', { bg = colors.fg_comment })
-h('PmenuMatch', { fg = colors.cyan, bold = true })
-h('PmenuMatchSel', { bg = colors.selection, bold = true, fg = colors.fg_emphasis })
+h('Pmenu', { fg = p.fg, bg = p.pmenu_bg })
+h('PmenuSel', { bg = p.pmenusel_bg, fg = p.pmenusel_fg })
+h('PmenuSbar', { bg = p.statusline_bg })
+h('PmenuThumb', { bg = p.pmenu_thumb })
+-- h('PmenuMatch', { fg = p.cyan, bold = true })
+-- h('PmenuMatchSel', { fg = p.cyan })
 
 -- Float & Borders
-h('NormalFloat', { bg = colors.bg_highlight })
-h('FloatBorder', { fg = colors.comment })
-h('Title', { fg = colors.bg_highlight, bold = true })
+h('NormalFloat', { bg = p.normalfloat_bg })
+h('FloatBorder', { fg = p.comment })
+h('Title', { fg = p.fg, bold = true })
 
--- =============================================================================
--- 5. Diagnostics - Semantic Consistency
--- =============================================================================
---
--- Research basis (Schloss 2023):
---   Color-concept associations are universal:
---   Red → danger/anger (cross-cultural consistency)
---   Orange → warning/caution
---   Blue → information/calm
---   Cyan → hint/auxiliary
---
--- This mapping perfectly aligns with research! ✓
---
-
-h('ErrorMsg', { fg = colors.red, bold = true })
-h('WarningMsg', { fg = colors.orange })
-h('ModeMsg', { fg = colors.cyan, bold = true })
-h('Todo', { fg = colors.violet, bold = true, reverse = true })
-h('MatchParen', { bg = colors.selection_bg, bold = true })
+h('ErrorMsg', { fg = p.red, bold = true })
+h('WarningMsg', { fg = p.orange })
+h('ModeMsg', { fg = p.cyan, bold = true })
+h('Todo', { fg = p.violet, bold = true, reverse = true })
+h('MatchParen', { bg = p.selection_bg, bold = true })
 
 -- QuickFix & List
-h('qfFileName', { fg = colors.blue })
-h('qfLineNr', { fg = colors.cyan })
-h('qfSeparator', { fg = colors.bg_highlight })
-h('QuickFixLine', { bg = colors.cursorline_bg, bold = true })
+h('qfFileName', { fg = p.blue })
+h('qfLineNr', { fg = p.cyan })
+h('qfSeparator', { fg = p.statusline_bg })
+h('QuickFixLine', { bg = p.cursorline_bg, bold = true })
 h('qfText', { link = 'Normal' })
 
 -- Underlined/Directory
-h('Underlined', { fg = colors.violet, underline = true })
-h('Directory', { fg = colors.blue })
+h('Underlined', { fg = p.violet, underline = true })
+h('Directory', { fg = p.blue })
 
 -- sync to terminal
-h('Magenta', { fg = colors.magenta })
-h('Violet', { fg = colors.violet })
+h('Magenta', { fg = p.magenta })
+h('Violet', { fg = p.violet })
 
 -- =============================================================================
 -- 6. Treesitter Highlights (Optimized)
@@ -324,13 +285,13 @@ h('@variable.builtin', { link = '@variable' }) -- Neutral
 h('@variable.parameter', { link = '@variable' }) -- Neutral
 h('@variable.parameter.builtin', { link = '@variable.builtin' })
 h('@variable.member', { link = '@variable' }) -- Neutral
-h('@parameter', { fg = colors.fg }) -- Neutral
-h('@property', { fg = colors.fg }) -- Neutral
+h('@parameter', { fg = p.fg }) -- Neutral
+h('@property', { fg = p.fg }) -- Neutral
 
 -- Constants Layer ⭐️ OPTIMIZED
-h('@constant', { fg = colors.cyan }) -- Constants = frozen
-h('@constant.builtin', { fg = colors.cyan })
-h('@constant.macro', { fg = colors.cyan })
+h('@constant', { fg = p.cyan }) -- Constants = frozen
+h('@constant.builtin', { fg = p.cyan })
+h('@constant.macro', { fg = p.cyan })
 
 -- Modules/Namespaces
 h('@module', { link = 'Identifier' })
@@ -396,7 +357,7 @@ h('@keyword.directive', { link = '@keyword' })
 h('@keyword.directive.define', { link = '@keyword' })
 
 -- Punctuation
-h('@punctuation', { fg = colors.fg })
+h('@punctuation', { fg = p.fg })
 h('@punctuation.delimiter', { link = '@punctuation' })
 h('@punctuation.bracket', { link = '@punctuation' })
 h('@punctuation.special', { link = '@punctuation' })
@@ -404,8 +365,8 @@ h('@punctuation.special', { link = '@punctuation' })
 -- Comments Layer
 h('@comment', { link = 'Comment' })
 h('@comment.documentation', { link = '@comment' })
-h('@comment.error', { fg = colors.red, bold = true })
-h('@comment.warning', { fg = colors.yellow, bold = true })
+h('@comment.error', { fg = p.red, bold = true })
+h('@comment.warning', { fg = p.yellow, bold = true })
 h('@comment.todo', { link = 'Special' })
 h('@comment.note', { link = 'Special' })
 
@@ -430,18 +391,18 @@ h('@markup.link.url', { link = '@markup.link' })
 h('@markup.raw', {})
 h('@markup.raw.block', { link = '@markup.raw' })
 h('@markup.list', {})
-h('@markup.list.checked', { fg = colors.green })
+h('@markup.list.checked', { fg = p.green })
 h('@markup.list.unchecked', { link = '@markup.list' })
 
 -- Diff
-h('@diff.plus', { fg = blend(colors.green, 0.5, colors.statusline_bg) })
-h('@diff.minus', { fg = blend(colors.red, 0.5, colors.statusline_bg) })
-h('@diff.delta', { fg = blend(colors.yellow, 0.5, colors.statusline_bg) })
+h('@diff.plus', { fg = blend(p.green, 0.5, p.statusline_bg) })
+h('@diff.minus', { fg = blend(p.red, 0.5, p.statusline_bg) })
+h('@diff.delta', { fg = blend(p.yellow, 0.5, p.statusline_bg) })
 
 -- HTML/XML
-h('@tag', { fg = colors.green })
-h('@tag.attribute', { fg = colors.fg })
-h('@tag.delimiter', { fg = colors.fg })
+h('@tag', { fg = p.green })
+h('@tag.attribute', { fg = p.fg })
+h('@tag.delimiter', { fg = p.fg })
 h('@tag.builtin', { link = 'Special' })
 
 -- Vimdoc Special Handling
@@ -454,10 +415,10 @@ h('@markup.heading.1.delimiter.vimdoc', { link = '@markup.heading.1' })
 h('@markup.heading.2.delimiter.vimdoc', { link = '@markup.heading.2' })
 
 -- Semantic Aliases
-h('@class', { fg = colors.yellow })
-h('@method', { fg = colors.blue })
-h('@interface', { fg = colors.yellow })
-h('@namespace', { fg = colors.fg })
+h('@class', { fg = p.yellow })
+h('@method', { fg = p.blue })
+h('@interface', { fg = p.yellow })
+h('@namespace', { fg = p.fg })
 
 -- =============================================================================
 -- 7. LSP Semantic Highlights
@@ -478,8 +439,8 @@ h('@lsp.type.modifier', { link = '@type.qualifier' })
 h('@lsp.type.namespace', { link = '@module' })
 h('@lsp.type.number', { link = '@number' })
 h('@lsp.type.operator', { link = '@operator' })
-h('@lsp.type.parameter', { fg = colors.fg })
-h('@lsp.type.property', { fg = colors.fg })
+h('@lsp.type.parameter', { fg = p.fg })
+h('@lsp.type.property', { fg = p.fg })
 h('@lsp.type.regexp', { link = '@string.regexp' })
 h('@lsp.type.string', { link = '@string' })
 h('@lsp.type.struct', { link = '@type' })
@@ -503,34 +464,34 @@ h('@lsp.mod.static', {})
 -- 8. Diagnostics - Semantic Consistency (Schloss 2023)
 -- =============================================================================
 
-h('DiagnosticError', { fg = colors.red })
-h('DiagnosticWarn', { fg = colors.yellow })
-h('DiagnosticInfo', { fg = colors.blue })
-h('DiagnosticHint', { fg = colors.cyan })
+h('DiagnosticError', { fg = d.error })
+h('DiagnosticWarn', { fg = d.warn })
+h('DiagnosticInfo', { fg = d.info })
+h('DiagnosticHint', { fg = d.hint })
 
-h('DiagnosticVirtualTextError', { bg = blend(colors.red, 0.4) })
-h('DiagnosticVirtualTextWarn', { bg = blend(colors.yellow, 0.4) })
-h('DiagnosticVirtualTextInfo', { bg = blend(colors.blue, 0.4) })
-h('DiagnosticVirtualTextHint', { bg = blend(colors.cyan, 0.4) })
+h('DiagnosticVirtualTextError', { bg = blend(d.error, 0.4) })
+h('DiagnosticVirtualTextWarn', { bg = blend(d.warn, 0.4) })
+h('DiagnosticVirtualTextInfo', { bg = blend(d.info, 0.4) })
+h('DiagnosticVirtualTextHint', { bg = blend(d.hint, 0.4) })
 
-h('DiagnosticPrefixError', { fg = colors.red, bg = blend(colors.red, 0.25) })
-h('DiagnosticPrefixWarn', { fg = colors.yellow, bg = blend(colors.yellow, 0.25) })
-h('DiagnosticPrefixInfo', { fg = colors.blue, bg = blend(colors.blue, 0.25) })
-h('DiagnosticPrefixHint', { fg = colors.cyan, bg = blend(colors.cyan, 0.25) })
+h('DiagnosticPrefixError', { fg = d.red, bg = blend(d.error, 0.25) })
+h('DiagnosticPrefixWarn', { fg = d.warn, bg = blend(d.warn, 0.25) })
+h('DiagnosticPrefixInfo', { fg = d.info, bg = blend(d.info, 0.25) })
+h('DiagnosticPrefixHint', { fg = d.hint, bg = blend(d.hint, 0.25) })
 
-h('DiagnosticUnderlineError', { undercurl = true, sp = colors.red })
-h('DiagnosticUnderlineWarn', { undercurl = true, sp = colors.yellow })
-h('DiagnosticUnderlineInfo', { undercurl = true, sp = colors.blue })
-h('DiagnosticUnderlineHint', { undercurl = true, sp = colors.cyan })
-h('YankHighlight', { fg = colors.bg, bg = colors.fg })
+h('DiagnosticUnderlineError', { undercurl = true, sp = d.error })
+h('DiagnosticUnderlineWarn', { undercurl = true, sp = d.warn })
+h('DiagnosticUnderlineInfo', { undercurl = true, sp = d.info })
+h('DiagnosticUnderlineHint', { undercurl = true, sp = d.hint })
+h('YankHighlight', { fg = p.bg, bg = p.fg })
 
 -- =============================================================================
 -- 9. LSP & Other Plugin Support
 -- =============================================================================
 
-h('LspReferenceText', { bg = colors.selection_bg })
-h('LspReferenceRead', { bg = colors.selection_bg })
-h('LspReferenceWrite', { bg = colors.selection_bg })
+h('LspReferenceText', { bg = p.selection_bg })
+h('LspReferenceRead', { bg = p.selection_bg })
+h('LspReferenceWrite', { bg = p.selection_bg })
 h('LspReferenceTarget', { link = 'LspReferenceText' })
 h('LspInlayHint', { link = 'NonText' })
 h('LspCodeLens', { link = 'NonText' })
@@ -542,9 +503,9 @@ h('IndentLine', { link = 'Comment' })
 h('IndentLineCurrent', { link = 'Comment' })
 
 -- GitSigns
-h('GitSignsAdd', { fg = colors.green })
-h('GitSignsChange', { fg = colors.orange })
-h('GitSignsDelete', { fg = colors.red })
+h('GitSignsAdd', { fg = p.green })
+h('GitSignsChange', { fg = p.orange })
+h('GitSignsDelete', { fg = p.red })
 
 -- Dashboard
-h('DashboardHeader', { fg = colors.green })
+h('DashboardHeader', { fg = p.green })
