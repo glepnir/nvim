@@ -11,21 +11,24 @@ local p = {
   pmenu_thumb = '#3C3E3A',
 
   fg = '#B9BCB6',
-  comment = '#6F726B',
+  comment = '#6A6D66',
 
   linenr = '#4A4D48',
   linenr_active = '#A0A49B',
+
+  green = '#8FAF78',
+  -- orange = '#C99573',
+  -- yellow = '#B59A64',
+  red = '#B3776F',
+  cyan = '#79AA99',
+  blue = '#91A7BC',
+  violet = '#A98DA6',
+  magenta = '#A98DA6',
+  yellow = '#b09c64',
+  orange = '#cb9379',
+
   pmenusel_bg = '#668E95',
   pmenusel_fg = '#10100E',
-
-  green = '#8FAF78', -- C: 0.084
-  orange = '#C49B6C', -- C: 0.080
-  yellow = '#A9A062', -- C: 0.083
-  red = '#C68681', -- C: 0.080
-  cyan = '#79AA99', -- C:  0.058
-  blue = '#8AABBA', -- C: 0.042
-  violet = '#A98DA6', -- C: 0.049
-  magenta = '#A98DA6',
 }
 
 local d = {
@@ -173,6 +176,13 @@ vim.api.nvim_create_user_command('ColorOutPut', function()
     print(('%s = "%s"'):format(k, v))
   end
 end, {})
+
+vim.api.nvim_create_user_command('RgbToOklab', function(args)
+  print(oklab_to_srgb(unpack(args.fargs)))
+end, { nargs = '+' })
+
+-- print(oklab_to_srgb(0.697, 0.000, 0.088))
+-- print(oklab_to_srgb(0.711, 0.060, 0.058))
 
 h('Normal', { fg = p.fg, bg = p.bg })
 h('EndOfBuffer', { fg = p.bg })
