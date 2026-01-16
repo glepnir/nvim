@@ -17,15 +17,13 @@ local p = {
   linenr_active = '#A0A49B',
 
   green = '#8FAF78',
-  -- orange = '#C99573',
-  -- yellow = '#B59A64',
+  orange = '#C99573',
+  yellow = '#B59A64',
   red = '#B3776F',
   cyan = '#79AA99',
   blue = '#91A7BC',
   violet = '#A98DA6',
   magenta = '#A98DA6',
-  yellow = '#b09c64',
-  orange = '#cb9379',
 
   pmenusel_bg = '#668E95',
   pmenusel_fg = '#10100E',
