@@ -176,6 +176,150 @@ vim.api.nvim_create_user_command('RgbToOklab', function(args)
   print(oklab_to_srgb(unpack(args.fargs)))
 end, { nargs = '+' })
 
+-- ============================================================================
+-- WCAG Contrast Ratio Calculator
+-- ============================================================================
+
+-- Calculate relative luminance (WCAG standard)
+-- Reference: WCAG 2.1 Section 1.4.3
+local function relative_luminance(L, a, b)
+  local r, g, b_comp = oklab_to_linear_rgb(L, a, b)
+  -- WCAG standard weights for luminance calculation
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b_comp
+end
+
+-- Calculate contrast ratio between two colors
+-- Formula: (L1 + 0.05) / (L2 + 0.05) where L1 > L2
+local function contrast_ratio(L1, a1, b1, L2, a2, b2)
+  local lum1 = relative_luminance(L1, a1, b1)
+  local lum2 = relative_luminance(L2, a2, b2)
+
+  local lighter = math.max(lum1, lum2)
+  local darker = math.min(lum1, lum2)
+
+  return (lighter + 0.05) / (darker + 0.05)
+end
+
+-- Determine WCAG compliance level
+-- @param ratio: contrast ratio value
+-- @param is_large_text: true for text ≥18pt or ≥14pt bold
+-- @return "AAA", "AA", or "FAIL"
+local function wcag_level(ratio, is_large_text)
+  if is_large_text then
+    if ratio >= 4.5 then
+      return 'AAA'
+    end
+    if ratio >= 3.0 then
+      return 'AA'
+    end
+  else
+    if ratio >= 7.0 then
+      return 'AAA'
+    end
+    if ratio >= 4.5 then
+      return 'AA'
+    end
+  end
+  return 'FAIL'
+end
+
+vim.api.nvim_create_user_command('ColorContrast', function()
+  local colors = {
+    fg = { 0.780, -0.003, 0.009 },
+    comment = { 0.528, -0.001, 0.007 },
+    linenr = { 0.432, -0.002, 0.006 },
+    linenr_active = { 0.719, -0.002, 0.007 },
+    yellow = { 0.749, 0.007, 0.082 },
+    green = { 0.740, -0.066, 0.042 },
+    cyan = { 0.730, -0.042, -0.013 },
+    blue = { 0.698, -0.008, -0.050 },
+    orange = { 0.719, 0.026, 0.055 },
+    red = { 0.709, 0.051, 0.026 },
+    magenta = { 0.700, 0.035, -0.029 },
+  }
+
+  local bg = { 0.248, -0.003, 0.010 }
+
+  print('=== Color Contrast Analysis ===\n')
+  print(string.format('%-20s %10s %8s %12s', 'Color', 'Ratio', 'WCAG', 'Hex'))
+  print(string.rep('-', 55))
+
+  -- Sort by contrast ratio (descending)
+  local sorted = {}
+  for name, oklab in pairs(colors) do
+    local ratio = contrast_ratio(oklab[1], oklab[2], oklab[3], bg[1], bg[2], bg[3])
+    local level = wcag_level(ratio, false)
+    local hex = oklab_to_srgb(oklab[1], oklab[2], oklab[3])
+    table.insert(sorted, { name, ratio, level, hex })
+  end
+
+  table.sort(sorted, function(a, b)
+    return a[2] > b[2]
+  end)
+
+  for _, item in ipairs(sorted) do
+    local name, ratio, level, hex = item[1], item[2], item[3], item[4]
+    print(string.format('%-20s %9.2f:1 %8s %12s', name, ratio, level, hex))
+  end
+
+  -- Display background information
+  print('\n=== Background Information ===')
+  print(string.format('bg:              Oklab(%.3f, %.3f, %.3f)', bg[1], bg[2], bg[3]))
+  print(string.format('bg hex:          %s', oklab_to_srgb(bg[1], bg[2], bg[3])))
+  print(string.format('bg luminance:    %.6f', relative_luminance(bg[1], bg[2], bg[3])))
+
+  -- Statistics
+  print('\n=== WCAG Compliance Summary ===')
+  local aaa_count = 0
+  local aa_count = 0
+  local fail_count = 0
+
+  for _, item in ipairs(sorted) do
+    if item[3] == 'AAA' then
+      aaa_count = aaa_count + 1
+    elseif item[3] == 'AA' then
+      aa_count = aa_count + 1
+    else
+      fail_count = fail_count + 1
+    end
+  end
+
+  print(string.format('AAA level (≥7.0:1):   %d colors', aaa_count))
+  print(string.format('AA level  (≥4.5:1):   %d colors', aa_count))
+  print(string.format('Failed    (<4.5:1):   %d colors', fail_count))
+
+  -- Optional: Show design intent note
+  if fail_count > 0 then
+    print("\nNote: Low contrast for 'comment' and 'linenr' is intentional")
+    print('      These are secondary UI elements and should not compete')
+    print('      for attention with primary code content.')
+  end
+end, {})
+
+-- Command: Compare two arbitrary colors
+-- Usage: :CompareColors L1 a1 b1 L2 a2 b2
+vim.api.nvim_create_user_command('CompareColors', function(opts)
+  local args = opts.fargs
+  if #args ~= 6 then
+    print('Usage: CompareColors L1 a1 b1 L2 a2 b2')
+    print('Example: CompareColors 0.780 -0.003 0.009 0.248 -0.003 0.010')
+    return
+  end
+
+  local L1, a1, b1 = tonumber(args[1]), tonumber(args[2]), tonumber(args[3])
+  local L2, a2, b2 = tonumber(args[4]), tonumber(args[5]), tonumber(args[6])
+
+  local ratio = contrast_ratio(L1, a1, b1, L2, a2, b2)
+  local level = wcag_level(ratio, false)
+  local hex1 = oklab_to_srgb(L1, a1, b1)
+  local hex2 = oklab_to_srgb(L2, a2, b2)
+
+  print(string.format('Color 1: %s  Oklab(%.3f, %.3f, %.3f)', hex1, L1, a1, b1))
+  print(string.format('Color 2: %s  Oklab(%.3f, %.3f, %.3f)', hex2, L2, a2, b2))
+  print(string.format('Contrast ratio: %.2f:1', ratio))
+  print(string.format('WCAG level:     %s', level))
+end, { nargs = '+' })
+
 h('Normal', { fg = p.fg, bg = p.bg })
 h('EndOfBuffer', { fg = p.bg })
 h('CursorLine', { bg = p.cursorline_bg })
