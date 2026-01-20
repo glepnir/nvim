@@ -42,33 +42,30 @@ local function oklab_to_srgb(L, a, b)
   return string.format('#%02x%02x%02x', r, g, b_comp)
 end
 
-vim.g.colors_name = 'eink'
-vim.cmd('highlight clear')
-
 local p = {
-  bg = oklab_to_srgb(0.22, -0.003, 0.010),
-  statusline_bg = oklab_to_srgb(0.18, -0.002, 0.008),
-  cursorline_bg = oklab_to_srgb(0.29, -0.002, 0.012),
-  normalfloat_bg = oklab_to_srgb(0.26, -0.002, 0.008),
-  selection_bg = oklab_to_srgb(0.34, -0.003, 0.015),
+  bg = oklab_to_srgb(0.248, -0.003, 0.010),
+  statusline_bg = oklab_to_srgb(0.205, -0.002, 0.005),
+  cursorline_bg = oklab_to_srgb(0.310, -0.002, 0.012),
+  normalfloat_bg = oklab_to_srgb(0.278, -0.002, 0.006),
+  selection_bg = oklab_to_srgb(0.357, -0.003, 0.014),
 
-  fg = oklab_to_srgb(0.80, -0.002, 0.010),
-  comment = oklab_to_srgb(0.50, -0.002, 0.008),
-  linenr = oklab_to_srgb(0.40, -0.002, 0.008),
-  linenr_active = oklab_to_srgb(0.70, -0.002, 0.008),
+  fg = oklab_to_srgb(0.780, -0.003, 0.009),
+  comment = oklab_to_srgb(0.528, -0.001, 0.007),
+  linenr = oklab_to_srgb(0.432, -0.002, 0.006),
+  linenr_active = oklab_to_srgb(0.719, -0.002, 0.007),
 
-  pmenu_bg = oklab_to_srgb(0.28, -0.002, 0.008),
-  pmenu_thumb = oklab_to_srgb(0.35, -0.002, 0.006),
-  pmenusel_bg = oklab_to_srgb(0.56, -0.020, -0.008),
-  pmenusel_fg = oklab_to_srgb(0.15, 0.000, 0.002),
+  yellow = oklab_to_srgb(0.749, 0.007, 0.082),
+  green = oklab_to_srgb(0.740, -0.066, 0.042),
+  cyan = oklab_to_srgb(0.730, -0.042, -0.013),
+  blue = oklab_to_srgb(0.698, -0.008, -0.050),
+  orange = oklab_to_srgb(0.719, 0.026, 0.055),
+  red = oklab_to_srgb(0.709, 0.051, 0.026),
+  magenta = oklab_to_srgb(0.700, 0.035, -0.029),
 
-  yellow = oklab_to_srgb(0.75, 0.010, 0.080),
-  orange = oklab_to_srgb(0.72, 0.030, 0.060),
-  green = oklab_to_srgb(0.74, -0.060, 0.040),
-  cyan = oklab_to_srgb(0.73, -0.040, -0.010),
-  red = oklab_to_srgb(0.71, 0.060, 0.030),
-  magenta = oklab_to_srgb(0.70, 0.040, -0.030),
-  blue = oklab_to_srgb(0.70, -0.015, -0.045),
+  pmenu_bg = oklab_to_srgb(0.297, -0.003, 0.005),
+  pmenu_thumb = oklab_to_srgb(0.369, -0.002, 0.006),
+  pmenusel_bg = oklab_to_srgb(0.558, -0.019, -0.010),
+  pmenusel_fg = oklab_to_srgb(0.148, -0.001, 0.002),
 }
 
 local d = {
@@ -78,12 +75,23 @@ local d = {
   hint = '#8F967A',
 }
 
-local function _hex_to_rgb(hex)
-  return tonumber(hex:sub(2, 3), 16), tonumber(hex:sub(4, 5), 16), tonumber(hex:sub(6, 7), 16)
+vim.g.colors_name = 'eink'
+vim.cmd('highlight clear')
+
+local function hex_to_rgb(hex)
+  if hex:sub(1, 1) == '#' then
+    hex = hex:sub(2)
+  end
+
+  return {
+    tonumber(hex:sub(1, 2), 16),
+    tonumber(hex:sub(3, 4), 16),
+    tonumber(hex:sub(5, 6), 16),
+  }
 end
 
 local function find_oklab(target_hex)
-  local tr, tg, tb = _hex_to_rgb(target_hex)
+  local tr, tg, tb = unpack(hex_to_rgb(target_hex))
 
   -- Grid search with refinement
   local best_L, best_a, best_b = 0, 0, 0
@@ -94,7 +102,7 @@ local function find_oklab(target_hex)
     for a = -0.5, 0.5, 0.01 do
       for b = -0.5, 0.5, 0.01 do
         local result = oklab_to_srgb(L, a, b)
-        local r, g, b_val = _hex_to_rgb(result)
+        local r, g, b_val = unpack(hex_to_rgb(result))
         local error = math.abs(r - tr) + math.abs(g - tg) + math.abs(b_val - tb)
         if error < min_error then
           min_error = error
@@ -110,7 +118,7 @@ local function find_oklab(target_hex)
     for a = best_a - 0.02, best_a + 0.02, step do
       for b = best_b - 0.02, best_b + 0.02, step do
         local result = oklab_to_srgb(L, a, b)
-        local r, g, b_val = _hex_to_rgb(result)
+        local r, g, b_val = unpack(hex_to_rgb(result))
         local error = math.abs(r - tr) + math.abs(g - tg) + math.abs(b_val - tb)
         if error < min_error then
           min_error = error
@@ -139,15 +147,6 @@ vim.api.nvim_create_user_command('ColorOkLab', function()
     )
   end
 end, {})
-
-local function hex_to_rgb(hex)
-  hex = hex:gsub('#', '')
-  return {
-    tonumber(hex:sub(1, 2), 16),
-    tonumber(hex:sub(3, 4), 16),
-    tonumber(hex:sub(5, 6), 16),
-  }
-end
 
 local function rgb_to_hex(c)
   return string.format('#%02x%02x%02x', c[1], c[2], c[3])
