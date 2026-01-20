@@ -1,41 +1,3 @@
-vim.g.colors_name = 'eink'
-vim.cmd('highlight clear')
-
-local p = {
-  bg = '#1C1C19',
-  statusline_bg = '#161614',
-  cursorline_bg = '#232320',
-  normalfloat_bg = '#262623',
-  pmenu_bg = '#2a2a27',
-  selection_bg = '#3A3C37',
-  pmenu_thumb = '#3C3E3A',
-
-  fg = '#B9BCB6',
-  comment = '#6A6D66',
-
-  linenr = '#4A4D48',
-  linenr_active = '#A0A49B',
-
-  green = '#8FAF78',
-  orange = '#C99573',
-  yellow = '#B59A64',
-  red = '#B3776F',
-  cyan = '#79AA99',
-  blue = '#91A7BC',
-  violet = '#A98DA6',
-  magenta = '#A98DA6',
-
-  pmenusel_bg = '#668E95',
-  pmenusel_fg = '#10100E',
-}
-
-local d = {
-  error = '#E67E80',
-  warn = '#DBB671',
-  info = '#709FB0',
-  hint = '#8F967A',
-}
-
 local function oklab_to_linear_rgb(L, a, b)
   -- Oklab to LMS conversion
   -- Reference: Björn Ottosson, "A perceptual color space for image processing"
@@ -79,6 +41,42 @@ local function oklab_to_srgb(L, a, b)
 
   return string.format('#%02x%02x%02x', r, g, b_comp)
 end
+
+vim.g.colors_name = 'eink'
+vim.cmd('highlight clear')
+
+local p = {
+  bg = oklab_to_srgb(0.22, -0.003, 0.010),
+  statusline_bg = oklab_to_srgb(0.18, -0.002, 0.008),
+  cursorline_bg = oklab_to_srgb(0.29, -0.002, 0.012),
+  normalfloat_bg = oklab_to_srgb(0.26, -0.002, 0.008),
+  selection_bg = oklab_to_srgb(0.34, -0.003, 0.015),
+
+  fg = oklab_to_srgb(0.80, -0.002, 0.010),
+  comment = oklab_to_srgb(0.50, -0.002, 0.008),
+  linenr = oklab_to_srgb(0.40, -0.002, 0.008),
+  linenr_active = oklab_to_srgb(0.70, -0.002, 0.008),
+
+  pmenu_bg = oklab_to_srgb(0.28, -0.002, 0.008),
+  pmenu_thumb = oklab_to_srgb(0.35, -0.002, 0.006),
+  pmenusel_bg = oklab_to_srgb(0.56, -0.020, -0.008),
+  pmenusel_fg = oklab_to_srgb(0.15, 0.000, 0.002),
+
+  yellow = oklab_to_srgb(0.75, 0.010, 0.080),
+  orange = oklab_to_srgb(0.72, 0.030, 0.060),
+  green = oklab_to_srgb(0.74, -0.060, 0.040),
+  cyan = oklab_to_srgb(0.73, -0.040, -0.010),
+  red = oklab_to_srgb(0.71, 0.060, 0.030),
+  magenta = oklab_to_srgb(0.70, 0.040, -0.030),
+  blue = oklab_to_srgb(0.70, -0.015, -0.045),
+}
+
+local d = {
+  error = '#E67E80',
+  warn = '#DBB671',
+  info = '#709FB0',
+  hint = '#8F967A',
+}
 
 local function _hex_to_rgb(hex)
   return tonumber(hex:sub(2, 3), 16), tonumber(hex:sub(4, 5), 16), tonumber(hex:sub(6, 7), 16)
@@ -179,9 +177,6 @@ vim.api.nvim_create_user_command('RgbToOklab', function(args)
   print(oklab_to_srgb(unpack(args.fargs)))
 end, { nargs = '+' })
 
--- print(oklab_to_srgb(0.697, 0.000, 0.088))
--- print(oklab_to_srgb(0.711, 0.060, 0.058))
-
 h('Normal', { fg = p.fg, bg = p.bg })
 h('EndOfBuffer', { fg = p.bg })
 h('CursorLine', { bg = p.cursorline_bg })
@@ -196,31 +191,31 @@ h('IncSearch', { fg = p.bg, bg = p.orange })
 
 h('Keyword', { fg = p.fg })
 h('Statement', { fg = p.fg })
-h('Conditional', { fg = p.fg })
 h('Repeat', { fg = p.fg })
+h('Conditional', { link = 'Repeat' })
 
 h('Function', { fg = p.blue })
 
 -- Types
-h('Type', { fg = p.yellow })
-h('StorageClass', { fg = p.yellow })
-h('Structure', { fg = p.yellow })
-h('Typedef', { fg = p.yellow })
+h('Type', { fg = p.fg })
+h('StorageClass', { fg = p.fg })
+h('Structure', { fg = p.fg })
+h('Typedef', { fg = p.fg })
 
 -- Constants
-h('Constant', { fg = p.cyan })
+h('Constant', { fg = p.magenta })
 h('String', { fg = p.green })
-h('Character', { fg = p.cyan })
-h('Number', { fg = p.cyan })
-h('Boolean', { fg = p.cyan })
-h('Float', { fg = p.cyan })
+h('Character', { link = 'Constant' })
+h('Number', { link = 'Constant' })
+h('Boolean', { link = 'Constant' })
+h('Float', { link = 'Constant' })
 
 -- PreProc
-h('PreProc', { fg = p.orange })
-h('Include', { fg = p.orange })
-h('Define', { fg = p.orange })
-h('Macro', { fg = p.orange })
-h('PreCondit', { fg = p.orange })
+h('Include', { fg = p.fg })
+h('PreProc', { link = 'Include' })
+h('Define', { link = 'Include' })
+h('Macro', { link = 'Include' })
+h('PreCondit', { link = 'Include' })
 
 -- Special Characters - Cyan (escape/special)
 h('Special', { fg = p.cyan })
@@ -259,6 +254,7 @@ h('PmenuThumb', { bg = p.pmenu_thumb })
 -- Float & Borders
 h('NormalFloat', { bg = p.normalfloat_bg })
 h('FloatBorder', { fg = p.comment })
+h('PmenuBorder', { bg = 'None', fg = p.comment })
 h('Title', { fg = p.fg, bold = true })
 
 h('ErrorMsg', { fg = p.red, bold = true })
@@ -296,9 +292,9 @@ h('@parameter', { fg = p.fg }) -- Neutral
 h('@property', { fg = p.fg }) -- Neutral
 
 -- Constants Layer ⭐️ OPTIMIZED
-h('@constant', { fg = p.cyan }) -- Constants = frozen
-h('@constant.builtin', { fg = p.cyan })
-h('@constant.macro', { fg = p.cyan })
+h('@constant', { link = 'Constant' }) -- Constants = frozen
+h('@constant.builtin', { link = '@constant' })
+h('@constant.macro', { link = '@constant' })
 
 -- Modules/Namespaces
 h('@module', { link = 'Identifier' })

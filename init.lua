@@ -41,6 +41,7 @@ o.showtabline = 0
 o.showcmd = false
 o.pumheight = 15
 o.pummaxwidth = 30
+o.pumborder = 'rounded'
 o.list = true
 --eol:¬
 o.listchars = 'tab:» ,nbsp:+,trail:·,extends:→,precedes:←,'
