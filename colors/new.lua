@@ -54,25 +54,25 @@ local p = {
   linenr = oklab_to_srgb(0.432, -0.002, 0.006),
   linenr_active = oklab_to_srgb(0.719, -0.002, 0.007),
 
-  yellow = oklab_to_srgb(0.749, 0.007, 0.082),
-  green = oklab_to_srgb(0.740, -0.066, 0.042),
-  cyan = oklab_to_srgb(0.730, -0.042, -0.013),
-  blue = oklab_to_srgb(0.698, -0.008, -0.050),
-  orange = oklab_to_srgb(0.719, 0.026, 0.055),
-  red = oklab_to_srgb(0.709, 0.051, 0.026),
-  magenta = oklab_to_srgb(0.700, 0.035, -0.029),
-
   pmenu_bg = oklab_to_srgb(0.297, -0.003, 0.005),
   pmenu_thumb = oklab_to_srgb(0.369, -0.002, 0.006),
   pmenusel_bg = oklab_to_srgb(0.558, -0.019, -0.010),
   pmenusel_fg = oklab_to_srgb(0.148, -0.001, 0.002),
+
+  yellow = oklab_to_srgb(0.749, 0.007, 0.082),
+  green = oklab_to_srgb(0.720, -0.066, 0.042),
+  cyan = oklab_to_srgb(0.730, -0.042, -0.013),
+  blue = oklab_to_srgb(0.698, -0.010, -0.050),
+  orange = oklab_to_srgb(0.719, 0.026, 0.055),
+  red = oklab_to_srgb(0.709, 0.051, 0.026),
+  magenta = oklab_to_srgb(0.698, 0.035, -0.040),
 }
 
 local d = {
-  error = '#E67E80',
-  warn = '#DBB671',
-  info = '#709FB0',
-  hint = '#8F967A',
+  error = oklab_to_srgb(0.690, 0.085, 0.045),
+  warn = oklab_to_srgb(0.760, 0.015, 0.100),
+  info = oklab_to_srgb(0.710, -0.025, -0.030),
+  hint = oklab_to_srgb(0.640, -0.002, 0.008),
 }
 
 vim.g.colors_name = 'eink'
