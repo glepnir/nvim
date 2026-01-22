@@ -64,7 +64,7 @@ local p = {
   magenta = oklab_to_srgb(0.698, 0.038, -0.020),
   cyan = oklab_to_srgb(0.730, -0.055, -0.005),
   blue = oklab_to_srgb(0.698, -0.005, -0.025),
-  green = oklab_to_srgb(0.70, -0.040, 0.070),
+  green = oklab_to_srgb(0.730, -0.039, 0.068),
 }
 
 local d = {
