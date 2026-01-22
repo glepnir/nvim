@@ -43,7 +43,7 @@ local function oklab_to_srgb(L, a, b)
 end
 
 local p = {
-  bg = oklab_to_srgb(0.248, -0.002, 0.012),
+  bg = oklab_to_srgb(0.248, -0.002, 0.010),
   statusline_bg = oklab_to_srgb(0.205, -0.002, 0.012),
   normalfloat_bg = oklab_to_srgb(0.278, -0.002, 0.012),
   cursorline_bg = oklab_to_srgb(0.310, -0.002, 0.012),
