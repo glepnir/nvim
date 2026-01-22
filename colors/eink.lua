@@ -44,14 +44,14 @@ end
 
 local p = {
   bg = oklab_to_srgb(0.248, 0.000, 0.012),
-  statusline_bg = oklab_to_srgb(0.205, 0.000, 0.020),
-  normalfloat_bg = oklab_to_srgb(0.278, 0.000, 0.016),
-  pmenu_bg = oklab_to_srgb(0.297, 0.000, 0.014),
-  cursorline_bg = oklab_to_srgb(0.310, 0.000, 0.015),
-  selection_bg = oklab_to_srgb(0.357, 0.000, 0.016),
+  statusline_bg = oklab_to_srgb(0.205, 0.000, 0.012),
+  normalfloat_bg = oklab_to_srgb(0.278, 0.000, 0.012),
+  cursorline_bg = oklab_to_srgb(0.310, 0.000, 0.012),
+  selection_bg = oklab_to_srgb(0.357, 0.000, 0.015),
+  pmenu_bg = oklab_to_srgb(0.297, 0.000, 0.012),
   pmenu_thumb = oklab_to_srgb(0.369, 0.000, 0.014),
-  pmenusel_bg = oklab_to_srgb(0.558, 0.000, 0.025),
-  pmenusel_fg = oklab_to_srgb(0.148, 0.000, 0.008),
+  pmenusel_bg = oklab_to_srgb(0.450, 0.000, 0.012),
+  -- pmenusel_fg = oklab_to_srgb(0.148, 0.000, 0.008),
 
   fg = oklab_to_srgb(0.780, 0.000, 0.009),
   comment = oklab_to_srgb(0.528, -0.001, 0.007),
@@ -243,7 +243,7 @@ h('ColorColumn', { bg = p.cursorline_bg })
 
 -- Popup Menu
 h('Pmenu', { fg = p.fg, bg = p.pmenu_bg })
-h('PmenuSel', { bg = p.pmenusel_bg, fg = p.pmenusel_fg })
+h('PmenuSel', { bg = p.blue, fg = p.pmenusel_fg })
 h('PmenuSbar', { bg = p.statusline_bg })
 h('PmenuThumb', { bg = p.pmenu_thumb })
 -- h('PmenuMatch', { fg = p.cyan, bold = true })
