@@ -198,8 +198,9 @@ P:add({
   :add('ibhagwan/fzf-lua', {
     load = on_cmd('FzfLua', 'fzf-lua', function()
       require('fzf-lua').setup({
-        'max-perf',
         lsp = { symbols = { symbol_style = 3 } },
+        winopts = { preview = { default = true } },
+        files = { file_icons = false },
       })
     end),
   })
