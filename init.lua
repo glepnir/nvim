@@ -117,95 +117,103 @@ g.phoenix = {
 
 local P = {}
 
-function P:add(specs, opts)
-  if type(specs) == 'string' or (type(specs) == 'table' and specs.src) then
-    specs = { specs }
+local function normalize_url(s)
+  return s:match('^https?://') and s or 'https://github.com/' .. s
+end
+
+local function normalize_spec(spec)
+  if type(spec) == 'string' then
+    return normalize_url(spec)
   end
-  opts = opts or {}
-  opts.confirm = false
-  vim.pack.add(specs, opts)
+  if spec.src then
+    return vim.tbl_extend('force', spec, { src = normalize_url(spec.src) })
+  end
+  return spec
+end
+
+local function ensure_list(specs)
+  return (type(specs) == 'string' or (type(specs) == 'table' and specs.src)) and { specs } or specs
+end
+
+local function on_cmd(cmd, pkg_name, setup_fn)
+  return function()
+    vim.api.nvim_create_user_command(cmd, function(data)
+      vim.api.nvim_del_user_command(cmd)
+      vim.cmd.packadd(pkg_name)
+      if setup_fn then
+        setup_fn()
+      end
+      vim.cmd(('%s %s'):format(cmd, data.args))
+    end, { nargs = '?' })
+  end
+end
+
+local function on_event(events, pkg_name, setup_fn)
+  return function()
+    vim.api.nvim_create_autocmd(events, {
+      once = true,
+      callback = function()
+        for _, p in ipairs(ensure_list(pkg_name)) do
+          vim.cmd.packadd(p)
+        end
+        if setup_fn then
+          setup_fn()
+        end
+      end,
+    })
+  end
+end
+
+function P:add(specs, opts)
+  specs = vim.tbl_map(normalize_spec, ensure_list(specs))
+  vim.pack.add(specs, vim.tbl_extend('keep', opts or {}, { confirm = false }))
   return self
 end
 
-P:add('https://github.com/nvimdev/modeline.nvim')
-  :add({
-    'https://github.com/lewis6991/gitsigns.nvim',
-    'https://github.com/nvimdev/visualizer.nvim',
-    'https://github.com/nvimdev/phoenix.nvim',
-    { src = 'https://github.com/nvim-treesitter/nvim-treesitter', version = 'main' },
-    { src = 'https://github.com/nvim-treesitter/nvim-treesitter-textobjects', version = 'main' },
-  }, {
-    load = false,
+P:add({
+  'nvimdev/modeline.nvim',
+  'lewis6991/gitsigns.nvim',
+  'nvimdev/visualizer.nvim',
+  'nvimdev/phoenix.nvim',
+  { src = 'nvim-treesitter/nvim-treesitter', version = 'main' },
+  { src = 'nvim-treesitter/nvim-treesitter-textobjects', version = 'main' },
+}, { load = false })
+  :add('nvimdev/dired.nvim', {
+    load = on_cmd('Dired', 'dired.nvim'),
   })
-  :add('https://github.com/nvimdev/dired.nvim', {
-    load = function()
-      vim.api.nvim_create_user_command('Dired', function(data)
-        vim.api.nvim_del_user_command('Dired')
-        vim.cmd.packadd('dired.nvim')
-        vim.cmd('Dired ' .. data.args)
-      end, {
-        nargs = '?',
+  :add('ibhagwan/fzf-lua', {
+    load = on_cmd('FzfLua', 'fzf-lua', function()
+      require('fzf-lua').setup({
+        'max-perf',
+        lsp = { symbols = { symbol_style = 3 } },
       })
-    end,
+    end),
   })
-  :add('https://github.com/ibhagwan/fzf-lua', {
-    load = function()
-      vim.api.nvim_create_user_command('FzfLua', function(data)
-        vim.api.nvim_del_user_command('FzfLua')
-        vim.cmd.packadd('fzf-lua')
-        require('fzf-lua').setup({
-          'max-perf',
-          lsp = { symbols = { symbol_style = 3 } },
-        })
-        vim.cmd('FzfLua ' .. data.args)
-      end, {
-        nargs = '?',
-      })
-    end,
+  :add('nvimdev/indentmini.nvim', {
+    load = on_event({ 'BufEnter', 'BufNewFile' }, 'indentmini.nvim', function()
+      require('indentmini').setup({ only_current = true })
+    end),
   })
-  :add('https://github.com/nvimdev/indentmini.nvim', {
-    load = function()
-      vim.api.nvim_create_autocmd({ 'BufEnter', 'BufNewFile' }, {
-        callback = function()
-          vim.cmd.packadd('indentmini.nvim')
-          require('indentmini').setup({
-            only_current = true,
-          })
+  :add({ 'nvimdev/guard.nvim', 'nvimdev/guard-collection' }, {
+    load = on_event('BufReadPost', { 'guard.nvim', 'guard-collection' }, function()
+      local ft = require('guard.filetype')
+      ft('c,cpp'):fmt({
+        cmd = 'clang-format',
+        args = function(bufnr)
+          local f = vim.bo[bufnr].filetype == 'cpp' and '.cc-format' or '.c-format'
+          return { ('--style=file:%s/%s'):format(vim.env.HOME, f) }
         end,
+        stdin = true,
+        ignore_patterns = { 'neovim', 'vim' },
       })
-    end,
-  })
-  :add({
-    'https://github.com/nvimdev/guard.nvim',
-    'https://github.com/nvimdev/guard-collection',
-  }, {
-    load = function()
-      vim.api.nvim_create_autocmd('BufReadPost', {
-        once = true,
-        callback = function()
-          vim.cmd.packadd('guard.nvim')
-          vim.cmd.packadd('guard-collection')
-          local ft = require('guard.filetype')
-          ft('c,cpp'):fmt({
-            cmd = 'clang-format',
-            args = function(bufnr)
-              local f = vim.bo[bufnr].filetype == 'cpp' and '.cc-format' or '.c-format'
-              return { ('--style=file:%s/%s'):format(vim.env.HOME, f) }
-            end,
-            stdin = true,
-            ignore_patterns = { 'neovim', 'vim' },
-          })
-
-          ft('lua'):fmt({
-            cmd = 'stylua',
-            args = { '-' },
-            stdin = true,
-            ignore_patterns = 'function.*_spec%.lua',
-            find = '.stylua.toml',
-          })
-          ft('rust'):fmt('rustfmt')
-          ft('typescript', 'javascript', 'typescriptreact', 'javascriptreact'):fmt('prettier')
-        end,
+      ft('lua'):fmt({
+        cmd = 'stylua',
+        args = { '-' },
+        stdin = true,
+        ignore_patterns = 'function.*_spec%.lua',
+        find = '.stylua.toml',
       })
-    end,
+      ft('rust'):fmt('rustfmt')
+      ft('typescript', 'javascript', 'typescriptreact', 'javascriptreact'):fmt('prettier')
+    end),
   })

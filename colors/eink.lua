@@ -44,11 +44,11 @@ end
 
 local p = {
   bg = oklab_to_srgb(0.248, -0.002, 0.010),
-  statusline_bg = oklab_to_srgb(0.205, -0.002, 0.012),
-  normalfloat_bg = oklab_to_srgb(0.278, -0.002, 0.012),
-  cursorline_bg = oklab_to_srgb(0.310, -0.002, 0.012),
-  selection_bg = oklab_to_srgb(0.357, -0.002, 0.015),
-  pmenu_bg = oklab_to_srgb(0.297, -0.002, 0.012),
+  statusline_bg = oklab_to_srgb(0.205, -0.001, 0.012),
+  normalfloat_bg = oklab_to_srgb(0.278, -0.001, 0.012),
+  cursorline_bg = oklab_to_srgb(0.310, -0.001, 0.012),
+  selection_bg = oklab_to_srgb(0.357, -0.001, 0.015),
+  pmenu_bg = oklab_to_srgb(0.297, -0.001, 0.012),
   pmenu_thumb = oklab_to_srgb(0.369, 0.000, 0.014),
   pmenusel_bg = oklab_to_srgb(0.450, 0.000, 0.012),
   pmenusel_fg = oklab_to_srgb(0.148, 0.000, -0.004),
@@ -491,6 +491,7 @@ h('YankHighlight', { fg = p.bg, bg = p.fg })
 -- =============================================================================
 
 h('LspReferenceText', { bg = p.selection_bg })
+h('LspReferenceTarget', { bg = p.selection_bg })
 h('LspReferenceRead', { bg = p.selection_bg })
 h('LspReferenceWrite', { bg = p.selection_bg })
 h('LspReferenceTarget', { link = 'LspReferenceText' })
