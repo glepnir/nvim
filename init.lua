@@ -111,6 +111,20 @@ vim.api.nvim_create_autocmd('PackChanged', {
   end,
 })
 
+vim.api.nvim_create_user_command('PackDelete', function(args)
+  vim.pack.del(args.fargs, { force = true })
+end, {
+  nargs = '+',
+  complete = function()
+    return vim
+      .iter(vim.pack.get())
+      :map(function(p)
+        return p.spec.name
+      end)
+      :totable()
+  end,
+})
+
 g.phoenix = {
   snippet = vim.fn.stdpath('config') .. '/snippets',
 }
