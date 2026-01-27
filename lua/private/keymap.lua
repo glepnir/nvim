@@ -321,7 +321,7 @@ map.n({
   ['<Leader>gc'] = cmd('FzfLua git_commits'),
   ['<Leader>gb'] = cmd('FzfLua git_bcommits'),
   ['<Leader>o'] = cmd('FzfLua lsp_document_symbols'),
-  ['<Leader>fc'] = cmd('FzfLua files cwd=$HOME/.config'),
+  ['<Leader>fc'] = cmd('FzfLua files cwd=$HOME/.config fd_opts=--type\\ f'),
   --gitsign
   [']g'] = cmd('lua require"gitsigns".next_hunk()<CR>'),
   ['[g'] = cmd('lua require"gitsigns".prev_hunk()<CR>'),

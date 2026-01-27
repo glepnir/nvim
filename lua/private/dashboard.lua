@@ -24,7 +24,11 @@ local config = {
   shortcuts = {
     { key = 'f', desc = 'Open File', action = '<cmd>FzfLua files<CR>' },
     { key = 'o', desc = 'Recent Files', action = '<cmd>FzfLua oldfiles<CR>' },
-    { key = 'd', desc = 'Dotfiles', action = '<cmd>FzfLua files cwd=$HOME/.config<CR>' },
+    {
+      key = 'd',
+      desc = 'Dotfiles',
+      action = '<cmd>:FzfLua files cwd=~/.config fd_opts=--type\\ f<CR>',
+    },
     { key = 'e', desc = 'New File', action = '<cmd>enew<CR>' },
     {
       key = 'u',

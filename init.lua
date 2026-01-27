@@ -199,7 +199,14 @@ P:add({
     load = on_cmd('FzfLua', 'fzf-lua', function()
       require('fzf-lua').setup({
         lsp = { symbols = { symbol_style = 3 } },
-        winopts = { preview = { default = true } },
+        winopts = {
+          preview = {
+            default = true,
+            builtin = {
+              tresitter = { enabled = false },
+            },
+          },
+        },
         files = { file_icons = false },
       })
     end),

@@ -67,6 +67,34 @@ local p = {
   green = oklab_to_srgb(0.730, -0.040, 0.068),
 }
 
+p = {
+  bg = oklab_to_srgb(0.258, -0.002, 0.011),
+  fg = oklab_to_srgb(0.770, 0.000, 0.010),
+
+  green = oklab_to_srgb(0.730, -0.045, 0.077),
+  blue = oklab_to_srgb(0.697, -0.011, -0.012),
+  cyan = oklab_to_srgb(0.729, -0.060, 0.000),
+  magenta = oklab_to_srgb(0.698, 0.040, -0.019),
+  red = oklab_to_srgb(0.690, 0.060, 0.049),
+  orange = oklab_to_srgb(0.719, 0.025, 0.053),
+  yellow = oklab_to_srgb(0.748, -0.008, 0.072),
+
+  linenr_active = oklab_to_srgb(0.710, -0.002, 0.008),
+  linenr = oklab_to_srgb(0.455, -0.002, 0.007),
+  comment = oklab_to_srgb(0.600, -0.001, 0.008),
+
+  pmenusel_fg = oklab_to_srgb(0.120, 0.000, -0.002),
+  pmenusel_bg = oklab_to_srgb(0.458, 0.001, 0.013),
+  pmenu_thumb = oklab_to_srgb(0.377, 0.001, 0.015),
+  pmenu_bg = oklab_to_srgb(0.306, -0.001, 0.013),
+
+  selection_bg = oklab_to_srgb(0.366, 0.000, 0.016),
+  cursorline_bg = oklab_to_srgb(0.316, 0.000, 0.012),
+
+  normalfloat_bg = oklab_to_srgb(0.280, -0.001, 0.011),
+  statusline_bg = oklab_to_srgb(0.213, 0.000, 0.013),
+}
+
 local d = {
   error = oklab_to_srgb(0.690, 0.085, 0.045),
   warn = oklab_to_srgb(0.760, 0.015, 0.100),
@@ -224,11 +252,6 @@ h('Operator', { fg = p.fg })
 
 h('Delimiter', { fg = p.fg })
 h('NonText', { fg = p.statusline_bg })
-
--- -----------------------------------------------------------------------------
--- Layer 6: COMMENTS
--- Luminance: L=comment (dimmest)
--- -----------------------------------------------------------------------------
 
 h('Comment', { fg = p.comment, italic = true })
 
