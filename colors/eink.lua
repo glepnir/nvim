@@ -71,7 +71,7 @@ p = {
   bg = oklab_to_srgb(0.258, -0.002, 0.011),
   fg = oklab_to_srgb(0.770, 0.000, 0.010),
 
-  green = oklab_to_srgb(0.730, -0.045, 0.077),
+  green = oklab_to_srgb(0.730, -0.045, 0.088),
   blue = oklab_to_srgb(0.697, -0.011, -0.012),
   cyan = oklab_to_srgb(0.729, -0.060, 0.000),
   magenta = oklab_to_srgb(0.698, 0.040, -0.019),
@@ -174,6 +174,13 @@ vim.api.nvim_create_user_command('ColorOkLab', function()
     )
   end
 end, {})
+
+vim.api.nvim_create_user_command('SrgbOkLab', function(args)
+  local L, a, b = find_oklab(args.args)
+  print(L, a, b)
+end, {
+  nargs = '+',
+})
 
 local function rgb_to_hex(c)
   return string.format('#%02x%02x%02x', c[1], c[2], c[3])
