@@ -43,32 +43,7 @@ local function oklab_to_srgb(L, a, b)
 end
 
 local p = {
-  bg = oklab_to_srgb(0.248, -0.002, 0.010),
-  statusline_bg = oklab_to_srgb(0.205, -0.001, 0.012),
-  normalfloat_bg = oklab_to_srgb(0.278, -0.001, 0.012),
-  cursorline_bg = oklab_to_srgb(0.310, -0.001, 0.012),
-  selection_bg = oklab_to_srgb(0.357, -0.001, 0.015),
-  pmenu_bg = oklab_to_srgb(0.297, -0.001, 0.012),
-  pmenu_thumb = oklab_to_srgb(0.369, 0.000, 0.014),
-  pmenusel_bg = oklab_to_srgb(0.450, 0.000, 0.012),
-  pmenusel_fg = oklab_to_srgb(0.148, 0.000, -0.004),
-
-  fg = oklab_to_srgb(0.780, 0.000, 0.009),
-  comment = oklab_to_srgb(0.590, -0.001, 0.006),
-  linenr = oklab_to_srgb(0.432, -0.002, 0.006),
-  linenr_active = oklab_to_srgb(0.719, -0.002, 0.007),
-
-  yellow = oklab_to_srgb(0.748, -0.010, 0.065),
-  orange = oklab_to_srgb(0.719, 0.022, 0.048),
-  red = oklab_to_srgb(0.690, 0.060, 0.045),
-  magenta = oklab_to_srgb(0.698, 0.038, -0.020),
-  cyan = oklab_to_srgb(0.730, -0.055, -0.005),
-  blue = oklab_to_srgb(0.698, -0.009, -0.030),
-  green = oklab_to_srgb(0.730, -0.040, 0.068),
-}
-
-p = {
-  bg = oklab_to_srgb(0.258, -0.002, 0.011),
+  bg = oklab_to_srgb(0.258, -0.002, 0.010),
   fg = oklab_to_srgb(0.770, 0.000, 0.010),
 
   green = oklab_to_srgb(0.730, -0.045, 0.088),
