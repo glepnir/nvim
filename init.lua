@@ -203,7 +203,7 @@ P:add({
           preview = {
             default = true,
             builtin = {
-              tresitter = { enabled = false },
+              treesitter = { enabled = false },
             },
           },
         },

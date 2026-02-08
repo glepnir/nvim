@@ -54,7 +54,7 @@ au('CmdlineEnter', {
   once = true,
   callback = function()
     if vim.version().minor >= 12 then
-      require('vim._extui').enable({})
+      require('vim._core.ui2').enable({})
     end
   end,
 })

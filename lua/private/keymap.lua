@@ -362,3 +362,16 @@ end)
 map.xo('as', function()
   require('nvim-treesitter-textobjects.select').select_textobject('@local.scope', 'locals')
 end)
+
+-- https://slicker.me/neovim/boosting_productivity_lua.htm
+map.nxo(']c', function()
+  if vim.bo.cms:find('^\\\\') then
+    vim.fn.search('^\\s*//\\|^\\s*#\\|^\\s*\\*\\s', 'W')
+  end
+end, { desc = 'Next comment' })
+
+map.nxo('[c', function()
+  if vim.bo.cms:find('^\\\\') then
+    vim.fn.search('^\\s*//\\|^\\s*#\\|^\\s*\\*\\s', 'bW')
+  end
+end, { desc = 'Prev comment' })
