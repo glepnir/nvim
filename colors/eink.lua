@@ -46,13 +46,13 @@ local p = {
   bg = oklab_to_srgb(0.258, -0.002, 0.010),
   fg = oklab_to_srgb(0.770, 0.000, 0.010),
 
-  green = oklab_to_srgb(0.727, -0.062, 0.088),
+  green = oklab_to_srgb(0.718, -0.060, 0.088),
   blue = oklab_to_srgb(0.697, -0.011, -0.012),
   cyan = oklab_to_srgb(0.710, -0.060, 0.000),
   magenta = oklab_to_srgb(0.698, 0.040, -0.019),
   red = oklab_to_srgb(0.690, 0.060, 0.049),
-  orange = oklab_to_srgb(0.719, 0.025, 0.053),
-  yellow = oklab_to_srgb(0.720, -0.008, 0.072),
+  orange = oklab_to_srgb(0.715, 0.025, 0.053),
+  yellow = oklab_to_srgb(0.718, -0.008, 0.072),
 
   linenr_active = oklab_to_srgb(0.710, -0.002, 0.008),
   linenr = oklab_to_srgb(0.455, -0.002, 0.007),

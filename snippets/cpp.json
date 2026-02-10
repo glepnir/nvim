@@ -104,12 +104,12 @@
     "prefix": "class",
     "body": [
       "class ${1:ClassName} {",
+      "private:",
+      "\t$0",
+      "",
       "public:",
       "\t${1:ClassName}() = default;",
       "\t~${1:ClassName}() = default;",
-      "\t",
-      "private:",
-      "\t$0",
       "};"
     ],
     "description": "Class definition"
