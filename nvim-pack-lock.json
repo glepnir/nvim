@@ -9,11 +9,11 @@
       "src": "https://github.com/ibhagwan/fzf-lua"
     },
     "gitsigns.nvim": {
-      "rev": "1ce96a464fdbc24208e24c117e2021794259005d",
+      "rev": "31217271a7314c343606acb4072a94a039a19fb5",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "guard-collection": {
-      "rev": "888962b68b13ac04347321ecdf802b7cd94c4c49",
+      "rev": "ea1d770284473bc4976a787d61d5eb781a87d899",
       "src": "https://github.com/nvimdev/guard-collection"
     },
     "guard.nvim": {
