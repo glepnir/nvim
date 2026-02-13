@@ -46,13 +46,13 @@ local p = {
   bg = oklab_to_srgb(0.258, -0.002, 0.010),
   fg = oklab_to_srgb(0.770, 0.000, 0.010),
 
-  green = oklab_to_srgb(0.71838, -0.056, 0.096),
+  green = oklab_to_srgb(0.71838, -0.052, 0.088),
   blue = oklab_to_srgb(0.697, -0.011, -0.012),
   cyan = oklab_to_srgb(0.710, -0.060, 0.000),
   magenta = oklab_to_srgb(0.698, 0.040, -0.019),
   red = oklab_to_srgb(0.690, 0.060, 0.049),
-  orange = oklab_to_srgb(0.715, 0.025, 0.053),
-  yellow = oklab_to_srgb(0.718, -0.008, 0.072),
+  orange = oklab_to_srgb(0.702, 0.025, 0.053),
+  yellow = oklab_to_srgb(0.709, -0.008, 0.072),
 
   linenr_active = oklab_to_srgb(0.710, -0.002, 0.008),
   linenr = oklab_to_srgb(0.455, -0.002, 0.007),
@@ -197,7 +197,7 @@ h('Visual', { bg = p.selection_bg })
 h('Search', { fg = p.bg, bg = p.yellow })
 h('IncSearch', { fg = p.bg, bg = p.orange })
 
-h('Keyword', { fg = p.fg })
+h('Keyword', { fg = p.blue })
 h('Statement', { fg = p.fg })
 h('Repeat', { fg = p.fg })
 h('Conditional', { link = 'Repeat' })
@@ -212,7 +212,7 @@ h('Typedef', { link = 'Type' })
 
 -- Constants
 h('Constant', { fg = p.magenta })
-h('String', { fg = p.orange })
+h('String', { fg = p.yellow })
 h('Character', { link = 'Constant' })
 h('Number', { link = 'Constant' })
 h('Boolean', { link = 'Constant' })
