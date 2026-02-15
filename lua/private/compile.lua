@@ -14,9 +14,9 @@ local function parse_err(stderr, save_item)
     local line = lines[i]
 
     local filename, lnum, col, type_str, msg = line:match('^([^:]+):(%d+):(%d+):%s*(%w+):%s*(.*)$')
-    local bufnr = vim.fn.bufadd(filename)
 
     if filename and lnum and col then
+      local bufnr = vim.fn.bufadd(filename)
       prev_item = {
         filename = filename,
         lnum = tonumber(lnum),
@@ -26,9 +26,12 @@ local function parse_err(stderr, save_item)
         bufnr = bufnr,
       }
       table.insert(list, prev_item)
-      save_item.lnum = prev_item.lnum
-      save_item.col = prev_item.col
-      save_item.bufnr = prev_item.bufnr
+      if save_item then
+        save_item.lnum = prev_item.lnum
+        save_item.col = prev_item.col
+        save_item.bufnr = prev_item.bufnr
+        save_item.filename = prev_item.filename
+      end
 
       local j = i + 1
 
@@ -54,7 +57,7 @@ local function parse_err(stderr, save_item)
 
       i = j
     else
-      if save_item then
+      if save_item and save_item.bufnr then
         table.insert(list, {
           filename = save_item.filename,
           bufnr = save_item.bufnr,
@@ -74,13 +77,15 @@ end
 local function apply_qf_syntax()
   vim.cmd([[
     syntax clear
-    syntax match QfFileName /^▸ \zs[^ ]*/ 
-    syntax match QfLineCol / \d\+:\d\+/
+    syntax match QfFileName /^▸ \zs[^ ]*/
     syntax match QfErrorMsg /use.*$/
     syntax match QfContext /^  .*/
     syntax match QfFinish /\<finished\>/
     syntax match QfExit /\<exited abnormally\>/
     syntax match QfCode /\vcode\s+\zs\d+/
+    syntax match QfDuration /duration\s\+\zs[0-9.]\+s/
+    syntax match QfLineCol /▸ [^ ]\+ \zs\d\+:\d\+/
+    syntax match QfTime /\d\d:\d\d:\d\d/
 
     highlight QfFileName guifg=#992c3d ctermfg=Red gui=bold,underline
     highlight QfLineCol guifg=#c7c938 ctermfg=Yellow
@@ -89,34 +94,84 @@ local function apply_qf_syntax()
     highlight QfFinish guifg=#62c92a ctermfg=Green
     highlight QfExit guifg=#992c3d ctermfg=Red gui=bold
     highlight QfCode guifg=#992c3d ctermfg=Red gui=bold
+    highlight QfDuration guifg=#c7c938 ctermfg=Yellow
+    highlight QfTime guifg=#c7c938 ctermfg=Yellow
   ]])
 end
 
-local info_list = {
-  start = {
-    user_data = 'compile_info',
-  },
-  fill = {
-    user_data = 'compile_info',
-    text = ' ',
-  },
-  cmd = {
-    user_data = 'compile_info',
-  },
+local ansi_colors = {
+  ['30'] = 'Black',
+  ['31'] = 'Red',
+  ['32'] = 'Green',
+  ['33'] = 'Yellow',
+  ['34'] = 'Blue',
+  ['35'] = 'Magenta',
+  ['36'] = 'Cyan',
+  ['37'] = 'White',
 }
+
+--- Open quickfix window immediately with initial "Compiling" header.
+--- Returns the qf window id.
+local function open_qf_now(cmd_text)
+  local start_text = ('Compilation started at %s'):format(os.date('%a %b %H:%M:%S'))
+
+  local action = 'a'
+  local qf_win
+  if qf_id then
+    local info = vim.fn.getqflist({ id = qf_id, winid = true })
+    qf_win = info.winid
+    if qf_win and qf_win ~= 0 and api.nvim_win_is_valid(qf_win) then
+      action = 'r'
+    end
+  end
+
+  vim.fn.setqflist({}, action, {
+    title = 'Compiling',
+    id = qf_id,
+    items = {
+      { user_data = 'compile_info', text = start_text },
+      { user_data = 'compile_info', text = ' ' },
+      { user_data = 'compile_info', text = cmd_text },
+    },
+    quickfixtextfunc = function(info)
+      local lines = {}
+      qf_id = info.id
+      local res = vim.fn.getqflist({ id = info.id, items = 1 })
+      local items = res.items
+      for i = info.start_idx, info.end_idx do
+        local item = items[i]
+        if item.user_data == 'compile_info' then
+          table.insert(lines, item.text)
+        end
+      end
+      return lines
+    end,
+  })
+
+  local curwin
+  qf_win = vim.fn.getqflist({ winid = 0 }).winid
+  if qf_win == 0 then
+    curwin = api.nvim_get_current_win()
+    vim.cmd.copen()
+    qf_win = api.nvim_get_current_win()
+    api.nvim_win_set_hl_ns(qf_win, ansi_ns)
+    vim.opt_local.number = false
+    vim.opt_local.signcolumn = 'no'
+    vim.opt_local.list = false
+    vim.bo.textwidth = 0
+  end
+
+  if curwin and api.nvim_win_is_valid(curwin) then
+    api.nvim_set_current_win(curwin)
+  end
+
+  api.nvim_win_call(qf_win, function()
+    apply_qf_syntax()
+  end)
+end
 
 local function update_qf(qf_list, over)
   local line_colors = {}
-  local ansi_colors = {
-    ['30'] = 'Black',
-    ['31'] = 'Red',
-    ['32'] = 'Green',
-    ['33'] = 'Yellow',
-    ['34'] = 'Blue',
-    ['35'] = 'Magenta',
-    ['36'] = 'Cyan',
-    ['37'] = 'White',
-  }
 
   vim.fn.setqflist({}, 'a', {
     items = qf_list,
@@ -132,7 +187,6 @@ local function update_qf(qf_list, over)
       local lpeg = vim.lpeg
       local P, R, C, Ct = lpeg.P, lpeg.R, lpeg.C, lpeg.Ct
 
-      -- ESC [digits m
       local esc = P('\27')
       local digits = R('09') ^ 0
       local code = esc
@@ -204,9 +258,8 @@ local function update_qf(qf_list, over)
         end
       end
 
-      local buf = vim.api.nvim_win_get_buf(res.winid)
-
-      if #line_colors > 0 then
+      if #line_colors > 0 and res.winid ~= 0 then
+        local buf = vim.api.nvim_win_get_buf(res.winid)
         vim.schedule(function()
           for _, c in ipairs(line_colors) do
             vim.api.nvim_set_hl(ansi_ns, 'ANSI' .. c.color, { ctermfg = c.code, fg = c.color })
@@ -223,71 +276,33 @@ local function update_qf(qf_list, over)
   })
 
   local qf_win = vim.fn.getqflist({ winid = 0 }).winid
-  local curwin
-  if qf_win == 0 then
-    curwin = api.nvim_get_current_win()
-    vim.cmd.copen()
-    qf_win = api.nvim_get_current_win()
-    api.nvim_win_set_hl_ns(qf_win, ansi_ns)
-    vim.opt_local.number = false
-    vim.opt_local.signcolumn = 'no'
-    vim.opt_local.list = false
-    vim.bo.textwidth = 0
+  if qf_win ~= 0 and api.nvim_win_is_valid(qf_win) then
+    api.nvim_win_call(qf_win, function()
+      local count = api.nvim_buf_line_count(0)
+      local height = api.nvim_win_get_height(qf_win)
+      if count > height then
+        api.nvim_win_set_cursor(qf_win, { count, 0 })
+      end
+      apply_qf_syntax()
+    end)
   end
-
-  if curwin and api.nvim_win_is_valid(curwin) then
-    api.nvim_set_current_win(curwin)
-  end
-
-  api.nvim_win_call(qf_win, function()
-    local count = api.nvim_buf_line_count(0)
-    local height = api.nvim_win_get_height(qf_win)
-    if count > height then
-      api.nvim_win_set_cursor(qf_win, { count, 0 })
-    end
-    apply_qf_syntax()
-  end)
 end
 
 local function compiler(compile_cmd, bufname)
   if compile_cmd:find('%%s') then
     local cwd = vim.uv.cwd()
-    if bufname:find(cwd) then
+    if bufname:find(cwd, 1, true) then
       bufname = bufname:sub(#cwd + 2)
     end
     compile_cmd = compile_cmd:gsub('%%s', bufname)
   end
   last_cmd = compile_cmd
+  open_qf_now(compile_cmd)
 
   local start_time = vim.uv.hrtime()
-
   local stdout_buffer = ''
   local stderr_buffer = ''
   local save_item = {}
-
-  info_list.cmd.text = last_cmd
-  info_list.start.text = ('Compilation started at %s'):format(os.date('%a %b %H:%M:%S'))
-  vim.schedule(function()
-    local action = 'a'
-    local qf_win
-    if qf_id then
-      qf_win = vim.fn.getqflist({ id = qf_id, winid = true }).winid
-      if api.nvim_win_is_valid(qf_win) then
-        action = 'r'
-      end
-    end
-    vim.fn.setqflist({}, action, {
-      title = 'Compiling',
-      id = qf_id,
-      items = { info_list.start, info_list.fill, info_list.cmd },
-    })
-
-    if action == 'r' then
-      api.nvim_win_call(qf_win, function()
-        apply_qf_syntax()
-      end)
-    end
-  end)
 
   job = vim.system({ 'sh', '-c', compile_cmd }, {
     text = true,
@@ -316,7 +331,9 @@ local function compiler(compile_cmd, bufname)
           end
         end
 
-        update_qf(list)
+        if #list > 0 then
+          update_qf(list)
+        end
       end)
     end,
 
@@ -335,12 +352,12 @@ local function compiler(compile_cmd, bufname)
           stderr_buffer = ''
         end
 
-        local list = {}
         local err_text = table.concat(lines, '\n')
         if err_text ~= '' then
           local err_list = parse_err(err_text, save_item)
-          vim.list_extend(list, err_list)
-          update_qf(list)
+          if #err_list > 0 then
+            update_qf(err_list)
+          end
         end
       end)
     end,
@@ -356,7 +373,7 @@ local function compiler(compile_cmd, bufname)
       end
 
       if stderr_buffer ~= '' then
-        local err_list = parse_err(stderr_buffer)
+        local err_list = parse_err(stderr_buffer, save_item)
         vim.list_extend(list, err_list)
       end
 
@@ -378,42 +395,37 @@ local function compiler(compile_cmd, bufname)
   end)
 end
 
-local function env_with_compile()
-  local bufname = api.nvim_buf_get_name(0)
+--- Read .env file synchronously — it's tiny, no need for async coroutine overhead.
+local function read_compile_command()
   local cwd = vim.uv.cwd()
   local env_file = vim.fs.joinpath(cwd, '.env')
-  coroutine.wrap(function()
-    local co = assert(coroutine.running())
-    vim.uv.fs_open(env_file, 'r', 438, function(err, fd)
-      assert(not err)
-      coroutine.resume(co, fd)
-    end)
-    local fd = coroutine.yield()
 
-    vim.uv.fs_fstat(fd, function(err, stat)
-      assert(not err)
-      coroutine.resume(co, stat.size)
-    end)
-    local size = coroutine.yield()
-    if size == 0 then
-      return
+  -- Quick existence check
+  local stat = vim.uv.fs_stat(env_file)
+  if not stat or stat.size == 0 then
+    return nil
+  end
+
+  local fd = vim.uv.fs_open(env_file, 'r', 438)
+  if not fd then
+    return nil
+  end
+
+  local data = vim.uv.fs_read(fd, stat.size, 0)
+  vim.uv.fs_close(fd)
+
+  if not data then
+    return nil
+  end
+
+  local lines = vim.split(data, '\n')
+  for _, line in ipairs(lines) do
+    if vim.startswith(line, 'COMPILE_COMMAND') then
+      return vim.trim(line:sub(17))
     end
+  end
 
-    vim.uv.fs_read(fd, size, 0, function(err, data)
-      assert(not err)
-      local lines = vim.split(data, '\n')
-      local cmd = nil
-      for _, line in ipairs(lines) do
-        if line:find('^COMPILE_COMMAND') then
-          cmd = line:sub(17, #line)
-          break
-        end
-      end
-      if cmd then
-        compiler(cmd, bufname)
-      end
-    end)
-  end)()
+  return nil
 end
 
 local function close_running()
@@ -429,10 +441,20 @@ api.nvim_create_user_command('Compile', function()
     ansi_ns = api.nvim_create_namespace('ansi_colors')
   end
   close_running()
-  env_with_compile()
+
+  local cmd = read_compile_command()
+  if cmd then
+    local bufname = api.nvim_buf_get_name(0)
+    compiler(cmd, bufname)
+  else
+    vim.notify('No COMPILE_COMMAND found in .env', vim.log.levels.WARN)
+  end
 end, {})
 
 api.nvim_create_user_command('Recompile', function()
+  if not ansi_ns then
+    ansi_ns = api.nvim_create_namespace('ansi_colors')
+  end
   close_running()
   if last_cmd then
     local bufname = api.nvim_buf_get_name(0)
