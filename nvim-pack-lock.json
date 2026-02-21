@@ -20,10 +20,6 @@
       "rev": "addb8d2f40662b8b62d60dd7d18f503beb2332e7",
       "src": "https://github.com/nvimdev/guard.nvim"
     },
-    "indentmini.nvim": {
-      "rev": "38572ce5a7a064a5deb89d6d861b7c40fc929ab1",
-      "src": "https://github.com/nvimdev/indentmini.nvim"
-    },
     "modeline.nvim": {
       "rev": "087710ac4e30403e85113086d2acec63d1594007",
       "src": "https://github.com/nvimdev/modeline.nvim"
