@@ -184,14 +184,15 @@ function P:add(specs, opts)
   return self
 end
 
-P:add({
-  'nvimdev/modeline.nvim',
-  'lewis6991/gitsigns.nvim',
-  'nvimdev/visualizer.nvim',
-  'nvimdev/phoenix.nvim',
-  { src = 'nvim-treesitter/nvim-treesitter', version = 'main' },
-  { src = 'nvim-treesitter/nvim-treesitter-textobjects', version = 'main' },
-}, { load = false })
+P
+  :add({
+    'nvimdev/modeline.nvim',
+    'lewis6991/gitsigns.nvim',
+    'nvimdev/visualizer.nvim',
+    'nvimdev/phoenix.nvim',
+    { src = 'nvim-treesitter/nvim-treesitter', version = 'main' },
+    { src = 'nvim-treesitter/nvim-treesitter-textobjects', version = 'main' },
+  }, { load = false })
   :add('nvimdev/dired.nvim', {
     load = on_cmd('Dired', 'dired.nvim'),
   })
@@ -211,31 +212,34 @@ P:add({
       })
     end),
   })
-  :add('nvimdev/indentmini.nvim', {
-    load = on_event({ 'BufEnter', 'BufNewFile' }, 'indentmini.nvim', function()
-      require('indentmini').setup({ only_current = true })
-    end),
-  })
-  :add({ 'nvimdev/guard.nvim', 'nvimdev/guard-collection' }, {
-    load = on_event('BufReadPost', { 'guard.nvim', 'guard-collection' }, function()
-      local ft = require('guard.filetype')
-      ft('c,cpp'):fmt({
-        cmd = 'clang-format',
-        args = function(bufnr)
-          local f = vim.bo[bufnr].filetype == 'cpp' and '.cc-format' or '.c-format'
-          return { ('--style=file:%s/%s'):format(vim.env.HOME, f) }
-        end,
-        stdin = true,
-        ignore_patterns = { 'neovim', 'vim' },
-      })
-      ft('lua'):fmt({
-        cmd = 'stylua',
-        args = { '-' },
-        stdin = true,
-        ignore_patterns = 'function.*_spec%.lua',
-        find = '.stylua.toml',
-      })
-      ft('rust'):fmt('rustfmt')
-      ft('typescript', 'javascript', 'typescriptreact', 'javascriptreact'):fmt('prettier')
-    end),
-  })
+  -- :add('nvimdev/indentmini.nvim', {
+  --   load = on_event({ 'BufEnter', 'BufNewFile' }, 'indentmini.nvim', function()
+  --     require('indentmini').setup({ only_current = true })
+  --   end),
+  -- })
+  :add(
+    { 'nvimdev/guard.nvim', 'nvimdev/guard-collection' },
+    {
+      load = on_event('BufReadPost', { 'guard.nvim', 'guard-collection' }, function()
+        local ft = require('guard.filetype')
+        ft('c,cpp'):fmt({
+          cmd = 'clang-format',
+          args = function(bufnr)
+            local f = vim.bo[bufnr].filetype == 'cpp' and '.cc-format' or '.c-format'
+            return { ('--style=file:%s/%s'):format(vim.env.HOME, f) }
+          end,
+          stdin = true,
+          ignore_patterns = { 'neovim', 'vim' },
+        })
+        ft('lua'):fmt({
+          cmd = 'stylua',
+          args = { '-' },
+          stdin = true,
+          ignore_patterns = 'function.*_spec%.lua',
+          find = '.stylua.toml',
+        })
+        ft('rust'):fmt('rustfmt')
+        ft('typescript', 'javascript', 'typescriptreact', 'javascriptreact'):fmt('prettier')
+      end),
+    }
+  )

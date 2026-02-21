@@ -68,6 +68,7 @@ local p = {
 
   normalfloat_bg = oklab_to_srgb(0.280, -0.001, 0.011),
   statusline_bg = oklab_to_srgb(0.213, 0.000, 0.013),
+  indent = oklab_to_srgb(0.415, -0.001, 0.010),
 }
 
 local d = {
@@ -234,6 +235,7 @@ h('Operator', { fg = p.fg })
 
 h('Delimiter', { fg = p.fg })
 h('NonText', { fg = p.statusline_bg })
+h('Whitespace', { fg = p.indent })
 
 h('Comment', { fg = p.comment, italic = true })
 

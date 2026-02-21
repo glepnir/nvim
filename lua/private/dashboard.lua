@@ -244,6 +244,7 @@ local function render_dashboard(buf)
 
   vim.bo[buf].modifiable = true
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+  vim.bo[buf].filetype = 'dashboard'
   vim.bo[buf].modifiable = false
   vim.api.nvim_win_set_cursor(0, cursor)
 

@@ -93,6 +93,7 @@ au('UIEnter', {
     vim.schedule(function()
       require('private.dashboard').show()
       require('private.keymap')
+      require('private.indent')
 
       vim.lsp.log.set_level(vim.log.levels.OFF)
       vim.diagnostic.config({
