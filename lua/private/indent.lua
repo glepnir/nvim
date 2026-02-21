@@ -14,38 +14,6 @@ local opt = {
   avoid_cursor_in_insert = true,
 }
 
-local function guides(sw)
-  if vim.list_contains(opt.exclude_filetype, vim.bo.filetype) then
-    return
-  end
-  if sw == 0 then
-    sw = vim.bo.tabstop
-  end
-  local indent_char = opt.char .. (' '):rep(sw - 1)
-  vim.opt_local.listchars:append({ leadmultispace = indent_char })
-end
-
-api.nvim_create_autocmd('OptionSet', {
-  pattern = { 'shiftwidth', 'tabstop', 'expandtab' },
-  group = augroup,
-  callback = function()
-    if type(vim.v.option_new) ~= 'boolean' then
-      guides(vim.v.option_new)
-    end
-  end,
-})
-
-api.nvim_create_autocmd({ 'BufWinEnter', 'BufEnter' }, {
-  group = augroup,
-  callback = function(args)
-    guides(vim.bo[args.buf].shiftwidth)
-  end,
-})
-
-if vim.v.vim_did_enter then
-  guides(vim.bo.shiftwidth)
-end
-
 ffi.cdef([[
   typedef struct {} Error;
   typedef struct file_buffer buf_T;
@@ -70,6 +38,36 @@ local function get_step(bufnr)
     sw = vim.bo[bufnr].tabstop
   end
   return sw
+end
+
+local function guides(bufnr)
+  if vim.list_contains(opt.exclude_filetype, vim.bo.filetype) then
+    return
+  end
+  local sw = get_step(bufnr)
+  local indent_char = opt.char .. (' '):rep(sw - 1)
+  vim.opt_local.listchars:append({ leadmultispace = indent_char })
+end
+
+api.nvim_create_autocmd('OptionSet', {
+  pattern = { 'shiftwidth', 'tabstop', 'expandtab' },
+  group = augroup,
+  callback = function(args)
+    if type(vim.v.option_new) ~= 'boolean' then
+      guides(args.buf)
+    end
+  end,
+})
+
+api.nvim_create_autocmd({ 'BufWinEnter', 'BufEnter' }, {
+  group = augroup,
+  callback = function(args)
+    guides(args.buf)
+  end,
+})
+
+if vim.v.vim_did_enter then
+  guides(vim.bo.shiftwidth)
 end
 
 local function buf_get_line(bufnr, row)
