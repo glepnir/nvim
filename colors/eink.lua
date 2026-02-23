@@ -72,6 +72,36 @@ local p = {
   statusline_bg = oklab_to_srgb(0.213, 0.000, 0.013),
   indent = oklab_to_srgb(0.415, -0.001, 0.010),
 }
+p = {
+  bg = oklab_to_srgb(0.250, -0.002, 0.009),
+  statusline_bg = oklab_to_srgb(0.200, -0.001, 0.010),
+  normalfloat_bg = oklab_to_srgb(0.310, -0.001, 0.011),
+  cursorline_bg = oklab_to_srgb(0.310, -0.001, 0.010),
+  pmenu_bg = oklab_to_srgb(0.310, -0.001, 0.012),
+  selection_bg = oklab_to_srgb(0.380, 0.000, 0.013),
+  indent = oklab_to_srgb(0.380, -0.001, 0.010),
+  pmenu_thumb = oklab_to_srgb(0.380, 0.001, 0.013),
+  pmenusel_bg = oklab_to_srgb(0.460, 0.001, 0.014),
+
+  fg = oklab_to_srgb(0.740, 0.000, 0.008),
+  comment = oklab_to_srgb(0.540, -0.001, 0.007),
+  linenr = oklab_to_srgb(0.420, -0.002, 0.007),
+  linenr_active = oklab_to_srgb(0.680, -0.001, 0.008),
+  pmenusel_fg = oklab_to_srgb(0.110, -0.002, 0.000),
+
+  -- FOCAL: moss green + teal
+  green = oklab_to_srgb(0.740, -0.058, 0.062), -- moss, θ=133°, C=0.085
+  cyan = oklab_to_srgb(0.720, -0.068, -0.012), -- teal, θ=190°, C=0.069
+
+  -- CONTENT: gold, copper, terracotta, steel
+  yellow = oklab_to_srgb(0.700, -0.005, 0.078), -- gold, θ=94°, C=0.078
+  orange = oklab_to_srgb(0.680, 0.035, 0.058), -- copper, θ=59°, C=0.068
+  red = oklab_to_srgb(0.680, 0.068, 0.042), -- terracotta, θ=32°, C=0.080
+  blue = oklab_to_srgb(0.680, -0.025, -0.048), -- steel, θ=243°, C=0.054
+
+  -- QUIET: dusty rose
+  magenta = oklab_to_srgb(0.650, 0.038, -0.018), -- dusty rose, θ=335°, C=0.042
+}
 
 local d = {
   error = oklab_to_srgb(0.690, 0.085, 0.045),
@@ -202,7 +232,7 @@ h('IncSearch', { fg = p.bg, bg = p.orange })
 
 h('Keyword', { fg = p.blue })
 h('Statement', { fg = p.fg })
-h('Repeat', { fg = p.fg })
+h('Repeat', { fg = p.orange })
 h('Conditional', { link = 'Repeat' })
 
 h('Function', { fg = p.green })

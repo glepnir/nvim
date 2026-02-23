@@ -97,6 +97,18 @@ end
 
 local ctx = {}
 
+local function pack(is_empty, indent)
+  return bit.bor(bit.lshift(is_empty and 1 or 0, 15), bit.band(indent, 0x7FFF))
+end
+
+local function unpack_empty(packed)
+  return bit.band(bit.rshift(packed, 15), 1) == 1
+end
+
+local function unpack_indent(packed)
+  return bit.band(packed, 0x7FFF)
+end
+
 --- @param c table
 --- @param row integer 0-indexed
 --- @param direction integer UP(-1) or DOWN(1)
@@ -105,14 +117,18 @@ local ctx = {}
 local function search_nearest(c, row, direction, bufnr)
   local r = row
   while r >= 0 and r < c.count do
-    if c.nonblank[r] then
-      return c.nonblank[r]
+    local packed = c.snapshot[r]
+    if packed and not unpack_empty(packed) then
+      return unpack_indent(packed)
     end
-    local text = buf_get_line(bufnr, r)
-    if not is_blank(text) then
-      local indent = buf_get_indent(bufnr, r + 1)
-      c.nonblank[r] = indent
-      return indent
+    if not packed then
+      local text = buf_get_line(bufnr, r)
+      if not is_blank(text) then
+        local indent = buf_get_indent(bufnr, r + 1)
+        c.snapshot[r] = pack(false, indent)
+        return indent
+      end
+      c.snapshot[r] = pack(true, 0)
     end
     r = r + direction
   end
@@ -135,9 +151,9 @@ local function blank_indent(c, bufnr, row, has_ts)
       if parent then
         local p_srow = parent:range()
         if p_srow >= 0 then
-          c.indent[row] = (
-            c.nonblank[p_srow] and c.nonblank[p_srow] or buf_get_indent(bufnr, p_srow + 1)
-          ) + c.step
+          local p_packed = c.snapshot[p_srow]
+          local p_indent = p_packed and unpack_indent(p_packed) or buf_get_indent(bufnr, p_srow + 1)
+          c.snapshot[row] = pack(true, p_indent + c.step)
         end
       end
     end
@@ -146,7 +162,7 @@ local function blank_indent(c, bufnr, row, has_ts)
     local down = search_nearest(c, row + 1, DOWN, bufnr)
     local indent = math.max(up, down)
     if indent > 0 then
-      c.indent[row] = indent
+      c.snapshot[row] = pack(true, indent)
     end
   end
 end
@@ -158,9 +174,7 @@ local function build_cache(winid, bufnr, toprow, botrow, has_ts)
   c.tabstop = vim.bo[bufnr].tabstop
   c.leftcol = vim.fn.winsaveview().leftcol
   c.count = api.nvim_buf_line_count(bufnr)
-  c.blank = {}
-  c.nonblank = {}
-  c.indent = {}
+  c.snapshot = {} -- row -> packed int (替代 blank + nonblank + indent)
 
   local mode = api.nvim_get_mode().mode
   c.insert = mode == 'i' or mode == 'ic' or mode == 'ix'
@@ -170,16 +184,18 @@ local function build_cache(winid, bufnr, toprow, botrow, has_ts)
     c.curcol = pos[2]
   end
 
+  local blanks = {}
   for i = toprow, botrow do
     local line_text = buf_get_line(bufnr, i)
     if is_blank(line_text) then
-      c.blank[i] = true
+      c.snapshot[i] = pack(true, 0)
+      blanks[#blanks + 1] = i
     else
-      c.nonblank[i] = buf_get_indent(bufnr, i + 1)
+      c.snapshot[i] = pack(false, buf_get_indent(bufnr, i + 1))
     end
   end
 
-  for row in pairs(c.blank) do
+  for _, row in ipairs(blanks) do
     blank_indent(c, bufnr, row, has_ts)
   end
 end
@@ -197,12 +213,17 @@ api.nvim_set_decoration_provider(ns, {
   end,
   on_line = function(_, winid, bufnr, row)
     local c = ctx[winid]
-    if not c or not c.blank[row] then
+    if not c then
       return
     end
 
-    local indent = c.indent[row]
-    if not indent or indent <= 0 then
+    local packed = c.snapshot[row]
+    if not packed or not unpack_empty(packed) then
+      return
+    end
+
+    local indent = unpack_indent(packed)
+    if indent <= 0 then
       return
     end
 
