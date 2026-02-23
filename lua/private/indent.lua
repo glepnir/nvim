@@ -59,7 +59,7 @@ api.nvim_create_autocmd('OptionSet', {
   end,
 })
 
-api.nvim_create_autocmd({ 'BufWinEnter', 'BufEnter' }, {
+api.nvim_create_autocmd({ 'BufWinEnter' }, {
   group = augroup,
   callback = function(args)
     guides(args.buf)
@@ -67,7 +67,7 @@ api.nvim_create_autocmd({ 'BufWinEnter', 'BufEnter' }, {
 })
 
 if vim.v.vim_did_enter then
-  guides(vim.bo.shiftwidth)
+  guides(0)
 end
 
 local function buf_get_line(bufnr, row)

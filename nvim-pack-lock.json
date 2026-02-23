@@ -1,7 +1,7 @@
 {
   "plugins": {
     "dired.nvim": {
-      "rev": "c0815ab4046e7ffc76a434ac87268e96fdcb869e",
+      "rev": "73c0fe1e7ac1bff7b67b82dcfa295dcd2c685975",
       "src": "https://github.com/nvimdev/dired.nvim"
     },
     "fzf-lua": {
@@ -25,7 +25,7 @@
       "src": "https://github.com/nvimdev/modeline.nvim"
     },
     "nvim-treesitter": {
-      "rev": "fcd51bbe9245aa9b79a3930ed9ac42e16e1cf33f",
+      "rev": "dc42c209f3820bdfaae0956f15de29689aa6b451",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter",
       "version": "'main'"
     },
