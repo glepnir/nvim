@@ -140,7 +140,7 @@ local base_float = oklab_to_srgb(0.357000, -0.029000, -0.006000)
 local base01 = oklab_to_srgb(0.523013, -0.020000, -0.010000)
 local base00 = oklab_to_srgb(0.568165, -0.019000, -0.010000)
 
-local base0 = oklab_to_srgb(0.720000, -0.020000, -0.005000)
+local base0 = oklab_to_srgb(0.702000, -0.016000, -0.005000)
 local base1 = oklab_to_srgb(0.698000, -0.014000, -0.002000)
 local base2 = oklab_to_srgb(0.930609, -0.001000, 0.026000)
 local base3 = oklab_to_srgb(0.973528, 0.000000, 0.026000)

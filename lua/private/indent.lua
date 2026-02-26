@@ -152,8 +152,9 @@ local function blank_indent(c, bufnr, row)
     if not node then
       return
     end
+    local node_type = node:type()
     c.tree_root = c.tree_root or node:tree():root():type()
-    if c.tree_root and node:type() ~= c.tree_root then
+    if c.tree_root and node_type ~= c.tree_root and not vim.startswith(node_type, 'ERROR') then
       local parent = node:parent()
       if parent then
         local p_srow = parent:range()
