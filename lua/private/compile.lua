@@ -115,19 +115,11 @@ local ansi_colors = {
 local function open_qf_now(cmd_text)
   local start_text = ('Compilation started at %s'):format(os.date('%a %b %H:%M:%S'))
 
-  local action = 'a'
-  local qf_win
-  if qf_id then
-    local info = vim.fn.getqflist({ id = qf_id, winid = true })
-    qf_win = info.winid
-    if qf_win and qf_win ~= 0 and api.nvim_win_is_valid(qf_win) then
-      action = 'r'
-    end
-  end
+  -- 每次编译重置 qf_id，用 ' ' 创建全新列表
+  qf_id = nil
 
-  vim.fn.setqflist({}, action, {
+  vim.fn.setqflist({}, ' ', {
     title = 'Compiling',
-    id = qf_id,
     items = {
       { user_data = 'compile_info', text = start_text },
       { user_data = 'compile_info', text = ' ' },
@@ -148,8 +140,11 @@ local function open_qf_now(cmd_text)
     end,
   })
 
+  -- 拿到刚建的列表 id
+  qf_id = vim.fn.getqflist({ nr = '$', id = 0 }).id
+
   local curwin
-  qf_win = vim.fn.getqflist({ winid = 0 }).winid
+  local qf_win = vim.fn.getqflist({ winid = 0 }).winid
   if qf_win == 0 then
     curwin = api.nvim_get_current_win()
     vim.cmd.copen()
@@ -174,6 +169,7 @@ local function update_qf(qf_list, over)
   local line_colors = {}
 
   vim.fn.setqflist({}, 'a', {
+    id = qf_id,
     items = qf_list,
     title = over and 'Compilation' or 'Compiling',
     quickfixtextfunc = function(info)
@@ -400,7 +396,6 @@ local function read_compile_command()
   local cwd = vim.uv.cwd()
   local env_file = vim.fs.joinpath(cwd, '.env')
 
-  -- Quick existence check
   local stat = vim.uv.fs_stat(env_file)
   if not stat or stat.size == 0 then
     return nil
