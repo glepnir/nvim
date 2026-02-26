@@ -92,41 +92,75 @@ end, { nargs = 1 })
 -- MONOTONE COLORS
 -- ═══════════════════════════════════════════════════════════════════════════
 local base05 = oklab_to_srgb(0.240000, -0.036000, -0.030000)
-local base04 = oklab_to_srgb(0.423013, -0.021953, -0.017864)
+-- local base04 = oklab_to_srgb(0.423013, -0.021953, -0.017864)
 local base03 = oklab_to_srgb(0.267337, -0.037339, -0.031128) -- editor bg
 
 -- L ：bg(0.267) → cursorline(0.298) → pmenu/sel(0.322) → float/pmenusel(0.358)
 local base_cursorline = oklab_to_srgb(0.298000, -0.038000, -0.031500)
 local base02 = oklab_to_srgb(0.322000, -0.038500, -0.032000)
-local base_float = oklab_to_srgb(0.358000, -0.037000, -0.029000)
-
-local base01 = oklab_to_srgb(0.523013, -0.021953, -0.017864)
-local base00 = oklab_to_srgb(0.568165, -0.021219, -0.019038)
-
-local base0 = oklab_to_srgb(0.709236, -0.023223, -0.013451)
-local base1 = oklab_to_srgb(0.697899, -0.015223, -0.004594)
-local base2 = oklab_to_srgb(0.930609, -0.001091, 0.026010)
-local base3 = oklab_to_srgb(0.973528, -0.000043, 0.026053)
+-- local base_float = oklab_to_srgb(0.358000, -0.037000, -0.029000)
+--
+-- local base01 = oklab_to_srgb(0.523013, -0.021953, -0.017864)
+-- local base00 = oklab_to_srgb(0.568165, -0.021219, -0.019038)
+--
+-- local base0 = oklab_to_srgb(0.709236, -0.023223, -0.013451)
+-- local base1 = oklab_to_srgb(0.697899, -0.015223, -0.004594)
+-- local base2 = oklab_to_srgb(0.930609, -0.001091, 0.026010)
+-- local base3 = oklab_to_srgb(0.973528, -0.000043, 0.026053)
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- ACCENT COLORS
 -- ═══════════════════════════════════════════════════════════════════════════
-local yellow = oklab_to_srgb(0.654479, 0.010005, 0.133641)
-local orange = oklab_to_srgb(0.63, 0.133661 * 0.69, 0.110183 * 0.69)
-local red = oklab_to_srgb(0.60, 0.183749 * 0.55, 0.094099 * 0.55)
-local magenta = oklab_to_srgb(0.592363, 0.201958, -0.014497)
-local violet = oklab_to_srgb(0.582316, 0.019953, -0.124557)
-local blue = oklab_to_srgb(0.614879, -0.059069, -0.126255)
-local cyan = oklab_to_srgb(0.643664, -0.101063, -0.013097)
-local green = oklab_to_srgb(0.644391, -0.072203, 0.132448)
+-- local yellow = oklab_to_srgb(0.654479, 0.010005, 0.133641)
+-- local orange = oklab_to_srgb(0.63, 0.133661 * 0.69, 0.110183 * 0.69)
+-- local red = oklab_to_srgb(0.60, 0.183749 * 0.55, 0.094099 * 0.55)
+-- local magenta = oklab_to_srgb(0.592363, 0.201958, -0.014497)
+-- local violet = oklab_to_srgb(0.582316, 0.019953, -0.124557)
+-- local blue = oklab_to_srgb(0.614879, -0.059069, -0.126255)
+-- local cyan = oklab_to_srgb(0.643664, -0.101063, -0.013097)
+-- local green = oklab_to_srgb(0.644391, -0.072203, 0.132448)
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- STATUSLINE MUTED VARIANTS
 -- ═══════════════════════════════════════════════════════════════════════════
-local sl_diag_error = oklab_to_srgb(0.480, 0.118, 0.058)
-local sl_diag_warn = oklab_to_srgb(0.510, 0.009, 0.118)
-local sl_diag_info = oklab_to_srgb(0.500, -0.050, -0.108)
-local sl_diag_hint = oklab_to_srgb(0.500, -0.088, -0.014)
+-- local sl_diag_error = oklab_to_srgb(0.480, 0.118, 0.058)
+-- local sl_diag_warn = oklab_to_srgb(0.510, 0.009, 0.118)
+-- local sl_diag_info = oklab_to_srgb(0.500, -0.050, -0.108)
+-- local sl_diag_hint = oklab_to_srgb(0.500, -0.088, -0.014)
+
+-- ══════════════════════════════════════════════════════════════════════
+local base04 = oklab_to_srgb(0.423013, -0.020000, -0.008000)
+-- local base03 = oklab_to_srgb(0.347000, -0.024000, -0.004000)
+
+-- bg(0.267) → cursorline(0.297) → pmenu_sel(0.327) → float(0.357)
+-- local base_cursorline = oklab_to_srgb(0.297000, -0.030000, -0.006000)
+-- local base02 = oklab_to_srgb(0.327000, -0.030000, -0.007000)
+local base_float = oklab_to_srgb(0.357000, -0.029000, -0.006000)
+
+local base01 = oklab_to_srgb(0.523013, -0.020000, -0.010000)
+local base00 = oklab_to_srgb(0.568165, -0.019000, -0.010000)
+
+local base0 = oklab_to_srgb(0.720000, -0.020000, -0.005000)
+local base1 = oklab_to_srgb(0.698000, -0.014000, -0.002000)
+local base2 = oklab_to_srgb(0.930609, -0.001000, 0.026000)
+local base3 = oklab_to_srgb(0.973528, 0.000000, 0.026000)
+
+-- ──────────────────────────────────────────────────────────────────────
+local yellow = oklab_to_srgb(0.654000, 0.010000, 0.134000)
+local red = oklab_to_srgb(0.610000, 0.118000, 0.030000) -- hue ≈ 14°
+local orange = oklab_to_srgb(0.635000, 0.082000, 0.090000) -- hue ≈ 48°
+local magenta = oklab_to_srgb(0.600000, 0.124000, -0.009000) -- C ≈ 0.124
+
+local blue = oklab_to_srgb(0.630000, -0.047000, -0.101000)
+local violet = oklab_to_srgb(0.597000, 0.016000, -0.100000)
+-- local cyan = oklab_to_srgb(0.643664, -0.101063, -0.013097)
+local cyan = oklab_to_srgb(0.643664, -0.086000, 0.005000)
+local green = oklab_to_srgb(0.648000, -0.068000, 0.125000)
+
+local sl_diag_error = oklab_to_srgb(0.490000, 0.115000, 0.055000)
+local sl_diag_warn = oklab_to_srgb(0.520000, 0.008000, 0.115000)
+local sl_diag_info = oklab_to_srgb(0.510000, -0.040000, -0.086000)
+local sl_diag_hint = oklab_to_srgb(0.510000, -0.070000, -0.011000)
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- MODE SELECTION
@@ -160,7 +194,7 @@ colors.green = green
 colors.cursorline_bg = base_cursorline
 colors.float_bg = base_float
 colors.selection_bg = base02
-colors.statusline_bg = colors.fg
+colors.statusline_bg = oklab_to_srgb(0.440, -0.022, -0.010)
 colors.visual_bg = base02
 
 vim.g.colors_name = 'solarized'
@@ -256,7 +290,7 @@ h('Comment', { fg = colors.fg_comment, italic = true })
 -- =============================================================================
 -- 4. UI Components
 -- =============================================================================
-h('StatusLine', { bg = base0, fg = colors.bg_highlight })
+h('StatusLine', { bg = base1, fg = colors.bg_highlight })
 h('StatusLineNC', { bg = colors.fg_comment, fg = colors.bg_highlight })
 h('WildMenu', { fg = colors.bg, bg = colors.blue })
 h('ColorColumn', { bg = colors.bg_highlight })
