@@ -105,16 +105,24 @@ end
 
 local ctx = {}
 
-local function pack(is_empty, indent)
-  return bit.bor(bit.lshift(is_empty and 1 or 0, 15), bit.band(indent, 0x7FFF))
+local function pack(is_empty, indent, is_toplevel)
+  return bit.bor(
+    bit.lshift(is_empty and 1 or 0, 15),
+    bit.lshift(is_toplevel and 1 or 0, 14),
+    bit.band(indent, 0x3FFF)
+  )
 end
 
 local function unpack_empty(packed)
   return bit.band(bit.rshift(packed, 15), 1) == 1
 end
 
+local function unpack_toplevel(packed)
+  return bit.band(bit.rshift(packed, 14), 1) == 1
+end
+
 local function unpack_indent(packed)
-  return bit.band(packed, 0x7FFF)
+  return bit.band(packed, 0x3FFF)
 end
 
 --- @param c table
@@ -206,17 +214,29 @@ local function build_cache(winid, bufnr, toprow, botrow)
   for i = toprow, botrow do
     local line_text = buf_get_line(bufnr, i)
     if is_blank(line_text) then
-      if insert and c.snapshot[i] and unpack_indent(c.snapshot[i]) > 0 then
-        goto continue
+      if ts.highlighter.active[bufnr] then
+        local node = ts.get_node({ bufnr = bufnr, pos = { i, 0 } })
+        if node and node:type() == node:tree():root():type() then
+          c.snapshot[i] = pack(true, 0, true)
+          goto continue
+        end
+      end
+      if insert and c.snapshot[i] then
+        if unpack_toplevel(c.snapshot[i]) or unpack_indent(c.snapshot[i]) > 0 then
+          goto continue
+        end
       end
       blanks[#blanks + 1] = i
     else
-      c.snapshot[i] = pack(false, buf_get_indent(bufnr, i + 1))
+      c.snapshot[i] = pack(false, buf_get_indent(bufnr, i + 1), false)
     end
     ::continue::
   end
 
   for _, row in ipairs(blanks) do
+    if row == 42 then
+      print('here')
+    end
     blank_indent(c, bufnr, row)
   end
 end
