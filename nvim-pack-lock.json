@@ -25,7 +25,7 @@
       "src": "https://github.com/nvimdev/modeline.nvim"
     },
     "nvim-treesitter": {
-      "rev": "0f5b204603234a523fafa8f6b860fd36f80a23f6",
+      "rev": "8ada222612ae8410eb1a8b51cc18d1b19ae72a16",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter",
       "version": "'main'"
     },
