@@ -114,8 +114,6 @@ local ansi_colors = {
 --- Returns the qf window id.
 local function open_qf_now(cmd_text)
   local start_text = ('Compilation started at %s'):format(os.date('%a %b %H:%M:%S'))
-
-  -- 每次编译重置 qf_id，用 ' ' 创建全新列表
   qf_id = nil
 
   vim.fn.setqflist({}, ' ', {
@@ -140,7 +138,6 @@ local function open_qf_now(cmd_text)
     end,
   })
 
-  -- 拿到刚建的列表 id
   qf_id = vim.fn.getqflist({ nr = '$', id = 0 }).id
 
   local curwin
@@ -153,6 +150,7 @@ local function open_qf_now(cmd_text)
     vim.opt_local.number = false
     vim.opt_local.signcolumn = 'no'
     vim.opt_local.list = false
+    vim.opt_local.listchars = ''
     vim.bo.textwidth = 0
   end
 
@@ -431,20 +429,27 @@ local function close_running()
   end
 end
 
-api.nvim_create_user_command('Compile', function()
+api.nvim_create_user_command('Compile', function(args)
   if not ansi_ns then
     ansi_ns = api.nvim_create_namespace('ansi_colors')
   end
   close_running()
+  local cmd = nil
+  if #args.args > 0 then
+    cmd = args.args
+  else
+    cmd = read_compile_command()
+  end
 
-  local cmd = read_compile_command()
   if cmd then
     local bufname = api.nvim_buf_get_name(0)
     compiler(cmd, bufname)
   else
     vim.notify('No COMPILE_COMMAND found in .env', vim.log.levels.WARN)
   end
-end, {})
+end, {
+  nargs = '?',
+})
 
 api.nvim_create_user_command('Recompile', function()
   if not ansi_ns then

@@ -10,7 +10,7 @@ local opt = {
   hl = 'Whitespace',
   minlevel = 1,
   ts_exclude_nodetype = { 'comment', 'string' },
-  exclude_filetype = { 'help', 'dashboard', 'diff', 'fzf', 'markdown' },
+  exclude_filetype = { 'help', 'dashboard', 'diff', 'fzf', 'markdown', 'quickfix' },
   avoid_cursor_in_insert = true,
 }
 
@@ -38,6 +38,7 @@ local function get_step(bufnr)
   if not vim.bo[bufnr].expandtab then
     return vim.bo[bufnr].tabstop
   end
+
   local handle = find_buffer_by_handle(bufnr, ffi.new('Error'))
   local sw = get_sw_value(handle)
   if sw == 0 then
@@ -47,7 +48,10 @@ local function get_step(bufnr)
 end
 
 local function guides(bufnr)
-  if vim.list_contains(opt.exclude_filetype, vim.bo[bufnr].filetype) then
+  if
+    vim.list_contains(opt.exclude_filetype, vim.bo[bufnr].filetype)
+    or vim.bo[bufnr].buftype == 'quickfix'
+  then
     return
   end
   if vim.bo[bufnr].expandtab then
@@ -222,7 +226,8 @@ local function build_cache(winid, bufnr, toprow, botrow)
         end
       end
       if insert and c.snapshot[i] then
-        if unpack_toplevel(c.snapshot[i]) or unpack_indent(c.snapshot[i]) > 0 then
+        local s = c.snapshot[i]
+        if unpack_empty(s) and (unpack_toplevel(s) or unpack_indent(s) > 0) then
           goto continue
         end
       end
@@ -244,6 +249,7 @@ api.nvim_set_decoration_provider(ns, {
       not opt.enabled
       or vim.list_contains(opt.exclude_filetype, vim.bo[bufnr].filetype)
       or vim.list_contains({ 'nofile', 'prompt' }, vim.bo[bufnr].buftype)
+      or vim.bo[bufnr].buftype == 'quickfix'
     then
       return false
     end
