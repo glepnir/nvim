@@ -153,8 +153,8 @@ local magenta = oklab_to_srgb(0.600000, 0.124000, -0.009000) -- C ≈ 0.124
 
 local blue = oklab_to_srgb(0.630000, -0.047000, -0.101000)
 local violet = oklab_to_srgb(0.597000, 0.016000, -0.100000)
--- local cyan = oklab_to_srgb(0.643664, -0.101063, -0.013097)
-local cyan = oklab_to_srgb(0.643664, -0.086000, 0.005000)
+local cyan = oklab_to_srgb(0.643664, -0.101063, -0.013097)
+-- local cyan = oklab_to_srgb(0.643664, -0.086000, 0.005000)
 local green = oklab_to_srgb(0.648000, -0.068000, 0.125000)
 
 local sl_diag_error = oklab_to_srgb(0.490000, 0.115000, 0.055000)

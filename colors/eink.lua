@@ -42,43 +42,49 @@ local function oklab_to_srgb(L, a, b)
   return string.format('#%02x%02x%02x', r, g, b_comp)
 end
 
+local function bg_layer(L)
+  return oklab_to_srgb(L, 0.000, 0.006)
+end
+
 local p = {
-  bg = oklab_to_srgb(0.248, -0.002, 0.010),
+  -- bg = oklab_to_srgb(0.248, -0.000, 0.002),
+  -- bg = oklab_to_srgb(0.248, 0.000, 0.006),
+  bg = bg_layer(0.248),
+  normalfloat_bg = bg_layer(0.282),
+  cursorline_bg = bg_layer(0.310),
+  selection_bg = bg_layer(0.368),
+  pmenu_bg = bg_layer(0.306),
+  pmenusel_bg = bg_layer(0.458),
+  pmenu_thumb = bg_layer(0.377),
+  statusline_bg = bg_layer(0.213),
   fg = oklab_to_srgb(0.770, 0.000, 0.010),
 
-  green = oklab_to_srgb(0.71838, -0.052, 0.098),
+  green = oklab_to_srgb(0.70238, -0.056, 0.092),
   -- blue = oklab_to_srgb(0.697, -0.011, -0.012),
   -- blue = oklab_to_srgb(0.697, -0.025, -0.020),
-  blue = oklab_to_srgb(0.693, -0.016, -0.050),
-  -- cyan = oklab_to_srgb(0.710, -0.060, 0.000),
+  -- blue = oklab_to_srgb(0.693, -0.016, -0.050),
+  blue = oklab_to_srgb(0.698, -0.020, -0.032),
+  -- cyan = oklab_to_srgb(0.696, -0.060, 0.000),
   cyan = oklab_to_srgb(0.643664, -0.046000, 0.00300),
 
   magenta = oklab_to_srgb(0.698, 0.040, -0.019),
   red = oklab_to_srgb(0.690, 0.060, 0.049),
-  orange = oklab_to_srgb(0.702, 0.025, 0.053),
-  yellow = oklab_to_srgb(0.709, -0.002, 0.108),
+  orange = oklab_to_srgb(0.682, 0.025, 0.053),
+  yellow = oklab_to_srgb(0.683, -0.002, 0.092),
 
   linenr_active = oklab_to_srgb(0.710, -0.002, 0.008),
   linenr = oklab_to_srgb(0.455, -0.002, 0.007),
   comment = oklab_to_srgb(0.600, -0.001, 0.008),
 
   pmenusel_fg = oklab_to_srgb(0.120, 0.000, -0.002),
-  pmenusel_bg = oklab_to_srgb(0.458, 0.001, 0.013),
-  pmenu_thumb = oklab_to_srgb(0.377, 0.001, 0.015),
-  pmenu_bg = oklab_to_srgb(0.306, -0.001, 0.013),
 
-  selection_bg = oklab_to_srgb(0.366, 0.000, 0.016),
-  cursorline_bg = oklab_to_srgb(0.316, 0.000, 0.012),
-
-  normalfloat_bg = oklab_to_srgb(0.280, -0.001, 0.011),
-  statusline_bg = oklab_to_srgb(0.213, 0.000, 0.013),
   indent = oklab_to_srgb(0.415, -0.001, 0.010),
 }
 
 local d = {
   error = oklab_to_srgb(0.690, 0.085, 0.045),
-  warn = oklab_to_srgb(0.760, 0.015, 0.100),
-  info = oklab_to_srgb(0.710, -0.025, -0.030),
+  warn = oklab_to_srgb(0.755, 0.015, 0.095),
+  info = oklab_to_srgb(0.710, -0.025, -0.022),
   hint = oklab_to_srgb(0.640, -0.002, 0.008),
 }
 
@@ -202,21 +208,21 @@ h('Visual', { bg = p.selection_bg })
 h('Search', { fg = p.bg, bg = p.yellow })
 h('IncSearch', { fg = p.bg, bg = p.orange })
 
-h('Keyword', { fg = p.magenta })
+h('Keyword', { fg = p.fg })
 h('Statement', { fg = p.fg })
-h('Repeat', { link = 'Keyword' })
+h('Repeat', { fg = p.green })
 h('Conditional', { link = 'Repeat' })
 
-h('Function', { fg = p.green })
+h('Function', { fg = p.fg })
 
 -- Types
-h('Type', { fg = p.yellow })
+h('Type', { fg = p.fg })
 h('StorageClass', { link = 'Type' })
 h('Structure', { link = 'Type' })
 h('Typedef', { link = 'Type' })
 
 -- Constants
-h('Constant', { fg = p.cyan })
+h('Constant', { fg = p.fg })
 h('String', { fg = p.cyan })
 h('Character', { link = 'Constant' })
 h('Number', { link = 'Constant' })

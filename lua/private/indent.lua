@@ -234,9 +234,6 @@ local function build_cache(winid, bufnr, toprow, botrow)
   end
 
   for _, row in ipairs(blanks) do
-    if row == 42 then
-      print('here')
-    end
     blank_indent(c, bufnr, row)
   end
 end
