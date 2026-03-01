@@ -41,4 +41,4 @@ else
   vim.opt_local.tabstop = 4
 end
 
-vim.cmd('inoreabbrev <buffer> #i #include')
+vim.cmd('inoreabbrev <buffer> inc #include')
