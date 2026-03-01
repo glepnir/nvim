@@ -66,6 +66,11 @@ local function parse_err(stderr, save_item)
           text = line,
           user_data = 'compile_info',
         })
+      else
+        table.insert(list, {
+          text = line,
+          user_data = 'compile_info',
+        })
       end
       i = i + 1
     end
@@ -282,6 +287,17 @@ local function update_qf(qf_list, over)
   end
 end
 
+local function make_cmd(compile_cmd)
+  if vim.fn.has('win32') == 1 then
+    return { 'cmd', '/c', compile_cmd }
+  end
+  local parts = vim.split(compile_cmd, '&&', { plain = true })
+  for i, part in ipairs(parts) do
+    parts[i] = 'stdbuf -oL ' .. vim.trim(part)
+  end
+  return { 'sh', '-c', table.concat(parts, ' && ') }
+end
+
 local function compiler(compile_cmd, bufname)
   if compile_cmd:find('%%s') then
     local cwd = vim.uv.cwd()
@@ -298,7 +314,7 @@ local function compiler(compile_cmd, bufname)
   local stderr_buffer = ''
   local save_item = {}
 
-  job = vim.system({ 'sh', '-c', compile_cmd }, {
+  job = vim.system(make_cmd(compile_cmd), {
     text = true,
     stdout = function(err, data)
       if err or not data then
