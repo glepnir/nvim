@@ -42,35 +42,39 @@ local function oklab_to_srgb(L, a, b)
   return string.format('#%02x%02x%02x', r, g, b_comp)
 end
 
-local function bg_layer(L)
-  return oklab_to_srgb(L, 0.000, 0.006)
+local BG_L = 0.238
+local BG_A = 0.000
+local BG_B = 0.005
+local STEP = 0.034
+
+local function bg(offset)
+  return oklab_to_srgb(BG_L + offset * STEP, BG_A, BG_B)
 end
 
 local p = {
-  -- bg = oklab_to_srgb(0.248, -0.000, 0.002),
-  -- bg = oklab_to_srgb(0.248, 0.000, 0.006),
-  bg = bg_layer(0.248),
-  normalfloat_bg = bg_layer(0.282),
-  cursorline_bg = bg_layer(0.310),
-  selection_bg = bg_layer(0.368),
-  pmenu_bg = bg_layer(0.306),
-  pmenusel_bg = bg_layer(0.458),
-  pmenu_thumb = bg_layer(0.377),
-  statusline_bg = bg_layer(0.213),
-  fg = oklab_to_srgb(0.770, 0.000, 0.010),
+  statusline_bg = bg(-1), -- #181714  L=0.204
+  bg = bg(0), -- #201f1c  L=0.238
+  normalfloat_bg = bg(1), -- #282724  L=0.272
+  pmenu_bg = bg(1), -- #282724  L=0.272
+  cursorline_bg = bg(2), -- #302f2c  L=0.306
+  selection_bg = bg(3), -- #393835  L=0.340
+  pmenu_thumb = bg(3), -- #393835  L=0.340
+  pmenusel_bg = bg(5), -- #4b4a47  L=0.408
 
-  green = oklab_to_srgb(0.70238, -0.056, 0.092),
+  fg = oklab_to_srgb(0.748, 0.000, 0.010),
+
+  green = oklab_to_srgb(0.71838, -0.056, 0.098),
   -- blue = oklab_to_srgb(0.697, -0.011, -0.012),
   -- blue = oklab_to_srgb(0.697, -0.025, -0.020),
   -- blue = oklab_to_srgb(0.693, -0.016, -0.050),
   blue = oklab_to_srgb(0.698, -0.020, -0.032),
-  -- cyan = oklab_to_srgb(0.696, -0.060, 0.000),
-  cyan = oklab_to_srgb(0.643664, -0.046000, 0.00300),
+  cyan = oklab_to_srgb(0.708, -0.062, -0.012),
+  -- cyan = oklab_to_srgb(0.643664, -0.046000, 0.00300),
 
   magenta = oklab_to_srgb(0.698, 0.040, -0.019),
   red = oklab_to_srgb(0.690, 0.060, 0.049),
   orange = oklab_to_srgb(0.682, 0.025, 0.053),
-  yellow = oklab_to_srgb(0.683, -0.002, 0.092),
+  yellow = oklab_to_srgb(0.663, -0.002, 0.072),
 
   linenr_active = oklab_to_srgb(0.710, -0.002, 0.008),
   linenr = oklab_to_srgb(0.455, -0.002, 0.007),
@@ -210,20 +214,20 @@ h('IncSearch', { fg = p.bg, bg = p.orange })
 
 h('Keyword', { fg = p.fg })
 h('Statement', { fg = p.fg })
-h('Repeat', { fg = p.green })
+h('Repeat', { fg = p.magenta })
 h('Conditional', { link = 'Repeat' })
 
-h('Function', { fg = p.fg })
+h('Function', { fg = p.green })
 
 -- Types
-h('Type', { fg = p.fg })
+h('Type', { fg = p.cyan })
 h('StorageClass', { link = 'Type' })
 h('Structure', { link = 'Type' })
 h('Typedef', { link = 'Type' })
 
 -- Constants
 h('Constant', { fg = p.fg })
-h('String', { fg = p.cyan })
+h('String', { fg = p.yellow })
 h('Character', { link = 'Constant' })
 h('Number', { link = 'Constant' })
 h('Boolean', { link = 'Constant' })

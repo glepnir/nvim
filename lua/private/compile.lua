@@ -449,6 +449,7 @@ api.nvim_create_user_command('Compile', function(args)
   end
 end, {
   nargs = '?',
+  complete = 'file',
 })
 
 api.nvim_create_user_command('Recompile', function()
