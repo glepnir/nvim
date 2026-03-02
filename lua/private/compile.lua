@@ -278,8 +278,9 @@ local function update_qf(qf_list, over)
   if qf_win ~= 0 and api.nvim_win_is_valid(qf_win) then
     api.nvim_win_call(qf_win, function()
       local count = api.nvim_buf_line_count(0)
+      local cursor = api.nvim_win_get_cursor(qf_win)
       local height = api.nvim_win_get_height(qf_win)
-      if count > height then
+      if cursor[1] >= count - height then
         api.nvim_win_set_cursor(qf_win, { count, 0 })
       end
       apply_qf_syntax()
