@@ -24,7 +24,11 @@ local function strip_bs(s)
 end
 
 local function clean(s)
-  return strip_ansi(strip_bs(strip_cr(s)))
+  s = strip_cr(s)
+  s = strip_bs(s)
+  s = strip_ansi(s)
+  s = s:gsub('[%z\1-\8\11-\31\127]', '')
+  return s
 end
 
 local function parse_err(text, save_item)
@@ -424,8 +428,9 @@ local function compiler(compile_cmd, bufname)
     local duration = (vim.uv.hrtime() - start_time) / 1e9
     vim.schedule(function()
       local list = {}
-      if out_buffer ~= '' then
-        local tail = parse_err(strip_cr(out_buffer), save_item)
+      local flushed = clean(out_buffer)
+      if flushed ~= '' then
+        local tail = parse_err(strip_cr(flushed), save_item)
         if #tail > 0 then
           vim.list_extend(list, tail)
         else

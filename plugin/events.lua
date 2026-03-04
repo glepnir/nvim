@@ -94,6 +94,7 @@ au('UIEnter', {
       require('private.dashboard').show()
       require('private.keymap')
       require('private.indent')
+      require('private.compile')
 
       vim.lsp.log.set_level(vim.log.levels.OFF)
       vim.diagnostic.config({
@@ -129,11 +130,6 @@ au('UIEnter', {
       api.nvim_create_user_command('LspDebug', function()
         vim.lsp.log.set_level(vim.log.levels.WARN)
       end, { desc = 'enable lsp log' })
-
-      if vim.version().minor >= 12 then
-        require('private.grep')
-      end
-      require('private.compile')
 
       vim.cmd.packadd('nohlsearch')
       vim.cmd.packadd('nvim.undotree')
