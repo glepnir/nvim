@@ -21,10 +21,15 @@ if fname:match('neovim') or fname:match('nvim') then
             local bufname = vim.api.nvim_buf_get_name(b)
             if bufname:find('nvim') then
               vim.api.nvim_buf_call(b, function()
+                local view = nil
                 if vim.bo[curbuf].modified then
+                  view = vim.fn.winsaveview()
                   vim.cmd('write!')
                 end
                 vim.cmd('edit!')
+                if view then
+                  vim.fn.winrestview(view)
+                end
               end)
             end
           end)
@@ -41,4 +46,7 @@ else
   vim.opt_local.tabstop = 4
 end
 
-vim.cmd('inoreabbrev <buffer> inc #include')
+vim.cmd([[
+inoreabbrev <buffer> inc #include
+inoreabbrev <buffer> mal malloc(sizeof());<Left><Left><Left><C-O>:call timer_start(0, { -> execute('normal! X')})<CR>
+]])
