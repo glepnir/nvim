@@ -48,5 +48,5 @@ end
 
 vim.cmd([[
 inoreabbrev <buffer> inc #include
-inoreabbrev <buffer> mal malloc(sizeof());<Left><Left><Left><C-O>:call timer_start(0, { -> execute('normal! X')})<CR>
+inoreabbrev <buffer> ici #include <stdio.h><CR><C-O><Cmd>call timer_start(0, { -> execute('normal! S')})<CR>
 ]])

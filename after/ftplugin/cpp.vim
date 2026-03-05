@@ -13,5 +13,6 @@ else
   setl tabstop=4
 endif
 
-inoreabbrev <buffer> tp template <typename T><CR><C-O>:call timer_start(0, { -> execute('normal! S')})<CR>
+inoreabbrev <buffer> tp template <typename T><CR><C-O><Cmd>call timer_start(0, { -> execute('normal! S')})<CR>
 inoreabbrev <buffer> inc #include
+inoreabbrev <buffer> ici #include <iostream><CR><C-O><Cmd>call timer_start(0, { -> execute('normal! S')})<CR>
