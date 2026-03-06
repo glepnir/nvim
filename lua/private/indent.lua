@@ -36,7 +36,16 @@ local UP, DOWN = -1, 1
 -- step used to compute guide positions must match that same unit.
 local function get_step(bufnr)
   if not vim.bo[bufnr].expandtab then
-    return vim.bo[bufnr].tabstop
+    local sts = vim.bo[bufnr].softtabstop
+    local tabstop = vim.bo[bufnr].tabstop
+    -- Pure tab: visual unit is tabstop
+    if sts == 0 or sts == tabstop then
+      return tabstop
+    end
+    -- Mixed indent (sts != ts): indent unit matches shiftwidth/softtabstop
+    local handle = find_buffer_by_handle(bufnr, ffi.new('Error'))
+    local sw = get_sw_value(handle)
+    return sw > 0 and sw or sts
   end
 
   local handle = find_buffer_by_handle(bufnr, ffi.new('Error'))
@@ -45,6 +54,17 @@ local function get_step(bufnr)
     sw = vim.bo[bufnr].tabstop
   end
   return sw
+end
+
+-- Returns true when noexpandtab + softtabstop == 0 or softtabstop == tabstop,
+-- meaning the file uses pure tabs with no space padding.  In that case leadtab
+-- can cover every guide on non-blank lines and extmark is not needed for them.
+local function is_pure_tab(bufnr)
+  if vim.bo[bufnr].expandtab then
+    return false
+  end
+  local sts = vim.bo[bufnr].softtabstop
+  return sts == 0 or sts == vim.bo[bufnr].tabstop
 end
 
 local function guides(bufnr)
@@ -58,11 +78,19 @@ local function guides(bufnr)
     local sw = get_step(bufnr)
     local indent_char = opt.char .. (' '):rep(sw - 1)
     vim.opt_local.listchars:append({ leadmultispace = indent_char })
+  elseif is_pure_tab(bufnr) then
+    -- leadtab requires tab to also be set (E1572), use invisible tab chars
+    -- for non-leading tabs so they don't interfere visually.
+    local tabstop = vim.bo[bufnr].tabstop
+    vim.opt_local.listchars:append({
+      tab = ' ' .. (' '):rep(tabstop - 1),
+      leadtab = opt.char .. (' '):rep(tabstop - 1),
+    })
   end
 end
 
 api.nvim_create_autocmd('OptionSet', {
-  pattern = { 'shiftwidth', 'tabstop', 'expandtab' },
+  pattern = { 'shiftwidth', 'tabstop', 'expandtab', 'softtabstop' },
   group = augroup,
   callback = function(args)
     if type(vim.v.option_new) ~= 'boolean' then
@@ -166,24 +194,30 @@ local function blank_indent(c, bufnr, row)
     end
     local node_type = node:type()
     c.tree_root = c.tree_root or node:tree():root():type()
-    if c.tree_root and node_type ~= c.tree_root and not vim.startswith(node_type, 'ERROR') then
-      local parent = node:parent()
-      if parent then
-        local p_srow = parent:range()
-        if p_srow >= 0 then
-          local p_packed = c.snapshot[p_srow]
-          local p_indent = p_packed and unpack_indent(p_packed) or buf_get_indent(bufnr, p_srow + 1)
-          c.snapshot[row] = pack(true, p_indent + c.step)
-        end
+    if c.tree_root then
+      -- Toplevel blank line: no guide
+      if node_type == c.tree_root then
+        return
+      end
+      -- ERROR nodes: skip to avoid noise during editing
+      if vim.startswith(node_type, 'ERROR') then
+        return
+      end
+      -- Excluded node types (string literals, comments, etc.)
+      if vim.list_contains(opt.ts_exclude_nodetype, node_type) then
+        return
       end
     end
-  else
-    local up = search_nearest(c, row - 1, UP, bufnr)
-    local down = search_nearest(c, row + 1, DOWN, bufnr)
-    local indent = math.max(up, down)
-    if indent > 0 then
-      c.snapshot[row] = pack(true, indent)
-    end
+  end
+
+  -- For all other cases (TS or non-TS), derive indent from surrounding
+  -- non-blank lines.  This is correct for any nesting depth because
+  -- search_nearest walks outward until it finds a real line.
+  local up = search_nearest(c, row - 1, UP, bufnr)
+  local down = search_nearest(c, row + 1, DOWN, bufnr)
+  local indent = math.max(up, down)
+  if indent > 0 then
+    c.snapshot[row] = pack(true, indent)
   end
 end
 
@@ -205,6 +239,7 @@ local function build_cache(winid, bufnr, toprow, botrow)
   c.step = get_step(bufnr)
   c.tabstop = vim.bo[bufnr].tabstop
   c.expandtab = vim.bo[bufnr].expandtab
+  c.pure_tab = is_pure_tab(bufnr)
   c.leftcol = vim.fn.winsaveview().leftcol
   c.count = api.nvim_buf_line_count(bufnr)
   c.insert = insert
@@ -266,8 +301,16 @@ api.nvim_set_decoration_provider(ns, {
       return
     end
 
-    if not unpack_empty(packed) and c.expandtab then
-      return
+    local is_empty = unpack_empty(packed)
+
+    if not is_empty then
+      -- Non-blank lines: listchars handles guides when possible.
+      -- expandtab  -> leadmultispace covers it entirely.
+      -- pure tab   -> leadtab covers it entirely.
+      -- mixed tab  -> sts != ts, leadtab misses space-padded columns; use extmark.
+      if c.expandtab or c.pure_tab then
+        return
+      end
     end
 
     local indent = unpack_indent(packed)
@@ -289,7 +332,15 @@ api.nvim_set_decoration_provider(ns, {
         goto continue
       end
 
-      if opt.avoid_cursor_in_insert and c.insert and row == c.currow and col == c.curcol then
+      -- avoid_cursor_in_insert: skip the guide column under the cursor,
+      -- but only on non-blank lines (blank lines have no real char there).
+      if
+        opt.avoid_cursor_in_insert
+        and c.insert
+        and not is_empty
+        and row == c.currow
+        and col == c.curcol
+      then
         goto continue
       end
 

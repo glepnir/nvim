@@ -42,9 +42,9 @@ local function oklab_to_srgb(L, a, b)
   return string.format('#%02x%02x%02x', r, g, b_comp)
 end
 
-local BG_L = 0.238
-local BG_A = 0.000
-local BG_B = 0.005
+local BG_L = 0.24
+local BG_A = 3.0878077872387e-16
+local BG_B = 3.0878077872387e-16
 local STEP = 0.034
 
 local function bg(offset)
