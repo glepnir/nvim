@@ -9,7 +9,7 @@
       "src": "https://github.com/ibhagwan/fzf-lua"
     },
     "gitsigns.nvim": {
-      "rev": "9f3c6dd7868bcc116e9c1c1929ce063b978fa519",
+      "rev": "7c4faa3540d0781a28588cafbd4dd187a28ac6e3",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "guard-collection": {
@@ -21,11 +21,11 @@
       "src": "https://github.com/nvimdev/guard.nvim"
     },
     "modeline.nvim": {
-      "rev": "087710ac4e30403e85113086d2acec63d1594007",
+      "rev": "1a50f1fd1c4f851e5b506124187f6295ec054c06",
       "src": "https://github.com/nvimdev/modeline.nvim"
     },
     "nvim-treesitter": {
-      "rev": "544320a9cf5d6bf539ec1cc54d393064015670c4",
+      "rev": "ebe76eb800d4e8df754fc96f8a7b84f578224a97",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter",
       "version": "'main'"
     },
@@ -35,7 +35,7 @@
       "version": "'main'"
     },
     "phoenix.nvim": {
-      "rev": "71ddba235c57fa8beb139ea554e7269900695abf",
+      "rev": "920409f6947e04ccc4082042db5d8f27c0a24b47",
       "src": "https://github.com/nvimdev/phoenix.nvim"
     }
   }

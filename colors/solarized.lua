@@ -312,7 +312,7 @@ h('PmenuBorder', { fg = colors.fg_comment })
 -- ─────────────────────────────────────────────────────────────────────────────
 h('NormalFloat', { bg = base05 })
 h('FloatBorder', { fg = blend(colors.fg_comment, 0.40) })
-h('Title', { fg = colors.bg_highlight, bold = true })
+h('Title', { fg = colors.yellow, bold = true })
 
 -- =============================================================================
 -- 5. Messages & Misc
@@ -560,3 +560,5 @@ h('GitSignsDelete', { fg = colors.red })
 
 -- Dashboard
 h('DashboardHeader', { fg = colors.green })
+-- modeline
+h('ModeLineFileName', { fg = colors.bg_highlight, bold = true })
