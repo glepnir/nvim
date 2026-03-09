@@ -128,14 +128,15 @@ au('LspAttach', {
             api.nvim_feedkeys(api.nvim_replace_termcodes('<Left>', true, false, true), 'n', false)
           end
 
-          if
-            item.kind == 3
-            and item.insertTextFormat == lsp.protocol.InsertTextFormat.Snippet
-            and (item.textEdit ~= nil or item.insertText ~= nil)
-          then
+          if item.kind == lsp.protocol.CompletionItemKind.Function then
             vim.schedule(function()
-              if api.nvim_get_mode().mode == 's' then
-                lsp.buf.signature_help()
+              local mode = api.nvim_get_mode().mode
+              if mode:match('^[is]') then
+                local line = api.nvim_get_current_line()
+                local col = api.nvim_win_get_cursor(0)[2]
+                if line:sub(col, col) == '(' then
+                  lsp.buf.signature_help()
+                end
               end
             end)
           end

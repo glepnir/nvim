@@ -43,8 +43,8 @@ local function oklab_to_srgb(L, a, b)
 end
 
 local BG_L = 0.24
-local BG_A = 3.0878077872387e-16
-local BG_B = 3.0878077872387e-16
+local BG_A = 0
+local BG_B = 0
 local STEP = 0.034
 
 local function bg(offset)
@@ -61,9 +61,9 @@ local p = {
   pmenu_thumb = bg(3), -- #393835  L=0.340
   pmenusel_bg = bg(5), -- #4b4a47  L=0.408
 
-  fg = oklab_to_srgb(0.748, 0.000, 0.010),
+  fg = oklab_to_srgb(0.748, 0.000, 0.000),
 
-  green = oklab_to_srgb(0.71838, -0.056, 0.098),
+  green = oklab_to_srgb(0.71838, -0.066, 0.098),
   -- blue = oklab_to_srgb(0.697, -0.011, -0.012),
   -- blue = oklab_to_srgb(0.697, -0.025, -0.020),
   -- blue = oklab_to_srgb(0.693, -0.016, -0.050),
@@ -214,7 +214,7 @@ h('IncSearch', { fg = p.bg, bg = p.orange })
 
 h('Keyword', { fg = p.fg })
 h('Statement', { fg = p.fg })
-h('Repeat', { fg = p.magenta })
+h('Repeat', { fg = p.fg })
 h('Conditional', { link = 'Repeat' })
 
 h('Function', { fg = p.green })
