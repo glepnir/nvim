@@ -61,13 +61,13 @@ local p = {
   pmenu_thumb = bg(3), -- #393835  L=0.340
   pmenusel_bg = bg(5), -- #4b4a47  L=0.408
 
-  fg = oklab_to_srgb(0.748, 0.000, 0.000),
+  fg = oklab_to_srgb(0.758, 0.000, 0.000),
 
-  green = oklab_to_srgb(0.71838, -0.066, 0.098),
+  green = oklab_to_srgb(0.70838, -0.058, 0.092),
   -- blue = oklab_to_srgb(0.697, -0.011, -0.012),
   -- blue = oklab_to_srgb(0.697, -0.025, -0.020),
   -- blue = oklab_to_srgb(0.693, -0.016, -0.050),
-  blue = oklab_to_srgb(0.698, -0.020, -0.032),
+  blue = oklab_to_srgb(0.638, -0.015, -0.102),
   cyan = oklab_to_srgb(0.708, -0.062, -0.012),
   -- cyan = oklab_to_srgb(0.643664, -0.046000, 0.00300),
 
@@ -212,22 +212,22 @@ h('Visual', { bg = p.selection_bg })
 h('Search', { fg = p.bg, bg = p.yellow })
 h('IncSearch', { fg = p.bg, bg = p.orange })
 
-h('Keyword', { fg = p.fg })
+h('Keyword', { fg = p.green })
 h('Statement', { fg = p.fg })
 h('Repeat', { fg = p.fg })
 h('Conditional', { link = 'Repeat' })
 
-h('Function', { fg = p.green })
+h('Function', { fg = p.blue })
 
 -- Types
-h('Type', { fg = p.cyan })
+h('Type', { fg = p.yellow })
 h('StorageClass', { link = 'Type' })
 h('Structure', { link = 'Type' })
 h('Typedef', { link = 'Type' })
 
 -- Constants
 h('Constant', { fg = p.fg })
-h('String', { fg = p.yellow })
+h('String', { fg = p.orange })
 h('Character', { link = 'Constant' })
 h('Number', { link = 'Constant' })
 h('Boolean', { link = 'Constant' })

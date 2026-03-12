@@ -90,6 +90,7 @@ au('LspAttach', {
       au('CompleteChanged', {
         buffer = bufnr,
         group = g,
+        once = true,
         callback = function()
           local info = vim.fn.complete_info({ 'selected' })
           if info.preview_bufnr and vim.bo[info.preview_bufnr].filetype == '' then
@@ -110,33 +111,32 @@ au('LspAttach', {
             return
           end
 
-          -- hack for c/cpp
-          local cpp = vim.bo.filetype == 'c' or vim.bo.filetype == 'cpp'
-          local has_params = false
-          if item.label then
-            local params = item.label:match('%b()')
-            if params and not params:match('^%(%s*%)$') then
-              has_params = true
-            end
-          end
-
-          if
-            (item.kind == CompletionItemKind.Function or item.kind == CompletionItemKind.Method)
-            and cpp
-            and has_params
-          then
-            api.nvim_feedkeys(api.nvim_replace_termcodes('<Left>', true, false, true), 'n', false)
-          end
-
-          if item.kind == lsp.protocol.CompletionItemKind.Function then
+          if item.kind == CompletionItemKind.Function or item.kind == CompletionItemKind.Method then
             vim.schedule(function()
               local mode = api.nvim_get_mode().mode
               if mode:match('^[is]') then
                 local line = api.nvim_get_current_line()
-                local col = api.nvim_win_get_cursor(0)[2]
-                if line:sub(col, col) == '(' then
-                  lsp.buf.signature_help()
+                local lnum, col = unpack(api.nvim_win_get_cursor(0))
+                local prevchar = line:sub(col, col)
+                if prevchar ~= '(' and prevchar ~= ')' then
+                  line = line:sub(1, col) .. '()' .. line:sub(col + 1, #line)
+                  api.nvim_buf_set_text(0, lnum - 1, 0, lnum - 1, -1, { line })
+                  api.nvim_feedkeys(
+                    api.nvim_replace_termcodes('<Right>', true, false, true),
+                    'n',
+                    false
+                  )
+                elseif prevchar == ')' then
+                  api.nvim_feedkeys(
+                    api.nvim_replace_termcodes('<Left>', true, false, true),
+                    'n',
+                    false
+                  )
                 end
+
+                vim.defer_fn(function()
+                  lsp.buf.signature_help()
+                end, 1)
               end
             end)
           end

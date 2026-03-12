@@ -35,7 +35,7 @@
       "version": "'main'"
     },
     "phoenix.nvim": {
-      "rev": "8dd6ac61e70b6a643389d1435fbfee5a41f71ea1",
+      "rev": "267f88ca76677abc1492df7cd267278472f84f2d",
       "src": "https://github.com/nvimdev/phoenix.nvim"
     }
   }
