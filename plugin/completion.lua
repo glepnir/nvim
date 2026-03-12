@@ -90,7 +90,6 @@ au('LspAttach', {
       au('CompleteChanged', {
         buffer = bufnr,
         group = g,
-        once = true,
         callback = function()
           local info = vim.fn.complete_info({ 'selected' })
           if info.preview_bufnr and vim.bo[info.preview_bufnr].filetype == '' then
