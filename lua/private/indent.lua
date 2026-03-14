@@ -81,10 +81,9 @@ local function guides(bufnr)
   elseif is_pure_tab(bufnr) then
     -- leadtab requires tab to also be set (E1572), use invisible tab chars
     -- for non-leading tabs so they don't interfere visually.
-    local tabstop = vim.bo[bufnr].tabstop
     vim.opt_local.listchars:append({
-      tab = ' ' .. (' '):rep(tabstop - 1),
-      leadtab = opt.char .. (' '):rep(tabstop - 1),
+      tab = '  ',
+      leadtab = opt.char .. ' ',
     })
   end
 end

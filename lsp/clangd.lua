@@ -20,8 +20,7 @@ end
 
 return {
   cmd = {
-    'clangd',
-    -- vim.uv.os_uname().sysname:match('Darwin') and '/opt/homebrew/opt/llvm/bin/clangd' or 'clangd',
+    vim.uv.os_uname().sysname:match('Darwin') and '/opt/homebrew/opt/llvm/bin/clangd' or 'clangd',
   },
   filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda', 'proto' },
   root_markers = {
@@ -39,13 +38,6 @@ return {
   reuse_client = function(client, config)
     return client.name == config.name
   end,
-  -- settings = {
-  --   clangd = {
-  --     Completion = {
-  --       CodePatterns = 'NONE',
-  --     },
-  --   },
-  -- },
   capabilities = {
     textDocument = {
       completion = {

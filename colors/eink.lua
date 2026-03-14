@@ -42,7 +42,7 @@ local function oklab_to_srgb(L, a, b)
   return string.format('#%02x%02x%02x', r, g, b_comp)
 end
 
-local BG_L = 0.24
+local BG_L = 0.233
 local BG_A = 0
 local BG_B = 0
 local STEP = 0.034
@@ -52,22 +52,23 @@ local function bg(offset)
 end
 
 local p = {
-  statusline_bg = bg(-1), -- #181714  L=0.204
-  bg = bg(0), -- #201f1c  L=0.238
-  normalfloat_bg = bg(1), -- #282724  L=0.272
-  pmenu_bg = bg(1), -- #282724  L=0.272
-  cursorline_bg = bg(2), -- #302f2c  L=0.306
-  selection_bg = bg(3), -- #393835  L=0.340
-  pmenu_thumb = bg(3), -- #393835  L=0.340
-  pmenusel_bg = bg(5), -- #4b4a47  L=0.408
+  statusline_bg = bg(-1),
+  bg = bg(0),
+  normalfloat_bg = bg(1),
+  pmenu_bg = bg(1),
+  cursorline_bg = bg(2),
+  selection_bg = bg(3),
+  pmenu_thumb = bg(3),
+  pmenusel_bg = bg(5),
 
-  fg = oklab_to_srgb(0.758, 0.000, 0.000),
+  -- fg = oklab_to_srgb(0.735, 0.000, 0.012),
+  fg = '#b5ae9e',
+  -- fg = oklab_to_srgb(0.760, 0.001, 0.008),
 
   green = oklab_to_srgb(0.70838, -0.058, 0.092),
   -- blue = oklab_to_srgb(0.697, -0.011, -0.012),
   -- blue = oklab_to_srgb(0.697, -0.025, -0.020),
-  -- blue = oklab_to_srgb(0.693, -0.016, -0.050),
-  blue = oklab_to_srgb(0.638, -0.015, -0.102),
+  blue = oklab_to_srgb(0.693, -0.016, -0.050),
   cyan = oklab_to_srgb(0.708, -0.062, -0.012),
   -- cyan = oklab_to_srgb(0.643664, -0.046000, 0.00300),
 
