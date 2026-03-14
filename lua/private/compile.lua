@@ -80,6 +80,8 @@ local function parse_err(text, save_item)
             filename = prev_item.filename,
             bufnr = prev_item.bufnr,
             text = next_raw,
+            lnum = prev_item.lnum, -- emm useful in some context
+            col = prev_item.col,
             user_data = 'compile_info',
           })
           j = j + 1
