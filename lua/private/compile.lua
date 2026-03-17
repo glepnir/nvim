@@ -2,7 +2,7 @@ local api = vim.api
 local last_cmd = nil
 local qf_id = nil
 local ansi_ns = nil
-local job = nil ---@type vim.SystemObj?
+local chan_id = nil ---@type integer?
 
 --- Strip ANSI escape sequences from a string.
 local function strip_ansi(s)
@@ -33,7 +33,6 @@ end
 
 local function parse_err(text, save_item)
   local list = {}
-  -- strip_ansi so patterns match even when compiler emits coloured output.
   local lines = vim.split(text, '\n', { trimempty = true })
 
   local i = 1
@@ -51,10 +50,8 @@ local function parse_err(text, save_item)
         lnum = tonumber(lnum),
         col = tonumber(col),
         type = type_str:sub(1, 1):upper(),
-        -- keep original raw line (with ANSI) as compile_info for coloured display
         text = type_str:lower() .. ': ' .. msg,
         bufnr = bufnr,
-        -- store raw for the header extmark path
         _raw = raw,
       }
       table.insert(list, prev_item)
@@ -75,12 +72,11 @@ local function parse_err(text, save_item)
           or next_line:match('^%s*%^')
           or next_line:match('generated')
         then
-          -- compile_info: raw text keeps ANSI for extmark colouring.
           table.insert(list, {
             filename = prev_item.filename,
             bufnr = prev_item.bufnr,
             text = next_raw,
-            lnum = prev_item.lnum, -- emm useful in some context
+            lnum = prev_item.lnum,
             col = prev_item.col,
             user_data = 'compile_info',
           })
@@ -227,19 +223,16 @@ local function make_qf_textfunc()
         local fname = vim.fn.bufname(item.bufnr)
         local lnum_s = tostring(item.lnum)
         local col_s = tostring(item.col)
-        -- "fname:lnum:col text"
         local line_text = string.format('%s:%s:%s %s', fname, lnum_s, col_s, item.text)
         table.insert(lines, line_text)
 
-        -- filename highlight
         table.insert(line_colors, {
           lnum = i,
           start = 0,
           _end = #fname,
-          color = nil, -- 用 hl_group 直接指定
+          color = nil,
           hl = 'QfFileName',
         })
-        -- lnum:col highlight
         table.insert(line_colors, {
           lnum = i,
           start = #fname + 1,
@@ -331,25 +324,12 @@ local function update_qf(qf_list, over)
   end
 end
 
---- Wrap the compile command in script(1) to allocate a PTY.
---- Any compiler that checks isatty() will see a real terminal and emit
---- ANSI colours without needing any compiler-specific flags.
---- PTY merges stdout+stderr into a single stream on the master side,
---- so we only need to read stdout.  The PTY also injects \r before \n;
---- callers must strip_cr() the data.
 local function make_cmd(compile_cmd)
   if vim.fn.has('win32') == 1 then
-    return { 'cmd', '/c', compile_cmd }
+    return compile_cmd
   end
-  if vim.fn.has('mac') == 1 then
-    -- macOS script: script -q /dev/null sh -c CMD
-    -- (no -e flag; exit code comes from the shell)
-    return { 'script', '-q', '/dev/null', 'sh', '-c', compile_cmd }
-  end
-  -- Linux script: script -q -e -c CMD /dev/null
-  -- -q  suppress "Script started/done" banners
-  -- -e  propagate child exit code
-  return { 'script', '-q', '-e', '-c', compile_cmd, '/dev/null' }
+  -- jobstart with pty=true handles PTY allocation, no need for script(1).
+  return { 'sh', '-c', compile_cmd }
 end
 
 local function compiler(compile_cmd, bufname)
@@ -364,27 +344,29 @@ local function compiler(compile_cmd, bufname)
   open_qf_now(compile_cmd)
 
   local start_time = vim.uv.hrtime()
-  -- PTY merges stdout+stderr → only one buffer needed.
   local out_buffer = ''
   local save_item = {}
 
-  job = vim.system(make_cmd(compile_cmd), {
-    text = true,
-    stdout = function(err, data)
-      if err or not data then
+  chan_id = vim.fn.jobstart(make_cmd(compile_cmd), {
+    pty = true,
+    on_stdout = function(_, data, _)
+      -- jobstart with pty=true delivers data as a list of strings (split on \n).
+      -- Join them back; empty trailing element means the last chunk ended with \n.
+      if not data or (#data == 1 and data[1] == '') then
         return
       end
+      local raw = table.concat(data, '\n')
+
       vim.schedule(function()
-        out_buffer = out_buffer .. strip_cr(data)
+        out_buffer = out_buffer .. strip_cr(raw)
         local lines = vim.split(out_buffer, '\n', { plain = true })
-        if not data:match('\n$') then
+        if not raw:match('\n$') and not (data[#data] == '') then
           out_buffer = lines[#lines]
           table.remove(lines, #lines)
         else
           out_buffer = ''
         end
 
-        -- Route each line: diagnostic lines → parse_err, rest → compile_info.
         local plain_list = {}
         local err_text_lines = {}
 
@@ -392,7 +374,6 @@ local function compiler(compile_cmd, bufname)
           if line == '' then
             goto continue
           end
-          -- A diagnostic header looks like "file:line:col: type: msg" after stripping ANSI.
           local stripped = clean(line)
           if
             stripped:match('^[^:]+:%d+:%d+:%s*%w+:')
@@ -426,31 +407,40 @@ local function compiler(compile_cmd, bufname)
         end
       end)
     end,
-  }, function(out)
-    local duration = (vim.uv.hrtime() - start_time) / 1e9
-    vim.schedule(function()
-      local list = {}
-      local flushed = clean(out_buffer)
-      if flushed ~= '' then
-        local tail = parse_err(strip_cr(flushed), save_item)
-        if #tail > 0 then
-          vim.list_extend(list, tail)
-        else
-          table.insert(list, { text = strip_cr(out_buffer), user_data = 'compile_info' })
+
+    on_exit = function(_, exit_code, _)
+      local duration = (vim.uv.hrtime() - start_time) / 1e9
+      vim.schedule(function()
+        chan_id = nil
+        local list = {}
+        local flushed = clean(out_buffer)
+        if flushed ~= '' then
+          local tail = parse_err(strip_cr(flushed), save_item)
+          if #tail > 0 then
+            vim.list_extend(list, tail)
+          else
+            table.insert(list, { text = strip_cr(out_buffer), user_data = 'compile_info' })
+          end
         end
-      end
-      table.insert(list, { user_data = 'compile_info', text = ' ' })
-      table.insert(list, {
-        user_data = 'compile_info',
-        text = ('Compilation %s at %s, duration %.3fs'):format(
-          out.code ~= 0 and 'exited abnormally with code ' .. out.code or 'finished',
-          os.date('%a %b %H:%M:%S'),
-          duration
-        ),
-      })
-      update_qf(list, true)
-    end)
-  end)
+        out_buffer = ''
+        table.insert(list, { user_data = 'compile_info', text = ' ' })
+        table.insert(list, {
+          user_data = 'compile_info',
+          text = ('Compilation %s at %s, duration %.3fs'):format(
+            exit_code ~= 0 and 'exited abnormally with code ' .. exit_code or 'finished',
+            os.date('%a %b %H:%M:%S'),
+            duration
+          ),
+        })
+        update_qf(list, true)
+      end)
+    end,
+  })
+
+  if chan_id <= 0 then
+    vim.notify('Failed to start job: ' .. compile_cmd, vim.log.levels.ERROR)
+    chan_id = nil
+  end
 end
 
 local function read_compile_command()
@@ -481,13 +471,49 @@ local function read_compile_command()
   return nil
 end
 
-local function close_running()
-  if job and not job:is_closing() then
-    job:kill('sigterm')
-    vim.notify('close running job ' .. job.pid, vim.log.levels.WARN)
-    job = nil
+local function chan_alive()
+  if not chan_id then
+    return false
   end
+  local ok, info = pcall(api.nvim_get_chan_info, chan_id)
+  return ok and info and next(info) ~= nil
 end
+
+local function close_running()
+  if chan_alive() then
+    vim.fn.jobstop(chan_id)
+    vim.notify('stopped compile job', vim.log.levels.WARN)
+  end
+  chan_id = nil
+end
+
+-- Quickfix buffer-local keymaps for stdin interaction.
+-- Using autocmd because setqflist can recreate the buffer, losing buffer-local maps.
+local qf_augroup = api.nvim_create_augroup('CompileQfInput', { clear = true })
+api.nvim_create_autocmd('FileType', {
+  group = qf_augroup,
+  pattern = 'qf',
+  callback = function(ev)
+    vim.keymap.set('n', 'i', function()
+      if not chan_alive() then
+        vim.notify('No running compile job', vim.log.levels.WARN)
+        return
+      end
+      local ok, input = pcall(vim.fn.input, 'stdin> ')
+      if ok and input ~= '' then
+        api.nvim_chan_send(chan_id, input .. '\n')
+      end
+    end, { buffer = ev.buf, nowait = true, desc = 'Send stdin to compile job' })
+
+    vim.keymap.set('n', 'E', function()
+      if not chan_alive() then
+        vim.notify('No running compile job', vim.log.levels.WARN)
+        return
+      end
+      api.nvim_chan_send(chan_id, '\x04')
+    end, { buffer = ev.buf, nowait = true, desc = 'Send EOF to compile job' })
+  end,
+})
 
 api.nvim_create_user_command('Compile', function(args)
   if not ansi_ns then

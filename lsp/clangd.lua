@@ -20,7 +20,8 @@ end
 
 return {
   cmd = {
-    vim.uv.os_uname().sysname:match('Darwin') and '/opt/homebrew/opt/llvm/bin/clangd' or 'clangd',
+    'clangd',
+    -- vim.uv.os_uname().sysname:match('Darwin') and '/opt/homebrew/opt/llvm/bin/clangd' or 'clangd',
   },
   filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda', 'proto' },
   root_markers = {

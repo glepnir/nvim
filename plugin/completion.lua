@@ -83,23 +83,10 @@ au('LspAttach', {
     if
       #api.nvim_get_autocmds({
         buffer = bufnr,
-        event = { 'CompleteChanged' },
+        event = { 'CompleteDone' },
         group = g,
       }) == 0
     then
-      au('CompleteChanged', {
-        buffer = bufnr,
-        group = g,
-        callback = function()
-          local info = vim.fn.complete_info({ 'selected' })
-          if info.preview_bufnr and vim.bo[info.preview_bufnr].filetype == '' then
-            vim.bo[info.preview_bufnr].filetype = 'markdown'
-            vim.wo[info.preview_winid].conceallevel = 2
-            vim.wo[info.preview_winid].concealcursor = 'niv'
-          end
-        end,
-      })
-
       au('CompleteDone', {
         buffer = bufnr,
         group = g,
@@ -110,7 +97,10 @@ au('LspAttach', {
             return
           end
 
-          if item.kind == CompletionItemKind.Function or item.kind == CompletionItemKind.Method then
+          if
+            (item.kind == CompletionItemKind.Function or item.kind == CompletionItemKind.Method)
+            and item.label:match('%(.+%)') ~= nil
+          then
             vim.schedule(function()
               local mode = api.nvim_get_mode().mode
               if mode:match('^[is]') then

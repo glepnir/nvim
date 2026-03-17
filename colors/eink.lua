@@ -61,8 +61,8 @@ local p = {
   pmenu_thumb = bg(3),
   pmenusel_bg = bg(5),
 
-  -- fg = oklab_to_srgb(0.735, 0.000, 0.012),
-  fg = '#b5ae9e',
+  fg = oklab_to_srgb(0.735, 0.001, 0.030),
+  -- fg = '#b5ae9e',
   -- fg = oklab_to_srgb(0.760, 0.001, 0.008),
 
   green = oklab_to_srgb(0.70838, -0.058, 0.092),
@@ -215,10 +215,10 @@ h('IncSearch', { fg = p.bg, bg = p.orange })
 
 h('Keyword', { fg = p.green })
 h('Statement', { fg = p.fg })
-h('Repeat', { fg = p.fg })
+h('Repeat', { fg = p.green })
 h('Conditional', { link = 'Repeat' })
 
-h('Function', { fg = p.blue })
+h('Function', { fg = p.fg })
 
 -- Types
 h('Type', { fg = p.yellow })
