@@ -49,16 +49,6 @@ au('InsertEnter', {
   desc = 'auto pairs',
 })
 
-au('CmdlineEnter', {
-  group = group,
-  once = true,
-  callback = function()
-    if vim.version().minor >= 12 then
-      require('vim._core.ui2').enable({})
-    end
-  end,
-})
-
 local function startuptime()
   if vim.g.strive_startup_time ~= nil then
     return
@@ -95,6 +85,10 @@ au('UIEnter', {
       require('private.keymap')
       require('private.indent')
       require('private.compile')
+
+      if vim.version().minor >= 12 then
+        require('vim._core.ui2').enable({})
+      end
 
       vim.lsp.log.set_level(vim.log.levels.OFF)
       vim.diagnostic.config({
