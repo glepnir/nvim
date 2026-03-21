@@ -3,13 +3,104 @@ local au = api.nvim_create_autocmd
 local g = api.nvim_create_augroup('glepnir.completion', { clear = true })
 local phoenix_id = 0
 
+local function on_complete_done(args)
+  local lsp = vim.lsp
+  local CompletionItemKind = lsp.protocol.CompletionItemKind
+  local item = vim.tbl_get(vim.v.completed_item, 'user_data', 'nvim', 'lsp', 'completion_item')
+  if not item then
+    return
+  end
+
+  if item.kind ~= CompletionItemKind.Function and item.kind ~= CompletionItemKind.Method then
+    return
+  end
+
+  local mode = api.nvim_get_mode().mode
+  if not mode:match('^[is]') then
+    return
+  end
+
+  local line = api.nvim_get_current_line()
+  local lnum, col = unpack(api.nvim_win_get_cursor(0))
+  local prevchar = line:sub(col, col)
+
+  if prevchar == '(' then
+    vim.defer_fn(function()
+      lsp.buf.signature_help({ title = '' })
+    end, 1)
+    return
+  end
+
+  if prevchar == ')' then
+    return
+  end
+
+  local has_params = nil
+  if item.insertTextFormat == 2 then
+    local text = item.insertText or item.textEdit and item.textEdit.newText or ''
+    local inside = text:match('%((.-)%)')
+    if inside then
+      has_params = inside:match('%$') ~= nil
+    end
+  end
+
+  if has_params == nil then
+    local inside = item.label:match('%((.-)%)')
+    if inside then
+      has_params = #inside > 0
+    end
+  end
+
+  line = line:sub(1, col) .. '()' .. line:sub(col + 1)
+  api.nvim_buf_set_text(0, lnum - 1, 0, lnum - 1, -1, { line })
+
+  local right = api.nvim_replace_termcodes('<Right>', true, false, true)
+  if has_params == true then
+    api.nvim_feedkeys(right, 'n', false)
+    vim.defer_fn(function()
+      lsp.buf.signature_help({ title = '' })
+    end, 1)
+  elseif has_params == false then
+    api.nvim_feedkeys(right .. right, 'n', false)
+  else
+    api.nvim_feedkeys(right, 'n', false)
+
+    vim.defer_fn(function()
+      local c = lsp.get_client_by_id(vim.v.completed_item.user_data.nvim.lsp.client_id)
+      if not c then
+        return
+      end
+
+      local win = api.nvim_get_current_win()
+      local params = vim.lsp.util.make_position_params(win, c.offset_encoding)
+
+      c:request(lsp.protocol.Methods.textDocument_signatureHelp, params, function(err, result)
+        vim.schedule(function()
+          if err or not result or not result.signatures or #result.signatures == 0 then
+            api.nvim_feedkeys(right, 'n', false)
+            return
+          end
+
+          local active_idx = (result.activeSignature or 0) + 1
+          local sig = result.signatures[active_idx] or result.signatures[1]
+
+          if not sig or not sig.parameters or #sig.parameters == 0 then
+            api.nvim_feedkeys(right, 'n', false)
+          else
+            lsp.buf.signature_help({ title = '' })
+          end
+        end)
+      end, args.buf)
+    end, 1)
+  end
+end
+
 au('LspAttach', {
   group = g,
   callback = function(args)
     local lsp = vim.lsp
     local completion = lsp.completion
     local ms = lsp.protocol.Methods
-    local CompletionItemKind = lsp.protocol.CompletionItemKind
 
     local bufnr = args.buf
     local client = lsp.get_client_by_id(args.data.client_id)
@@ -80,47 +171,8 @@ au('LspAttach', {
       au('CompleteDone', {
         buffer = bufnr,
         group = g,
-        callback = function()
-          local item =
-            vim.tbl_get(vim.v.completed_item, 'user_data', 'nvim', 'lsp', 'completion_item')
-          if not item then
-            return
-          end
-
-          if
-            (item.kind == CompletionItemKind.Function or item.kind == CompletionItemKind.Method)
-            and item.label:match('%(.+%)') ~= nil
-          then
-            vim.schedule(function()
-              local mode = api.nvim_get_mode().mode
-              if mode:match('^[is]') then
-                local line = api.nvim_get_current_line()
-                local lnum, col = unpack(api.nvim_win_get_cursor(0))
-                local prevchar = line:sub(col, col)
-                if prevchar ~= '(' and prevchar ~= ')' then
-                  line = line:sub(1, col) .. '()' .. line:sub(col + 1, #line)
-                  api.nvim_buf_set_text(0, lnum - 1, 0, lnum - 1, -1, { line })
-                  api.nvim_feedkeys(
-                    api.nvim_replace_termcodes('<Right>', true, false, true),
-                    'n',
-                    false
-                  )
-                elseif prevchar == ')' then
-                  api.nvim_feedkeys(
-                    api.nvim_replace_termcodes('<Left>', true, false, true),
-                    'n',
-                    false
-                  )
-                end
-
-                vim.defer_fn(function()
-                  lsp.buf.signature_help({ title = '' })
-                end, 1)
-              end
-            end)
-          end
-        end,
-        desc = 'Auto show signature help when compeltion done',
+        callback = on_complete_done,
+        desc = 'Auto-insert parens, check params, show signature help',
       })
     end
   end,
