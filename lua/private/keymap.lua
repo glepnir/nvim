@@ -335,11 +335,17 @@ end)
 -- map.nx('ga', cmd('Lspsaga code_action'))
 
 map.n('f', function()
-  require('private.jump').charForward()
+  local j = require('private.jump')
+  if j.charForward then
+    j.charForward()
+  end
 end)
 
 map.n('F', function()
-  require('private.jump').charBackward()
+  local j = require('private.jump')
+  if j.charBackward then
+    j.charBackward()
+  end
 end)
 
 vim.cmd([[

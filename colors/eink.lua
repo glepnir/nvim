@@ -61,9 +61,9 @@ local p = {
   pmenu_thumb = bg(3),
   pmenusel_bg = bg(5),
 
-  fg = oklab_to_srgb(0.735, 0.001, 0.030),
+  fg = oklab_to_srgb(0.735, 0.001, 0.018),
   -- fg = '#b5ae9e',
-  -- fg = oklab_to_srgb(0.760, 0.001, 0.008),
+  -- fg = oklab_to_srgb(0.756, 0.000, 0.000),
 
   green = oklab_to_srgb(0.70838, -0.058, 0.092),
   -- blue = oklab_to_srgb(0.697, -0.011, -0.012),
@@ -215,13 +215,13 @@ h('IncSearch', { fg = p.bg, bg = p.orange })
 
 h('Keyword', { fg = p.green })
 h('Statement', { fg = p.fg })
-h('Repeat', { fg = p.green })
+h('Repeat', { fg = p.yellow })
 h('Conditional', { link = 'Repeat' })
 
 h('Function', { fg = p.fg })
 
 -- Types
-h('Type', { fg = p.yellow })
+h('Type', { fg = p.cyan })
 h('StorageClass', { link = 'Type' })
 h('Structure', { link = 'Type' })
 h('Typedef', { link = 'Type' })

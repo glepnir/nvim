@@ -42,20 +42,10 @@ au('LspAttach', {
       autotrigger = true,
       convert = function(item)
         local kind = lsp.protocol.CompletionItemKind[item.kind] or 'u'
-        local cpp = vim.bo.filetype == 'c' or vim.bo.filetype == 'cpp'
-        local res = {
+        return {
           kind = kind:sub(1, 1):lower(),
           menu = '',
         }
-        -- hack for c/cpp
-        if
-          (item.kind == CompletionItemKind.Function or item.kind == CompletionItemKind.Method)
-          and cpp
-          and not item.textEdit.newText:find('%)$')
-        then
-          res.word = item.insertText .. '()'
-        end
-        return res
       end,
       cmp = function(a, b)
         local item_a = a.user_data.nvim.lsp.completion_item
@@ -124,7 +114,7 @@ au('LspAttach', {
                 end
 
                 vim.defer_fn(function()
-                  lsp.buf.signature_help()
+                  lsp.buf.signature_help({ title = '' })
                 end, 1)
               end
             end)

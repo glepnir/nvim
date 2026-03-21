@@ -91,7 +91,7 @@ end, { nargs = 1 })
 -- ═══════════════════════════════════════════════════════════════════════════
 -- MONOTONE COLORS
 -- ═══════════════════════════════════════════════════════════════════════════
-local base05 = oklab_to_srgb(0.240000, -0.036000, -0.030000)
+-- local base05 = oklab_to_srgb(0.240000, -0.036000, -0.030000)
 -- local base04 = oklab_to_srgb(0.423013, -0.021953, -0.017864)
 local base03 = oklab_to_srgb(0.267337, -0.037339, -0.031128) -- editor bg
 
@@ -135,7 +135,7 @@ local base04 = oklab_to_srgb(0.423013, -0.020000, -0.008000)
 -- bg(0.267) → cursorline(0.297) → pmenu_sel(0.327) → float(0.357)
 -- local base_cursorline = oklab_to_srgb(0.297000, -0.030000, -0.006000)
 -- local base02 = oklab_to_srgb(0.327000, -0.030000, -0.007000)
-local base_float = oklab_to_srgb(0.357000, -0.029000, -0.006000)
+local base_float = oklab_to_srgb(0.28937, -0.037339, -0.031128) -- editor bg
 
 local base01 = oklab_to_srgb(0.523013, -0.020000, -0.010000)
 local base00 = oklab_to_srgb(0.568165, -0.019000, -0.010000)
@@ -308,9 +308,8 @@ h('PmenuBorder', { fg = colors.fg_comment })
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- Float & Borders
--- NormalFloat 用 base05 (L≈0.240)，比 editor bg (L≈0.267) 更暗，沉入感
 -- ─────────────────────────────────────────────────────────────────────────────
-h('NormalFloat', { bg = base05 })
+h('NormalFloat', { bg = base02 })
 h('FloatBorder', { fg = blend(colors.fg_comment, 0.40) })
 h('Title', { fg = colors.yellow, bold = true })
 

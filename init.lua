@@ -187,12 +187,16 @@ end
 P:add({
   'nvimdev/modeline.nvim',
   'lewis6991/gitsigns.nvim',
-  'nvimdev/phoenix.nvim',
   { src = 'nvim-treesitter/nvim-treesitter', version = 'main' },
   { src = 'nvim-treesitter/nvim-treesitter-textobjects', version = 'main' },
 }, { load = false })
   :add('nvimdev/dired.nvim', {
     load = on_cmd('Dired', 'dired.nvim'),
+  })
+  :add('nvimdev/phoenix.nvim', {
+    load = function()
+      return false
+    end,
   })
   :add('ibhagwan/fzf-lua', {
     load = on_cmd('FzfLua', 'fzf-lua', function()

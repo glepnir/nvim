@@ -285,9 +285,9 @@
     "prefix": "try",
     "body": [
       "try {",
+      "\t$1",
+      "} catch (const std::exception& ${2:e}) {",
       "\t$0",
-      "} catch (const std::exception& ${1:e}) {",
-      "\t${2:// handle}",
       "}"
     ],
     "description": "Try-catch block"

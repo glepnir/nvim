@@ -90,17 +90,13 @@ au('UIEnter', {
         require('vim._core.ui2').enable({})
       end
 
-      vim.lsp.log.set_level(vim.log.levels.OFF)
+      vim.lsp.log.set_level(0)
       vim.diagnostic.config({
         float = {
           header = '',
         },
         -- i don't like CursorMoved so...
         virtual_text = {
-          -- current_line = true,
-          prefix = function(d, _, _)
-            return ' ■', 'DiagnosticPrefix' .. vim.diagnostic.severity[d.severity]
-          end,
           virt_text_pos = 'eol_right_align',
         },
         signs = {

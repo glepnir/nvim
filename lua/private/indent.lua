@@ -188,30 +188,20 @@ end
 local function blank_indent(c, bufnr, row)
   if ts.highlighter.active[bufnr] then
     local node = ts.get_node({ bufnr = bufnr, pos = { row, 0 } })
-    if not node then
-      return
-    end
-    local node_type = node:type()
-    c.tree_root = c.tree_root or node:tree():root():type()
-    if c.tree_root then
-      -- Toplevel blank line: no guide
-      if node_type == c.tree_root then
-        return
-      end
-      -- ERROR nodes: skip to avoid noise during editing
-      if vim.startswith(node_type, 'ERROR') then
-        return
-      end
-      -- Excluded node types (string literals, comments, etc.)
-      if vim.list_contains(opt.ts_exclude_nodetype, node_type) then
-        return
+    if node then
+      local node_type = node:type()
+      c.tree_root = c.tree_root or node:tree():root():type()
+      if c.tree_root then
+        if node_type == c.tree_root then
+          return
+        end
+        if vim.list_contains(opt.ts_exclude_nodetype, node_type) then
+          return
+        end
       end
     end
   end
 
-  -- For all other cases (TS or non-TS), derive indent from surrounding
-  -- non-blank lines.  This is correct for any nesting depth because
-  -- search_nearest walks outward until it finds a real line.
   local up = search_nearest(c, row - 1, UP, bufnr)
   local down = search_nearest(c, row + 1, DOWN, bufnr)
   local indent = math.max(up, down)
