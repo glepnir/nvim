@@ -303,14 +303,16 @@ map.n('gs', function()
   end)
   vim.keymap.set({ 'n', 'i' }, '<C-c>', function()
     pcall(api.nvim_win_close, winid, true)
-  end, { buffer = bufnr })
+  end, { buf = bufnr })
 end)
+
+map.n('<Leader>a', function() end)
 
 map.n({
   -- ['gl'] = cmd('Visualizer full'),
   -- FzfLua
-  ['<Leader>d'] = cmd('FzfLua diagnostic_document'),
-  ['<Leader>D'] = cmd('FzfLua diagnostic_workspace'),
+  ['<Leader>d'] = cmd('FzfLua diagnostics_document'),
+  ['<Leader>D'] = cmd('FzfLua diagnostics_workspace'),
   ['<Leader>b'] = cmd('FzfLua buffers'),
   ['<Leader>fa'] = cmd('FzfLua live_grep_native'),
   ['<Leader>fs'] = cmd('FzfLua grep_cword'),

@@ -3,9 +3,35 @@ local au = api.nvim_create_autocmd
 local g = api.nvim_create_augroup('glepnir.completion', { clear = true })
 local phoenix_id = 0
 
+local function is_cpp()
+  local ft = vim.bo.filetype
+  return ft == 'cpp' or ft == 'cxx' or ft == 'cc' or ft == 'hpp'
+end
+
+local function is_cpp_template(item)
+  -- labelDetails.detail: "<class Tp>(...)"
+  local detail = vim.tbl_get(item, 'labelDetails', 'detail')
+  if detail and detail:match('<.->') then
+    return true
+  end
+
+  -- abbr: "foo<class T>(...)"
+  local abbr = vim.v.completed_item.abbr
+  if abbr and abbr:match('<.->') then
+    return true
+  end
+
+  -- label fallback
+  if item.label and item.label:match('<.->') then
+    return true
+  end
+  return false
+end
+
 local function on_complete_done(args)
   local lsp = vim.lsp
   local CompletionItemKind = lsp.protocol.CompletionItemKind
+
   local item = vim.tbl_get(vim.v.completed_item, 'user_data', 'nvim', 'lsp', 'completion_item')
   if not item then
     return
@@ -35,9 +61,27 @@ local function on_complete_done(args)
     return
   end
 
+  local is_template = false
+
+  if is_cpp() then
+    is_template = is_cpp_template(item)
+
+    if item.insertTextFormat == 2 then
+      local text = item.insertText or (item.textEdit and item.textEdit.newText) or ''
+      if text:match('<%$') then
+        is_template = false
+      end
+    end
+
+    if prevchar == '<' then
+      is_template = false
+    end
+  end
+
   local has_params = nil
+
   if item.insertTextFormat == 2 then
-    local text = item.insertText or item.textEdit and item.textEdit.newText or ''
+    local text = item.insertText or (item.textEdit and item.textEdit.newText) or ''
     local inside = text:match('%((.-)%)')
     if inside then
       has_params = inside:match('%$') ~= nil
@@ -51,10 +95,20 @@ local function on_complete_done(args)
     end
   end
 
-  line = line:sub(1, col) .. '()' .. line:sub(col + 1)
+  if is_template then
+    line = line:sub(1, col) .. '<>()' .. line:sub(col + 1)
+  else
+    line = line:sub(1, col) .. '()' .. line:sub(col + 1)
+  end
+
   api.nvim_buf_set_text(0, lnum - 1, 0, lnum - 1, -1, { line })
 
   local right = api.nvim_replace_termcodes('<Right>', true, false, true)
+  if is_template then
+    api.nvim_feedkeys(right, 'n', false)
+    return
+  end
+
   if has_params == true then
     api.nvim_feedkeys(right, 'n', false)
     vim.defer_fn(function()

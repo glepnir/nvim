@@ -22,7 +22,8 @@ vim.o.background = 'dark'
 -- ═══════════════════════════════════════════════════════════════════════════
 local c = {
   -- ─── Surface (2026-dark.json) ──────────────────────────────────────────
-  bg = '#121314', -- editor.background
+  -- bg = '#121314', -- editor.background
+  bg = '#1f1f1f',
   bg_sidebar = '#191A1B', -- sideBar/panel/terminal background
   bg_float = '#202122', -- editorWidget/suggest/hover background
   bg_cursorline = '#242526', -- editor.lineHighlightBackground
@@ -39,6 +40,7 @@ local c = {
   fg_disabled = '#555555', -- disabledForeground
   fg_linenr = '#858889', -- editorLineNumber.foreground
   fg_linenr_act = '#BBBEBF', -- editorLineNumber.activeForeground
+  fg_dark_modern = '#CCCCCC',
 
   -- ─── Accent ────────────────────────────────────────────────────────────
   accent = '#3994BC', -- focusBorder / badge / panelTitle.activeBorder
@@ -232,7 +234,7 @@ h('PmenuMatch', { fg = c.blue, bold = true })
 
 -- ─── Float & Borders ────────────────────────────────────────────────────
 h('NormalFloat', { fg = c.fg_ui, bg = c.bg_float })
-h('FloatBorder', { fg = c.border, bg = c.bg_float })
+h('FloatBorder', { fg = c.border })
 h('FloatTitle', { fg = c.fg_ui, bg = c.bg_float, bold = true })
 h('Title', { fg = c.yellow, bold = true })
 
@@ -499,4 +501,4 @@ h('GitSignsDelete', { fg = c.git_delete })
 h('DashboardHeader', { fg = c.accent })
 
 -- ─── Modeline ────────────────────────────────────────────────────────────
-h('ModeLineFileName', { fg = c.fg_ui, bold = true })
+h('ModeLineFileName', { bold = true })

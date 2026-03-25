@@ -57,7 +57,7 @@ local function get_step(bufnr)
 end
 
 -- Returns true when noexpandtab + softtabstop == 0 or softtabstop == tabstop,
--- meaning the file uses pure tabs with no space padding.  In that case leadtab
+-- meaning the file uses pure tabs with no space padding. In that case leadtab
 -- can cover every guide on non-blank lines and extmark is not needed for them.
 local function is_pure_tab(bufnr)
   if vim.bo[bufnr].expandtab then
@@ -136,24 +136,16 @@ end
 
 local ctx = {}
 
-local function pack(is_empty, indent, is_toplevel)
-  return bit.bor(
-    bit.lshift(is_empty and 1 or 0, 15),
-    bit.lshift(is_toplevel and 1 or 0, 14),
-    bit.band(indent, 0x3FFF)
-  )
+local function pack(is_empty, indent)
+  return bit.bor(bit.lshift(is_empty and 1 or 0, 15), bit.band(indent, 0x7FFF))
 end
 
 local function unpack_empty(packed)
   return bit.band(bit.rshift(packed, 15), 1) == 1
 end
 
-local function unpack_toplevel(packed)
-  return bit.band(bit.rshift(packed, 14), 1) == 1
-end
-
 local function unpack_indent(packed)
-  return bit.band(packed, 0x3FFF)
+  return bit.band(packed, 0x7FFF)
 end
 
 --- @param c table
@@ -182,22 +174,38 @@ local function search_nearest(c, row, direction, bufnr)
   return 0
 end
 
+local function root_blank_indent(up, down)
+  if up > 0 and down > 0 then
+    if up == down then
+      return up
+    end
+    return math.max(up, down)
+  end
+  if up > 0 then
+    return up
+  end
+  if down > 0 then
+    return down
+  end
+  return 0
+end
+
 --- @param c table
 --- @param bufnr integer
 --- @param row integer 0-indexed
 local function blank_indent(c, bufnr, row)
+  local node
+  local node_type
+  local tree_root
+
   if ts.highlighter.active[bufnr] then
-    local node = ts.get_node({ bufnr = bufnr, pos = { row, 0 } })
+    node = ts.get_node({ bufnr = bufnr, pos = { row, 0 } })
     if node then
-      local node_type = node:type()
-      c.tree_root = c.tree_root or node:tree():root():type()
-      if c.tree_root then
-        if node_type == c.tree_root then
-          return
-        end
-        if vim.list_contains(opt.ts_exclude_nodetype, node_type) then
-          return
-        end
+      node_type = node:type()
+      tree_root = node:tree():root():type()
+
+      if vim.list_contains(opt.ts_exclude_nodetype, node_type) then
+        return
       end
     end
   end
@@ -205,6 +213,14 @@ local function blank_indent(c, bufnr, row)
   local up = search_nearest(c, row - 1, UP, bufnr)
   local down = search_nearest(c, row + 1, DOWN, bufnr)
   local indent = math.max(up, down)
+
+  if node and node_type == tree_root then
+    indent = root_blank_indent(up, down)
+    if indent == 0 then
+      return
+    end
+  end
+
   if indent > 0 then
     c.snapshot[row] = pack(true, indent)
   end
@@ -214,8 +230,15 @@ local function build_cache(winid, bufnr, toprow, botrow)
   local mode = api.nvim_get_mode().mode
   local insert = mode == 'i' or mode == 'ic' or mode == 'ix'
   local changedtick = api.nvim_buf_get_changedtick(bufnr)
+
   local prev = ctx[winid]
-  if prev and (prev.bufnr ~= bufnr or (not insert and prev.changedtick ~= changedtick)) then
+  local tick_changed = false
+
+  if prev and prev.bufnr == bufnr then
+    tick_changed = prev.changedtick ~= changedtick
+  end
+
+  if prev and prev.bufnr ~= bufnr then
     ctx[winid] = {}
   else
     ctx[winid] = ctx[winid] or {}
@@ -232,34 +255,31 @@ local function build_cache(winid, bufnr, toprow, botrow)
   c.leftcol = vim.fn.winsaveview().leftcol
   c.count = api.nvim_buf_line_count(bufnr)
   c.insert = insert
+
   if insert then
     local pos = api.nvim_win_get_cursor(0)
     c.currow = pos[1] - 1
     c.curcol = pos[2]
   end
 
+  if not insert and tick_changed then
+    c.snapshot = {}
+  end
+
+  if insert and tick_changed then
+    for i = toprow, botrow do
+      c.snapshot[i] = nil
+    end
+  end
+
   local blanks = {}
   for i = toprow, botrow do
     local line_text = buf_get_line(bufnr, i)
     if is_blank(line_text) then
-      if ts.highlighter.active[bufnr] then
-        local node = ts.get_node({ bufnr = bufnr, pos = { i, 0 } })
-        if node and node:type() == node:tree():root():type() then
-          c.snapshot[i] = pack(true, 0, true)
-          goto continue
-        end
-      end
-      if insert and c.snapshot[i] then
-        local s = c.snapshot[i]
-        if unpack_empty(s) and (unpack_toplevel(s) or unpack_indent(s) > 0) then
-          goto continue
-        end
-      end
       blanks[#blanks + 1] = i
     else
-      c.snapshot[i] = pack(false, buf_get_indent(bufnr, i + 1), false)
+      c.snapshot[i] = pack(false, buf_get_indent(bufnr, i + 1))
     end
-    ::continue::
   end
 
   for _, row in ipairs(blanks) do
