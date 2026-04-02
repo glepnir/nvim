@@ -42,57 +42,6 @@ local function oklab_to_srgb(L, a, b)
   return string.format('#%02x%02x%02x', r, g, b_comp)
 end
 
--- local BG_L = 0.233
--- local BG_A = 0
--- local BG_B = 0
--- local STEP = 0.034
---
--- local function bg(offset)
---   return oklab_to_srgb(BG_L + offset * STEP, BG_A, BG_B)
--- end
---
--- local p = {
---   statusline_bg = bg(-1),
---   bg = bg(0),
---   normalfloat_bg = bg(1),
---   pmenu_bg = bg(1),
---   cursorline_bg = bg(2),
---   selection_bg = bg(3),
---   pmenu_thumb = bg(3),
---   pmenusel_bg = bg(5),
---
---   fg = oklab_to_srgb(0.735, 0.001, 0.018),
---   -- fg = '#b5ae9e',
---   -- fg = oklab_to_srgb(0.756, 0.000, 0.000),
---
---   green = oklab_to_srgb(0.70838, -0.058, 0.092),
---   -- blue = oklab_to_srgb(0.697, -0.011, -0.012),
---   -- blue = oklab_to_srgb(0.697, -0.025, -0.020),
---   blue = oklab_to_srgb(0.693, -0.016, -0.050),
---   cyan = oklab_to_srgb(0.708, -0.062, -0.012),
---   -- cyan = oklab_to_srgb(0.643664, -0.046000, 0.00300),
---
---   magenta = oklab_to_srgb(0.698, 0.040, -0.019),
---   red = oklab_to_srgb(0.690, 0.060, 0.049),
---   orange = oklab_to_srgb(0.682, 0.025, 0.053),
---   yellow = oklab_to_srgb(0.663, -0.002, 0.072),
---
---   linenr_active = oklab_to_srgb(0.710, -0.002, 0.008),
---   linenr = oklab_to_srgb(0.455, -0.002, 0.007),
---   comment = oklab_to_srgb(0.600, -0.001, 0.008),
---
---   pmenusel_fg = oklab_to_srgb(0.120, 0.000, -0.002),
---
---   indent = oklab_to_srgb(0.415, -0.001, 0.010),
--- }
---
--- local d = {
---   error = oklab_to_srgb(0.690, 0.085, 0.045),
---   warn = oklab_to_srgb(0.755, 0.015, 0.095),
---   info = oklab_to_srgb(0.710, -0.025, -0.022),
---   hint = oklab_to_srgb(0.640, -0.002, 0.008),
--- }
-
 local BG_L = 0.185
 local BG_A = -0.0009
 local BG_B = -0.0029
@@ -101,7 +50,7 @@ local STEP = 0.028
 local function bg(offset)
   return oklab_to_srgb(BG_L + offset * STEP, BG_A, BG_B)
 end
-
+--
 local p = {
   statusline_bg = bg(-1),
   bg = bg(0),
@@ -112,33 +61,40 @@ local p = {
   pmenu_thumb = bg(3),
   pmenusel_bg = bg(5),
 
-  -- fg = oklab_to_srgb(0.780, 0.002, 0.022),
-  fg = '#bfbfbf',
-  comment = oklab_to_srgb(0.520, 0.000, 0.012),
-  linenr = oklab_to_srgb(0.420, -0.001, 0.008),
-  linenr_active = oklab_to_srgb(0.680, 0.000, 0.012),
-  indent = oklab_to_srgb(0.360, 0.000, 0.008),
+  fg = oklab_to_srgb(0.755, 0.001, 0.016),
+  -- fg = '#b5ae9e',
+  -- fg = oklab_to_srgb(0.756, 0.000, 0.000),
+
+  -- green = oklab_to_srgb(0.70838, -0.058, 0.092),
+
+  green = '#6a9955', -- comment
+  -- blue = oklab_to_srgb(0.697, -0.011, -0.012),
+  -- blue = oklab_to_srgb(0.697, -0.025, -0.020),
+  blue = oklab_to_srgb(0.693, -0.016, -0.050),
+  cyan = oklab_to_srgb(0.708, -0.062, -0.012),
+  -- cyan = oklab_to_srgb(0.643664, -0.046000, 0.00300),
+
+  magenta = oklab_to_srgb(0.698, 0.040, -0.019),
+  red = oklab_to_srgb(0.690, 0.060, 0.049),
+  orange = oklab_to_srgb(0.682, 0.025, 0.053),
+  -- yellow = oklab_to_srgb(0.663, -0.002, 0.072),
+  yellow = oklab_to_srgb(0.72, -0.002, 0.062),
+  -- yellow = '#dcdcaa',
+
+  linenr_active = oklab_to_srgb(0.710, -0.002, 0.008),
+  linenr = oklab_to_srgb(0.455, -0.002, 0.007),
+  comment = oklab_to_srgb(0.600, -0.001, 0.008),
 
   pmenusel_fg = oklab_to_srgb(0.120, 0.000, -0.002),
 
-  -- 6 Chromatic Colors
-  -- All at L ∈ [0.68, 0.72], chroma < 0.08
-  -- Hue spacing ≥ 50° for easy discrimination
-  green = oklab_to_srgb(0.700, -0.050, 0.065), -- keywords, tags
-  -- green = '#6a9955', -- comment
-
-  cyan = oklab_to_srgb(0.700, -0.048, -0.015), -- types, special chars
-  blue = oklab_to_srgb(0.690, -0.012, -0.055), -- directories, links
-  magenta = oklab_to_srgb(0.690, 0.038, -0.018), -- decorators, macros
-  red = oklab_to_srgb(0.680, 0.055, 0.038), -- errors, deletions
-  orange = oklab_to_srgb(0.700, 0.028, 0.068), -- strings, changes
+  indent = oklab_to_srgb(0.415, -0.001, 0.010),
 }
 
 local d = {
-  error = oklab_to_srgb(0.650, 0.080, 0.042),
-  warn = oklab_to_srgb(0.720, 0.018, 0.085),
-  info = oklab_to_srgb(0.700, -0.022, -0.020),
-  hint = oklab_to_srgb(0.580, 0.000, 0.008),
+  error = oklab_to_srgb(0.690, 0.085, 0.045),
+  warn = oklab_to_srgb(0.755, 0.015, 0.095),
+  info = oklab_to_srgb(0.710, -0.025, -0.022),
+  hint = oklab_to_srgb(0.640, -0.002, 0.008),
 }
 
 vim.g.colors_name = 'eink'
@@ -263,20 +219,20 @@ h('IncSearch', { fg = p.bg, bg = p.orange })
 
 h('Keyword', { fg = p.cyan })
 h('Statement', { fg = p.fg })
-h('Repeat', { fg = p.orange })
+h('Repeat', { fg = p.fg })
 h('Conditional', { link = 'Repeat' })
 
 h('Function', { fg = p.fg })
 
 -- Types
-h('Type', { fg = p.cyan })
+h('Type', { fg = p.yellow })
 h('StorageClass', { link = 'Type' })
 h('Structure', { link = 'Type' })
 h('Typedef', { link = 'Type' })
 
 -- Constants
 h('Constant', { fg = p.fg })
-h('String', { fg = p.orange })
+h('String', { fg = p.green })
 h('Character', { link = 'Constant' })
 h('Number', { link = 'Constant' })
 h('Boolean', { link = 'Constant' })
@@ -306,8 +262,8 @@ h('Comment', { fg = p.comment, italic = true })
 -- 4. UI Components
 -- =============================================================================
 
-h('StatusLine', { bg = p.statusline_bg, fg = p.fg })
-h('StatusLineNC', { bg = p.normalfloat_bg, fg = p.fg })
+h('StatusLine', { bg = p.statusline_bg, fg = p.comment })
+h('StatusLineNC', { bg = p.normalfloat_bg, fg = p.comment })
 h('WildMenu', { fg = p.bg, bg = p.blue })
 h('ColorColumn', { bg = p.cursorline_bg })
 
