@@ -16,3 +16,4 @@ endif
 inoreabbrev <buffer> tp template <typename T><CR><C-O><Cmd>call timer_start(0, { -> execute('normal! S')})<CR>
 inoreabbrev <buffer> inc #include
 inoreabbrev <buffer> ici #include <iostream><CR><C-O><Cmd>call timer_start(0, { -> execute('normal! S')})<CR>
+inoreabbrev <buffer> prl std::println("")<Cmd>call timer_start(0, { -> feedkeys("\<BS>\<Left>\<Left>")})<CR>

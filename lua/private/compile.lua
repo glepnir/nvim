@@ -332,7 +332,7 @@ local function make_cmd(compile_cmd)
   return { 'sh', '-c', compile_cmd }
 end
 
-local function compiler(compile_cmd, bufname)
+local function compiler(compile_cmd, bufname, opts)
   if compile_cmd:find('%%s') then
     local cwd = vim.uv.cwd()
     if bufname:find(cwd, 1, true) then
@@ -341,7 +341,9 @@ local function compiler(compile_cmd, bufname)
     compile_cmd = compile_cmd:gsub('%%s', bufname)
   end
   last_cmd = compile_cmd
-  open_qf_now(compile_cmd)
+  if not opts.silent then
+    open_qf_now(compile_cmd)
+  end
 
   local start_time = vim.uv.hrtime()
   local out_buffer = ''
@@ -412,27 +414,33 @@ local function compiler(compile_cmd, bufname)
       local duration = (vim.uv.hrtime() - start_time) / 1e9
       vim.schedule(function()
         chan_id = nil
-        local list = {}
-        local flushed = clean(out_buffer)
-        if flushed ~= '' then
-          local tail = parse_err(strip_cr(flushed), save_item)
-          if #tail > 0 then
-            vim.list_extend(list, tail)
-          else
-            table.insert(list, { text = strip_cr(out_buffer), user_data = 'compile_info' })
+        if not opts.silent then
+          local list = {}
+          local flushed = clean(out_buffer)
+          if flushed ~= '' then
+            local tail = parse_err(strip_cr(flushed), save_item)
+            if #tail > 0 then
+              vim.list_extend(list, tail)
+            else
+              table.insert(list, { text = strip_cr(out_buffer), user_data = 'compile_info' })
+            end
           end
+          out_buffer = ''
+          table.insert(list, { user_data = 'compile_info', text = ' ' })
+          table.insert(list, {
+            user_data = 'compile_info',
+            text = ('Compilation %s at %s, duration %.3fs'):format(
+              exit_code ~= 0 and 'exited abnormally with code ' .. exit_code or 'finished',
+              os.date('%a %b %H:%M:%S'),
+              duration
+            ),
+          })
+          update_qf(list, true)
         end
-        out_buffer = ''
-        table.insert(list, { user_data = 'compile_info', text = ' ' })
-        table.insert(list, {
-          user_data = 'compile_info',
-          text = ('Compilation %s at %s, duration %.3fs'):format(
-            exit_code ~= 0 and 'exited abnormally with code ' .. exit_code or 'finished',
-            os.date('%a %b %H:%M:%S'),
-            duration
-          ),
-        })
-        update_qf(list, true)
+
+        if opts.ondone then
+          opts.ondone(exit_code)
+        end
       end)
     end,
   })
@@ -522,7 +530,12 @@ api.nvim_create_user_command('Compile', function(args)
   close_running()
   local cmd = #args.args > 0 and args.args or read_compile_command()
   if cmd then
-    compiler(cmd, api.nvim_buf_get_name(0))
+    local opts = {}
+    if cmd:find('++silent') then
+      cmd = cmd:gsub('++silent', '')
+      opts.silent = true
+    end
+    compiler(cmd, api.nvim_buf_get_name(0), opts)
   else
     vim.notify('No COMPILE_COMMAND found in .env', vim.log.levels.WARN)
   end
@@ -533,7 +546,21 @@ api.nvim_create_user_command('Recompile', function()
     ansi_ns = api.nvim_create_namespace('ansi_colors')
   end
   close_running()
+  local opts = {}
   if last_cmd then
-    compiler(last_cmd, api.nvim_buf_get_name(0))
+    if last_cmd:find('++silent') then
+      last_cmd = last_cmd:gsub('++silent', '')
+      opts.silent = true
+    end
+    compiler(last_cmd, api.nvim_buf_get_name(0), opts)
   end
 end, {})
+
+return {
+  custom = function(opts)
+    compiler(opts.cmd, opts.fname, {
+      silent = opts.silent,
+      ondone = opts.ondone,
+    })
+  end,
+}

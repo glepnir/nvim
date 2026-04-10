@@ -104,9 +104,9 @@
     "prefix": "class",
     "body": [
       "class ${1:ClassName} {",
-      "private:",
-      "\t$0",
       "public:",
+      "\t$0",
+      "private:",
       "};"
     ],
     "description": "Class definition"

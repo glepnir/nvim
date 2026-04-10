@@ -89,7 +89,8 @@ local function on_complete_done(args)
   end
 
   if has_params == nil then
-    local inside = item.label:match('%((.-)%)')
+    local label = item.labelDetails and item.labelDetails.detail or item.label
+    local inside = label:match('%((.-)%)')
     if inside then
       has_params = #inside > 0
     end
@@ -183,7 +184,6 @@ au('LspAttach', {
     end
 
     completion.enable(true, client.id, bufnr, {
-      -- autotrigger = not vim.env.DEBUG_COMPLETION and true or { any = true },
       autotrigger = true,
       convert = function(item)
         local kind = lsp.protocol.CompletionItemKind[item.kind] or 'u'

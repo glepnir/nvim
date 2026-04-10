@@ -3,19 +3,11 @@ local fname = vim.fn.expand('%:p')
 if fname:match('neovim') or fname:match('nvim') then
   vim.opt_local.textwidth = 120
   vim.api.nvim_create_user_command('NvimGenerateSource', function()
-    vim.system({ 'make', 'generated-sources' }, {
-      text = true,
-    }, function(out)
-      if out.code ~= 0 or #out.stderr > 0 then
-        vim.schedule(function()
-          vim.api.nvim_echo(
-            { { ('Exit code: %d %s'):format(out.code, out.stderr) } },
-            true,
-            { err = true }
-          )
-        end)
-      else
-        vim.schedule(function()
+    require('private.compile').custom({
+      cmd = 'make generated-sources',
+      silent = true,
+      ondone = function(exit_code)
+        if exit_code == 0 then
           local curbuf = vim.api.nvim_get_current_buf()
           vim.iter(vim.api.nvim_list_bufs()):map(function(b)
             local bufname = vim.api.nvim_buf_get_name(b)
@@ -33,9 +25,9 @@ if fname:match('neovim') or fname:match('nvim') then
               end)
             end
           end)
-        end)
-      end
-    end)
+        end
+      end,
+    })
   end, {})
 elseif fname:match('vim') then
   vim.opt_local.listchars = { tab = '  ' }

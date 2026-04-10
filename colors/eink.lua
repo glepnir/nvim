@@ -61,17 +61,19 @@ local p = {
   pmenu_thumb = bg(3),
   pmenusel_bg = bg(5),
 
-  fg = oklab_to_srgb(0.755, 0.001, 0.016),
+  fg = oklab_to_srgb(0.756, 0.000, 0.000),
+  -- fg = oklab_to_srgb(0.755, 0.001, 0.016),
   -- fg = '#b5ae9e',
   -- fg = oklab_to_srgb(0.756, 0.000, 0.000),
 
   -- green = oklab_to_srgb(0.70838, -0.058, 0.092),
 
   green = '#6a9955', -- comment
+
   -- blue = oklab_to_srgb(0.697, -0.011, -0.012),
   -- blue = oklab_to_srgb(0.697, -0.025, -0.020),
   blue = oklab_to_srgb(0.693, -0.016, -0.050),
-  cyan = oklab_to_srgb(0.708, -0.062, -0.012),
+  cyan = oklab_to_srgb(0.718, -0.068, -0.022),
   -- cyan = oklab_to_srgb(0.643664, -0.046000, 0.00300),
 
   magenta = oklab_to_srgb(0.698, 0.040, -0.019),
@@ -79,6 +81,8 @@ local p = {
   orange = oklab_to_srgb(0.682, 0.025, 0.053),
   -- yellow = oklab_to_srgb(0.663, -0.002, 0.072),
   yellow = oklab_to_srgb(0.72, -0.002, 0.062),
+  violet = oklab_to_srgb(0.647000, 0.022000, -0.06800),
+
   -- yellow = '#dcdcaa',
 
   linenr_active = oklab_to_srgb(0.710, -0.002, 0.008),
@@ -217,15 +221,15 @@ h('Visual', { bg = p.selection_bg })
 h('Search', { fg = p.bg, bg = p.yellow })
 h('IncSearch', { fg = p.bg, bg = p.orange })
 
-h('Keyword', { fg = p.cyan })
+h('Keyword', { fg = p.yellow })
 h('Statement', { fg = p.fg })
-h('Repeat', { fg = p.fg })
+h('Repeat', { fg = p.violet })
 h('Conditional', { link = 'Repeat' })
 
 h('Function', { fg = p.fg })
 
 -- Types
-h('Type', { fg = p.yellow })
+h('Type', { fg = p.cyan })
 h('StorageClass', { link = 'Type' })
 h('Structure', { link = 'Type' })
 h('Typedef', { link = 'Type' })

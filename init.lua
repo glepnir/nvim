@@ -1,4 +1,3 @@
--- https://github.com/blazkowolf/gruber-darker.nvim
 local g = vim.g
 vim.loader.enable()
 g.mapleader = vim.keycode('<space>')

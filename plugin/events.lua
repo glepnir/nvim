@@ -64,8 +64,8 @@ local function startuptime()
 end
 
 vim.lsp.enable({
-  'luals',
-  -- 'emmylua_ls',
+  -- 'luals',
+  'emmylua_ls',
   'clangd',
   'rust_analyzer',
   'basedpyright',
@@ -87,7 +87,7 @@ au('UIEnter', {
       require('private.compile')
 
       if vim.version().minor >= 12 then
-        require('vim._core.ui2').enable({})
+        require('vim._core.ui2').enable({ msg = { target = 'cmd' } })
       end
 
       vim.lsp.log.set_level(0)
