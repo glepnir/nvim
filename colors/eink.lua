@@ -42,9 +42,9 @@ local function oklab_to_srgb(L, a, b)
   return string.format('#%02x%02x%02x', r, g, b_comp)
 end
 
-local BG_L = 0.185
-local BG_A = -0.0009
-local BG_B = -0.0029
+local BG_L = 0.22
+local BG_A = -0.0000
+local BG_B = -0.0000
 local STEP = 0.028
 
 local function bg(offset)
@@ -61,45 +61,93 @@ local p = {
   pmenu_thumb = bg(3),
   pmenusel_bg = bg(5),
 
-  fg = oklab_to_srgb(0.756, 0.000, 0.000),
-  -- fg = oklab_to_srgb(0.755, 0.001, 0.016),
-  -- fg = '#b5ae9e',
-  -- fg = oklab_to_srgb(0.756, 0.000, 0.000),
+  fg = oklab_to_srgb(0.760, 0.000, 0.000),
 
   -- green = oklab_to_srgb(0.70838, -0.058, 0.092),
+  green = oklab_to_srgb(0.682, -0.079, 0.078),
 
-  green = '#6a9955', -- comment
+  -- green = '#6a9955', -- comment
 
   -- blue = oklab_to_srgb(0.697, -0.011, -0.012),
   -- blue = oklab_to_srgb(0.697, -0.025, -0.020),
   blue = oklab_to_srgb(0.693, -0.016, -0.050),
-  cyan = oklab_to_srgb(0.718, -0.068, -0.022),
+  cyan = oklab_to_srgb(0.708, -0.062, -0.012),
   -- cyan = oklab_to_srgb(0.643664, -0.046000, 0.00300),
 
   magenta = oklab_to_srgb(0.698, 0.040, -0.019),
+  -- purple = oklab_to_srgb(0.698, 0.083, -0.049),
   red = oklab_to_srgb(0.690, 0.060, 0.049),
   orange = oklab_to_srgb(0.682, 0.025, 0.053),
   -- yellow = oklab_to_srgb(0.663, -0.002, 0.072),
   yellow = oklab_to_srgb(0.72, -0.002, 0.062),
-  violet = oklab_to_srgb(0.647000, 0.022000, -0.06800),
-
   -- yellow = '#dcdcaa',
 
   linenr_active = oklab_to_srgb(0.710, -0.002, 0.008),
   linenr = oklab_to_srgb(0.455, -0.002, 0.007),
-  comment = oklab_to_srgb(0.600, -0.001, 0.008),
+  -- comment = oklab_to_srgb(0.600, -0.001, 0.008),
+  comment = '#6a6a6a',
 
   pmenusel_fg = oklab_to_srgb(0.120, 0.000, -0.002),
 
   indent = oklab_to_srgb(0.415, -0.001, 0.010),
 }
 
-local d = {
-  error = oklab_to_srgb(0.690, 0.085, 0.045),
-  warn = oklab_to_srgb(0.755, 0.015, 0.095),
-  info = oklab_to_srgb(0.710, -0.025, -0.022),
-  hint = oklab_to_srgb(0.640, -0.002, 0.008),
+p = {
+  -- BG 渐进（每步 +0x04，纯中性 R=G=B）
+  statusline_bg = '#171717',
+  bg = '#1b1b1b',
+  normalfloat_bg = '#1f1f1f',
+  pmenu_bg = '#1f1f1f',
+  cursorline_bg = '#232323',
+  selection_bg = '#272727',
+  pmenu_thumb = '#272727',
+  pmenusel_bg = '#2f2f2f',
+
+  -- FG 渐进（R=G=B）
+  fg = '#b1b1b1',
+  comment = '#6b6b6b',
+  linenr = '#4b4b4b',
+  linenr_active = '#7b7b7b',
+  indent = '#3b3b3b',
+  pmenusel_fg = '#0f0f0f',
+
+  -- 彩色（均以 6a/7a/8a/9a/aa 为分量，饱和度统一）
+  green = '#6a9a6a', -- R=B  字符串 / 橄榄绿方向
+  cyan = '#6a9a9a', -- G=B  类型/接口
+  blue = '#7a8a9a', -- R=G  关键字（最克制）
+  magenta = '#9a6a9a', -- R=B  特殊符号
+  red = '#9a6a6a', -- G=B  错误
+  yellow = '#9a9a6a', -- R=G  数字/常量
+  orange = '#9a7a5a', -- 等差 警告/属性
 }
+
+local d = {
+  error = '#aa6a6a', -- red 亮一档
+  warn = '#aa8a5a', -- orange 亮一档
+  info = '#6a8a9a', -- 等差 R<G<B
+  hint = '#6b6b6b', -- 同 comment，不额外着色
+}
+
+-- local d = {
+--   error = oklab_to_srgb(0.690, 0.085, 0.045),
+--   warn = oklab_to_srgb(0.755, 0.015, 0.095),
+--   info = oklab_to_srgb(0.710, -0.025, -0.022),
+--   hint = oklab_to_srgb(0.640, -0.002, 0.008),
+-- }
+
+vim.api.nvim_create_autocmd('BufWritePost', {
+  pattern = '*/colors/eink.lua',
+  callback = function()
+    vim.schedule(function()
+      for k in pairs(package.loaded) do
+        if k:match('eink') then
+          package.loaded[k] = nil
+        end
+      end
+      vim.cmd('colorscheme eink')
+    end)
+  end,
+})
 
 vim.g.colors_name = 'eink'
 vim.cmd('highlight clear')
@@ -221,21 +269,21 @@ h('Visual', { bg = p.selection_bg })
 h('Search', { fg = p.bg, bg = p.yellow })
 h('IncSearch', { fg = p.bg, bg = p.orange })
 
-h('Keyword', { fg = p.yellow })
+h('Keyword', { fg = p.blue })
 h('Statement', { fg = p.fg })
-h('Repeat', { fg = p.violet })
+h('Repeat', { fg = p.fg })
 h('Conditional', { link = 'Repeat' })
 
 h('Function', { fg = p.fg })
 
 -- Types
-h('Type', { fg = p.cyan })
+h('Type', { fg = p.yellow })
 h('StorageClass', { link = 'Type' })
 h('Structure', { link = 'Type' })
 h('Typedef', { link = 'Type' })
 
 -- Constants
-h('Constant', { fg = p.fg })
+h('Constant', { fg = p.cyan })
 h('String', { fg = p.green })
 h('Character', { link = 'Constant' })
 h('Number', { link = 'Constant' })
@@ -542,3 +590,5 @@ h('GitSignsDelete', { fg = p.red })
 
 -- Dashboard
 h('DashboardHeader', { fg = p.green })
+
+h('FzfLuaBorder', { link = 'FloatBorder' })

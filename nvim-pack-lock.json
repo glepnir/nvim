@@ -5,11 +5,11 @@
       "src": "https://github.com/nvimdev/dired.nvim"
     },
     "fzf-lua": {
-      "rev": "4deeecf611c0beba6455e6cf06e2c051a6169dd4",
+      "rev": "97376e364f51f1b5ae3efaa3eb2e929430ca8419",
       "src": "https://github.com/ibhagwan/fzf-lua"
     },
     "gitsigns.nvim": {
-      "rev": "8d82c240f190fc33723d48c308ccc1ed8baad69d",
+      "rev": "dd3f588bacbeb041be6facf1742e42097f62165d",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "guard-collection": {

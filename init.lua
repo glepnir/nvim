@@ -34,7 +34,8 @@ o.smartcase = true
 o.cursorline = true
 o.showmode = false
 o.shortmess = 'aoOTIcF'
-o.scrolloff = 2
+o.scrolloff = 4
+o.scrolloffpad = 1
 o.sidescrolloff = 5
 o.ruler = false
 o.showtabline = 0
@@ -69,7 +70,7 @@ o.cot = 'menu,menuone,noinsert,fuzzy,popup' -- nosort or not???
 o.cia = 'kind,abbr,menu'
 vim.opt.guicursor:remove({ 't:block-blinkon500-blinkoff500-TermCursor' })
 
-vim.cmd.colorscheme('solarized')
+vim.cmd.colorscheme('eink')
 g.health = { style = 'float' }
 g.editorconfig = false
 g._lang = {

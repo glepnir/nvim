@@ -64,8 +64,8 @@ local function startuptime()
 end
 
 vim.lsp.enable({
-  -- 'luals',
-  'emmylua_ls',
+  'luals',
+  -- 'emmylua_ls',
   'clangd',
   'rust_analyzer',
   'basedpyright',
@@ -90,7 +90,7 @@ au('UIEnter', {
         require('vim._core.ui2').enable({ msg = { target = 'cmd' } })
       end
 
-      vim.lsp.log.set_level(0)
+      vim.lsp.log.set_level(vim.log.levels.OFF)
       vim.diagnostic.config({
         float = {
           header = '',
@@ -147,10 +147,18 @@ au('FileType', {
 
 au('BufWritePre', {
   pattern = '*',
-  callback = function()
+  callback = function(args)
+    local fname = api.nvim_buf_get_name(args.buf)
+    if vim.bo[args.buf].filetype == 'vim' and fname:find('test') then
+      return
+    end
     local view = vim.fn.winsaveview()
     vim.cmd([[silent! keepjumps keeppatterns %s/\s\+$//e]])
     vim.fn.winrestview(view)
   end,
   desc = 'remove tail space',
 })
+vim.cmd([[
+ autocmd CmdlineChanged [:\?] call wildtrigger()
+ set wildmode=noinsert:lastused,full
+]])

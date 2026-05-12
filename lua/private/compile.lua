@@ -304,20 +304,34 @@ local function open_qf_now(cmd_text)
 end
 
 local function update_qf(qf_list, over)
+  -- Snapshot "was tailing" BEFORE setqflist changes count.
+  local qf_win = vim.fn.getqflist({ winid = 0 }).winid
+  local was_tailing = false
+  if qf_win ~= 0 and api.nvim_win_is_valid(qf_win) then
+    local buf = api.nvim_win_get_buf(qf_win)
+    local old_count = api.nvim_buf_line_count(buf)
+    local cursor = api.nvim_win_get_cursor(qf_win)
+    was_tailing = cursor[1] >= old_count
+  end
+
   vim.fn.setqflist({}, 'a', {
     id = qf_id,
     items = qf_list,
     title = over and 'Compilation' or 'Compiling',
   })
 
-  local qf_win = vim.fn.getqflist({ winid = 0 }).winid
+  qf_win = vim.fn.getqflist({ winid = 0 }).winid
   if qf_win ~= 0 and api.nvim_win_is_valid(qf_win) then
     api.nvim_win_call(qf_win, function()
-      local count = api.nvim_buf_line_count(0)
-      local cursor = api.nvim_win_get_cursor(qf_win)
-      local height = api.nvim_win_get_height(qf_win)
-      if cursor[1] >= count - height then
+      if was_tailing or over then
+        local count = api.nvim_buf_line_count(0)
         api.nvim_win_set_cursor(qf_win, { count, 0 })
+        if over then
+          local save = vim.wo[qf_win].scrolloff
+          vim.wo[qf_win].scrolloff = 999
+          vim.cmd('normal! zz')
+          vim.wo[qf_win].scrolloff = save
+        end
       end
       apply_qf_syntax()
     end)
