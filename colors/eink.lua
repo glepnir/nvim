@@ -85,7 +85,7 @@ local p = {
   linenr_active = oklab_to_srgb(0.710, -0.002, 0.008),
   linenr = oklab_to_srgb(0.455, -0.002, 0.007),
   -- comment = oklab_to_srgb(0.600, -0.001, 0.008),
-  comment = '#6a6a6a',
+  comment = '#6a6a6a', -- #5a6a5a
 
   pmenusel_fg = oklab_to_srgb(0.120, 0.000, -0.002),
 

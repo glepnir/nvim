@@ -294,6 +294,11 @@ local function open_qf_now(cmd_text)
     vim.bo.textwidth = 0
   end
 
+  do
+    local qf_buf = api.nvim_win_get_buf(qf_win)
+    api.nvim_win_set_cursor(qf_win, { api.nvim_buf_line_count(qf_buf), 0 })
+  end
+
   if curwin and api.nvim_win_is_valid(curwin) then
     api.nvim_set_current_win(curwin)
   end

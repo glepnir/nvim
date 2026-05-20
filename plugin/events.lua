@@ -5,7 +5,7 @@ local group = api.nvim_create_augroup('_my_events', {})
 au('TextYankPost', {
   group = group,
   callback = function()
-    vim.hl.on_yank({ higroup = 'YankHighlight', timeout = 400 })
+    vim.hl.hl_op({ higroup = 'YankHighlight', timeout = 400 })
   end,
 })
 
