@@ -383,3 +383,7 @@ map.nxo('[c', function()
     vim.fn.search('^\\s*//\\|^\\s*#\\|^\\s*\\*\\s', 'bW')
   end
 end, { desc = 'Prev comment' })
+
+map.c('<CR>', function()
+  return vim.fn.pumvisible() == 1 and '<C-y><CR>' or '<CR>'
+end, { expr = true })
