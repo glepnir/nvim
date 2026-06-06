@@ -31,6 +31,17 @@ local function clean(s)
   return s
 end
 
+--- Match a compiler diagnostic header line: `file:line:col: type: msg`.
+--- Tries a Windows drive-letter path first (e.g. C:\src\main.cpp:5:1),
+--- then falls back to the generic (Unix) form. Returns all-or-nothing.
+local function match_diag(line)
+  local f, l, c, t, m = line:match('^(%a:[/\\][^:]+):(%d+):(%d+):%s*(%w+):%s*(.*)$')
+  if not f then
+    f, l, c, t, m = line:match('^([^:]+):(%d+):(%d+):%s*(%w+):%s*(.*)$')
+  end
+  return f, l, c, t, m
+end
+
 local function parse_err(text, save_item)
   local list = {}
   local lines = vim.split(text, '\n', { trimempty = true })
@@ -41,7 +52,7 @@ local function parse_err(text, save_item)
     local raw = lines[i]
     local line = clean(raw)
 
-    local filename, lnum, col, type_str, msg = line:match('^([^:]+):(%d+):(%d+):%s*(%w+):%s*(.*)$')
+    local filename, lnum, col, type_str, msg = match_diag(line)
 
     if filename and lnum and col then
       local bufnr = vim.fn.bufadd(filename)
@@ -357,7 +368,11 @@ local function compiler(compile_cmd, bufname, opts)
     if bufname:find(cwd, 1, true) then
       bufname = bufname:sub(#cwd + 2)
     end
-    compile_cmd = compile_cmd:gsub('%%s', bufname)
+    -- Function replacement: a literal '%' in the path can't corrupt the
+    -- gsub replacement string this way (a plain string repl would error).
+    compile_cmd = compile_cmd:gsub('%%s', function()
+      return bufname
+    end)
   end
   last_cmd = compile_cmd
   if not opts.silent then
@@ -367,8 +382,11 @@ local function compiler(compile_cmd, bufname, opts)
   local start_time = vim.uv.hrtime()
   local out_buffer = ''
   local save_item = {}
+  -- Captured by on_exit so a *previously killed* job can't clear the
+  -- chan_id of the job we just started (the on_exit race).
+  local job_id ---@type integer?
 
-  chan_id = vim.fn.jobstart(make_cmd(compile_cmd), {
+  job_id = vim.fn.jobstart(make_cmd(compile_cmd), {
     pty = true,
     on_stdout = function(_, data, _)
       -- jobstart with pty=true delivers data as a list of strings (split on \n).
@@ -397,7 +415,7 @@ local function compiler(compile_cmd, bufname, opts)
           end
           local stripped = clean(line)
           if
-            stripped:match('^[^:]+:%d+:%d+:%s*%w+:')
+            match_diag(stripped)
             or stripped:match('^%s*%d+%s*|')
             or stripped:match('^%s*|')
             or stripped:match('^%s*%^')
@@ -407,7 +425,7 @@ local function compiler(compile_cmd, bufname, opts)
           else
             if #err_text_lines > 0 then
               local err_list = parse_err(table.concat(err_text_lines, '\n'), save_item)
-              if #err_list > 0 then
+              if not opts.silent and #err_list > 0 then
                 update_qf(err_list)
               end
               err_text_lines = {}
@@ -419,11 +437,11 @@ local function compiler(compile_cmd, bufname, opts)
 
         if #err_text_lines > 0 then
           local err_list = parse_err(table.concat(err_text_lines, '\n'), save_item)
-          if #err_list > 0 then
+          if not opts.silent and #err_list > 0 then
             update_qf(err_list)
           end
         end
-        if #plain_list > 0 then
+        if not opts.silent and #plain_list > 0 then
           update_qf(plain_list)
         end
       end)
@@ -432,7 +450,11 @@ local function compiler(compile_cmd, bufname, opts)
     on_exit = function(_, exit_code, _)
       local duration = (vim.uv.hrtime() - start_time) / 1e9
       vim.schedule(function()
-        chan_id = nil
+        -- Only clear chan_id if we are still the active job. A job that was
+        -- jobstop()'d earlier must not null out the freshly started one.
+        if chan_id == job_id then
+          chan_id = nil
+        end
         if not opts.silent then
           local list = {}
           local flushed = clean(out_buffer)
@@ -464,15 +486,32 @@ local function compiler(compile_cmd, bufname, opts)
     end,
   })
 
-  if chan_id <= 0 then
+  chan_id = job_id
+
+  if not job_id or job_id <= 0 then
     vim.notify('Failed to start job: ' .. compile_cmd, vim.log.levels.ERROR)
-    chan_id = nil
+    if chan_id == job_id then
+      chan_id = nil
+    end
   end
 end
 
+--- Find the project root by walking up from the current buffer.
+--- Falls back to the current working directory.
+local function find_root()
+  local root = vim.fs.root(0, {
+    '.git',
+    '.svn',
+    'Makefile',
+    'CMakeLists.txt',
+    'compile_commands.json',
+    '.env',
+  })
+  return root or vim.uv.cwd()
+end
+
 local function read_compile_command()
-  local cwd = vim.uv.cwd()
-  local env_file = vim.fs.joinpath(cwd, '.env')
+  local env_file = vim.fs.joinpath(find_root(), '.env')
 
   local stat = vim.uv.fs_stat(env_file)
   if not stat or stat.size == 0 then
@@ -496,6 +535,59 @@ local function read_compile_command()
     end
   end
   return nil
+end
+
+--- Write (or update) COMPILE_COMMAND in the project-root .env file.
+--- Preserves any other lines already present. Returns the path on success.
+local function write_compile_command(cmd)
+  cmd = vim.trim(cmd)
+  local env_file = vim.fs.joinpath(find_root(), '.env')
+
+  local lines = {}
+  local replaced = false
+
+  local stat = vim.uv.fs_stat(env_file)
+  if stat and stat.size > 0 then
+    local fd = vim.uv.fs_open(env_file, 'r', 438)
+    if fd then
+      local data = vim.uv.fs_read(fd, stat.size, 0) or ''
+      vim.uv.fs_close(fd)
+      for _, line in ipairs(vim.split(data, '\n')) do
+        if vim.startswith(line, 'COMPILE_COMMAND') then
+          table.insert(lines, 'COMPILE_COMMAND=' .. cmd)
+          replaced = true
+        else
+          table.insert(lines, line)
+        end
+      end
+    end
+  end
+
+  if not replaced then
+    while #lines > 0 and lines[#lines] == '' do
+      table.remove(lines)
+    end
+    table.insert(lines, 'COMPILE_COMMAND=' .. cmd)
+  end
+
+  local fd = vim.uv.fs_open(env_file, 'w', tonumber('644', 8))
+  if not fd then
+    vim.notify('Failed to write ' .. env_file, vim.log.levels.ERROR)
+    return nil
+  end
+  vim.uv.fs_write(fd, table.concat(lines, '\n') .. '\n', 0)
+  vim.uv.fs_close(fd)
+  vim.notify('Saved COMPILE_COMMAND -> ' .. env_file, vim.log.levels.INFO)
+  return env_file
+end
+
+--- Pull an inline `++silent` flag out of a command string.
+--- `+` is a Lua pattern metachar, so use a plain find and an escaped gsub.
+local function strip_silent(cmd)
+  if cmd:find('++silent', 1, true) then
+    return vim.trim((cmd:gsub('%+%+silent', ''))), true
+  end
+  return cmd, false
 end
 
 local function chan_alive()
@@ -548,32 +640,58 @@ api.nvim_create_user_command('Compile', function(args)
   end
   close_running()
   local cmd = #args.args > 0 and args.args or read_compile_command()
-  if cmd then
-    local opts = {}
-    if cmd:find('++silent') then
-      cmd = cmd:gsub('++silent', '')
-      opts.silent = true
+  if not cmd then
+    -- No .env / COMPILE_COMMAND yet: offer to create one, then run it.
+    local default = 'g++ -std=c++23 -Wall -Wextra -g %s -o /tmp/a.out && /tmp/a.out'
+    local ok, input =
+      pcall(vim.fn.input, { prompt = 'No COMPILE_COMMAND. Set one: ', default = default })
+    input = ok and vim.trim(input) or ''
+    if input == '' then
+      vim.notify('No COMPILE_COMMAND found in .env', vim.log.levels.WARN)
+      return
     end
-    compiler(cmd, api.nvim_buf_get_name(0), opts)
-  else
-    vim.notify('No COMPILE_COMMAND found in .env', vim.log.levels.WARN)
+    write_compile_command(input)
+    cmd = input
   end
-end, { nargs = '?', complete = 'file' })
+  local silent
+  cmd, silent = strip_silent(cmd)
+  compiler(cmd, api.nvim_buf_get_name(0), { silent = silent })
+  -- NOTE: no `complete = 'file'`. File-type completion makes Vim treat the
+  -- args as filenames and expand `%`/`#` (cmdline-special) *before* we see
+  -- them, which would turn a typed `%s` into the current filename + 's'.
+end, { nargs = '?' })
 
 api.nvim_create_user_command('Recompile', function()
   if not ansi_ns then
     ansi_ns = api.nvim_create_namespace('ansi_colors')
   end
   close_running()
-  local opts = {}
   if last_cmd then
-    if last_cmd:find('++silent') then
-      last_cmd = last_cmd:gsub('++silent', '')
-      opts.silent = true
-    end
-    compiler(last_cmd, api.nvim_buf_get_name(0), opts)
+    local cmd, silent = strip_silent(last_cmd)
+    compiler(cmd, api.nvim_buf_get_name(0), { silent = silent })
   end
 end, {})
+
+-- Prompt for a compile command and save it to the project-root .env.
+-- Usage: `:CompileSet g++ -g %s -o /tmp/a.out && /tmp/a.out`
+--        `:CompileSet`  (opens a prompt prefilled with the current value)
+api.nvim_create_user_command('CompileSet', function(args)
+  local cmd = vim.trim(args.args)
+  if cmd == '' then
+    local default = read_compile_command()
+      or 'g++ -std=c++17 -Wall -Wextra -g %s -o /tmp/a.out && /tmp/a.out'
+    local ok, input = pcall(vim.fn.input, { prompt = 'COMPILE_COMMAND= ', default = default })
+    cmd = ok and vim.trim(input) or ''
+  end
+  if cmd == '' then
+    return
+  end
+  if write_compile_command(cmd) then
+    last_cmd = cmd
+  end
+  -- No `complete = 'file'` here either: we want a literal `%s` placeholder
+  -- written to .env, not Vim's current-file expansion.
+end, { nargs = '?' })
 
 return {
   custom = function(opts)

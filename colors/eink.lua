@@ -106,6 +106,7 @@ p = {
   -- FG 渐进（R=G=B）
   fg = '#b1b1b1',
   comment = '#6b6b6b',
+  -- comment = '#5a6a5a'
   linenr = '#4b4b4b',
   linenr_active = '#7b7b7b',
   indent = '#3b3b3b',

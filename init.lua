@@ -68,6 +68,7 @@ o.splitright = true
 o.laststatus = 0
 o.cot = 'menu,menuone,noinsert,fuzzy,popup' -- nosort or not???
 o.cia = 'kind,abbr,menu'
+o.wop = 'pum,tagfile,fuzzy'
 vim.opt.guicursor:remove({ 't:block-blinkon500-blinkoff500-TermCursor' })
 
 vim.cmd.colorscheme('eink')
@@ -109,20 +110,6 @@ vim.api.nvim_create_autocmd('PackChanged', {
       nts.install(g.lang, { summary = true })
       nts.update(nil, { summary = true })
     end
-  end,
-})
-
-vim.api.nvim_create_user_command('PackDelete', function(args)
-  vim.pack.del(args.fargs, { force = true })
-end, {
-  nargs = '+',
-  complete = function()
-    return vim
-      .iter(vim.pack.get())
-      :map(function(p)
-        return p.spec.name
-      end)
-      :totable()
   end,
 })
 

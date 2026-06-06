@@ -158,6 +158,7 @@ au('BufWritePre', {
   end,
   desc = 'remove tail space',
 })
+
 vim.cmd([[
  autocmd CmdlineChanged [:\?] call wildtrigger()
  set wildmode=noinsert:lastused,full
