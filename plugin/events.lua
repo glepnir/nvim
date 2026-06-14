@@ -11,7 +11,7 @@ au('TextYankPost', {
 
 au('TermOpen', {
   group = group,
-  command = 'setl stc= nonumber | startinsert!',
+  command = 'startinsert!',
 })
 
 au('LspAttach', {
