@@ -385,5 +385,10 @@ map.nxo('[c', function()
 end, { desc = 'Prev comment' })
 
 map.c('<CR>', function()
+  local res = vim.fn.cmdcomplete_info()
+  if res.cmdline_orig == 'w' then
+    print('here')
+    return '<CR>'
+  end
   return vim.fn.pumvisible() == 1 and '<C-y><CR>' or '<CR>'
 end, { expr = true })
