@@ -77,7 +77,13 @@ local function guides(bufnr)
   if vim.bo[bufnr].expandtab then
     local sw = get_step(bufnr)
     local indent_char = opt.char .. (' '):rep(sw - 1)
-    vim.opt_local.listchars:append({ leadmultispace = indent_char })
+    -- print(vim.inspect(indent_char))
+    -- vim.opt_local.listchars:append({ leadmultispace = indent_char })
+    api.nvim_set_option_value(
+      'listchars',
+      { leadmultispace = indent_char },
+      { operation = 'append' }
+    )
   elseif is_pure_tab(bufnr) then
     -- leadtab requires tab to also be set (E1572), use invisible tab chars
     -- for non-leading tabs so they don't interfere visually.

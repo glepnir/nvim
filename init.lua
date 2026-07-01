@@ -35,7 +35,7 @@ o.cursorline = true
 o.showmode = false
 o.shortmess = 'aoOTIcF'
 o.scrolloff = 4
-o.scrolloffpad = 1
+-- o.scrolloffpad = 1
 o.sidescrolloff = 5
 o.ruler = false
 o.showtabline = 0
@@ -45,7 +45,7 @@ o.pummaxwidth = 30
 o.pumborder = 'rounded'
 o.list = true
 --eol:¬
-o.listchars = 'tab:» ,nbsp:+,trail:·,extends:→,precedes:←,'
+o.listchars = 'tab:» ,nbsp:+,trail:·,extends:→,precedes:←'
 o.fillchars = 'trunc:…'
 o.foldtext = ''
 o.foldlevelstart = 99
