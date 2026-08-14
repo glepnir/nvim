@@ -310,7 +310,7 @@ h('PmenuBorder', { fg = colors.fg_comment })
 -- Float & Borders
 -- ─────────────────────────────────────────────────────────────────────────────
 h('NormalFloat', { bg = base02 })
-h('FloatBorder', { fg = blend(colors.fg_comment, 0.40) })
+h('FloatBorder', { fg = blend(colors.fg_comment, 0.40), bg = colors.bg })
 h('Title', { fg = colors.yellow, bold = true })
 
 -- =============================================================================

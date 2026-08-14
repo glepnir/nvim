@@ -5,7 +5,7 @@ local group = api.nvim_create_augroup('_my_events', {})
 au('TextYankPost', {
   group = group,
   callback = function()
-    vim.hl.hl_op({ higroup = 'YankHighlight', timeout = 400 })
+    vim.hl.hl_op({ higroup = 'Search', timeout = 400 })
   end,
 })
 
@@ -158,6 +158,23 @@ au('BufWritePre', {
     vim.fn.winrestview(view)
   end,
   desc = 'remove tail space',
+})
+
+au('BufWritePost', {
+  pattern = '*/colors/*.lua',
+  desc = 'Hot reload colorscheme',
+  callback = function(data)
+    local name = data.file:match('([^/]+)%.lua$')
+    print(vim.inspect(name))
+    vim.schedule(function()
+      for k in pairs(package.loaded) do
+        if k:match(name) then
+          package.loaded[k] = nil
+        end
+      end
+      vim.cmd('colorscheme ' .. name)
+    end)
+  end,
 })
 
 vim.cmd([[

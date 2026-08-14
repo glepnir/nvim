@@ -114,6 +114,7 @@ p = {
 
   -- 彩色（均以 6a/7a/8a/9a/aa 为分量，饱和度统一）
   green = '#6a9a6a', -- R=B  字符串 / 橄榄绿方向
+  -- #4BB5B2
   cyan = '#6a9a9a', -- G=B  类型/接口
   blue = '#7a8a9a', -- R=G  关键字（最克制）
   magenta = '#9a6a9a', -- R=B  特殊符号
@@ -135,20 +136,6 @@ local d = {
 --   info = oklab_to_srgb(0.710, -0.025, -0.022),
 --   hint = oklab_to_srgb(0.640, -0.002, 0.008),
 -- }
-
-vim.api.nvim_create_autocmd('BufWritePost', {
-  pattern = '*/colors/eink.lua',
-  callback = function()
-    vim.schedule(function()
-      for k in pairs(package.loaded) do
-        if k:match('eink') then
-          package.loaded[k] = nil
-        end
-      end
-      vim.cmd('colorscheme eink')
-    end)
-  end,
-})
 
 vim.g.colors_name = 'eink'
 vim.cmd('highlight clear')

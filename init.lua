@@ -71,7 +71,7 @@ o.cia = 'kind,abbr,menu'
 o.wop = 'pum,tagfile,fuzzy'
 vim.opt.guicursor:remove({ 't:block-blinkon500-blinkoff500-TermCursor' })
 
-vim.cmd.colorscheme('eink')
+vim.cmd.colorscheme('mariana')
 g.health = { style = 'float' }
 g.editorconfig = false
 g._lang = {
