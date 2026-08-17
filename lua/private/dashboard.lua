@@ -1,4 +1,5 @@
 local group = vim.api.nvim_create_augroup('Dashboard', { clear = true })
+require('private.agenda')
 
 local M = {}
 
@@ -30,6 +31,7 @@ local config = {
       action = '<cmd>:FzfLua files cwd=~/.config fd_opts=--type\\ f<CR>',
     },
     { key = 'e', desc = 'New File', action = '<cmd>enew<CR>' },
+    { key = 'a', desc = 'Agenda', action = '<cmd>Agenda<CR>' },
     {
       key = 'u',
       desc = 'Update Plugins',
