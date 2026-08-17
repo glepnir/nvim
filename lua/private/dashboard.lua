@@ -340,16 +340,6 @@ function M.show()
   })
 end
 
-vim.api.nvim_create_autocmd('VimEnter', {
-  group = group,
-  callback = function()
-    if vim.fn.argc() == 0 and vim.fn.line2byte('$') == -1 then
-      M.show()
-    end
-    vim.o.laststatus = 2
-  end,
-})
-
 vim.api.nvim_create_user_command('Dashboard', function()
   M.show()
 end, {})

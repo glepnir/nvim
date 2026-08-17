@@ -81,7 +81,7 @@ au('UIEnter', {
   callback = function()
     startuptime()
     vim.schedule(function()
-      require('private.dashboard').show()
+      require('private.agenda').show()
       require('private.keymap')
       require('private.indent')
       require('private.compile')

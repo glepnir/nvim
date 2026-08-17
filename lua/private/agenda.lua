@@ -616,6 +616,10 @@ local function setup_keymaps(buf)
 end
 
 function M.show()
+  if vim.fn.argc() > 0 or vim.fn.line2byte('$') ~= -1 then
+    return
+  end
+
   local buf = api.nvim_create_buf(false, true)
   api.nvim_set_current_buf(buf)
 
