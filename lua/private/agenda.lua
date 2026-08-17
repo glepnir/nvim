@@ -14,15 +14,6 @@ local state = {
   restore_opts = {},
 }
 
-local status_config = {
-  DONE = { icon = '✔', hl = 'AgendaDone' },
-  TODO = { icon = '●', hl = 'AgendaTodo' },
-  WIP = { icon = '◐', hl = 'AgendaWip' },
-  INBOX = { icon = '○', hl = 'AgendaInbox' },
-  SCHEDULED = { icon = '◆', hl = 'AgendaScheduled' },
-  DEADLINE = { icon = '⚑', hl = 'AgendaDeadline' },
-}
-
 local function setup_highlights()
   local comment = api.nvim_get_hl(0, { name = 'Comment', link = false })
   comment.strikethrough = true
@@ -33,9 +24,15 @@ local function setup_highlights()
     AgendaInbox = { link = 'Normal' },
     AgendaScheduled = { link = 'PreProc' },
     AgendaDeadline = { link = 'ErrorMsg' },
-    AgendaBorder = { link = 'Comment' },
     AgendaHeader = { link = 'Keyword' },
-    AgendaSection = { link = 'DashboardDate' },
+    AgendaWeekHeader = { link = 'Comment' },
+    AgendaToday = { link = 'Keyword' },
+    AgendaWeekend = { link = 'PreProc' },
+    AgendaTodoLabel = { link = 'Comment' },
+    AgendaScheduledLabel = { link = 'Function' },
+    AgendaDeadlineLabel = { link = 'ErrorMsg' },
+    AgendaTime = { link = 'WarningMsg' },
+    AgendaTimeDeadline = { link = 'ErrorMsg' },
   }
 
   api.nvim_set_hl(0, 'AgendaDone', comment)
@@ -91,102 +88,239 @@ local function encode_tasks(tasks)
   return { tasks = encoded }
 end
 
-local function parse_date(value)
-  if type(value) ~= 'string' then
-    return nil
+-- Returns the ISO week number for a given timestamp
+local function get_week_number(ts)
+  ts = ts or os.time()
+  local t = os.date('*t', ts)
+  local jan1 = os.time({ year = t.year, month = 1, day = 1, hour = 12 })
+  local yday = math.floor((ts - jan1) / 86400) + 1
+  local iso_wday = (t.wday + 5) % 7 + 1
+  local week = math.floor((yday - iso_wday + 10) / 7)
+  if week < 1 then
+    week = 52
+  elseif week > 52 then
+    local dec28 = os.time({ year = t.year, month = 12, day = 28, hour = 12 })
+    local dec28_iso = (os.date('*t', dec28).wday + 5) % 7 + 1
+    local dec28_yday = math.floor((dec28 - jan1) / 86400) + 1
+    if math.floor((dec28_yday - dec28_iso + 10) / 7) >= week then
+      week = 1
+    end
   end
-
-  local year, month, day = value:match('^(%d%d%d%d)%-(%d%d)%-(%d%d)$')
-  if not year then
-    return nil
-  end
-
-  return os.time({
-    year = tonumber(year),
-    month = tonumber(month),
-    day = tonumber(day),
-    hour = 12,
-  })
+  return week
 end
 
-local function current_week_range()
+-- Returns a list of 7 timestamps (Mon..Sun) for the current week
+local function get_week_days()
   local now = os.date('*t')
-  local today = os.time({
-    year = now.year,
-    month = now.month,
-    day = now.day,
-    hour = 12,
-  })
+  local today_ts = os.time({ year = now.year, month = now.month, day = now.day, hour = 12 })
+  -- wday: 1=Sun,2=Mon..7=Sat; offset to Monday
   local offset = (now.wday + 5) % 7
-  local start_day = today - (offset * 24 * 60 * 60)
-  local end_day = start_day + (6 * 24 * 60 * 60)
-  return start_day, end_day
+  local monday_ts = today_ts - offset * 86400
+  local days = {}
+  for i = 0, 6 do
+    days[i + 1] = monday_ts + i * 86400
+  end
+  return days
 end
 
-local function is_in_current_week(value)
-  local timestamp = parse_date(value)
-  if not timestamp then
-    return false
+-- Groups tasks by date string; each task appears under its scheduled and/or deadline date
+local function group_tasks_by_day(tasks)
+  local by_day = {}
+  for _, task in ipairs(tasks) do
+    if task.scheduled and task.scheduled ~= '' then
+      by_day[task.scheduled] = by_day[task.scheduled] or {}
+      table.insert(by_day[task.scheduled], { task = task, kind = 'scheduled' })
+    end
+    if task.deadline and task.deadline ~= '' then
+      by_day[task.deadline] = by_day[task.deadline] or {}
+      table.insert(by_day[task.deadline], { task = task, kind = 'deadline' })
+    end
+  end
+  for _, entries in pairs(by_day) do
+    table.sort(entries, function(a, b)
+      if a.kind ~= b.kind then
+        return a.kind == 'scheduled'
+      end
+      return (a.task.time or '') < (b.task.time or '')
+    end)
+  end
+  return by_day
+end
+
+-- Builds rows for the week view.
+-- Each row has: { kind, text, task_id?, highlights? }
+-- kinds: 'header', 'day', 'today', 'weekend', 'task', 'empty'
+local function build_week_view(tasks)
+  local months = { 'January', 'February', 'March', 'April', 'May', 'June',
+                   'July', 'August', 'September', 'October', 'November', 'December' }
+  local weekday_names = { 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday' }
+
+  local week_days = get_week_days()
+  local week_num = get_week_number(week_days[1])
+  local today_str = os.date('%Y-%m-%d')
+  local by_day = group_tasks_by_day(tasks)
+
+  local rows = {}
+
+  -- Header
+  table.insert(rows, {
+    kind = 'header',
+    text = string.format('Week-agenda (W%d):', week_num),
+  })
+
+  for i, day_ts in ipairs(week_days) do
+    local dt = os.date('*t', day_ts)
+    local day_str = string.format('%04d-%02d-%02d', dt.year, dt.month, dt.day)
+    local wname = weekday_names[i]
+    local is_today = (day_str == today_str)
+    local is_weekend = (i >= 6) -- Saturday=6, Sunday=7
+
+    -- Day header line: `Monday      9 July 2018 W28` (week number on first day)
+    local day_text
+    if i == 1 then
+      day_text = string.format('%-11s %2d %s %d  W%d', wname, dt.day, months[dt.month], dt.year, week_num)
+    else
+      day_text = string.format('%-11s %2d %s %d', wname, dt.day, months[dt.month], dt.year)
+    end
+
+    local day_kind
+    if is_today then
+      day_kind = 'today'
+    elseif is_weekend then
+      day_kind = 'weekend'
+    else
+      day_kind = 'day'
+    end
+
+    table.insert(rows, { kind = day_kind, text = day_text })
+
+    -- Task entries for this day
+    local entries = by_day[day_str] or {}
+    for _, entry in ipairs(entries) do
+      local task = entry.task
+      local is_deadline = (entry.kind == 'deadline')
+      local time_str = (task.time and task.time ~= '') and task.time or '......'
+      -- pad time to 5 chars then append '......'
+      local time_col = string.format('%-5s......', time_str)
+      local label = is_deadline and 'Deadline:  ' or 'Scheduled: '
+      local status_str = task.status
+      local line = string.format('  todo:   %s %s%s  %s', time_col, label, status_str, task.title)
+
+      -- Compute byte offsets for highlights
+      local todo_start = 2      -- '  ' prefix, then 'todo:'
+      local todo_end = todo_start + #'todo:'
+      local time_start = todo_end + 3  -- '   ' gap
+      local time_end = time_start + #time_col
+      local label_start = time_end + 1
+      local label_end = label_start + #label
+      local status_start = label_end
+      local status_end = status_start + #status_str
+      local title_start = status_end + 2
+      local title_end = title_start + #task.title
+
+      local time_hl = is_deadline and 'AgendaTimeDeadline' or 'AgendaTime'
+      local label_hl = is_deadline and 'AgendaDeadlineLabel' or 'AgendaScheduledLabel'
+      local status_hl = is_deadline and 'AgendaDeadline' or 'AgendaScheduled'
+      local title_hl = task.status == 'DONE' and 'AgendaDone' or 'Normal'
+
+      table.insert(rows, {
+        kind = 'task',
+        text = line,
+        task_id = task.id,
+        highlights = {
+          { hl_group = 'AgendaTodoLabel', col_start = todo_start, col_end = todo_end },
+          { hl_group = time_hl,           col_start = time_start, col_end = time_end },
+          { hl_group = label_hl,          col_start = label_start, col_end = label_end },
+          { hl_group = status_hl,         col_start = status_start, col_end = status_end },
+          { hl_group = title_hl,          col_start = title_start, col_end = title_end },
+        },
+      })
+    end
   end
 
-  local start_day, end_day = current_week_range()
-  return timestamp >= start_day and timestamp <= end_day
+  -- Footer hint
+  table.insert(rows, { kind = 'empty', text = '' })
+  table.insert(rows, {
+    kind = 'footer',
+    text = '  [n]New  [d]Done  [e]Edit  [D]Del  [r]Reload  [q]Quit',
+  })
+
+  return rows
 end
 
-local function get_weekday(value)
-  local timestamp = parse_date(value)
-  if not timestamp then
-    return ''
+local function render_agenda(buf, tasks)
+  local rows = build_week_view(tasks)
+  local lines = {}
+  local highlights = {}
+
+  state.line_task_map[buf] = {}
+
+  for index, row in ipairs(rows) do
+    lines[index] = row.text
+
+    if row.kind == 'task' then
+      state.line_task_map[buf][index] = row.task_id
+      for _, hl in ipairs(row.highlights or {}) do
+        table.insert(highlights, {
+          line = index - 1,
+          col_start = hl.col_start,
+          col_end = hl.col_end,
+          hl_group = hl.hl_group,
+        })
+      end
+    elseif row.kind == 'header' then
+      table.insert(highlights, {
+        line = index - 1,
+        col_start = 0,
+        col_end = #row.text,
+        hl_group = 'AgendaHeader',
+      })
+    elseif row.kind == 'today' then
+      table.insert(highlights, {
+        line = index - 1,
+        col_start = 0,
+        col_end = #row.text,
+        hl_group = 'AgendaToday',
+      })
+    elseif row.kind == 'weekend' then
+      table.insert(highlights, {
+        line = index - 1,
+        col_start = 0,
+        col_end = #row.text,
+        hl_group = 'AgendaWeekend',
+      })
+    elseif row.kind == 'day' then
+      table.insert(highlights, {
+        line = index - 1,
+        col_start = 0,
+        col_end = #row.text,
+        hl_group = 'AgendaWeekHeader',
+      })
+    elseif row.kind == 'footer' then
+      table.insert(highlights, {
+        line = index - 1,
+        col_start = 0,
+        col_end = #row.text,
+        hl_group = 'AgendaWeekHeader',
+      })
+    end
   end
 
-  return os.date('%a', timestamp)
-end
+  vim.bo[buf].modifiable = true
+  api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+  vim.bo[buf].filetype = 'agenda'
+  vim.bo[buf].modifiable = false
+  api.nvim_buf_clear_namespace(buf, ns_id, 0, -1)
 
-local function get_header_date()
-  local datetime = os.date('*t')
-  local weekdays = { 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' }
-  local months = { 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' }
-  return string.format('%s, %d %s %d', weekdays[datetime.wday], datetime.year, months[datetime.month], datetime.day)
+  for _, hl in ipairs(highlights) do
+    vim.hl.range(buf, ns_id, hl.hl_group, { hl.line, hl.col_start }, { hl.line, hl.col_end })
+  end
 end
 
 local function notify_error(message)
   vim.schedule(function()
     vim.notify(message, vim.log.levels.ERROR)
   end)
-end
-
-local function pad_right(text, width)
-  local padding = math.max(0, width - vim.fn.strdisplaywidth(text))
-  return text .. string.rep(' ', padding)
-end
-
-local function center_text(text, width)
-  local display_width = vim.fn.strdisplaywidth(text)
-  local padding = math.max(0, width - display_width)
-  local left = math.floor(padding / 2)
-  local right = padding - left
-  return string.rep(' ', left) .. text .. string.rep(' ', right)
-end
-
-local function task_sort_key(task)
-  return task.deadline or task.scheduled or task.created_at or ''
-end
-
-local function sort_tasks(tasks)
-  table.sort(tasks, function(a, b)
-    local a_time = a.time or ''
-    local b_time = b.time or ''
-    local a_key = task_sort_key(a)
-    local b_key = task_sort_key(b)
-    if a_key == b_key then
-      if a_time == b_time then
-        return (a.created_at or '') < (b.created_at or '')
-      end
-      return a_time < b_time
-    end
-    return a_key < b_key
-  end)
-  return tasks
 end
 
 function M.load_tasks(callback)
@@ -311,215 +445,6 @@ function M.update_title(id, title, tasks)
     end
   end
   return tasks
-end
-
-function M.get_today_tasks(tasks)
-  local today = os.date('%Y-%m-%d')
-  local today_tasks = {}
-
-  for _, task in ipairs(tasks) do
-    if
-      (task.status == 'TODO' or task.status == 'WIP' or task.status == 'DONE' or task.status == 'INBOX')
-      and (task.scheduled == today or task.scheduled == nil)
-    then
-      table.insert(today_tasks, task)
-    end
-  end
-
-  return sort_tasks(today_tasks)
-end
-
-function M.get_week_tasks(tasks)
-  local week_tasks = {}
-
-  for _, task in ipairs(tasks) do
-    if
-      (task.deadline and is_in_current_week(task.deadline))
-      or (task.status == 'SCHEDULED' and task.scheduled and is_in_current_week(task.scheduled))
-    then
-      table.insert(week_tasks, task)
-    end
-  end
-
-  return sort_tasks(week_tasks)
-end
-
-local function build_task_line(task, is_week)
-  local config = status_config[task.status] or status_config.INBOX
-  local label = string.format('[%s]', task.status)
-  local label_gap = string.rep(' ', math.max(1, 12 - vim.fn.strdisplaywidth(label)))
-  local detail = ''
-
-  if is_week then
-    local weekday = get_weekday(task.deadline or task.scheduled)
-    if weekday ~= '' then
-      detail = weekday .. '  '
-    end
-  elseif task.time and task.time ~= '' then
-    detail = task.time .. ' '
-  end
-
-  local line = string.format('  %s  %s%s%s%s', config.icon, label, label_gap, detail, task.title)
-  local icon_start = 2
-  local icon_end = icon_start + #config.icon
-  local label_start = #('  ' .. config.icon .. '  ')
-  local label_end = label_start + #label
-  local detail_start = label_end + #label_gap
-  local detail_end = detail_start + #detail
-  local title_start = detail_end
-
-  local title_group = task.status == 'DONE' and 'AgendaDone' or 'Normal'
-  local highlights = {
-    { hl_group = config.hl, col_start = icon_start, col_end = icon_end },
-    { hl_group = config.hl, col_start = label_start, col_end = label_end },
-  }
-
-  if detail ~= '' then
-    table.insert(highlights, {
-      hl_group = 'AgendaInbox',
-      col_start = detail_start,
-      col_end = detail_end,
-    })
-  end
-
-  table.insert(highlights, {
-    hl_group = title_group,
-    col_start = title_start,
-    col_end = title_start + #task.title,
-  })
-
-  return {
-    text = line,
-    task_id = task.id,
-    highlights = highlights,
-  }
-end
-
-local function build_panel(tasks)
-  local today_tasks = M.get_today_tasks(tasks)
-  local week_tasks = M.get_week_tasks(tasks)
-  local title = 'GTD Agenda  —  ' .. get_header_date()
-  local footer = '  [n]New  [d]Done  [e]Edit  [D]Del  [r]Reload  [q]Quit'
-
-  local rows = {
-    { kind = 'title', text = title },
-    { kind = 'section', text = '  TODAY' },
-  }
-
-  for _, task in ipairs(today_tasks) do
-    table.insert(rows, vim.tbl_extend('force', { kind = 'task' }, build_task_line(task, false)))
-  end
-
-  table.insert(rows, { kind = 'section', text = '  THIS WEEK' })
-
-  for _, task in ipairs(week_tasks) do
-    table.insert(rows, vim.tbl_extend('force', { kind = 'task' }, build_task_line(task, true)))
-  end
-
-  table.insert(rows, { kind = 'footer', text = footer })
-
-  local inner_width = 48
-  for _, row in ipairs(rows) do
-    inner_width = math.max(inner_width, vim.fn.strdisplaywidth(row.text))
-  end
-
-  local panel_lines = {
-    { kind = 'border', text = '╔' .. string.rep('═', inner_width) .. '╗' },
-    { kind = 'title', text = '║' .. center_text(title, inner_width) .. '║' },
-    { kind = 'border', text = '╠' .. string.rep('═', inner_width) .. '╣' },
-    { kind = 'section', text = '║' .. pad_right('  TODAY', inner_width) .. '║' },
-  }
-
-  for _, task in ipairs(today_tasks) do
-    local row = build_task_line(task, false)
-    table.insert(panel_lines, {
-      kind = 'task',
-      task_id = task.id,
-      text = '║' .. pad_right(row.text, inner_width) .. '║',
-      highlights = row.highlights,
-    })
-  end
-
-  table.insert(panel_lines, { kind = 'border', text = '╠' .. string.rep('═', inner_width) .. '╣' })
-  table.insert(panel_lines, { kind = 'section', text = '║' .. pad_right('  THIS WEEK', inner_width) .. '║' })
-
-  for _, task in ipairs(week_tasks) do
-    local row = build_task_line(task, true)
-    table.insert(panel_lines, {
-      kind = 'task',
-      task_id = task.id,
-      text = '║' .. pad_right(row.text, inner_width) .. '║',
-      highlights = row.highlights,
-    })
-  end
-
-  table.insert(panel_lines, { kind = 'border', text = '╠' .. string.rep('═', inner_width) .. '╣' })
-  table.insert(panel_lines, { kind = 'footer', text = '║' .. pad_right(footer, inner_width) .. '║' })
-  table.insert(panel_lines, { kind = 'border', text = '╚' .. string.rep('═', inner_width) .. '╝' })
-
-  return panel_lines, inner_width
-end
-
-local function render_agenda(buf, tasks)
-  local panel_lines, inner_width = build_panel(tasks)
-  local total_width = inner_width + 2
-  local left_margin = math.max(0, math.floor((vim.o.columns - total_width) / 2))
-  local lines = {}
-  local highlights = {}
-
-  state.line_task_map[buf] = {}
-
-  for index, row in ipairs(panel_lines) do
-    local prefix = string.rep(' ', left_margin)
-    local line = prefix .. row.text
-    lines[index] = line
-
-    if row.kind == 'task' then
-      state.line_task_map[buf][index] = row.task_id
-      for _, hl in ipairs(row.highlights or {}) do
-        table.insert(highlights, {
-          line = index - 1,
-          col_start = left_margin + 1 + hl.col_start,
-          col_end = left_margin + 1 + hl.col_end,
-          hl_group = hl.hl_group,
-        })
-      end
-    elseif row.kind == 'title' then
-      table.insert(highlights, {
-        line = index - 1,
-        col_start = left_margin + 1,
-        col_end = left_margin + #row.text - 1,
-        hl_group = 'AgendaHeader',
-      })
-    elseif row.kind == 'section' then
-      local content = row.text:match('║(.-)║$') or row.text
-      local trimmed = content:find('%S') or 1
-      local text = content:match('%S.*%S') or content:match('%S') or ''
-      table.insert(highlights, {
-        line = index - 1,
-        col_start = left_margin + trimmed,
-        col_end = left_margin + trimmed + #text,
-        hl_group = 'AgendaSection',
-      })
-    elseif row.kind == 'border' then
-      table.insert(highlights, {
-        line = index - 1,
-        col_start = left_margin,
-        col_end = left_margin + #row.text,
-        hl_group = 'AgendaBorder',
-      })
-    end
-  end
-
-  vim.bo[buf].modifiable = true
-  api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-  vim.bo[buf].filetype = 'agenda'
-  vim.bo[buf].modifiable = false
-  api.nvim_buf_clear_namespace(buf, ns_id, 0, -1)
-
-  for _, hl in ipairs(highlights) do
-    vim.hl.range(buf, ns_id, hl.hl_group, { hl.line, hl.col_start }, { hl.line, hl.col_end })
-  end
 end
 
 local function current_task_id(buf)
