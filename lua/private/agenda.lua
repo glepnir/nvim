@@ -4,6 +4,8 @@ local uv = vim.loop
 local group = api.nvim_create_augroup('Agenda', { clear = true })
 local ns_id = api.nvim_create_namespace('agenda')
 
+math.randomseed(uv.hrtime() % 1000000000)
+
 local M = {}
 
 local state = {
@@ -331,7 +333,10 @@ function M.get_week_tasks(tasks)
   local week_tasks = {}
 
   for _, task in ipairs(tasks) do
-    if (task.deadline and is_in_current_week(task.deadline)) or (task.status == 'SCHEDULED' and is_in_current_week(task.scheduled)) then
+    if
+      (task.deadline and is_in_current_week(task.deadline))
+      or (task.status == 'SCHEDULED' and task.scheduled and is_in_current_week(task.scheduled))
+    then
       table.insert(week_tasks, task)
     end
   end
