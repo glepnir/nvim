@@ -10,7 +10,7 @@ local opt = {
   hl = 'Whitespace',
   minlevel = 1,
   ts_exclude_nodetype = { 'comment', 'string' },
-  exclude_filetype = { 'help', 'dashboard', 'diff', 'fzf', 'markdown', 'quickfix' },
+  exclude_filetype = { 'help', 'dashboard', 'agenda', 'diff', 'fzf', 'markdown', 'quickfix' },
   avoid_cursor_in_insert = true,
 }
 
