@@ -253,54 +253,65 @@ local function render_agenda(buf, tasks)
   local lines = {}
   local highlights = {}
 
+  -- Calculate left margin to center content horizontally
+  local max_width = 0
+  for _, row in ipairs(rows) do
+    local w = vim.fn.strdisplaywidth(row.text)
+    if w > max_width then
+      max_width = w
+    end
+  end
+  local margin = math.max(0, math.floor((vim.o.columns - max_width) / 2))
+  local pad = string.rep(' ', margin)
+
   state.line_task_map[buf] = {}
 
   for index, row in ipairs(rows) do
-    lines[index] = row.text
+    lines[index] = row.text == '' and '' or (pad .. row.text)
 
     if row.kind == 'task' then
       state.line_task_map[buf][index] = row.task_id
       for _, hl in ipairs(row.highlights or {}) do
         table.insert(highlights, {
           line = index - 1,
-          col_start = hl.col_start,
-          col_end = hl.col_end,
+          col_start = margin + hl.col_start,
+          col_end = margin + hl.col_end,
           hl_group = hl.hl_group,
         })
       end
     elseif row.kind == 'header' then
       table.insert(highlights, {
         line = index - 1,
-        col_start = 0,
-        col_end = #row.text,
+        col_start = margin,
+        col_end = margin + #row.text,
         hl_group = 'AgendaHeader',
       })
     elseif row.kind == 'today' then
       table.insert(highlights, {
         line = index - 1,
-        col_start = 0,
-        col_end = #row.text,
+        col_start = margin,
+        col_end = margin + #row.text,
         hl_group = 'AgendaToday',
       })
     elseif row.kind == 'weekend' then
       table.insert(highlights, {
         line = index - 1,
-        col_start = 0,
-        col_end = #row.text,
+        col_start = margin,
+        col_end = margin + #row.text,
         hl_group = 'AgendaWeekend',
       })
     elseif row.kind == 'day' then
       table.insert(highlights, {
         line = index - 1,
-        col_start = 0,
-        col_end = #row.text,
+        col_start = margin,
+        col_end = margin + #row.text,
         hl_group = 'AgendaWeekHeader',
       })
     elseif row.kind == 'footer' then
       table.insert(highlights, {
         line = index - 1,
-        col_start = 0,
-        col_end = #row.text,
+        col_start = margin,
+        col_end = margin + #row.text,
         hl_group = 'AgendaWeekHeader',
       })
     end
