@@ -189,6 +189,7 @@ au('LspAttach', {
         local kind = lsp.protocol.CompletionItemKind[item.kind] or 'u'
         return {
           kind = kind:sub(1, 1):lower(),
+          kind_hlgroup = '@lsp.type.' .. kind:lower(),
           menu = '',
         }
       end,

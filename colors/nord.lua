@@ -2,6 +2,7 @@
 -- Based on https://www.nordtheme.com/docs/colors-and-palettes
 -- Maintainer: glepnir
 
+--- cyan #8CD4D1
 local M = {}
 
 M.palette = {
