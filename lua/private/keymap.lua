@@ -86,7 +86,7 @@ map.n({
   ['<C-q>'] = cmd('qa!'),
   --window
   ['<C-h>'] = '<C-w>h',
-  ['<C-l>'] = '<C-w>l',
+  -- ['<C-l>'] = '<C-w>l',
   ['<C-j>'] = '<C-w>j',
   ['<C-k>'] = '<C-w>k',
   ['<A-[>'] = cmd('vertical resize -5'),
