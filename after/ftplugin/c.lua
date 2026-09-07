@@ -3,7 +3,7 @@ local fname = vim.fn.expand('%:p')
 if fname:match('neovim') or fname:match('nvim') then
   vim.opt_local.textwidth = 120
   vim.api.nvim_create_user_command('NvimGenerateSource', function()
-    require('private.compile').custom({
+    require('compile').custom({
       cmd = 'make generated-sources',
       silent = true,
       ondone = function(exit_code)

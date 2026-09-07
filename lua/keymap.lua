@@ -332,19 +332,19 @@ map.n({
 map.n('<C-X><C-f>', cmd('Dired'))
 
 map.nt('<A-d>', function()
-  require('private.term').toggle()
+  require('term').toggle()
 end)
 -- map.nx('ga', cmd('Lspsaga code_action'))
 
 map.n('f', function()
-  local j = require('private.jump')
+  local j = require('jump')
   if j.charForward then
     j.charForward()
   end
 end)
 
 map.n('F', function()
-  local j = require('private.jump')
+  local j = require('jump')
   if j.charBackward then
     j.charBackward()
   end

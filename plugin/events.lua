@@ -44,7 +44,7 @@ au('InsertEnter', {
   group = group,
   once = true,
   callback = function()
-    require('private.pairs')
+    require('pairs')
   end,
   desc = 'auto pairs',
 })
@@ -81,12 +81,12 @@ au('UIEnter', {
   callback = function()
     startuptime()
     vim.schedule(function()
-      -- require('private.dashboard').show()
-      require('private.dashboard').show()
-      require('private.keymap')
-      require('private.indent')
-      require('private.compile')
-      require('private.grep')
+      -- require('dashboard').show()
+      require('dashboard').show()
+      require('keymap')
+      require('indent')
+      require('compile')
+      require('grep')
 
       if vim.version().minor >= 12 then
         require('vim._core.ui2').enable({ msg = { target = 'cmd' } })
