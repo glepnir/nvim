@@ -389,5 +389,5 @@ map.c('<CR>', function()
   if res.cmdline_orig == 'w' then
     return '<CR>'
   end
-  return vim.fn.pumvisible() == 1 and '<C-y><CR>' or '<CR>'
+  return vim.fn.pumvisible() == 1 and '<C-y>' or '<CR>'
 end, { expr = true })
