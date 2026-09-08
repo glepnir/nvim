@@ -765,6 +765,7 @@ local function run(compile_cmd, bufname, opts)
 
   chan_id = job_id
 end
+
 --- Pull an inline `++silent` flag out of a command string.
 --- `+` is a Lua pattern metachar, so use a plain find and an escaped gsub.
 local function strip_silent(cmd)
