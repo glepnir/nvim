@@ -1,7 +1,7 @@
 local api, QUICK, LOCAL, FORWARD, BACKWARD, mapset = vim.api, 1, 2, 1, 2, vim.keymap.set
 local treesitter, fn = vim.treesitter, vim.fn
 
-local async = require('vim._async')
+local async = vim.async
 
 local state = {
   preview = {
