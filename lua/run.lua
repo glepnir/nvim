@@ -758,14 +758,15 @@ local function run(compile_cmd, bufname, opts)
     end
 
     for _, line in ipairs(lines) do
-      if line == '' then
+      local cleaned = clean(line)
+      if cleaned == '' then
         -- Blank lines used to be dropped entirely, which flattened the
         -- program's own paragraph spacing.
         flush_errs()
         save_item.bufnr = nil
         save_item.filename = nil
         table.insert(out, { text = ' ', user_data = 'compile_info' })
-      elseif is_diag_like(clean(line)) then
+      elseif is_diag_like(cleaned) then
         table.insert(errs, line)
       else
         flush_errs()
