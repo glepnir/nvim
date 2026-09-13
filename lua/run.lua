@@ -466,7 +466,7 @@ local function make_qf_textfunc()
             if c.dim then
               -- Neovim has no native "dim" attribute; approximate the
               -- terminal's faint rendering by darkening the foreground.
-              hl_opts.fg = dim_color(hl_opts.fg or '#c0c0c0')
+              hl_opts.dim = true
             end
             if c.bold then
               hl_opts.bold = true
