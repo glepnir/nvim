@@ -230,6 +230,18 @@ local ansi_colors = {
   ['37'] = 'White',
 }
 
+local function dim_color(hex)
+  local r = tonumber(hex:sub(2, 3), 16)
+  local g = tonumber(hex:sub(4, 5), 16)
+  local b = tonumber(hex:sub(6, 7), 16)
+  return string.format(
+    '#%02x%02x%02x',
+    math.floor(r * 0.6),
+    math.floor(g * 0.6),
+    math.floor(b * 0.6)
+  )
+end
+
 local function make_qf_textfunc()
   local lpeg = vim.lpeg
   local P, R, C, Ct = lpeg.P, lpeg.R, lpeg.C, lpeg.Ct
@@ -238,17 +250,10 @@ local function make_qf_textfunc()
   local num = R('09') ^ 1
   local code = esc
     * '['
-    * C((num * (P(';') * num) ^ 0))
+    * C((num * (P(';') * num) ^ 0) + P(''))
     * 'm'
     / function(params)
-      local color = nil
-      for n in params:gmatch('%d+') do
-        local v = tonumber(n)
-        if v >= 30 and v <= 37 then
-          color = tostring(v)
-        end
-      end
-      return { type = 'code', value = color or '0' }
+      return { type = 'code', value = params }
     end
 
   local text_seg = C((1 - esc) ^ 1) / function(t)
@@ -272,28 +277,114 @@ local function make_qf_textfunc()
       elseif item.user_data == 'compile_info' then
         local segs = grammar:match(strip_bs(item.text or '')) or {}
         local plain = {}
-        local len = 0 -- running byte length; concat-per-segment was O(n^2)
+        local len = 0
         local active = nil
+        local cur_color, cur_bold, cur_dim, cur_italic, cur_underline, cur_strike =
+          nil, false, false, false, false, false
+
+        local function close_active()
+          if active then
+            active._end = len
+            active = nil
+          end
+        end
+
+        local function open_active()
+          if cur_color or cur_bold or cur_dim or cur_italic or cur_underline or cur_strike then
+            active = {
+              lnum = i,
+              start = len,
+              color = cur_color and ansi_colors[cur_color] or nil,
+              code = cur_color and tonumber(cur_color) or nil,
+              bold = cur_bold,
+              dim = cur_dim,
+              italic = cur_italic,
+              underline = cur_underline,
+              strike = cur_strike,
+            }
+            table.insert(line_colors, active)
+          end
+        end
 
         for _, seg in ipairs(segs) do
           if seg.type == 'code' then
-            local c = seg.value
-            if c ~= '0' and ansi_colors[c] then
-              if active then
-                active._end = len
+            local changed = false
+            if seg.value == '' then
+              -- bare `\e[m` behaves like `\e[0m`.
+              if cur_color or cur_bold or cur_dim or cur_italic or cur_underline or cur_strike then
+                cur_color, cur_bold, cur_dim, cur_italic, cur_underline, cur_strike =
+                  nil, false, false, false, false, false
+                changed = true
               end
-              active = {
-                lnum = i,
-                start = len,
-                color = ansi_colors[c],
-                code = tonumber(c),
-              }
-              table.insert(line_colors, active)
             else
-              if active then
-                active._end = len
-                active = nil
+              for n in seg.value:gmatch('%d+') do
+                local v = tonumber(n)
+                if v == 0 then
+                  if
+                    cur_color
+                    or cur_bold
+                    or cur_dim
+                    or cur_italic
+                    or cur_underline
+                    or cur_strike
+                  then
+                    cur_color, cur_bold, cur_dim, cur_italic, cur_underline, cur_strike =
+                      nil, false, false, false, false, false
+                    changed = true
+                  end
+                elseif v == 1 then
+                  if not cur_bold then
+                    cur_bold, changed = true, true
+                  end
+                elseif v == 2 then
+                  if not cur_dim then
+                    cur_dim, changed = true, true
+                  end
+                elseif v == 3 then
+                  if not cur_italic then
+                    cur_italic, changed = true, true
+                  end
+                elseif v == 4 then
+                  if not cur_underline then
+                    cur_underline, changed = true, true
+                  end
+                elseif v == 9 then
+                  if not cur_strike then
+                    cur_strike, changed = true, true
+                  end
+                elseif v == 22 then
+                  -- "normal intensity": clears both bold and dim.
+                  if cur_bold or cur_dim then
+                    cur_bold, cur_dim, changed = false, false, true
+                  end
+                elseif v == 23 then
+                  if cur_italic then
+                    cur_italic, changed = false, true
+                  end
+                elseif v == 24 then
+                  if cur_underline then
+                    cur_underline, changed = false, true
+                  end
+                elseif v == 29 then
+                  if cur_strike then
+                    cur_strike, changed = false, true
+                  end
+                elseif v >= 30 and v <= 37 then
+                  local s = tostring(v)
+                  if cur_color ~= s then
+                    cur_color, changed = s, true
+                  end
+                elseif v == 39 then
+                  if cur_color then
+                    cur_color, changed = nil, true
+                  end
+                end
+                -- other SGR codes still ignored.
               end
+            end
+            if changed then
+              close_active()
+              open_active()
             end
           else
             table.insert(plain, seg.value)
@@ -301,9 +392,7 @@ local function make_qf_textfunc()
           end
         end
 
-        if active then
-          active._end = len
-        end
+        close_active()
         table.insert(lines, table.concat(plain))
       elseif item.bufnr ~= 0 then
         -- ':.' keeps the short, familiar `src/main.c` form now that items
@@ -349,10 +438,49 @@ local function make_qf_textfunc()
           pcall(api.nvim_buf_clear_namespace, buf, ansi_ns, s, e)
         end
         for _, c in ipairs(line_colors) do
-          local hl_group = c.hl or ('ANSI' .. tostring(c.color))
-          if c.color then
-            -- cterm wants a palette index (0-7), not the SGR code (30-37).
-            api.nvim_set_hl(ansi_ns, hl_group, { ctermfg = c.code - 30, fg = c.color })
+          local hl_group = c.hl
+          if not hl_group then
+            hl_group = 'ANSI' .. tostring(c.color or 'NONE')
+            if c.bold then
+              hl_group = hl_group .. 'B'
+            end
+            if c.dim then
+              hl_group = hl_group .. 'D'
+            end
+            if c.italic then
+              hl_group = hl_group .. 'I'
+            end
+            if c.underline then
+              hl_group = hl_group .. 'U'
+            end
+            if c.strike then
+              hl_group = hl_group .. 'S'
+            end
+
+            local hl_opts = {}
+            if c.color then
+              -- cterm wants a palette index (0-7), not the SGR code (30-37).
+              hl_opts.ctermfg = c.code - 30
+              hl_opts.fg = c.color
+            end
+            if c.dim then
+              -- Neovim has no native "dim" attribute; approximate the
+              -- terminal's faint rendering by darkening the foreground.
+              hl_opts.fg = dim_color(hl_opts.fg or '#c0c0c0')
+            end
+            if c.bold then
+              hl_opts.bold = true
+            end
+            if c.italic then
+              hl_opts.italic = true
+            end
+            if c.underline then
+              hl_opts.underline = true
+            end
+            if c.strike then
+              hl_opts.strikethrough = true
+            end
+            api.nvim_set_hl(ansi_ns, hl_group, hl_opts)
           end
           pcall(api.nvim_buf_set_extmark, buf, ansi_ns, c.lnum - 1, c.start, {
             end_col = c._end,
