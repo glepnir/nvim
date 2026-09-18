@@ -386,7 +386,8 @@ end, { desc = 'Prev comment' })
 
 map.c('<CR>', function()
   local res = vim.fn.cmdcomplete_info()
-  if res.cmdline_orig == 'w' then
+  local skip = { 'w', 'q', 'wq', 'ccl', 'lcl' }
+  if vim.list_contains(skip, res.cmdline_orig) then
     return '<CR>'
   end
   return vim.fn.pumvisible() == 1 and '<C-y>' or '<CR>'

@@ -17,9 +17,10 @@ local file_cache = {} ---@type table<string, boolean>
 local job_seq = 0
 local active_seq = 0
 
---- Strip ANSI escape sequences from a string.
+--- Strip ANSI CSI sequences: SGR colours, but also \27[K, \27[2K etc., which
+--- used to survive as a stray `[K` in the text diagnostics are matched on.
 local function strip_ansi(s)
-  return (s:gsub('\27%[[%d;]*m', ''))
+  return (s:gsub('\27%[[0-?]*[ -/]*[@-~]', ''))
 end
 
 --- Apply backspace-overwrite semantics. `.` matches newlines in Lua patterns,
@@ -260,7 +261,12 @@ local function make_qf_textfunc()
     return { type = 'text', value = t }
   end
 
-  local grammar = Ct((code + text_seg) ^ 0)
+  -- Every other CSI sequence (\27[K, \27[2K, \27[?25l, ...) and a stray ESC are
+  -- consumed without output. Before, the first one ended the match and the
+  -- rest of the line was dropped, so `\r\27[K...` rendered as a blank line.
+  local csi = esc * '[' * R('0?') ^ 0 * R(' /') ^ 0 * R('@~')
+
+  local grammar = Ct((code + csi + text_seg + esc) ^ 0)
 
   return function(info)
     local lines = {}
@@ -687,8 +693,11 @@ local function run(compile_cmd, bufname, opts)
   -- across two chunks.
   local line_buf = ''
   local cr_held = false
-  -- Text of the current partial line that has already been pushed to the
-  -- quickfix list by the idle flush, so we do not print it twice.
+  -- The incomplete line that the idle flush has put into the quickfix list:
+  -- the index of its item and the text that item currently shows. Once the
+  -- line is finished it replaces that item. (Appending only the remainder put
+  -- e.g. `RUN ... option:` and `1794.09 ms OK` on two separate lines.)
+  local partial_idx = nil ---@type integer?
   local shown_partial = nil ---@type string?
   local idle_timer = vim.uv.new_timer()
 
@@ -697,6 +706,56 @@ local function run(compile_cmd, bufname, opts)
   --- merely cancelled (no successor) still reports its own exit.
   local function superseded()
     return active_seq ~= my_seq
+  end
+
+  local function qf_size()
+    if not qf_id then
+      return 0
+    end
+    return vim.fn.getqflist({ id = qf_id, size = 1 }).size or 0
+  end
+
+  --- Overwrite item `idx` (1-based) in place. setqflist() has no "amend one
+  --- item" action, so the whole list goes back in with 'r'. But 'r' also
+  --- resets the current entry to 1 and moves the qf window's cursor to line 1
+  --- (which breaks tailing), so both are saved and restored around it.
+  local function replace_qf_item(idx, item)
+    if not qf_id then
+      return false
+    end
+    local items = vim.fn.getqflist({ id = qf_id, items = 1 }).items
+    if not items or not items[idx] then
+      return false
+    end
+    items[idx] = item
+    local cur_idx = vim.fn.getqflist({ id = qf_id, idx = 0 }).idx
+
+    local win = vim.fn.getqflist({ winid = 0 }).winid
+    local view = win ~= 0 and api.nvim_win_call(win, vim.fn.winsaveview) or nil
+    vim.fn.setqflist({}, 'r', { id = qf_id, items = items, idx = cur_idx })
+    if view and api.nvim_win_is_valid(win) then
+      api.nvim_win_call(win, function()
+        vim.fn.winrestview(view)
+      end)
+    end
+
+    win = qf_window()
+    if win then
+      ensure_hl_ns(win)
+      api.nvim_win_call(win, apply_qf_syntax)
+    end
+    return true
+  end
+
+  --- The first line to complete is always the one flush_partial() has been
+  --- showing. process() yields exactly one item per line, so items[1] is that
+  --- line: put it into the existing item rather than appending the remainder
+  --- as an item (= a line) of its own.
+  local function settle_partial(items)
+    if partial_idx and items[1] and replace_qf_item(partial_idx, items[1]) then
+      table.remove(items, 1)
+    end
+    partial_idx, shown_partial = nil, nil
   end
 
   local function emit(items)
@@ -718,31 +777,6 @@ local function run(compile_cmd, bufname, opts)
     s = normalize_cr(s)
     local lines = vim.split(s, '\n', { plain = true })
     line_buf = table.remove(lines) or ''
-    return lines
-  end
-
-  --- Drop the prefix already shown by the idle flush from the first completed
-  --- line. If the line was overwritten by a CR in the meantime the prefix will
-  --- not match and we just print the new text.
-  local function drop_shown(lines)
-    -- Note: sampled before the possible table.remove() below, otherwise a
-    -- chunk whose only completed line was fully shown already would leave a
-    -- stale prefix behind for the next chunk.
-    local completed = #lines > 0
-    if shown_partial and completed then
-      local first = lines[1]
-      if vim.startswith(first, shown_partial) then
-        local rest = first:sub(#shown_partial + 1)
-        if rest == '' then
-          table.remove(lines, 1)
-        else
-          lines[1] = rest
-        end
-      end
-    end
-    if completed then
-      shown_partial = nil
-    end
     return lines
   end
 
@@ -784,22 +818,18 @@ local function run(compile_cmd, bufname, opts)
 
   --- Show a line that has no newline yet, e.g. a `printf("Enter n: ")` prompt.
   --- Without this the prompt sat in the buffer until the process exited, which
-  --- made the `i` (send stdin) mapping useless.
+  --- made the `i` (send stdin) mapping useless. The first flush appends it;
+  --- later flushes (the line grew, or a CR overwrote it) rewrite that item.
   local function flush_partial()
-    if opts.silent or superseded() or line_buf == '' then
+    if opts.silent or superseded() or line_buf == '' or line_buf == shown_partial then
       return
     end
-    local text = line_buf
-    if shown_partial and vim.startswith(text, shown_partial) then
-      local rest = text:sub(#shown_partial + 1)
-      if rest == '' then
-        return
-      end
-      update_qf({ { text = rest, user_data = 'compile_info' } })
-    else
-      update_qf({ { text = text, user_data = 'compile_info' } })
+    local item = { text = line_buf, user_data = 'compile_info' }
+    if not (partial_idx and replace_qf_item(partial_idx, item)) then
+      update_qf({ item })
+      partial_idx = qf_size()
     end
-    shown_partial = text
+    shown_partial = line_buf
   end
 
   local function arm_idle_timer()
@@ -829,9 +859,11 @@ local function run(compile_cmd, bufname, opts)
         if superseded() then
           return
         end
-        local lines = drop_shown(feed(raw))
+        local lines = feed(raw)
         if #lines > 0 then
-          emit(process(lines))
+          local items = process(lines)
+          settle_partial(items)
+          emit(items)
         end
         arm_idle_timer()
       end)
@@ -858,8 +890,8 @@ local function run(compile_cmd, bufname, opts)
         if mine and not opts.silent then
           local list = {}
           if line_buf ~= '' or cr_held then
-            local tail = drop_shown(feed('\n'))
-            vim.list_extend(list, process(tail))
+            list = process(feed('\n'))
+            settle_partial(list)
           end
           table.insert(list, { user_data = 'compile_info', text = ' ' })
           table.insert(list, {
