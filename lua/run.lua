@@ -231,18 +231,6 @@ local ansi_colors = {
   ['37'] = 'White',
 }
 
-local function dim_color(hex)
-  local r = tonumber(hex:sub(2, 3), 16)
-  local g = tonumber(hex:sub(4, 5), 16)
-  local b = tonumber(hex:sub(6, 7), 16)
-  return string.format(
-    '#%02x%02x%02x',
-    math.floor(r * 0.6),
-    math.floor(g * 0.6),
-    math.floor(b * 0.6)
-  )
-end
-
 local function make_qf_textfunc()
   local lpeg = vim.lpeg
   local P, R, C, Ct = lpeg.P, lpeg.R, lpeg.C, lpeg.Ct
