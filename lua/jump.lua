@@ -1,4 +1,4 @@
--- Minimal asynchronous fast jump based on rg
+-- Minimal fast jump to a character in the visible lines
 
 local M = {}
 local api, FORWARD, BACKWARD = vim.api, 1, -1
@@ -135,8 +135,7 @@ end
 
 function M.char(direction)
   return function()
-    -- checked per call: rg can be installed later and buffers change
-    if vim.fn.executable('rg') == 0 or vim.fn.line2byte(vim.fn.line('$') + 1) == -1 then
+    if vim.fn.line2byte(vim.fn.line('$') + 1) == -1 then
       api.nvim_feedkeys(direction == FORWARD and 'f' or 'F', 'n', false)
       return
     end
@@ -153,14 +152,14 @@ function M.char(direction)
       end
       local char_input = char
 
-      state.active = true
-      state.mode = 'char'
-
       local first_line = vim.fn.line('w0') - 1
       local curow = api.nvim_win_get_cursor(0)[1] - 1
       if curow == 0 and direction == BACKWARD then
         return
       end
+
+      state.active = true
+      state.mode = 'char'
       local last_line = vim.fn.line('w$')
 
       local lines
@@ -179,74 +178,37 @@ function M.char(direction)
         lines = reversed_lines
       end
 
-      local visible_text = table.concat(lines, '\n')
-
-      local cmd = {
-        'rg',
-        '--json',
-        '--fixed-strings',
-        char_input,
-      }
-
-      vim.system(cmd, {
-        stdin = visible_text,
-      }, function(result)
-        vim.schedule(function()
-          local targets = {}
-          local count = 0
-
-          if result.stdout then
-            for line in string.gmatch(result.stdout, '[^\r\n]+') do
-              if line:find('"type":"match"') then
-                local ok_json, json = pcall(vim.json.decode, line)
-                if ok_json and json and json.type == 'match' and json.data then
-                  local row = json.data.line_number - 1
-
-                  if json.data.submatches and #json.data.submatches > 0 then
-                    for _, submatch in ipairs(json.data.submatches) do
-                      local col = submatch.start
-
-                      local actual_row
-                      if direction == FORWARD then
-                        actual_row = base_row + row
-                      else
-                        actual_row = curow - 1 - row
-                      end
-
-                      table.insert(targets, {
-                        row = actual_row,
-                        col = col,
-                      })
-
-                      count = count + 1
-                      if count >= state.max_targets then
-                        break
-                      end
-                    end
-                  end
-
-                  if count >= state.max_targets then
-                    break
-                  end
-                end
-              end
-            end
+      -- Plain Lua search: spawning rg per keypress cost far more than
+      -- scanning the few dozen visible lines.
+      local targets = {}
+      for i, text in ipairs(lines) do
+        local row = direction == FORWARD and base_row + i - 1 or curow - i
+        local init = 1
+        while #targets < state.max_targets do
+          local s = text:find(char_input, init, true)
+          if not s then
+            break
           end
+          table.insert(targets, { row = row, col = s - 1 })
+          init = s + #char_input
+        end
+        if #targets >= state.max_targets then
+          break
+        end
+      end
 
-          if direction == BACKWARD then
-            table.sort(targets, function(a, b)
-              return a.row < b.row
-            end)
-          end
-
-          if #targets == 0 then
-            cleanup()
-            return
-          end
-
-          mark_targets(targets)
+      if direction == BACKWARD then
+        table.sort(targets, function(a, b)
+          return a.row < b.row
         end)
-      end)
+      end
+
+      if #targets == 0 then
+        cleanup()
+        return
+      end
+
+      mark_targets(targets)
     end)
   end
 end

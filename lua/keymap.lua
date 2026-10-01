@@ -341,8 +341,8 @@ map.n({
   ['<Leader>o'] = cmd('FzfLua lsp_document_symbols'),
   ['<Leader>fc'] = cmd('FzfLua files cwd=$HOME/.config fd_opts=--type\\ f'),
   --gitsign
-  [']g'] = cmd('lua require"gitsigns".nav_hunk("next")'),
-  ['[g'] = cmd('lua require"gitsigns".nav_hunk("prev")'),
+  [']g'] = cmd('lua pcall(function() require"gitsigns".nav_hunk("next") end)'),
+  ['[g'] = cmd('lua pcall(function() require"gitsigns".nav_hunk("prev") end)'),
 })
 
 map.n('<C-X><C-f>', cmd('Dired'))

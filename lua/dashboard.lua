@@ -179,7 +179,8 @@ local function render_dashboard(buf)
     })
   end
 
-  local plugins = vim.pack.get()
+  -- info = false: the default runs git for every plugin (~80ms)
+  local plugins = vim.pack.get(nil, { info = false })
   local loaded = vim
     .iter(plugins)
     :filter(function(p)

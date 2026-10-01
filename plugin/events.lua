@@ -62,24 +62,25 @@ local function startuptime()
   end
 end
 
-vim.lsp.enable({
-  'luals',
-  -- 'emmylua_ls',
-  'clangd',
-  'rust_analyzer',
-  'basedpyright',
-  'ruff',
-  'zls',
-  'cmake',
-  'tsls',
-})
-
 au('UIEnter', {
   group = group,
   once = true,
   callback = function()
     startuptime()
     vim.schedule(function()
+      -- enabling here keeps require('vim.lsp') off the startup path; enable()
+      -- re-fires FileType for buffers that are already open
+      vim.lsp.enable({
+        'luals',
+        -- 'emmylua_ls',
+        'clangd',
+        'rust_analyzer',
+        'basedpyright',
+        'ruff',
+        'zls',
+        'cmake',
+        'tsls',
+      })
       -- require('dashboard').show()
       require('dashboard').show()
       require('keymap')
@@ -129,16 +130,23 @@ au('UIEnter', {
   desc = 'Initializer',
 })
 
--- g._lang holds parser names, FileType needs filetype names
-vim.treesitter.language.register('tsx', 'typescriptreact')
-vim.treesitter.language.register('javascript', 'javascriptreact')
-local ts_filetypes =
-  vim.iter(vim.g._lang):map(vim.treesitter.language.get_filetypes):flatten():totable()
+-- g._lang holds parser names, FileType needs filetype names. Kept static so
+-- vim.treesitter isn't loaded at startup.
+local ts_filetypes = vim.list_extend(
+  vim.deepcopy(vim.g._lang),
+  { 'typescriptreact', 'javascriptreact', 'help', 'checkhealth' }
+)
+local ts_registered = false
 
 au('FileType', {
   pattern = ts_filetypes,
   group = group,
   callback = function(opts)
+    if not ts_registered then
+      vim.treesitter.language.register('tsx', 'typescriptreact')
+      vim.treesitter.language.register('javascript', 'javascriptreact')
+      ts_registered = true
+    end
     local lang = vim.treesitter.language.get_lang(vim.bo[opts.buf].filetype)
     if not lang then
       return

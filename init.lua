@@ -19,7 +19,6 @@ g.loaded_matchparen = 1
 
 local o = vim.o
 o.virtualedit = 'block'
-o.clipboard = 'unnamedplus'
 o.wildignorecase = true
 o.swapfile = false
 o.timeout = true
@@ -65,6 +64,10 @@ o.laststatus = 0
 o.cot = 'menu,menuone,noinsert,fuzzy,popup' -- nosort or not???
 o.cia = 'kind,abbr,menu'
 o.wop = 'pum,tagfile,fuzzy'
+-- loading the clipboard provider at startup costs a few ms
+vim.schedule(function()
+  o.clipboard = 'unnamedplus'
+end)
 vim.opt.guicursor:remove({ 't:block-blinkon500-blinkoff500-TermCursor' })
 
 vim.cmd.colorscheme('mariana')
@@ -170,11 +173,13 @@ end
 
 P:add({
   'nvimdev/modeline.nvim',
-  'lewis6991/gitsigns.nvim',
   'nvimdev/phoenix.nvim',
   { src = 'nvim-treesitter/nvim-treesitter', version = 'main' },
   { src = 'nvim-treesitter/nvim-treesitter-textobjects', version = 'main' },
 }, { load = false })
+  :add('lewis6991/gitsigns.nvim', {
+    load = on_event({ 'BufReadPost', 'BufNewFile' }, 'gitsigns.nvim'),
+  })
   :add('nvimdev/dired.nvim', {
     load = on_cmd('Dired', 'dired.nvim'),
   })
