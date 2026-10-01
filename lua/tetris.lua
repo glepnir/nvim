@@ -482,6 +482,7 @@ function M.close()
 end
 
 function M.start()
+  M.close() -- a second :Tetris used to leave the first timer running
   math.randomseed(os.time())
   setup_highlights()
   init_board()
@@ -507,6 +508,14 @@ function M.start()
 
   state.win = vim.api.nvim_open_win(state.buf, true, win_opts)
   setup_keymaps()
+  -- closing the window with :q wipes the buffer; stop the timer with it
+  api.nvim_create_autocmd('BufWipeout', {
+    buffer = state.buf,
+    once = true,
+    callback = function()
+      M.close()
+    end,
+  })
 
   state.score = 0
   state.game_over = false

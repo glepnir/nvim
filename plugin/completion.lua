@@ -4,8 +4,7 @@ local g = api.nvim_create_augroup('glepnir.completion', { clear = true })
 local phoenix_id = 0
 
 local function is_cpp()
-  local ft = vim.bo.filetype
-  return ft == 'cpp' or ft == 'cxx' or ft == 'cc' or ft == 'hpp'
+  return vim.bo.filetype == 'cpp'
 end
 
 local function is_cpp_template(item)
@@ -36,6 +35,7 @@ local function on_complete_done(args)
   if not item then
     return
   end
+  local client_id = vim.v.completed_item.user_data.nvim.lsp.client_id
 
   if item.kind ~= CompletionItemKind.Function and item.kind ~= CompletionItemKind.Method then
     return
@@ -121,7 +121,7 @@ local function on_complete_done(args)
     api.nvim_feedkeys(right, 'n', false)
 
     vim.defer_fn(function()
-      local c = lsp.get_client_by_id(vim.v.completed_item.user_data.nvim.lsp.client_id)
+      local c = lsp.get_client_by_id(client_id)
       if not c then
         return
       end
@@ -167,7 +167,8 @@ au('LspAttach', {
     end
 
     if not vim.env.DEBUG_COMPLETION then
-      local chars = client.server_capabilities.completionProvider.triggerCharacters
+      local chars =
+        vim.tbl_get(client.server_capabilities, 'completionProvider', 'triggerCharacters')
       if chars then
         for i = string.byte('a'), string.byte('z') do
           if not vim.list_contains(chars, string.char(i)) then

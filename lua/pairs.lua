@@ -186,6 +186,14 @@ function Pairs:determine_action(char, state)
     end
   end
 
+  -- Don't pair a quote typed right after a word char: don't, it's, x'
+  if char == self.bracket_pairs:get_closing(char) then
+    local prev = state:get_char_before()
+    if prev and prev:match('%w') then
+      return Action.nothing(char)
+    end
+  end
+
   return Action.insert(char, self.bracket_pairs:get_closing(char))
 end
 

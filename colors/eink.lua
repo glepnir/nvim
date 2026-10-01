@@ -137,8 +137,9 @@ local d = {
 --   hint = oklab_to_srgb(0.640, -0.002, 0.008),
 -- }
 
-vim.g.colors_name = 'eink'
+-- set after `highlight clear`, which unsets g:colors_name
 vim.cmd('highlight clear')
+vim.g.colors_name = 'eink'
 
 local function hex_to_rgb(hex)
   if hex:sub(1, 1) == '#' then

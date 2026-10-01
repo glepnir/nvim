@@ -182,13 +182,13 @@ local function render_dashboard(buf)
   local plugins = vim.pack.get()
   local loaded = vim
     .iter(plugins)
-    :map(function(p)
+    :filter(function(p)
       return p.active
     end)
     :totable()
-  local startup_time = vim.g.nvim_startup_time or '0'
+  local startup_time = vim.g.nvim_startup_time or 0
   local plugin_info_str =
-    string.format('load %d/%d plugins in %sms', #loaded or 0, #plugins or 0, startup_time)
+    string.format('load %d/%d plugins in %.2fms', #loaded, #plugins, startup_time)
 
   if plugin_info_line_idx <= #lines then
     local current_line = lines[plugin_info_line_idx] or ''
@@ -249,6 +249,7 @@ local function render_dashboard(buf)
   vim.api.nvim_win_set_cursor(0, cursor)
 
   local ns_id = vim.api.nvim_create_namespace('dashboard')
+  vim.api.nvim_buf_clear_namespace(buf, ns_id, 0, -1)
   for _, hl in ipairs(highlights_to_apply) do
     vim.hl.range(buf, ns_id, hl.hl_group, { hl.line, hl.col_start }, { hl.line, hl.col_end })
   end
@@ -323,7 +324,7 @@ function M.show()
     buffer = buf,
     group = group,
     callback = function()
-      if vim.bo.buftype == 'nofile' and vim.bo.filetype == '' then
+      if vim.api.nvim_get_current_buf() == buf then
         render_dashboard(buf)
       end
     end,

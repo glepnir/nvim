@@ -50,13 +50,12 @@ au('InsertEnter', {
 })
 
 local function startuptime()
-  if vim.g.strive_startup_time ~= nil then
+  if vim.g.nvim_startup_time ~= nil then
     return
   end
-  vim.g.strive_startup_time = 0
   local usage = vim.uv.getrusage()
   if usage then
-    -- Calculate time in milliseconds (user + system time)
+    -- CPU time in milliseconds (user + system), not wall-clock time
     local user_time = (usage.utime.sec * 1000) + (usage.utime.usec / 1000)
     local sys_time = (usage.stime.sec * 1000) + (usage.stime.usec / 1000)
     vim.g.nvim_startup_time = user_time + sys_time
@@ -130,8 +129,14 @@ au('UIEnter', {
   desc = 'Initializer',
 })
 
+-- g._lang holds parser names, FileType needs filetype names
+vim.treesitter.language.register('tsx', 'typescriptreact')
+vim.treesitter.language.register('javascript', 'javascriptreact')
+local ts_filetypes =
+  vim.iter(vim.g._lang):map(vim.treesitter.language.get_filetypes):flatten():totable()
+
 au('FileType', {
-  pattern = vim.g._lang,
+  pattern = ts_filetypes,
   group = group,
   callback = function(opts)
     local lang = vim.treesitter.language.get_lang(vim.bo[opts.buf].filetype)
@@ -140,8 +145,11 @@ au('FileType', {
     end
     if vim.treesitter.language.add(lang) then
       vim.treesitter.start(opts.buf, lang)
-      vim.wo[0][0].foldmethod = 'expr'
-      vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+      local win = vim.fn.bufwinid(opts.buf)
+      if win ~= -1 then
+        vim.wo[win][0].foldmethod = 'expr'
+        vim.wo[win][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+      end
     end
   end,
   desc = 'try start treesitter highlight',
@@ -151,7 +159,13 @@ au('BufWritePre', {
   pattern = '*',
   callback = function(args)
     local fname = api.nvim_buf_get_name(args.buf)
-    if vim.bo[args.buf].filetype == 'vim' and fname:find('test') then
+    local ft = vim.bo[args.buf].filetype
+    -- markdown uses trailing spaces as hard line breaks, diffs need them verbatim
+    if
+      (ft == 'vim' and fname:find('test'))
+      or vim.list_contains({ 'markdown', 'diff', 'gitcommit' }, ft)
+      or vim.bo[args.buf].binary
+    then
       return
     end
     local view = vim.fn.winsaveview()
@@ -166,10 +180,9 @@ au('BufWritePost', {
   desc = 'Hot reload colorscheme',
   callback = function(data)
     local name = data.file:match('([^/]+)%.lua$')
-    print(vim.inspect(name))
     vim.schedule(function()
       for k in pairs(package.loaded) do
-        if k:match(name) then
+        if k == name or vim.startswith(k, name .. '.') then
           package.loaded[k] = nil
         end
       end

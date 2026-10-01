@@ -27,7 +27,9 @@ local function cleanup()
     state.key_map = {}
 
     if state.id then
-      api.nvim_del_autocmd(state.id)
+      -- may already be gone: it is a `once` autocmd that can fire first
+      pcall(api.nvim_del_autocmd, state.id)
+      state.id = nil
     end
   end
 end
@@ -132,11 +134,12 @@ local function mark_targets(targets)
 end
 
 function M.char(direction)
-  if vim.fn.executable('rg') == 0 or vim.fn.line2byte(vim.fn.line('$') + 1) == -1 then
-    return
-  end
-
   return function()
+    -- checked per call: rg can be installed later and buffers change
+    if vim.fn.executable('rg') == 0 or vim.fn.line2byte(vim.fn.line('$') + 1) == -1 then
+      api.nvim_feedkeys(direction == FORWARD and 'f' or 'F', 'n', false)
+      return
+    end
     vim.schedule(function()
       if state.active then
         cleanup()

@@ -8,7 +8,7 @@ vim.api.nvim_create_user_command('NvimRunTest', function(args)
   end
   if target:match('.*_spec%.lua$') then
     local cmd = ('TEST_FILE=%s make test'):format(target)
-    require('run').run(cmd, vim.api.nvim_get_current_buf())
+    require('run').run(cmd, vim.api.nvim_buf_get_name(0))
   end
 end, {
   nargs = '?',

@@ -71,8 +71,8 @@ local function compiler_from_env()
   local data = vim.uv.fs_read(fd, st.size, 0) or ''
   vim.uv.fs_close(fd)
   for _, line in ipairs(vim.split(data, '\n')) do
-    if vim.startswith(line, 'COMPILE_COMMAND') then
-      return vim.trim(line:sub(17)):match('^(%S+)')
+    if vim.startswith(line, 'COMPILE_COMMAND=') then
+      return vim.trim(line:sub(17)):gsub('^[\'"]', ''):match('^(%S+)')
     end
   end
   return nil

@@ -1,6 +1,10 @@
 local fname = vim.fn.expand('%:p')
 
-if fname:match('neovim') or fname:match('nvim') then
+local function is_nvim_src(name)
+  return name:find('/neovim/', 1, true) ~= nil or name:find('/src/nvim/', 1, true) ~= nil
+end
+
+if is_nvim_src(fname) then
   vim.opt_local.textwidth = 120
   vim.api.nvim_create_user_command('NvimGenerateSource', function()
     require('compile').custom({
@@ -8,13 +12,12 @@ if fname:match('neovim') or fname:match('nvim') then
       silent = true,
       ondone = function(exit_code)
         if exit_code == 0 then
-          local curbuf = vim.api.nvim_get_current_buf()
-          vim.iter(vim.api.nvim_list_bufs()):map(function(b)
+          vim.iter(vim.api.nvim_list_bufs()):each(function(b)
             local bufname = vim.api.nvim_buf_get_name(b)
-            if bufname:find('nvim') then
+            if is_nvim_src(bufname) then
               vim.api.nvim_buf_call(b, function()
                 local view = nil
-                if vim.bo[curbuf].modified then
+                if vim.bo[b].modified then
                   view = vim.fn.winsaveview()
                   vim.cmd('write!')
                 end

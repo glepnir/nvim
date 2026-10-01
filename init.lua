@@ -18,8 +18,6 @@ g.loaded_netrwPlugin = 1
 g.loaded_matchparen = 1
 
 local o = vim.o
-o.hidden = true
-o.magic = true
 o.virtualedit = 'block'
 o.clipboard = 'unnamedplus'
 o.wildignorecase = true
@@ -52,9 +50,7 @@ o.foldlevelstart = 99
 o.undofile = true
 o.linebreak = true
 o.smoothscroll = true
-o.smarttab = true
 o.expandtab = true
-o.autoindent = true
 o.tabstop = 2
 o.sw = 2
 o.wrap = false
@@ -107,7 +103,7 @@ vim.api.nvim_create_autocmd('PackChanged', {
         vim.cmd.packadd('nvim-treesitter')
       end
       local nts = require('nvim-treesitter')
-      nts.install(g.lang, { summary = true })
+      nts.install(g._lang, { summary = true })
       nts.update(nil, { summary = true })
     end
   end,
@@ -205,25 +201,29 @@ P:add({
     end),
   })
   :add({ 'nvimdev/guard.nvim', 'nvimdev/guard-collection' }, {
-    load = on_event('BufReadPost', { 'guard.nvim', 'guard-collection' }, function()
-      local ft = require('guard.filetype')
-      ft('c,cpp'):fmt({
-        cmd = 'clang-format',
-        args = function(bufnr)
-          local f = vim.bo[bufnr].filetype == 'cpp' and '.cc-format' or '.c-format'
-          return { ('--style=file:%s/%s'):format(vim.env.HOME, f) }
-        end,
-        stdin = true,
-        ignore_patterns = { 'neovim', 'vim' },
-      })
-      ft('lua'):fmt({
-        cmd = 'stylua',
-        args = { '-' },
-        stdin = true,
-        ignore_patterns = 'function.*_spec%.lua',
-        find = '.stylua.toml',
-      })
-      ft('rust'):fmt('rustfmt')
-      ft('typescript', 'javascript', 'typescriptreact', 'javascriptreact'):fmt('prettier')
-    end),
+    load = on_event(
+      { 'BufReadPost', 'BufNewFile' },
+      { 'guard.nvim', 'guard-collection' },
+      function()
+        local ft = require('guard.filetype')
+        ft('c,cpp'):fmt({
+          cmd = 'clang-format',
+          args = function(bufnr)
+            local f = vim.bo[bufnr].filetype == 'cpp' and '.cc-format' or '.c-format'
+            return { ('--style=file:%s/%s'):format(vim.env.HOME, f) }
+          end,
+          stdin = true,
+          ignore_patterns = { 'neovim', 'vim' },
+        })
+        ft('lua'):fmt({
+          cmd = 'stylua',
+          args = { '-' },
+          stdin = true,
+          ignore_patterns = 'function.*_spec%.lua',
+          find = '.stylua.toml',
+        })
+        ft('rust'):fmt('rustfmt')
+        ft('typescript', 'javascript', 'typescriptreact', 'javascriptreact'):fmt('prettier')
+      end
+    ),
   })

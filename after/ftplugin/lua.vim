@@ -21,4 +21,4 @@ function! s:RunFunctionalTestOnCtrlG() abort
   return "\<C-G>"
 endfunction
 
-nnoremap <expr> <C-G> <SID>RunFunctionalTestOnCtrlG()
+nnoremap <buffer> <expr> <C-G> <SID>RunFunctionalTestOnCtrlG()

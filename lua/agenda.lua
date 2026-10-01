@@ -1,5 +1,5 @@
 local api = vim.api
-local uv = vim.loop
+local uv = vim.uv
 
 local group = api.nvim_create_augroup('Agenda', { clear = true })
 local ns_id = api.nvim_create_namespace('agenda')
@@ -90,23 +90,7 @@ end
 
 -- Returns the ISO week number for a given timestamp
 local function get_week_number(ts)
-  ts = ts or os.time()
-  local t = os.date('*t', ts)
-  local jan1 = os.time({ year = t.year, month = 1, day = 1, hour = 12 })
-  local yday = math.floor((ts - jan1) / 86400) + 1
-  local iso_wday = (t.wday + 5) % 7 + 1
-  local week = math.floor((yday - iso_wday + 10) / 7)
-  if week < 1 then
-    week = 52
-  elseif week > 52 then
-    local dec28 = os.time({ year = t.year, month = 12, day = 28, hour = 12 })
-    local dec28_iso = (os.date('*t', dec28).wday + 5) % 7 + 1
-    local dec28_yday = math.floor((dec28 - jan1) / 86400) + 1
-    if math.floor((dec28_yday - dec28_iso + 10) / 7) >= week then
-      week = 1
-    end
-  end
-  return week
+  return tonumber(os.date('%V', ts or os.time()))
 end
 
 -- Returns a list of 7 timestamps (Mon..Sun) for the current week
@@ -566,10 +550,6 @@ local function setup_keymaps(buf)
 end
 
 function M.show()
-  if vim.fn.argc() > 0 or vim.fn.line2byte('$') ~= -1 then
-    return
-  end
-
   local buf = api.nvim_create_buf(false, true)
   api.nvim_set_current_buf(buf)
 

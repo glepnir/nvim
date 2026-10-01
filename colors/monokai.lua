@@ -18,7 +18,7 @@ end
 
 vim.o.termguicolors = true
 vim.o.background = 'dark'
-vim.g.colors_name = 'monokai-sublime'
+vim.g.colors_name = 'monokai'
 
 --=============================================================================
 -- 配置

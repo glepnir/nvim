@@ -1,4 +1,4 @@
-set expandtab
-set tabstop=8
-set softtabstop=4
-set shiftwidth=4
+setl expandtab
+setl tabstop=8
+setl softtabstop=4
+setl shiftwidth=4

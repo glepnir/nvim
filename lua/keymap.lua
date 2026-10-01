@@ -168,34 +168,42 @@ map.t({
   ['<C-x>k'] = cmd('quit'),
 })
 
--- insert cut text to paste
+-- insert cut text to paste: first press sets the start, second press cuts
+local cut_ns = api.nvim_create_namespace('my_cut_region')
 map.i('<A-w>', function()
-  local mark = api.nvim_buf_get_mark(0, 'a')
   local lnum, col = unpack(api.nvim_win_get_cursor(0))
-  if mark[1] == 0 then
-    api.nvim_buf_set_mark(0, 'a', lnum, col, {})
-  else
-    local keys = '<ESC>d`aa'
-    api.nvim_feedkeys(api.nvim_replace_termcodes(keys, true, true, true), 'n', false)
-    vim.schedule(function()
-      api.nvim_buf_del_mark(0, 'a')
-    end)
+  local marks = api.nvim_buf_get_extmarks(0, cut_ns, 0, -1, {})
+  if #marks == 0 then
+    api.nvim_buf_set_extmark(0, cut_ns, lnum - 1, col, {})
+    return
   end
+  api.nvim_buf_clear_namespace(0, cut_ns, 0, -1)
+  local srow, scol, erow, ecol = marks[1][2], marks[1][3], lnum - 1, col
+  if srow > erow or (srow == erow and scol > ecol) then
+    srow, scol, erow, ecol = erow, ecol, srow, scol
+  end
+  local text = api.nvim_buf_get_text(0, srow, scol, erow, ecol, {})
+  vim.fn.setreg('+', text, 'v')
+  api.nvim_buf_set_text(0, srow, scol, erow, ecol, {})
+  api.nvim_win_set_cursor(0, { srow + 1, scol })
 end)
 
 -- Ctrl-y works like emacs
 map.i('<C-y>', function()
-  if tonumber(vim.fn.pumvisible()) == 1 or vim.fn.getreg('"+'):find('%w') == nil then
+  if tonumber(vim.fn.pumvisible()) == 1 or vim.fn.getreg('+'):find('%w') == nil then
     return '<C-y>'
   end
   return '<Esc>p==a'
 end, { expr = true })
 
--- move line down
+-- move line up
 map.i('<A-k>', function()
   local lnum = api.nvim_win_get_cursor(0)[1]
-  local line = api.nvim_buf_get_lines(0, lnum - 3, lnum - 2, false)[1]
-  return #line > 0 and '<Esc>:m .-2<CR>==gi' or '<Esc>kkddj:m .-2<CR>==gi'
+  if lnum == 1 then
+    return ''
+  end
+  local line = lnum > 2 and api.nvim_buf_get_lines(0, lnum - 3, lnum - 2, false)[1] or ''
+  return (lnum == 2 or #line > 0) and '<Esc>:m .-2<CR>==gi' or '<Esc>kkddj:m .-2<CR>==gi'
 end, { expr = true })
 
 map.i('<TAB>', function()
@@ -241,11 +249,18 @@ map.i('<C-e>', function()
   return vim.fn.pumvisible() == 1 and '<C-e>' or '<End>'
 end, { expr = true })
 
-local ns_id, mark_id = vim.api.nvim_create_namespace('my_marks'), nil
+local ns_id, mark_id, mark_buf = vim.api.nvim_create_namespace('my_marks'), nil, nil
 
 map.i('<C-t>', function()
+  if
+    mark_id and (mark_buf ~= api.nvim_get_current_buf() or not api.nvim_buf_is_valid(mark_buf))
+  then
+    pcall(api.nvim_buf_del_extmark, mark_buf, ns_id, mark_id)
+    mark_id = nil
+  end
   if not mark_id then
     local row, col = unpack(api.nvim_win_get_cursor(0))
+    mark_buf = api.nvim_get_current_buf()
     mark_id = api.nvim_buf_set_extmark(0, ns_id, row - 1, col, {
       virt_text = { { '⚑', 'DiagnosticError' } },
       hl_group = 'Search',
@@ -255,6 +270,7 @@ map.i('<C-t>', function()
   end
   local mark = api.nvim_buf_get_extmark_by_id(0, ns_id, mark_id, {})
   if not mark or #mark == 0 then
+    mark_id = nil
     return
   end
   pcall(api.nvim_win_set_cursor, 0, { mark[1] + 1, mark[2] })
@@ -325,8 +341,8 @@ map.n({
   ['<Leader>o'] = cmd('FzfLua lsp_document_symbols'),
   ['<Leader>fc'] = cmd('FzfLua files cwd=$HOME/.config fd_opts=--type\\ f'),
   --gitsign
-  [']g'] = cmd('lua require"gitsigns".next_hunk()<CR>'),
-  ['[g'] = cmd('lua require"gitsigns".prev_hunk()<CR>'),
+  [']g'] = cmd('lua require"gitsigns".nav_hunk("next")'),
+  ['[g'] = cmd('lua require"gitsigns".nav_hunk("prev")'),
 })
 
 map.n('<C-X><C-f>', cmd('Dired'))
@@ -372,17 +388,21 @@ map.xo('as', function()
 end)
 
 -- https://slicker.me/neovim/boosting_productivity_lua.htm
+-- keep builtin ]c/[c in diff mode
+local comment_pat = [[^\s*//\|^\s*#\|^\s*\*\s]]
 map.nxo(']c', function()
-  if vim.bo.cms:find('^\\\\') then
-    vim.fn.search('^\\s*//\\|^\\s*#\\|^\\s*\\*\\s', 'W')
+  if vim.wo.diff then
+    return ']c'
   end
-end, { desc = 'Next comment' })
+  return ("<Cmd>call search('%s', 'W')<CR>"):format(comment_pat)
+end, { expr = true, desc = 'Next comment' })
 
 map.nxo('[c', function()
-  if vim.bo.cms:find('^\\\\') then
-    vim.fn.search('^\\s*//\\|^\\s*#\\|^\\s*\\*\\s', 'bW')
+  if vim.wo.diff then
+    return '[c'
   end
-end, { desc = 'Prev comment' })
+  return ("<Cmd>call search('%s', 'bW')<CR>"):format(comment_pat)
+end, { expr = true, desc = 'Prev comment' })
 
 map.c('<CR>', function()
   local res = vim.fn.cmdcomplete_info()

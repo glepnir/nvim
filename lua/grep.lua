@@ -372,11 +372,6 @@ api.nvim_create_user_command('GREP', function(opts)
   grep(QUICK, unpack(opts.fargs))
 end, { nargs = '+', complete = 'file_in_path', desc = 'Search using quickfix list' })
 
-api.nvim_create_autocmd('CmdlineEnter', {
-  pattern = ':',
-  callback = function()
-    vim.cmd(
-      [[cnoreabbrev <expr> grep (getcmdtype() ==# ':' && getcmdline() ==# 'grep') ? 'Grep' : 'grep']]
-    )
-  end,
-})
+vim.cmd(
+  [[cnoreabbrev <expr> grep (getcmdtype() ==# ':' && getcmdline() ==# 'grep') ? 'Grep' : 'grep']]
+)

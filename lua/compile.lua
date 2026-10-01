@@ -128,7 +128,7 @@ api.nvim_create_user_command('CompileSet', function(args)
   local cmd = vim.trim(args.args)
   if cmd == '' then
     local default = read_compile_command()
-      or 'g++ -std=c++17 -Wall -Wextra -g %s -o /tmp/a.out && /tmp/a.out'
+      or 'g++ -std=c++23 -Wall -Wextra -g %s -o /tmp/a.out && /tmp/a.out'
     local ok, input = pcall(vim.fn.input, { prompt = 'COMPILE_COMMAND= ', default = default })
     cmd = ok and vim.trim(input) or ''
   end

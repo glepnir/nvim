@@ -124,7 +124,7 @@ function M.open(opts)
   local spawn_new = not term
   if spawn_new then
     term_id = gen_term_id()
-    local cmd = opts.cmd or (fn.has('win32') == 1 and 'cmd.exe' or os.getenv('SHELL'))
+    local cmd = opts.cmd or vim.o.shell
     local cwd = opts.cwd or fn.getcwd()
     local name = opts.name or ('Term #' .. term_id)
 
@@ -173,6 +173,12 @@ function M.open(opts)
         if current_term_id == term.id then
           current_term_id = nil
         end
+        -- bufhidden=hide keeps the dead terminal buffer around otherwise
+        vim.schedule(function()
+          if api.nvim_buf_is_valid(term.bufnr) then
+            api.nvim_buf_delete(term.bufnr, { force = true })
+          end
+        end)
       end,
     })
 
