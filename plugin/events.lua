@@ -87,6 +87,7 @@ au('UIEnter', {
       require('indent')
       require('compile')
       require('grep')
+      require('winbar').setup()
 
       if vim.version().minor >= 12 then
         require('vim._core.ui2').enable({ msg = { target = 'cmd' } })
