@@ -10,6 +10,8 @@ local CLICK = ("@v:lua.require'%s'.click@"):format(MOD)
 local METHOD = 'textDocument/documentSymbol'
 local NVIM_011 = fn.has('nvim-0.11') == 1
 local PATH_SEP = fn.has('win32') == 1 and '[/\\]' or '/'
+local MAX_RETRIES = 5 -- empty result / error: retry at most this many times (exponential backoff)
+local MAX_DELAY = 2000 -- upper bound (ms) of the adaptive debounce
 
 local config = {
   separator = ' › ',
@@ -84,7 +86,8 @@ local LSP_TYPE = {
   Package = 'namespace',
 }
 
-local bufs = {} -- buf -> { ver, tick, enc, symbols, path, timer, fire, cancel, gen }
+-- buf -> { ver, tick, enc, symbols, path, timer, fire, cancel, gen, retries, empty, delay }
+local bufs = {}
 local wins = {} -- win -> { buf, ver, width, mod, row, col, leaf, path, str }
 local seq = 0
 
@@ -523,7 +526,40 @@ local function client_cancel(client, id)
   return client.cancel_request(id)
 end
 
-local function request(buf, b)
+local request -- forward declaration: used by the timer callback and retry()
+
+---(Re)start the buffer's debounce timer; restarting resets it.
+local function schedule(buf, b, delay)
+  if not b.timer then
+    b.timer = uv.new_timer()
+    b.fire = vim.schedule_wrap(function()
+      request(buf, b)
+    end)
+  end
+  b.timer:start(delay, 0, b.fire)
+end
+
+local function schedule_update(buf, b, delay)
+  if b.tick == api.nvim_buf_get_changedtick(buf) then
+    return
+  end
+  schedule(buf, b, delay or b.delay or config.debounce)
+end
+
+---Empty result or error: the server may still be starting / indexing. Retry
+---with exponential backoff, a bounded number of times. Once exhausted, b.tick
+---stays at the requested changedtick, so CursorHold & co. no longer resend for
+---unchanged text; the next edit, LspAttach or LspProgress(end) tries again.
+local function retry(buf, b)
+  if b.retries >= MAX_RETRIES then
+    return
+  end
+  b.retries = b.retries + 1
+  b.tick = -1
+  schedule(buf, b, floor(math.max(config.debounce, 100) * 2 ^ b.retries))
+end
+
+function request(buf, b)
   if bufs[buf] ~= b or not api.nvim_buf_is_loaded(buf) then
     return
   end
@@ -531,12 +567,16 @@ local function request(buf, b)
   if b.tick == tick then
     return
   end -- this version of the text was already requested
+  if not fn.win_findbuf(buf)[1] then
+    return
+  end -- not displayed anywhere: BufWinEnter requests later (no bursts on :checktime / :LspRestart)
   if b.cancel then
     b.cancel()
+    b.cancel = nil
   end -- previous request hasn't returned yet: cancel it
-  b.cancel = nil
-  local gen = (b.gen or 0) + 1
+  local gen = b.gen + 1
   b.gen = gen -- even if cancel doesn't take effect, any prior response is void
+  b.tick = tick -- recorded even without a client: wait for LspAttach instead of polling
   local client = lsp.get_clients({ bufnr = buf, method = METHOD })[1]
   if not client then
     if b.symbols then
@@ -545,24 +585,29 @@ local function request(buf, b)
     end
     return
   end
-  b.tick = tick
   local params = { textDocument = lsp.util.make_text_document_params(buf) }
+  local t0 = uv.hrtime()
   local ok, sent, id = pcall(client_request, client, METHOD, params, function(err, result)
     if bufs[buf] ~= b or b.gen ~= gen then
       return
     end -- stale response
     b.cancel = nil
+    -- adaptive debounce: don't ask a slow server (or for a huge file) more often than it can answer
+    local rtt = (uv.hrtime() - t0) / 1e6
+    b.delay = math.min(MAX_DELAY, math.max(config.debounce, floor(rtt)))
     if err ~= nil and err ~= vim.NIL then
-      b.tick = -1 -- failed: retry on the next event (CursorHold etc.)
-      return
+      return retry(buf, b)
     end
     local symbols = build(type(result) == 'table' and result or {})
-    local had = b.symbols and #b.symbols > 0
-    if #symbols == 0 then
-      b.tick = -1
-    end -- server may not be ready yet, retry later
+    local had = b.symbols ~= nil and #b.symbols > 0
     b.symbols, b.enc = symbols, client.offset_encoding or 'utf-16'
-    if had or #symbols > 0 then
+    b.empty = #symbols == 0
+    if b.empty then
+      retry(buf, b) -- server may not be ready yet
+    else
+      b.retries = 0
+    end
+    if had or not b.empty then
       invalidate(buf, b)
     end
   end, buf)
@@ -571,27 +616,14 @@ local function request(buf, b)
       pcall(client_cancel, client, id)
     end
   else
-    b.tick = -1
+    retry(buf, b)
   end
-end
-
-local function schedule_update(buf, b, delay)
-  if b.tick == api.nvim_buf_get_changedtick(buf) then
-    return
-  end
-  if not b.timer then
-    b.timer = uv.new_timer()
-    b.fire = vim.schedule_wrap(function()
-      request(buf, b)
-    end)
-  end
-  b.timer:start(delay or config.debounce, 0, b.fire) -- restarting resets the timer
 end
 
 local function track(buf)
-  local b = { ver = next_ver(), tick = -1, enc = 'utf-16' }
+  local b = { ver = next_ver(), tick = -1, enc = 'utf-16', gen = 0, retries = 0 }
   bufs[buf] = b
-  schedule_update(buf, b, 0)
+  schedule(buf, b, 0)
   return b
 end
 
@@ -787,6 +819,7 @@ function M.setup(opts)
   wins = {}
   for buf, b in pairs(bufs) do -- re-setup: drop caches built under the old config, re-request
     b.path, b.symbols, b.tick, b.ver = nil, nil, -1, next_ver()
+    b.retries, b.delay, b.empty = 0, nil, nil
     if api.nvim_buf_is_valid(buf) then
       schedule_update(buf, b, 0)
     end
@@ -806,6 +839,9 @@ function M.setup(opts)
     for _, win in ipairs(fn.win_findbuf(a.buf)) do
       refresh_win(win)
     end
+    if b and a.event == 'BufWinEnter' then
+      schedule_update(a.buf, b, 0) -- text may have changed (or never been requested) while hidden
+    end
   end
   au({ 'BufWinEnter', 'BufWritePost', 'BufFilePost', 'FileType', 'TermOpen' }, refresh_buf)
   au('OptionSet', refresh_buf, { 'buftype', 'diff' })
@@ -813,17 +849,11 @@ function M.setup(opts)
     refresh_win(api.nvim_get_current_win())
   end)
 
-  -- text may have changed -> debounce, then re-request symbols (no-op if changedtick is unchanged)
-  au({
-    'BufEnter',
-    'BufReadPost',
-    'FileChangedShellPost',
-    'TextChanged',
-    'TextChangedI',
-    'TextChangedP',
-    'InsertLeave',
-    'CursorHold',
-  }, function(a)
+  -- text may have changed -> debounce, then re-request symbols (no-op if changedtick is unchanged).
+  -- TextChanged also fires after leaving Insert mode and when entering a buffer modified while
+  -- not current; BufWinEnter (refresh_buf) covers hidden buffers; retries are timer-driven.
+  -- So BufEnter / CursorHold / InsertLeave are not needed.
+  au({ 'BufReadPost', 'FileChangedShellPost', 'TextChanged' }, function(a)
     local b = bufs[a.buf]
     if b then
       schedule_update(a.buf, b)
@@ -832,7 +862,7 @@ function M.setup(opts)
   au('LspAttach', function(a)
     local b = bufs[a.buf]
     if b then
-      b.tick = -1
+      b.tick, b.retries = -1, 0
       schedule_update(a.buf, b)
     end
   end)
@@ -850,6 +880,22 @@ function M.setup(opts)
       end
     )
   end)
+  if fn.exists('##LspProgress') == 1 then
+    -- A server finished some work (e.g. workspace indexing): buffers that got an
+    -- empty result from it get exactly one more request (retries stay exhausted).
+    au('LspProgress', function(a)
+      local id = type(a.data) == 'table' and a.data.client_id
+      if not id then
+        return
+      end
+      for buf, b in pairs(bufs) do
+        if b.empty and lsp.get_clients({ id = id, bufnr = buf })[1] then
+          b.tick = -1
+          schedule_update(buf, b)
+        end
+      end
+    end, 'end')
+  end
 
   au('DirChanged', function() -- relative paths changed
     for buf, b in pairs(bufs) do

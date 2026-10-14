@@ -1,15 +1,15 @@
 {
   "plugins": {
     "dired.nvim": {
-      "rev": "f9c7b4a4e81c2eff170c0435dc4361ae06b5003f",
+      "rev": "3c9d61798ad70a32ac3ee6e08b3d44986a5e2b11",
       "src": "https://github.com/nvimdev/dired.nvim"
     },
     "fzf-lua": {
-      "rev": "48d7c3db291a2c7c1825905c227a6bc81c83b837",
+      "rev": "71b6d3667c4846ab2f0bab06e68d196d2eea016c",
       "src": "https://github.com/ibhagwan/fzf-lua"
     },
     "gitsigns.nvim": {
-      "rev": "36a091f28cdef8c560770d3bce787ddbeb66464b",
+      "rev": "fd780920613e541cbdfac41bf711583ed49f9249",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "guard-collection": {
