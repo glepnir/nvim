@@ -31,6 +31,11 @@ local config = {
   clickable = true,
   debounce = 200,
   exclude_filetypes = { 'gitcommit', 'gitrebase' },
+  -- Only include these LSP symbol kinds in the breadcrumb. nil = all kinds.
+  -- Example: { 'Function', 'Method', 'Constructor' } to show only callables.
+  -- Filtered-out nodes are skipped entirely; their children are reparented
+  -- to the nearest surviving ancestor (or become roots) by range containment.
+  include_kinds = { 'Function', 'Method', 'Constructor' },
   -- enabled = function(buf, win) return true end,
 }
 
@@ -91,7 +96,7 @@ local bufs = {}
 local wins = {} -- win -> { buf, ver, width, mod, row, col, leaf, path, str }
 local seq = 0
 
-local sep, sep_w, ell, ell_w, pad, mod, mod_w, kinds, excluded
+local sep, sep_w, ell, ell_w, pad, mod, mod_w, kinds, excluded, include_kinds
 local NO_KIND = { '%#WinbarSymbol#', 0 }
 
 local function next_ver()
@@ -113,7 +118,8 @@ end
 
 ---Truncate by display width, ending with an ellipsis. Only cuts at codepoint
 ---boundaries; width is always computed via nvim_strwidth (so CJK / emoji /
----combining chars match what Neovim actually renders). Binary search finds
+---combining chars match what Neovim actually renders). ASCII fast path skips
+---the codepoint scan + binary search entirely; otherwise binary search finds
 ---the longest prefix that fits.
 ---@return string text, integer width
 local function truncate(s, max)
@@ -124,6 +130,9 @@ local function truncate(s, max)
   local limit = max - ell_w
   if limit <= 0 then
     return config.ellipsis, ell_w
+  end
+  if #s == w then -- ASCII fast path: 1 byte = 1 column
+    return s:sub(1, limit) .. config.ellipsis, limit + ell_w
   end
   if #s > 4096 then
     s = s:sub(1, 4096)
@@ -176,14 +185,16 @@ local function position(p)
 end
 
 ---Flatten DocumentSymbol[] (hierarchical) and SymbolInformation[] (flat) into
----a single pre-order node list.
+---a single pre-order node list. When include_kinds is set, nodes of other
+---kinds are dropped here; their children are still walked, so surviving
+---descendants are reparented by range containment in build().
 local function flatten(symbols, out)
   for _, s in ipairs(symbols) do
     if type(s) == 'table' then
       local r = type(s.range) == 'table' and s.range
         or (type(s.location) == 'table' and s.location.range)
       local sel = type(s.selectionRange) == 'table' and s.selectionRange or r
-      if type(r) == 'table' then
+      if type(r) == 'table' and (not include_kinds or include_kinds[s.kind]) then
         local sr, sc = position(r.start)
         local er, ec = position(r['end'])
         local jr, jc = position(sel.start) -- click target: where the name is
@@ -809,6 +820,23 @@ local function prepare()
       end
     end
     kinds[id] = { prefix .. '%#' .. group .. '#', prefix_w }
+  end
+  -- include_kinds: set of LSP symbol-kind ids to keep; nil = keep everything.
+  -- Filtered-out nodes are dropped in flatten(); surviving descendants are
+  -- reparented to the nearest surviving ancestor by range containment.
+  include_kinds = nil
+  if config.include_kinds and #config.include_kinds > 0 then
+    local name_to_id = {}
+    for id, k in ipairs(KINDS) do
+      name_to_id[k[1]] = id
+    end
+    include_kinds = {}
+    for _, name in ipairs(config.include_kinds) do
+      local id = name_to_id[name]
+      if id then
+        include_kinds[id] = true
+      end
+    end
   end
 end
 
