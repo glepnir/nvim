@@ -12,6 +12,7 @@ local NVIM_011 = fn.has('nvim-0.11') == 1
 local PATH_SEP = fn.has('win32') == 1 and '[/\\]' or '/'
 local MAX_RETRIES = 5 -- empty result / error: retry at most this many times (exponential backoff)
 local MAX_DELAY = 2000 -- upper bound (ms) of the adaptive debounce
+local SIG_MAX_LINES = 20 -- signature: read at most this many lines below the name
 
 local config = {
   separator = ' › ',
@@ -28,14 +29,28 @@ local config = {
   --       follows treesitter/LSP semantic tokens colors; many vscode-style themes leave these unset).
   -- false (default): all link to WinbarSymbol (-> WinBar), matching vscode's default look.
   semantic = false,
+  -- Draw a full-width line under the whole winbar, like a separator.
+  -- false: off. true = 'underline'; or one of 'undercurl', 'underdouble',
+  -- 'underdotted', 'underdashed'. Line color = fg of the WinbarUnderline
+  -- highlight group (default: linked to WinSeparator).
+  underline = true,
   clickable = true,
   debounce = 200,
   exclude_filetypes = { 'gitcommit', 'gitrebase' },
-  -- Only include these LSP symbol kinds in the breadcrumb. nil = all kinds.
+  -- Only include these LSP symbol kinds in the breadcrumb. nil / {} = all kinds.
   -- Example: { 'Function', 'Method', 'Constructor' } to show only callables.
   -- Filtered-out nodes are skipped entirely; their children are reparented
   -- to the nearest surviving ancestor (or become roots) by range containment.
   include_kinds = { 'Function', 'Method', 'Constructor' },
+  -- true: show symbols as `name(params) -> ret`, read from the source starting at
+  --       the symbol name, up to the '{' / ';' after the parameter list closes
+  --       (multi-line signatures are joined into one line).
+  -- false: show the symbol name only.
+  signature = true,
+  max_signature_width = 80, -- used instead of max_name_width when signature = true
+  -- true: color the signature with the buffer's treesitter highlights (like
+  -- vscode's sticky scroll). Falls back to WinbarKind<Name> without a parser.
+  signature_hl = true,
   -- enabled = function(buf, win) return true end,
 }
 
@@ -97,15 +112,73 @@ local wins = {} -- win -> { buf, ver, width, mod, row, col, leaf, path, str }
 local seq = 0
 
 local sep, sep_w, ell, ell_w, pad, mod, mod_w, kinds, excluded, include_kinds
-local NO_KIND = { '%#WinbarSymbol#', 0 }
+local NO_KIND -- fallback kind entry, set in prepare()
+local fill_hl -- highlight that ends the winbar; the rest of the line is filled with it
 
 local function next_ver()
   seq = seq + 1
   return seq
 end
 
+-- ── highlight twins ─────────────────────────────────────────────────────
+-- Some groups get a derived "twin" (WinbarHl<Group>) that copies the source
+-- group's attributes and fills in missing fg/bg from WinBar:
+--   * with config.underline on: every group used in the winbar, plus the
+--     underline, so the line runs unbroken under dirs, separators, symbols,
+--     icons and the empty fill area alike;
+--   * treesitter capture groups (@...): these usually define only fg, so the
+--     twin gives them WinBar's background.
+
+local UL_STYLES = { 'underline', 'undercurl', 'underdouble', 'underdotted', 'underdashed' }
+local derived = {} -- source group -> twin group name
+
+local function ul_style()
+  local u = config.underline
+  if u == true then
+    return 'underline'
+  end
+  if type(u) == 'string' and vim.tbl_contains(UL_STYLES, u) then
+    return u
+  end
+end
+
+local function define_twin(src, name)
+  local spec = api.nvim_get_hl(0, { name = src, link = false })
+  local base = api.nvim_get_hl(0, { name = 'WinBar', link = false })
+  spec.fg = spec.fg or base.fg -- groups without colors would otherwise fall back to Normal
+  spec.bg = spec.bg or base.bg
+  spec.ctermfg = spec.ctermfg or base.ctermfg
+  spec.ctermbg = spec.ctermbg or base.ctermbg
+  spec.default = nil
+  local style = ul_style()
+  if style then
+    local line = api.nvim_get_hl(0, { name = 'WinbarUnderline', link = false })
+    for _, s in ipairs(UL_STYLES) do
+      spec[s] = nil
+    end
+    spec[style] = true
+    spec.sp = line.fg or line.sp or spec.fg
+    spec.cterm = vim.tbl_extend('force', spec.cterm or {}, { underline = true })
+  end
+  api.nvim_set_hl(0, name, spec)
+end
+
+---Group to actually use: the twin when underline is on or for treesitter groups.
+local function hlname(group)
+  if not ul_style() and group:byte(1) ~= 64 then -- '@'
+    return group
+  end
+  local name = derived[group]
+  if not name then
+    name = 'WinbarHl' .. group:gsub('[^%w]', '_')
+    derived[group] = name
+    define_twin(group, name)
+  end
+  return name
+end
+
 local function hl(group, text)
-  return '%#' .. group .. '#' .. text
+  return '%#' .. hlname(group) .. '#' .. text
 end
 
 local function esc(s) -- '%' is special in statusline
@@ -197,7 +270,7 @@ local function flatten(symbols, out)
       if type(r) == 'table' and (not include_kinds or include_kinds[s.kind]) then
         local sr, sc = position(r.start)
         local er, ec = position(r['end'])
-        local jr, jc = position(sel.start) -- click target: where the name is
+        local jr, jc = position(sel.start) -- click target / signature start: where the name is
         if sr and er then
           local i = #out + 1
           out[i] = {
@@ -367,18 +440,230 @@ local function build_path(buf)
   return { dirs = dirs, file = file }
 end
 
----Symbol fragment: optional icon + name (+ clickable region).
----The name always uses the kind's highlight group (WinbarKind<Name>); it no
----longer falls back to a flat WinbarSymbol. The icon is only prepended when
----config.icons = true, and shares the same highlight group as the name.
+-- Treesitter capture -> highlight group, resolved the way Neovim's highlighter
+-- does: try @capture.lang, then drop trailing segments until a defined group.
+local ts_cache = {}
+local TS_SKIP = { spell = true, nospell = true, conceal = true, none = true }
+
+local function ts_group(capture, lang)
+  local key = capture .. '.' .. lang
+  local g = ts_cache[key]
+  if g == nil then
+    g = false
+    local name = '@' .. key
+    while name do
+      if next(api.nvim_get_hl(0, { name = name })) then
+        g = name
+        break
+      end
+      name = name:match('^(@.+)%.[^.]+$')
+    end
+    ts_cache[key] = g
+  end
+  return g or nil
+end
+
+---Treesitter highlight of rows row0 .. row0 + #lines - 1.
+---@return table? map map[i][col] = group for byte col of lines[i]
+local function ts_highlights(buf, row0, lines)
+  local ok, parser = pcall(vim.treesitter.get_parser, buf)
+  if not ok or not parser then
+    return
+  end
+  local r1 = row0 + #lines - 1
+  local range = { row0, 0, r1, #lines[#lines] }
+  pcall(parser.parse, parser, { row0, r1 + 1 }) -- usually a no-op: the highlighter keeps it parsed
+  local ok2, lt = pcall(parser.language_for_range, parser, range)
+  if not ok2 or not lt then
+    return
+  end
+  local tree = lt.tree_for_range and lt:tree_for_range(range) or lt:trees()[1]
+  local lang = lt:lang()
+  local ok3, query = pcall(vim.treesitter.query.get, lang, 'highlights')
+  if not tree or not ok3 or not query then
+    return
+  end
+  local map, prio = {}, {}
+  for id, node, md in query:iter_captures(tree:root(), buf, row0, r1 + 1) do
+    local name = query.captures[id]
+    local group = not TS_SKIP[name] and name:byte(1) ~= 95 and ts_group(name, lang) -- '_'
+    if group then
+      local p = tonumber(md and (md.priority or (md[id] and md[id].priority))) or 100
+      local sr, sc, er, ec = node:range()
+      for r = math.max(sr, row0), math.min(er, r1) do
+        local i = r - row0 + 1
+        local m, pr = map[i], prio[i]
+        if not m then
+          m, pr = {}, {}
+          map[i], prio[i] = m, pr
+        end
+        local c2 = r == er and ec or #lines[i]
+        for c = (r == sr and sc or 0) + 1, c2 do
+          if not pr[c] or p >= pr[c] then -- later capture wins at equal priority, like the highlighter
+            m[c], pr[c] = group, p
+          end
+        end
+      end
+    end
+  end
+  return map
+end
+
+---Read `name(params) -> ret` from the source, starting at the symbol name
+---(selectionRange start) and stopping at the first '{' / ';' outside the
+---parameter parentheses, or at the end of the line where they close. This
+---drops prefixes like `pub fn` / `def` / `function` and the body. Multi-line
+---signatures are joined into one line. With config.signature_hl, every byte
+---keeps its treesitter highlight group.
+---Returns a list of runs { text, group|nil }, or nil when no parameter list is
+---found (the caller then falls back to the plain name).
+---Known limits: parentheses inside strings / comments in the parameter list
+---are counted too; a return type on a line after the closing ')' is lost.
+local function signature(n, buf, enc)
+  local lines = api.nvim_buf_get_lines(buf, n.jr, n.jr + SIG_MAX_LINES, false)
+  if not lines[1] then
+    return
+  end
+  local slices, depth, seen = {}, 0, false -- slices[i] = { from, to } byte range of lines[i]
+  for i, line in ipairs(lines) do
+    local from = i == 1 and byteindex(line, enc, n.jc) + 1 or 1
+    local to = #line
+    for j = from, #line do -- only ASCII delimiters matter, so scanning bytes is fine
+      local c = line:byte(j)
+      if c == 40 then -- (
+        depth, seen = depth + 1, true
+      elseif c == 41 then -- )
+        depth = depth - 1
+      elseif depth <= 0 and (c == 123 or c == 59) then -- { ;
+        to = j - 1
+        slices[i] = { from, to }
+        break
+      end
+    end
+    if slices[i] then
+      break
+    end
+    slices[i] = { from, to }
+    if seen and depth <= 0 then
+      break
+    end
+  end
+  if not seen then
+    return
+  end
+  local used = {}
+  for i = 1, #slices do
+    used[i] = lines[i]
+  end
+  local map = config.signature_hl and ts_highlights(buf, n.jr, used) or {}
+
+  -- Normalize byte by byte while keeping each byte's group: collapse
+  -- whitespace (line breaks included), drop spaces after '(' and before ')',
+  -- and a trailing comma before ')'.
+  local ch, gr, k = {}, {}, 0
+  local function push(c, g)
+    k = k + 1
+    ch[k], gr[k] = c, g
+  end
+  local function pop_spaces()
+    while k > 0 and ch[k] == ' ' do
+      ch[k], gr[k], k = nil, nil, k - 1
+    end
+  end
+  for i, sl in ipairs(slices) do
+    local line, m = used[i], map[i] or {}
+    if i > 1 and k > 0 and ch[k] ~= ' ' and ch[k] ~= '(' then
+      push(' ')
+    end
+    for c = sl[1], sl[2] do
+      local b = line:byte(c)
+      if b <= 32 or b == 127 then
+        if k > 0 and ch[k] ~= ' ' and ch[k] ~= '(' then
+          push(' ', m[c]) -- keeps e.g. the string color for spaces inside literals
+        end
+      elseif b == 41 then -- )
+        pop_spaces()
+        if k > 0 and ch[k] == ',' then
+          ch[k], gr[k], k = nil, nil, k - 1
+          pop_spaces()
+        end
+        push(')', m[c])
+      else
+        push(line:sub(c, c), m[c])
+      end
+    end
+  end
+  local where = table.concat(ch, '', 1, k):find('%swhere%f[^%w_]') -- rust `where` clause
+  if where then
+    k = where - 1
+  end
+  while k > 0 and (ch[k] == ' ' or ch[k] == ':') do -- trailing whitespace / python ':'
+    k = k - 1
+  end
+  if k == 0 then
+    return
+  end
+
+  local runs, cur, buf_s = {}, nil, {}
+  for i = 1, k + 1 do
+    local g = gr[i]
+    if i > k or (g ~= cur and #buf_s > 0) then
+      if #buf_s > 0 then
+        runs[#runs + 1] = { table.concat(buf_s), cur }
+      end
+      buf_s = {}
+    end
+    if i <= k then
+      cur = g
+      buf_s[#buf_s + 1] = ch[i]
+    end
+  end
+  return runs
+end
+
+---Emit runs { text, group|nil } (nil = default group) within max display
+---columns, ending with an ellipsis when cut.
+---@return string text, integer width
+local function emit(runs, max, default)
+  local plain = {}
+  for i, r in ipairs(runs) do
+    plain[i] = r[1]
+  end
+  plain = table.concat(plain)
+  local t, w = truncate(plain, max)
+  local keep = t == plain and #plain or #t - #config.ellipsis -- bytes of plain to keep
+  local out, pos = {}, 0
+  for _, r in ipairs(runs) do
+    if pos >= keep then
+      break
+    end
+    local s = r[1]
+    if pos + #s > keep then
+      s = s:sub(1, keep - pos)
+    end
+    out[#out + 1] = hl(r[2] or default, esc(s))
+    pos = pos + #r[1]
+  end
+  if keep < #plain then
+    out[#out + 1] = hl('WinbarEllipsis', esc(config.ellipsis))
+  end
+  return table.concat(out), w
+end
+
+---Symbol fragment: optional icon + label (+ clickable region).
+---The label is the name, or `name(params) -> ret` when config.signature = true
+---(colored by treesitter when config.signature_hl = true). Uncolored parts use
+---the kind's highlight group (WinbarKind<Name>); the icon is only prepended
+---when config.icons = true, and shares the same highlight group.
 ---Where WinbarKind<Name> ultimately links to is controlled by config.semantic,
 ---see set_hl(). The node's depth in the tree is fixed, so it's reused directly
 ---as the click callback argument.
 ---@return string text, integer width
-local function symbol_text(n, depth, max)
+local function symbol_text(n, depth, max, buf, enc)
   local kind = kinds[n.kind] or NO_KIND
-  local name, w = truncate(clean(n.name), max)
-  local text = kind[1] .. esc(name)
+  local runs = config.signature and signature(n, buf, enc) or { { clean(n.name) } }
+  local label, w = emit(runs, max, kind[3])
+  local text = kind[1] .. label
   if config.clickable then
     text = '%' .. depth .. CLICK .. text .. '%T'
   end
@@ -387,7 +672,7 @@ end
 
 ---Compose the final winbar string. When it doesn't fit, in order:
 ---① collapse directories from the left ② collapse symbols from the outside in
----③ truncate the innermost symbol name; if still not enough, let Neovim clip from the left.
+---③ truncate the innermost symbol label; if still not enough, let Neovim clip from the left.
 local function compose(buf, b, path, depth, width, modified)
   local p = b.path
   if not p then
@@ -414,10 +699,11 @@ local function compose(buf, b, path, depth, width, modified)
   if s_ell then
     total = total + ell_w + sep_w
   end
+  local sym_max = config.signature and config.max_signature_width or config.max_name_width
   for i = s1, depth do
     local n = path[i]
     if not n.text then
-      n.text, n.w = symbol_text(n, i, config.max_name_width)
+      n.text, n.w = symbol_text(n, i, sym_max, buf, b.enc)
     end
     total = total + n.w + sep_w
   end
@@ -444,7 +730,7 @@ local function compose(buf, b, path, depth, width, modified)
     local n = path[depth]
     local room = n.w - (kinds[n.kind] or NO_KIND)[2] - (total - avail)
     if room > ell_w then
-      leaf_text = symbol_text(n, depth, room)
+      leaf_text = symbol_text(n, depth, room, buf, b.enc)
     end
   end
 
@@ -472,7 +758,7 @@ local function compose(buf, b, path, depth, width, modified)
   for i = s1, depth do
     add(i == depth and leaf_text or path[i].text)
   end
-  out[k + 1] = '%*'
+  out[k + 1] = fill_hl
   return table.concat(out)
 end
 
@@ -776,6 +1062,7 @@ local function set_hl()
   link('WinbarFile', 'WinBar')
   link('WinbarSymbol', 'WinBar')
   link('WinbarModified', 'DiagnosticWarn')
+  link('WinbarUnderline', 'WinSeparator')
   for _, k in ipairs(KINDS) do
     -- false (default): same as WinbarSymbol, no per-kind color (vscode-like).
     -- true: prefer @lsp.type.<type> semantic highlight; kinds without a mapped
@@ -790,12 +1077,22 @@ local function set_hl()
     -- whatever was set the first time).
     link('WinbarKind' .. k[1], target, false)
   end
+  -- twins copy their source's colors: recompute after every change
+  for src, name in pairs(derived) do
+    define_twin(src, name)
+  end
 end
 
 local function prepare()
   sep, sep_w = hl('WinbarSep', esc(config.separator)), strwidth(config.separator)
   ell, ell_w = hl('WinbarEllipsis', esc(config.ellipsis)), strwidth(config.ellipsis)
   pad = (' '):rep(config.padding)
+  fill_hl = '%*'
+  if ul_style() then -- padding and the empty rest of the line need the underline too
+    pad = hl('WinBar', pad)
+    fill_hl = '%#' .. hlname('WinBar') .. '#'
+  end
+  NO_KIND = { '%#' .. hlname('WinbarSymbol') .. '#', 0, 'WinbarSymbol' }
   mod, mod_w = nil, 0
   if config.modified then
     mod, mod_w = ' ' .. hl('WinbarModified', esc(config.modified)), 1 + strwidth(config.modified)
@@ -804,9 +1101,8 @@ local function prepare()
   for _, ft in ipairs(config.exclude_filetypes) do
     excluded[ft] = true
   end
-  -- The name always uses the WinbarKind<Name> highlight group (no longer falls
-  -- back to a flat WinbarSymbol when icons=false). The icon is only prepended
-  -- when config.icons = true, sharing the same highlight group as the name.
+  -- The label always uses the WinbarKind<Name> highlight group. The icon is
+  -- only prepended when config.icons = true, sharing the same highlight group.
   -- What WinbarKind<Name> ultimately links to is controlled by config.semantic,
   -- see set_hl().
   kinds = {}
@@ -819,7 +1115,7 @@ local function prepare()
         prefix, prefix_w = hl(group, esc(icon) .. ' '), strwidth(icon) + 1
       end
     end
-    kinds[id] = { prefix .. '%#' .. group .. '#', prefix_w }
+    kinds[id] = { prefix .. '%#' .. hlname(group) .. '#', prefix_w, group }
   end
   -- include_kinds: set of LSP symbol-kind ids to keep; nil = keep everything.
   -- Filtered-out nodes are dropped in flatten(); surviving descendants are
@@ -842,8 +1138,9 @@ end
 
 function M.setup(opts)
   config = vim.tbl_extend('force', config, opts or {})
+  derived, ts_cache = {}, {}
+  set_hl() -- before prepare(): underlined twins are derived from these groups
   prepare()
-  set_hl()
   wins = {}
   for buf, b in pairs(bufs) do -- re-setup: drop caches built under the old config, re-request
     b.path, b.symbols, b.tick, b.ver = nil, nil, -1, next_ver()
@@ -939,6 +1236,14 @@ function M.setup(opts)
   end)
   au('ColorScheme', function()
     set_hl()
+    if config.signature and config.signature_hl then
+      -- the new scheme may define other @capture.lang groups: rebuild cached labels
+      ts_cache = {}
+      for buf, b in pairs(bufs) do
+        b.tick = -1
+        schedule_update(buf, b, 0)
+      end
+    end
   end)
 
   for _, win in ipairs(api.nvim_list_wins()) do

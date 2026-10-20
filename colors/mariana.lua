@@ -161,7 +161,7 @@ local groups = {
   SignColumn = { fg = p.blue4, bg = bg },
   FoldColumn = { fg = p.blue4, bg = bg },
   Folded = { fg = p.blue6, bg = p.ui_light },
-  WinSeparator = { fg = p.ui_deep, bg = bg },
+  WinSeparator = { link = 'NonText' },
   VertSplit = { link = 'WinSeparator' },
   NonText = { fg = '#4a545f' },
   Whitespace = { fg = '#4a545f' },
