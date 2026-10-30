@@ -81,7 +81,6 @@ au('UIEnter', {
         'cmake',
         'tsls',
       })
-      -- require('dashboard').show()
       require('dashboard').show()
       require('keymap')
       require('indent')
