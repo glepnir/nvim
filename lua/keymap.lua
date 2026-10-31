@@ -322,7 +322,9 @@ map.n('gs', function()
   end, { buf = bufnr })
 end)
 
-map.n('<Leader>a', function() end)
+map.n('<Leader>a', function()
+  require('app').open()
+end)
 
 map.n({
   -- ['gl'] = cmd('Visualizer full'),
