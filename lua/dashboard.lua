@@ -11,7 +11,7 @@ local config = {
       desc = 'Dotfiles',
       action = '<cmd>:FzfLua files cwd=~/.config fd_opts=--type\\ f<CR>',
     },
-    { key = 'e', desc = 'New File', action = '<cmd>enew<CR>' },
+    { key = 'e', desc = 'New  File', action = '<cmd>enew<CR>' },
     {
       key = 'u',
       desc = 'Update Plugins',
@@ -27,9 +27,45 @@ local config = {
   tick_ms = 50,
   ring_tail = 4,
   clock_min_height = 44, -- hide the clock below this window height
-  logo_step = 3, -- logo cells the dot travels per tick
-  logo_hold_ticks = 120, -- how long the finished rainbow keeps flowing
+
+  -- logo animation:
+  --   'snake'   a white dot snakes through the logo leaving a rainbow behind
+  --   'wave'    a diagonal rainbow flows across the logo
+  --   'shine'   a slanted glare sweeps over the logo colours
+  --   'ripple'  rings of light spread out from the centre
+  --   'breathe' the logo slowly brightens and dims, top to bottom
+  --   'spiral'  a rotating rainbow colour wheel, wound into a spiral
+  --   'radial'  rainbow rings flowing out of the centre
+  --   'tricolor' each of the three parts gets its own hue, all cycling
+  --   'rise'    rainbow liquid fills the logo from the bottom, then drains
+  --   'rain'    matrix-style drops fall down every column
+  --   'dissolve' the logo appears cell by cell, holds, then vanishes
+  --   'plasma'  demoscene plasma: overlapping sine waves of colour
+  --   'firework' rainbow shock waves burst from random points of a dimmed logo
+  --   'glitch'  calm logo hit by short bursts of torn, colour-shifted rows
+  --   'heartbeat' a lub-dub double pulse radiating from the centre
+  --   'none'    static logo colours
+  -- 'random' picks a different effect every round; a list such as
+  -- { 'snake', 'shine', 'ripple' } plays them in turn.
+  logo_effect = 'random',
+  logo_effect_ticks = 200, -- round length (cycling) for effects without a natural one
+  logo_glow_levels = 3, -- shades between a logo colour and white
+  logo_dim = 0.6, -- firework: how far the logo fades towards the background
+  logo_step = 3, -- snake: logo cells the dot travels per tick
+  logo_hold_ticks = 120, -- snake: how long the finished rainbow keeps flowing
+  shine_width = 6, -- shine: half width of the glare band, in columns
+  shine_pause = 60, -- shine: ticks between two sweeps
+  ripple_spacing = 14, -- ripple: distance between two rings
+  firework_gap = 20, -- firework: average ticks between two bursts
+  heartbeat_ticks = 24, -- heartbeat: ticks per beat (24 * 50ms = 50 bpm)
+  minute_shine = true, -- sweep a shine over any effect when the minute changes
+  spiral_twist = 0.4, -- spiral: how far the colour wheel winds, 0 = plain wheel
+  rise_ticks = 60, -- rise: ticks to fill (and to drain) the logo
+  rain_tail = 5, -- rain: drop length in rows
+  dissolve_ticks = 50, -- dissolve: ticks for the logo to appear (and to vanish)
+  dissolve_hold = 120, -- dissolve: ticks the complete logo stays
   rainbow_steps = 24, -- number of gradient highlight groups
+
   -- logo colours (top -> bottom shades): b = left leg, c = diagonal, r = right leg
   logo_palette = {
     b = { '#4aa6ea', '#3c92d2', '#307fbb', '#256ca5' },
@@ -40,7 +76,8 @@ local config = {
   highlights = {
     border = 'DashboardBorder',
     ring = { 'DashboardRing1', 'DashboardRing2', 'DashboardRing3', 'DashboardRing3' },
-    logo_color = 'DashboardLogo', -- suffixed with kind (B/C/R) and shade 1..4
+    -- suffixed with kind (B/C/R) and shade 1..4, plus 'Glow' .. level for the light shades
+    logo_color = 'DashboardLogo',
     logo_head = 'DashboardLogoHead',
     rainbow = 'DashboardRainbow', -- suffixed with 1..rainbow_steps
     clock = 'DashboardClock',
@@ -128,6 +165,16 @@ local function hsv_to_hex(h, s, v)
   return string.format('#%02x%02x%02x', f(5), f(3), f(1))
 end
 
+-- mixes two '#rrggbb' colours, t = 0 -> a, t = 1 -> b
+local function blend(a, b, t)
+  local out = {}
+  for _, i in ipairs({ 2, 4, 6 }) do
+    local ca, cb = tonumber(a:sub(i, i + 1), 16), tonumber(b:sub(i, i + 1), 16)
+    table.insert(out, math.floor(ca * (1 - t) + cb * t + 0.5))
+  end
+  return string.format('#%02x%02x%02x', out[1], out[2], out[3])
+end
+
 local function setup_highlights()
   local hl = config.highlights
   local steps = config.rainbow_steps
@@ -136,9 +183,26 @@ local function setup_highlights()
     vim.api.nvim_set_hl(0, hl.rainbow .. i, { fg = hsv_to_hex(hue, 0.55, 0.95), default = true })
   end
   vim.api.nvim_set_hl(0, hl.logo_head, { fg = '#ffffff', bold = true, default = true })
+
+  -- background the dimmed logo fades into
+  local ok, normal = pcall(vim.api.nvim_get_hl, 0, { name = 'Normal', link = false })
+  local bg = ok and normal.bg and string.format('#%06x', normal.bg)
+    or (vim.o.background == 'light' and '#ffffff' or '#000000')
+
+  local levels = config.logo_glow_levels
   for kind, shades in pairs(config.logo_palette) do
     for i, color in ipairs(shades) do
-      vim.api.nvim_set_hl(0, hl.logo_color .. kind:upper() .. i, { fg = color, default = true })
+      local name = hl.logo_color .. kind:upper() .. i
+      vim.api.nvim_set_hl(0, name, { fg = color, default = true })
+      vim.api.nvim_set_hl(
+        0,
+        name .. 'Dim',
+        { fg = blend(color, bg, config.logo_dim), default = true }
+      )
+      for l = 1, levels do
+        local glow = blend(color, '#ffffff', l / (levels + 1))
+        vim.api.nvim_set_hl(0, name .. 'Glow' .. l, { fg = glow, default = true })
+      end
     end
   end
 
@@ -232,7 +296,9 @@ local bc = { tl = '╭', tr = '╮', bl = '╰', br = '╯', h = '─', v = '│
 
 local function layout(win)
   local W = config.inner_width
-  local cols = vim.api.nvim_win_get_width(win)
+  -- textoff = columns taken by number/sign/fold/statuscolumn, which are not text
+  local info = vim.fn.getwininfo(win)[1]
+  local cols = info.width - info.textoff
   local height = vim.api.nvim_win_get_height(win)
   local frame = config.border and cols >= config.frame_min_columns
   local left = math.max(0, math.floor((cols - (W + 2)) / 2))
@@ -265,7 +331,7 @@ local function layout(win)
   local logo_rows, logo_cells, logo_width = build_logo()
   local _, logo_left = center(logo_rows[1], W)
   for r = 1, #logo_rows do
-    local text, l = center(logo_rows[r], W)
+    local text = center(logo_rows[r], W)
     add(text, {}, 'logo' .. r)
   end
   add('')
@@ -300,9 +366,9 @@ local function layout(win)
   end
 
   add('')
-  local info = get_plugin_info()
-  local info_text, info_left = center(info, W)
-  add(info_text, { { info_left, info_left + #info, hl.footer } })
+  local plugin_info = get_plugin_info()
+  local info_text, info_left = center(plugin_info, W)
+  add(info_text, { { info_left, info_left + #plugin_info, hl.footer } })
   add('')
 
   local total = #inner + (frame and 2 or 0)
@@ -353,12 +419,17 @@ local function layout(win)
       end
     elseif row.tag and row.tag:match('^logo%d+$') then
       local r = tonumber(row.tag:sub(5))
+      local shade = math.min(4, math.floor((r - 1) / #logo_rows * 4) + 1)
       for _, c in ipairs(logo_cells) do
         if c.r == r then
-          table.insert(
-            logo_path,
-            { x = c.x, r = r, kind = c.kind, row = lnum, col = base + logo_left + c.off }
-          )
+          table.insert(logo_path, {
+            x = c.x,
+            r = r,
+            kind = c.kind,
+            base = hl.logo_color .. c.kind:upper() .. shade, -- resting colour group
+            row = lnum,
+            col = base + logo_left + c.off,
+          })
         end
       end
     elseif row.tag == 'first_shortcut' then
@@ -406,7 +477,7 @@ local function layout(win)
   }
 end
 
-local function render(buf, set_cursor)
+local function render(buf, reset_view)
   local win = vim.fn.bufwinid(buf)
   if win == -1 then
     return
@@ -432,8 +503,508 @@ local function render(buf, set_cursor)
     )
   end
 
-  if set_cursor and geo.cursor then
-    vim.api.nvim_win_set_cursor(win, geo.cursor)
+  if reset_view then
+    -- A narrow or short window scrolls the view (leftcol/topline) to keep the
+    -- cursor visible; growing the window again keeps that offset, so the new,
+    -- correctly centred lines would still show up shifted. Start from 1,0.
+    vim.api.nvim_win_call(win, function()
+      vim.fn.winrestview({ topline = 1, leftcol = 0 })
+    end)
+    if geo.cursor then
+      vim.api.nvim_win_set_cursor(win, geo.cursor)
+    end
+  end
+end
+
+-- Logo effects. `draw(ctx)` paints every cell of ctx.path through ctx.put;
+-- `period(ctx)` (optional) is the length of one natural round in ticks, used
+-- when several effects take turns. ctx.t counts ticks since the effect started
+-- and ctx.data is scratch space that lives as long as the effect.
+local effects = {}
+
+effects.none = {
+  draw = function(ctx)
+    for _, c in ipairs(ctx.path) do
+      ctx.put(c, c.base)
+    end
+  end,
+}
+
+effects.snake = {
+  period = function(ctx)
+    return math.ceil(#ctx.path / config.logo_step) + config.logo_hold_ticks
+  end,
+  draw = function(ctx)
+    local path, total = ctx.path, #ctx.path
+    local sweep = math.ceil(total / config.logo_step)
+    local t = ctx.t % (sweep + config.logo_hold_ticks)
+    local reached = t < sweep and math.min(total, t * config.logo_step) or total
+    local shift = math.floor(ctx.tick / 2)
+    for i, c in ipairs(path) do
+      if i <= reached then
+        ctx.put(c, ctx.rainbow(math.floor(c.x / ctx.width * config.rainbow_steps) + shift))
+      else
+        ctx.put(c, c.base)
+      end
+    end
+    if t < sweep then
+      for i = math.max(1, reached - 1), reached do
+        ctx.put(path[i], ctx.head, 210)
+      end
+    end
+  end,
+}
+
+effects.wave = {
+  draw = function(ctx)
+    local span = ctx.width + ctx.rows * 2 -- a text row is about two columns tall
+    local shift = math.floor(ctx.t / 2)
+    for _, c in ipairs(ctx.path) do
+      local pos = math.floor((c.x + c.r * 2) / span * config.rainbow_steps)
+      ctx.put(c, ctx.rainbow(pos - shift))
+    end
+  end,
+}
+
+-- glare band along x + 1.2 * r, i.e. slanted like '/'
+-- glow level of `c` inside a '/' slanted glare band centred at `pos` (0 = outside)
+local function shine_level(c, pos)
+  local w = config.shine_width
+  local dist = math.abs(c.x + c.r * 1.2 - pos)
+  return dist < w and math.ceil((1 - dist / w) * (config.logo_glow_levels + 1)) or 0
+end
+
+-- ticks one shine sweep takes to cross the logo
+local function shine_length(ctx)
+  return ctx.width + math.ceil(ctx.rows * 1.2) + 2 * config.shine_width
+end
+
+effects.shine = {
+  period = function(ctx)
+    return shine_length(ctx) + config.shine_pause
+  end,
+  draw = function(ctx)
+    local pos = ctx.t % effects.shine.period(ctx) - config.shine_width
+    for _, c in ipairs(ctx.path) do
+      ctx.put(c, ctx.glow(c, shine_level(c, pos)))
+    end
+  end,
+}
+
+effects.ripple = {
+  draw = function(ctx)
+    local levels, spacing, tail = config.logo_glow_levels, config.ripple_spacing, 4
+    local cx, cy = (ctx.width + 1) / 2, (ctx.rows + 1) / 2
+    for _, c in ipairs(ctx.path) do
+      local dist = math.sqrt((c.x - cx) ^ 2 + ((c.r - cy) * 2) ^ 2)
+      -- 0 on the ring crest, growing towards the centre (the fading tail)
+      local p = (ctx.t * 0.5 - dist) % spacing
+      local level = p < tail and math.ceil((1 - p / tail) * (levels + 1)) or 0
+      ctx.put(c, ctx.glow(c, level))
+    end
+  end,
+}
+
+effects.breathe = {
+  draw = function(ctx)
+    local levels = config.logo_glow_levels
+    for _, c in ipairs(ctx.path) do
+      local s = (1 - math.cos(ctx.t * 0.1 - c.r * 0.25)) / 2 -- 0..1, travels downwards
+      ctx.put(c, ctx.glow(c, math.floor(s * levels + 0.5)))
+    end
+  end,
+}
+
+-- distance and angle of a cell from the logo centre (a text row counts as two columns)
+local function polar(ctx, c)
+  local dx = c.x - (ctx.width + 1) / 2
+  local dy = (c.r - (ctx.rows + 1) / 2) * 2
+  return math.sqrt(dx * dx + dy * dy), math.atan2(dy, dx)
+end
+
+effects.spiral = {
+  draw = function(ctx)
+    local steps = config.rainbow_steps
+    local shift = math.floor(ctx.t / 2)
+    for _, c in ipairs(ctx.path) do
+      local dist, angle = polar(ctx, c)
+      local pos = (angle / (2 * math.pi) + 0.5) * steps + dist * config.spiral_twist
+      ctx.put(c, ctx.rainbow(math.floor(pos) - shift))
+    end
+  end,
+}
+
+effects.radial = {
+  draw = function(ctx)
+    local shift = math.floor(ctx.t / 2)
+    for _, c in ipairs(ctx.path) do
+      local dist = polar(ctx, c)
+      ctx.put(c, ctx.rainbow(math.floor(dist * 0.8) - shift))
+    end
+  end,
+}
+
+local part_offset = { b = 0, c = 1 / 3, r = 2 / 3 }
+
+effects.tricolor = {
+  draw = function(ctx)
+    local steps = config.rainbow_steps
+    local shift = math.floor(ctx.t / 3)
+    for _, c in ipairs(ctx.path) do
+      local pos = (part_offset[c.kind] or 0) * steps + c.r * 0.5
+      ctx.put(c, ctx.rainbow(math.floor(pos) + shift))
+    end
+  end,
+}
+
+effects.rise = {
+  period = function()
+    return 3 * config.rise_ticks -- fill, hold, drain
+  end,
+  draw = function(ctx)
+    local fill, levels = config.rise_ticks, config.logo_glow_levels
+    local t = ctx.t % (3 * fill)
+    local p = t < fill and t / fill or (t < 2 * fill and 1 or (3 * fill - t) / fill)
+    local surface = (ctx.rows + 1.5) - p * (ctx.rows + 2) -- row of the liquid surface
+    local shift = math.floor(ctx.t / 2)
+    for _, c in ipairs(ctx.path) do
+      local level = surface + math.sin(c.x * 0.45 + ctx.t * 0.25) * 0.6
+      if c.r >= level then
+        -- horizontal rainbow bands drifting upwards
+        ctx.put(c, ctx.rainbow(math.floor(c.r * 1.5) + shift))
+      elseif c.r >= level - 1 then
+        ctx.put(c, ctx.glow(c, levels)) -- light foam on top of the surface
+      else
+        ctx.put(c, c.base)
+      end
+    end
+  end,
+}
+
+effects.rain = {
+  draw = function(ctx)
+    local levels, tail = config.logo_glow_levels, config.rain_tail
+    local drops = ctx.data.drops or {}
+    ctx.data.drops = drops
+    local function spawn(first)
+      return {
+        -- the first drops start anywhere so the screen isn't empty at first
+        y = first and math.random() * (ctx.rows + tail) - tail or -math.random() * ctx.rows,
+        speed = 0.25 + math.random() * 0.5,
+      }
+    end
+    for x = 1, ctx.width do
+      local d = drops[x] or spawn(true)
+      d.y = d.y + d.speed
+      if d.y - tail > ctx.rows then
+        d = spawn(false)
+      end
+      drops[x] = d
+    end
+    for _, c in ipairs(ctx.path) do
+      local k = drops[c.x].y - c.r -- rows below the drop head
+      local level = 0
+      if k >= 0 and k < 1 then
+        level = levels + 1
+      elseif k >= 1 and k < tail then
+        level = math.ceil((1 - k / tail) * levels)
+      end
+      ctx.put(c, ctx.glow(c, level))
+    end
+  end,
+}
+
+effects.dissolve = {
+  period = function()
+    return 2 * config.dissolve_ticks + config.dissolve_hold
+  end,
+  draw = function(ctx)
+    local n, levels = #ctx.path, config.logo_glow_levels
+    local span, hold = config.dissolve_ticks, config.dissolve_hold
+    local order = ctx.data.order
+    if not order or #order ~= n then
+      -- order[i] = when cell i shows up: a random permutation of 1..n
+      order = {}
+      for i = 1, n do
+        order[i] = i
+      end
+      for i = n, 2, -1 do
+        local j = math.random(i)
+        order[i], order[j] = order[j], order[i]
+      end
+      ctx.data.order = order
+    end
+
+    local t = ctx.t % (2 * span + hold)
+    local shown, appearing
+    if t < span then
+      shown, appearing = t / span * n, true
+    elseif t < span + hold then
+      shown = n
+    else
+      shown = (1 - (t - span - hold) / span) * n
+    end
+
+    for i, c in ipairs(ctx.path) do
+      if order[i] > shown then
+        ctx.hide(c)
+      else
+        -- freshly appeared cells flash white and settle back to their colour
+        local age = appearing and (shown - order[i]) / n * span or math.huge
+        ctx.put(c, ctx.glow(c, levels + 1 - math.floor(age)))
+      end
+    end
+  end,
+}
+
+effects.plasma = {
+  draw = function(ctx)
+    local steps, t = config.rainbow_steps, ctx.t * 0.08
+    for _, c in ipairs(ctx.path) do
+      local x, y = c.x, c.r * 2
+      local dist = polar(ctx, c)
+      -- four interfering waves, each in [-1, 1]
+      local v = math.sin(x * 0.22 + t)
+        + math.sin(y * 0.18 - t * 0.7)
+        + math.sin((x + y) * 0.15 + t * 0.5)
+        + math.sin(dist * 0.3 - t * 1.3)
+      ctx.put(c, ctx.rainbow(math.floor((v + 4) / 8 * steps * 1.5)))
+    end
+  end,
+}
+
+effects.firework = {
+  draw = function(ctx)
+    local d = ctx.data
+    local speed, thick, gap = 0.9, 3, config.firework_gap
+    d.bursts = d.bursts or {}
+    d.next = d.next or 0
+
+    if ctx.t >= d.next then
+      local origin = ctx.path[math.random(#ctx.path)] -- bursts start on the logo itself
+      table.insert(d.bursts, {
+        x = origin.x,
+        y = origin.r * 2,
+        born = ctx.t,
+        hue = math.random(config.rainbow_steps),
+      })
+      d.next = ctx.t + math.random(math.floor(gap / 2), math.ceil(gap * 1.5))
+    end
+    -- a shock wave is gone once it has left the logo
+    local reach = math.sqrt(ctx.width ^ 2 + (ctx.rows * 2) ^ 2) + thick
+    for i = #d.bursts, 1, -1 do
+      if (ctx.t - d.bursts[i].born) * speed > reach then
+        table.remove(d.bursts, i)
+      end
+    end
+
+    for _, c in ipairs(ctx.path) do
+      local group = ctx.dim(c)
+      for _, b in ipairs(d.bursts) do -- newer bursts are drawn over older ones
+        local dist = math.sqrt((c.x - b.x) ^ 2 + (c.r * 2 - b.y) ^ 2)
+        local k = (ctx.t - b.born) * speed - dist -- depth behind the wave front
+        if k >= 0 and k < 1 then
+          group = ctx.head -- white leading edge
+        elseif k >= 1 and k < thick then
+          group = ctx.rainbow(b.hue + math.floor(dist * 0.5))
+        end
+      end
+      ctx.put(c, group)
+    end
+  end,
+}
+
+effects.glitch = {
+  draw = function(ctx)
+    local d = ctx.data
+    local levels = config.logo_glow_levels
+    d.next = d.next or 20
+
+    if ctx.t >= d.next then
+      d.start = ctx.t
+      d.stop = ctx.t + math.random(3, 8)
+      d.next = d.stop + math.random(15, 50)
+    end
+    local active = d.stop and ctx.t < d.stop
+
+    if not active then
+      d.rows = nil
+    elseif not d.rows or math.random() < 0.5 then
+      -- a few horizontal bands; re-rolled on most ticks so it jitters
+      d.rows = {}
+      for _ = 1, math.random(2, 4) do
+        local band = {
+          hue = math.random(config.rainbow_steps),
+          gap = math.random(3, 6),
+          shift = math.random(0, 5),
+        }
+        local first = math.random(ctx.rows)
+        for r = first, math.min(ctx.rows, first + math.random(0, 2)) do
+          d.rows[r] = band
+        end
+      end
+    end
+
+    for _, c in ipairs(ctx.path) do
+      local band = d.rows and d.rows[c.r]
+      if active and ctx.t == d.start then
+        ctx.put(c, ctx.glow(c, levels)) -- a flash as the glitch hits
+      elseif not band then
+        ctx.put(c, c.base)
+      elseif (c.x + band.shift) % band.gap == 0 then
+        ctx.hide(c) -- torn gaps
+      else
+        ctx.put(c, ctx.rainbow(band.hue + math.floor(c.x / 4)))
+      end
+    end
+  end,
+}
+
+effects.heartbeat = {
+  period = function()
+    return config.heartbeat_ticks * 4
+  end,
+  draw = function(ctx)
+    local levels, beat = config.logo_glow_levels, config.heartbeat_ticks
+    -- a sharp pulse that decays over a few ticks
+    local function pulse(x)
+      return x >= 0 and math.exp(-x / 2.5) or 0
+    end
+    for _, c in ipairs(ctx.path) do
+      -- the beat reaches the edges a little later than the centre
+      local t = (ctx.t - polar(ctx, c) * 0.15) % beat
+      local a = pulse(t) + 0.7 * pulse(t - 5) -- lub ... dub
+      if a < 0.08 then
+        ctx.put(c, ctx.dim(c)) -- resting between beats
+      elseif a < 0.25 then
+        ctx.put(c, c.base)
+      else
+        ctx.put(c, ctx.glow(c, math.ceil((a - 0.25) / 0.75 * (levels + 1))))
+      end
+    end
+  end,
+}
+
+-- effects 'random' chooses from
+local effect_names = {
+  'snake',
+  'wave',
+  'shine',
+  'ripple',
+  'breathe',
+  'spiral',
+  'radial',
+  'tricolor',
+  'rise',
+  'rain',
+  'dissolve',
+  'plasma',
+  'firework',
+  'glitch',
+  'heartbeat',
+}
+
+local function rotating()
+  local opt = config.logo_effect
+  return opt == 'random' or (type(opt) == 'table' and #opt > 1)
+end
+
+local function new_fx(prev, tick)
+  local opt = config.logo_effect
+  local name, index
+  if opt == 'random' then
+    index = math.random(#effect_names)
+    if prev and effect_names[index] == prev.name then
+      index = index % #effect_names + 1
+    end
+    name = effect_names[index]
+  elseif type(opt) == 'table' then
+    index = prev and (prev.index % #opt + 1) or 1
+    name = opt[index]
+  else
+    name, index = opt, 1
+  end
+  if not effects[name] then
+    name = 'snake'
+  end
+  return { name = name, index = index, start = tick, data = {} }
+end
+
+local function animate_logo(buf, geo, tick)
+  local path = geo.logo_path
+  if #path == 0 then
+    return
+  end
+  local hl = config.highlights
+  local levels = config.logo_glow_levels
+
+  local ctx = {
+    path = path,
+    width = geo.logo_width,
+    rows = geo.logo_rows,
+    tick = tick,
+    head = hl.logo_head,
+  }
+  function ctx.put(c, group, priority)
+    vim.api.nvim_buf_set_extmark(buf, ns_anim, c.row, c.col, {
+      end_col = c.col + 3,
+      hl_group = group,
+      priority = priority or 200,
+    })
+  end
+  -- covers the cell with a blank, as if it weren't there
+  function ctx.hide(c)
+    vim.api.nvim_buf_set_extmark(buf, ns_anim, c.row, c.col, {
+      virt_text = { { ' ' } },
+      virt_text_pos = 'overlay',
+      priority = 200,
+    })
+  end
+  function ctx.rainbow(i)
+    return hl.rainbow .. (i % config.rainbow_steps + 1)
+  end
+  -- 0 = resting colour, 1..levels = lighter shades, above that = white
+  function ctx.glow(c, level)
+    if level <= 0 then
+      return c.base
+    elseif level > levels then
+      return hl.logo_head
+    end
+    return c.base .. 'Glow' .. level
+  end
+  function ctx.dim(c)
+    return c.base .. 'Dim'
+  end
+
+  local fx = state.fx or new_fx(nil, tick)
+  local effect = effects[fx.name]
+  if rotating() then
+    local length = effect.period and effect.period(ctx) or config.logo_effect_ticks
+    if tick - fx.start >= length then
+      fx = new_fx(fx, tick)
+      effect = effects[fx.name]
+    end
+  end
+  state.fx = fx
+
+  ctx.t = tick - fx.start
+  ctx.data = fx.data
+  effect.draw(ctx)
+
+  -- one shine sweep over whatever effect is running, when the minute changes
+  if config.minute_shine and state.shine_at then
+    local t = tick - state.shine_at
+    if t >= shine_length(ctx) then
+      state.shine_at = nil
+    else
+      local pos = t - config.shine_width
+      for _, c in ipairs(path) do
+        local level = shine_level(c, pos)
+        if level > 0 then
+          ctx.put(c, ctx.glow(c, level), 205)
+        end
+      end
+    end
   end
 end
 
@@ -457,45 +1028,7 @@ local function animate(buf)
     end
   end
 
-  -- logo: a bright dot walks the path; cells it has passed turn rainbow,
-  -- then the finished rainbow flows for a while before resetting
-  local path = geo.logo_path
-  local total = #path
-  if total > 0 then
-    local sweep = math.ceil(total / config.logo_step)
-    local t = tick % (sweep + config.logo_hold_ticks)
-    local reached = t < sweep and math.min(total, t * config.logo_step) or total
-    local steps = config.rainbow_steps
-    local shift = math.floor(tick / 2)
-    for i = reached + 1, total do
-      local c = path[i]
-      local shade = math.min(4, math.floor((c.r - 1) / geo.logo_rows * 4) + 1)
-      vim.api.nvim_buf_set_extmark(buf, ns_anim, c.row, c.col, {
-        end_col = c.col + 3,
-        hl_group = hl.logo_color .. c.kind:upper() .. shade,
-        priority = 200,
-      })
-    end
-    for i = 1, reached do
-      local c = path[i]
-      local idx = (math.floor(c.x / geo.logo_width * steps) + shift) % steps + 1
-      vim.api.nvim_buf_set_extmark(buf, ns_anim, c.row, c.col, {
-        end_col = c.col + 3,
-        hl_group = hl.rainbow .. idx,
-        priority = 200,
-      })
-    end
-    if t < sweep then
-      for i = math.max(1, reached - 1), reached do
-        local c = path[i]
-        vim.api.nvim_buf_set_extmark(buf, ns_anim, c.row, c.col, {
-          end_col = c.col + 3,
-          hl_group = hl.logo_head,
-          priority = 210,
-        })
-      end
-    end
-  end
+  animate_logo(buf, geo, tick)
 
   if math.floor(tick / 10) % 2 == 1 then
     for _, c in ipairs(geo.colons) do
@@ -542,6 +1075,7 @@ local function start_timer(buf)
       -- refresh the clock when the minute rolls over (checked once a second)
       if state.tick % 20 == 0 and os.date('%H:%M') ~= state.time then
         render(buf, false)
+        state.shine_at = state.tick
       end
       animate(buf)
     end)
@@ -587,6 +1121,8 @@ local window_opts = {
   'signcolumn',
   'wrap',
   'listchars',
+  'scrolloff',
+  'sidescrolloff',
 }
 
 -- Saves the options of `win` and returns a function that restores them on that
@@ -611,6 +1147,16 @@ end
 
 function M.setup(opts)
   config = vim.tbl_deep_extend('force', config, opts or {})
+
+  local fx = config.logo_effect
+  for _, name in ipairs(type(fx) == 'table' and fx or { fx }) do
+    if name ~= 'random' and not effects[name] then
+      vim.notify(
+        ('dashboard: unknown logo_effect %q, using "snake"'):format(tostring(name)),
+        vim.log.levels.WARN
+      )
+    end
+  end
 end
 
 -- force = true (used by :Dashboard) skips the "only on an empty startup" check.
@@ -643,6 +1189,10 @@ function M.show(force)
   wo.signcolumn = 'no'
   wo.wrap = false
   wo.listchars = 'precedes: '
+  -- a big global 'scrolloff' (e.g. 999) would keep the cursor line in the
+  -- middle of the window and push the whole dashboard off centre
+  wo.scrolloff = 0
+  wo.sidescrolloff = 0
 
   vim.o.laststatus = 0
   vim.o.showtabline = 0
@@ -659,6 +1209,8 @@ function M.show(force)
       end
       if vim.fn.bufwinid(buf) ~= -1 then
         render(buf, true)
+        -- repaint now so the old animation marks don't flash at stale positions
+        animate(buf)
       end
     end,
   })
