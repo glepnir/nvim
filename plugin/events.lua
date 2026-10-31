@@ -67,6 +67,7 @@ au('UIEnter', {
   once = true,
   callback = function()
     startuptime()
+    require('winbar').setup()
     vim.schedule(function()
       -- enabling here keeps require('vim.lsp') off the startup path; enable()
       -- re-fires FileType for buffers that are already open
@@ -86,7 +87,6 @@ au('UIEnter', {
       require('indent')
       require('compile')
       require('grep')
-      require('winbar').setup()
 
       if vim.version().minor >= 12 then
         require('vim._core.ui2').enable({ msg = { target = 'cmd' } })
@@ -153,11 +153,14 @@ au('FileType', {
     end
     if vim.treesitter.language.add(lang) then
       vim.treesitter.start(opts.buf, lang)
-      local win = vim.fn.bufwinid(opts.buf)
-      if win ~= -1 then
-        vim.wo[win][0].foldmethod = 'expr'
-        vim.wo[win][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-      end
+      local buf = opts.buf
+      vim.schedule(function()
+        local win = vim.fn.bufwinid(buf)
+        if win ~= -1 then
+          vim.wo[win][0].foldmethod = 'expr'
+          vim.wo[win][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+        end
+      end)
     end
   end,
   desc = 'try start treesitter highlight',
