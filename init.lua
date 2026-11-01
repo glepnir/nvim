@@ -61,6 +61,7 @@ o.winborder = 'rounded'
 o.splitright = true
 -- reset to 2 in dashboard.lua lnum 273
 o.laststatus = 0
+o.shada = "!,'100,<50,s10,h,:200,/100"
 o.cot = 'menu,menuone,noinsert,fuzzy,popup' -- nosort or not???
 o.cia = 'kind,abbr,menu'
 o.wop = 'pum,tagfile,fuzzy'
