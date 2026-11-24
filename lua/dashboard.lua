@@ -27,6 +27,7 @@ local config = {
   tick_ms = 50,
   ring_tail = 4,
   clock_min_height = 44, -- hide the clock below this window height
+  timezone = 'Asia/shanghai',
 
   -- logo animation:
   --   'snake'   a white dot snakes through the logo leaving a rainbow behind
@@ -152,6 +153,23 @@ local logo_map = {
 
 local ns = vim.api.nvim_create_namespace('dashboard')
 local ns_anim = vim.api.nvim_create_namespace('dashboard_anim')
+
+-- os.date in the configured timezone (TZ is only overridden for the call)
+local function now(fmt)
+  local tz = config.timezone
+  if not tz then
+    return os.date(fmt)
+  end
+  local old = vim.uv.os_getenv('TZ')
+  vim.uv.os_setenv('TZ', tz)
+  local s = os.date(fmt)
+  if old then
+    vim.uv.os_setenv('TZ', old)
+  else
+    vim.uv.os_unsetenv('TZ')
+  end
+  return s
+end
 
 -- Runtime state of the (single) visible dashboard
 local state = nil
@@ -304,7 +322,7 @@ local function layout(win)
   local left = math.max(0, math.floor((cols - (W + 2)) / 2))
   local hl = config.highlights
 
-  local time_str = os.date('%H:%M')
+  local time_str = now('%H:%M')
   local clock_rows, colon_offsets = build_clock(time_str)
   local _, clock_left = center(clock_rows[1], W)
 
@@ -321,7 +339,7 @@ local function layout(win)
       local text, l = center(clock_rows[r], W)
       add(text, { { l, l + #clock_rows[r], hl.clock } }, r == 1 and 'clock' or nil)
     end
-    local date = os.date('%A · %d %b %Y')
+    local date = now('%A · %d %b %Y')
     local date_text, date_left = center(date, W)
     add(date_text, { { date_left, date_left + #date, hl.date } })
     add('')
@@ -1073,7 +1091,7 @@ local function start_timer(buf)
       end
       state.tick = state.tick + 1
       -- refresh the clock when the minute rolls over (checked once a second)
-      if state.tick % 20 == 0 and os.date('%H:%M') ~= state.time then
+      if state.tick % 20 == 0 and now('%H:%M') ~= state.time then
         render(buf, false)
         state.shine_at = state.tick
       end
